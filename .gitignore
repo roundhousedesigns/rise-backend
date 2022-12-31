@@ -1,0 +1,72 @@
+# ignore everything in the root except the "wp-content" directory.
+/*
+!wp-content/
+
+# ignore everything in the "wp-content" directory, except:
+# mu-plugins, plugins, and themes directories
+wp-content/*
+!wp-content/mu-plugins/
+!wp-content/plugins/
+!wp-content/themes/
+
+# ignore all plugins, and themes, unless explicitly whitelisted at the end of
+# this file. Also ignore the RHDWP hosting environment plugin.
+wp-content/plugins/*
+wp-content/themes/*
+wp-content/mu-plugins/rhdwp-environment.php
+
+# ignore all files starting with . or ~
+.*
+~*
+
+# ignore node dependency directories (used by grunt)
+node_modules/
+
+# ignore OS generated files
+ehthumbs.db
+Thumbs.db
+
+# ignore Editor files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# -------------------------
+# BEGIN Allowlist
+# -------------------------
+
+# track these files, if they exist
+!.gitignore
+!.editorconfig
+!.phpcs.xml.dist
+!README.md
+!readme.txt
+!CHANGELOG.md
+!composer.json
+
+# Plugins and Themes
+!wp-content/themes/rhd-headless-theme
+!wp-content/mu-plugins/get-to-work

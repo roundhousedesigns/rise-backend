@@ -1,0 +1,3 @@
+[submodule "wp-content/themes/rhd-headless-theme"]
+	path = wp-content/themes/rhd-headless-theme
+	url = git@github.com:roundhousedesigns/rhd-headless-theme
