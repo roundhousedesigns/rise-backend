@@ -1,4 +1,5 @@
-# Get To Work - backend
+# Get To Work
+
 ## Backend
 
 This is the first stage of development for the Get To Work backend.

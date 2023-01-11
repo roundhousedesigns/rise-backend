@@ -134,11 +134,11 @@ class Get_To_Work_Data {
 	 */
 	public function department_init() {
 		register_taxonomy( 'department', ['credit'], [
-			'hierarchical'          => false,
+			'hierarchical'          => true,
 			'public'                => true,
 			'show_in_nav_menus'     => true,
 			'show_ui'               => true,
-			'show_admin_column'     => false,
+			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => true,
 			'capabilities'          => [
