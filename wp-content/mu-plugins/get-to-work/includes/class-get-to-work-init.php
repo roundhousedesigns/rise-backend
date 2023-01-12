@@ -29,7 +29,7 @@ class Get_To_Work_Init {
 	 * @return void
 	 */
 	public function register_required_plugins() {
-		/*
+		/**
 		 * Array of plugin arrays. Required keys are name and slug.
 		 * If the source is NOT from the .org repo, then source is also required.
 		 */
@@ -50,11 +50,12 @@ class Get_To_Work_Init {
 				'external_url' => 'https://github.com/funkhaus/wp-graphql-cors',
 			],
 			[
-				'name'         => 'WP GraphQL for Advanced Custom Fields',
-				'slug'         => 'wp-graphql-acf',
-				'source'       => dirname( __DIR__ ) . '/lib/plugins/wp-graphql-acf.zip',
-				'required'     => true,
-				'external_url' => 'https://github.com/wp-graphql/wp-graphql-acf',
+				'name'             => 'WP GraphQL for Advanced Custom Fields',
+				'slug'             => 'wp-graphql-acf',
+				'source'           => dirname( __DIR__ ) . '/lib/plugins/wp-graphql-acf.zip',
+				'required'         => true,
+				'force_activation' => true,
+				'external_url'     => 'https://github.com/wp-graphql/wp-graphql-acf',
 			],
 			[
 				'name'     => 'Advanced Custom Fields',
@@ -69,14 +70,8 @@ class Get_To_Work_Init {
 			],
 		];
 
-		/*
-		 * Array of configuration settings. Amend each line as needed.
-		 *
-		 * TGMPA will start providing localized text strings soon. If you already have translations of our standard
-		 * strings available, please help us make TGMPA even better by giving us access to these translations or by
-		 * sending in a pull-request with .po file(s) with the translations.
-		 *
-		 * Only uncomment the strings in the config array if you want to customize the strings.
+		/**
+		 * Array of configuration settings.
 		 */
 		$config = [
 			'id'           => 'gtw', // Unique ID for hashing notices for multiple instances of TGMPA.
