@@ -61,6 +61,12 @@ class Get_To_Work_Init {
 				'slug'     => 'advanced-custom-fields',
 				'required' => true,
 			],
+			[
+				'name'     => 'Pods - Custom Content Types and Fields',
+				'slug'     => 'pods',
+				'version'  => '2.9.10.2',
+				'required' => true,
+			],
 		];
 
 		/*
