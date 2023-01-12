@@ -5,11 +5,11 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://roundhouse-designs.com
- * @since      0.1.0
- *
  * @package    Get_To_Work
  * @subpackage Get_To_Work/includes
+ *
+ * @link       https://roundhouse-designs.com
+ * @since      0.1.0
  */
 
 /**
@@ -21,10 +21,12 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      0.1.0
  * @package    Get_To_Work
  * @subpackage Get_To_Work/includes
+ *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
+ *
+ * @since      0.1.0
  */
 class Get_To_Work {
 
@@ -32,27 +34,27 @@ class Get_To_Work {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @since    0.1.0
 	 * @access   protected
-	 * @var      Get_To_Work_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var Get_To_Work_Loader $loader Maintains and registers all hooks for the plugin.
+	 * @since    0.1.0
 	 */
 	protected $loader;
 
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    0.1.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var string $plugin_name The string used to uniquely identify this plugin.
+	 * @since    0.1.0
 	 */
 	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since    0.1.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var string $version The current version of the plugin.
+	 * @since    0.1.0
 	 */
 	protected $version;
 
@@ -75,7 +77,8 @@ class Get_To_Work {
 
 		$this->load_dependencies();
 		$this->set_locale();
-		$this->define_global_hooks();
+		$this->define_init_hooks();
+		$this->define_data_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->add_roles();
@@ -94,8 +97,8 @@ class Get_To_Work {
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
 	 *
-	 * @since    0.1.0
 	 * @access   private
+	 * @since    0.1.0
 	 */
 	private function load_dependencies() {
 
@@ -104,6 +107,11 @@ class Get_To_Work {
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-loader.php';
+
+		/**
+		 * The class responsible for plugin intialization.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-init.php';
 
 		/**
 		 * The class responsible for registering data types.
@@ -136,23 +144,38 @@ class Get_To_Work {
 	 * Uses the Get_To_Work_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
-	 * @since    0.1.0
 	 * @access   private
+	 * @since    0.1.0
 	 */
 	private function set_locale() {
-
 		$plugin_i18n = new Get_To_Work_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
 
 	/**
+	 * Register all required external plugins.
+	 *
+	 * @return void
+	 */
+	private function define_init_hooks() {
+		$plugin_data = new Get_To_Work_Init();
+
+		/**
+		 * TGMPA class.
+		 */
+		require dirname( __DIR__ ) . '/lib/tgmpa/class-tgm-plugin-activation.php';
+
+		$this->loader->add_action( 'tgmpa_register', $plugin_data, 'register_required_plugins' );
+	}
+
+	/**
 	 * Register all of the main plugin hooks.
 	 *
-	 * @since 0.1.0
 	 * @access private
+	 * @since 0.1.0
 	 */
-	private function define_global_hooks() {
+	private function define_data_hooks() {
 		$plugin_data = new Get_To_Work_Data();
 
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
@@ -167,8 +190,8 @@ class Get_To_Work {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since    0.1.0
 	 * @access   private
+	 * @since    0.1.0
 	 */
 	private function define_admin_hooks() {
 		$plugin_admin = new Get_To_Work_Admin( $this->get_plugin_name(), $this->get_version() );
@@ -181,8 +204,8 @@ class Get_To_Work {
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
-	 * @since    0.1.0
 	 * @access   private
+	 * @since    0.1.0
 	 */
 	private function define_public_hooks() {
 
@@ -201,12 +224,12 @@ class Get_To_Work {
 		// Crew Member role.
 		add_role( 'crew-member', __(
 			'Crew Member', ),
-			array(
+			[
 				'read'         => true,
 				'create_posts' => true,
 				'edit_posts'   => true,
 				'delete_posts' => true,
-			)
+			]
 		);
 	}
 
@@ -224,7 +247,8 @@ class Get_To_Work {
 	 * WordPress and to define internationalization functionality.
 	 *
 	 * @since     0.1.0
-	 * @return    string    The name of the plugin.
+	 *
+	 * @return string The name of the plugin.
 	 */
 	public function get_plugin_name() {
 		return $this->plugin_name;
@@ -234,7 +258,8 @@ class Get_To_Work {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     0.1.0
-	 * @return    Get_To_Work_Loader    Orchestrates the hooks of the plugin.
+	 *
+	 * @return Get_To_Work_Loader Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -244,7 +269,8 @@ class Get_To_Work {
 	 * Retrieve the version number of the plugin.
 	 *
 	 * @since     0.1.0
-	 * @return    string    The version number of the plugin.
+	 *
+	 * @return string The version number of the plugin.
 	 */
 	public function get_version() {
 		return $this->version;
