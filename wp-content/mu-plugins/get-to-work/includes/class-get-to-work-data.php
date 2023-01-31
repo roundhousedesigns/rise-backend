@@ -130,7 +130,8 @@ class Get_To_Work_Data {
 	/**
 	 * Sets the bulk post updated messages for the `credit` post type.
 	 *
-	 *                              keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 *
 	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `credit` post type.
