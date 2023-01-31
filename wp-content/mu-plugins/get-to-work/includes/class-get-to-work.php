@@ -75,13 +75,39 @@ class Get_To_Work {
 		}
 		$this->plugin_name = 'get-to-work';
 
+		// Fire away.
 		$this->load_dependencies();
 		$this->set_locale();
+		add_action( 'graphql_register_types', function () {
+			register_graphql_field( 'Query', 'usersByRole', [
+				'type'    => '[User]',
+				'args'    => [
+					'role' => [
+						'type' => 'String',
+					],
+				],
+				'resolve' => function ( $root, $args, $context, $info ) {
+					if ( ! current_user_can( 'edit_posts' ) ) {
+						return new \WP_Error( 'unauthorized', 'You are not allowed to access this information' );
+					}
+
+					if ( ! array_key_exists( 'role', $args ) ) {
+						return new \WP_Error( 'role-not-found', 'Role not provided' );
+					}
+
+					$role  = $args['role'];
+					$users = get_users( ['role' => $role] );
+
+					return $users;
+				},
+			] );
+		} );
 		$this->define_init_hooks();
-		$this->define_data_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-		$this->add_roles();
+
+		// MAYBE Use manually defined CPT (defined next on line) or framework like Pods.io
+		$this->define_data_hooks();
 	}
 
 	/**
@@ -178,12 +204,23 @@ class Get_To_Work {
 	private function define_data_hooks() {
 		$plugin_data = new Get_To_Work_Data();
 
-		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
+		/**
+		 * User roles.
+		 */
+		$this->loader->add_action( 'admin_init', $plugin_data, 'add_roles' );
+
+		/**
+		 * Custom Post Type: credit
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'credit_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'credit_bulk_updated_messages', 10, 2 );
-		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'department_updated_messages' );
-		$this->loader->add_action( 'init', $plugin_data, 'credit_init' );
+
+		/**
+		 * Taxonomy: department
+		 */
 		$this->loader->add_action( 'init', $plugin_data, 'department_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'department_updated_messages' );
 	}
 
 	/**
@@ -213,24 +250,6 @@ class Get_To_Work {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-	}
-
-	/**
-	 * Add user roles.
-	 *
-	 * @return void
-	 */
-	public function add_roles() {
-		// Crew Member role.
-		add_role( 'crew-member', __(
-			'Crew Member', ),
-			[
-				'read'         => true,
-				'create_posts' => true,
-				'edit_posts'   => true,
-				'delete_posts' => true,
-			]
-		);
 	}
 
 	/**

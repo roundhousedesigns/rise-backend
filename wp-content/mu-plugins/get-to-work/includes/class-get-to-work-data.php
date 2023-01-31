@@ -2,18 +2,41 @@
 /**
  * Registers custom post types and taxonomies.
  *
- * @since      0.1.0
  * @package    Get_To_Work
  * @subpackage Get_To_Work/includes
+ *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
+ *
+ * @since      0.1.0
  */
 
 class Get_To_Work_Data {
 	/**
+	 * Add user roles with capabilities.
+	 *
+	 * @return void
+	 */
+	public function add_roles() {
+		$roles = [
+			'crew-member' => [
+				'read'         => true,
+				'list_users'   => true,
+				'create_posts' => true,
+				'edit_posts'   => true,
+				'delete_posts' => true,
+			],
+		];
+
+		foreach ( $roles as $role => $caps ) {
+			add_role( $role, $caps );
+		}
+	}
+
+	/**
 	 * Registers the `credit` post type.
 	 *
-	 * @since     0.1.0
 	 * @access    private
+	 * @since     0.1.0
 	 */
 	public function credit_init() {
 		register_post_type(
@@ -47,6 +70,7 @@ class Get_To_Work_Data {
 					'menu_name'             => __( 'Credits', 'gtw' ),
 				],
 				'public'                => true,
+				'publicly_queryable'    => false,
 				'hierarchical'          => false,
 				'show_ui'               => true,
 				'show_in_nav_menus'     => true,
@@ -56,6 +80,9 @@ class Get_To_Work_Data {
 				'query_var'             => true,
 				'menu_position'         => null,
 				'menu_icon'             => 'dashicons-star-half',
+				'show_in_graphql'       => true,
+				'graphql_single_name'   => 'credit',
+				'graphql_plural_name'   => 'credits',
 				'show_in_rest'          => true,
 				'rest_base'             => 'credit',
 				'rest_controller_class' => 'WP_REST_Posts_Controller',
@@ -103,8 +130,8 @@ class Get_To_Work_Data {
 	/**
 	 * Sets the bulk post updated messages for the `credit` post type.
 	 *
-	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
 	 *                              keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `credit` post type.
 	 */
