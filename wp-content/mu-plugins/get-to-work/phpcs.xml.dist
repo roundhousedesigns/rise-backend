@@ -21,7 +21,7 @@
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/wp/*</exclude-pattern>
 
-    <config name="minimum_supported_wp_version" value="" />
+    <config name="minimum_supported_wp_version" value="6.1" />
 
     <!-- @see https://github.com/PHPCompatibility/PHPCompatibility#using-a-custom-ruleset -->
     <config name="testVersion" value="8.0-" />
@@ -31,7 +31,6 @@
     <rule ref="WordPress">
         <!-- Only target the theme and core plugin -->
 
-        <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
         <!-- <exclude name="Generic.Commenting" /> -->
         <exclude name="Generic.PHP.DisallowShortOpenTag.EchoFound" />
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
@@ -46,8 +45,6 @@
         <exclude name="Squiz.Commenting" />
         <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine" />
 
-        <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
-
         <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
         <!-- <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" /> -->
@@ -57,6 +54,8 @@
         <exclude name="WordPress.Arrays.ArrayDeclarationSpacing.NoSpaceAfterArrayOpener" />
         <exclude name="WordPress.Arrays.ArrayDeclarationSpacing.NoSpaceBeforeArrayCloser" />
         <exclude name="WordPress.Arrays.ArrayKeySpacingRestrictions.NoSpacesAroundArrayKeys" />
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
+
     </rule>
 
     <!-- Functions which don't require extra un-slashing and sanitization -->
