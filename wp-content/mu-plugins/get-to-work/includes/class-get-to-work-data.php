@@ -200,6 +200,9 @@ class Get_To_Work_Data {
 				'back_to_items'              => __( '&larr; Back to Production Departments', 'gtw' ),
 			],
 			'show_in_rest'          => true,
+			'show_in_graphql'       => true,
+			'graphql_single_name'   => 'department',
+			'graphql_plural_name'   => 'departments',
 			'rest_base'             => 'department',
 			'rest_controller_class' => 'WP_REST_Terms_Controller',
 		] );
@@ -223,5 +226,142 @@ class Get_To_Work_Data {
 		];
 
 		return $messages;
+	}
+
+	/**
+	 * Registers the `saved_search` post type.
+	 *
+	 * @access    private
+	 * @since     0.1.0
+	 */
+	public function saved_search_init() {
+		register_post_type(
+			'saved_search',
+			[
+				'labels'                => [
+					'name'                  => __( 'Saved Searches', 'gtw' ),
+					'singular_name'         => __( 'Saved Search', 'gtw' ),
+					'all_items'             => __( 'All Saved Searches', 'gtw' ),
+					'archives'              => __( 'Saved Search Archives', 'gtw' ),
+					'attributes'            => __( 'Saved Search Attributes', 'gtw' ),
+					'insert_into_item'      => __( 'Insert into saved_search', 'gtw' ),
+					'uploaded_to_this_item' => __( 'Uploaded to this saved_search', 'gtw' ),
+					'featured_image'        => _x( 'Featured Image', 'saved_search', 'gtw' ),
+					'set_featured_image'    => _x( 'Set featured image', 'saved_search', 'gtw' ),
+					'remove_featured_image' => _x( 'Remove featured image', 'saved_search', 'gtw' ),
+					'use_featured_image'    => _x( 'Use as featured image', 'saved_search', 'gtw' ),
+					'filter_items_list'     => __( 'Filter Saved Searches list', 'gtw' ),
+					'items_list_navigation' => __( 'Saved Searches list navigation', 'gtw' ),
+					'items_list'            => __( 'Saved Searches list', 'gtw' ),
+					'new_item'              => __( 'New Saved Search', 'gtw' ),
+					'add_new'               => __( 'Add New', 'gtw' ),
+					'add_new_item'          => __( 'Add New Saved Search', 'gtw' ),
+					'edit_item'             => __( 'Edit Saved Search', 'gtw' ),
+					'view_item'             => __( 'View Saved Search', 'gtw' ),
+					'view_items'            => __( 'View Saved Searches', 'gtw' ),
+					'search_items'          => __( 'Search Saved Searches', 'gtw' ),
+					'not_found'             => __( 'No Saved Searches found', 'gtw' ),
+					'not_found_in_trash'    => __( 'No Saved Searches found in trash', 'gtw' ),
+					'parent_item_colon'     => __( 'Parent Saved Search:', 'gtw' ),
+					'menu_name'             => __( 'Saved Searches', 'gtw' ),
+				],
+				'public'                => true,
+				'publicly_queryable'    => false,
+				'hierarchical'          => false,
+				'show_ui'               => true,
+				'show_in_nav_menus'     => true,
+				'supports'              => ['title', 'author'],
+				'has_archive'           => true,
+				'rewrite'               => true,
+				'query_var'             => true,
+				'menu_position'         => null,
+				'menu_icon'             => 'dashicons-search',
+				'show_in_graphql'       => true,
+				'graphql_single_name'   => 'saved_search',
+				'graphql_plural_name'   => 'Saved Searches',
+				'show_in_rest'          => true,
+				'rest_base'             => 'saved_search',
+				'rest_controller_class' => 'WP_REST_Posts_Controller',
+			]
+		);
+
+	}
+
+	/**
+	 * Sets the post updated messages for the `saved_search` post type.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `saved_search` post type.
+	 */
+	public function saved_search_updated_messages( $messages ) {
+		global $post;
+
+		$permalink = get_permalink( $post );
+
+		$messages['saved_search'] = [
+			// Unused. Messages start at index 1.
+			0  => '',
+			/* translators: %s: post permalink */
+			1  => sprintf( __( 'Saved Search updated. <a target="_blank" href="%s">View saved_search</a>', 'gtw' ), esc_url( $permalink ) ),
+			2  => __( 'Custom field updated.', 'gtw' ),
+			3  => __( 'Custom field deleted.', 'gtw' ),
+			4  => __( 'Saved Search updated.', 'gtw' ),
+			/* translators: %s: date and time of the revision */
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			5  => isset( $_GET['revision'] ) ? sprintf( __( 'Saved Search restored to revision from %s', 'gtw' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			/* translators: %s: post permalink */
+			6  => sprintf( __( 'Saved Search published. <a href="%s">View saved_search</a>', 'gtw' ), esc_url( $permalink ) ),
+			7  => __( 'Saved Search saved.', 'gtw' ),
+			/* translators: %s: post permalink */
+			8  => sprintf( __( 'Saved Search submitted. <a target="_blank" href="%s">Preview saved_search</a>', 'gtw' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+			/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
+			9  => sprintf( __( 'Saved Search scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview saved_search</a>', 'gtw' ), date_i18n( __( 'M j, Y @ G:i', 'gtw' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+			/* translators: %s: post permalink */
+			10 => sprintf( __( 'Saved Search draft updated. <a target="_blank" href="%s">Preview saved_search</a>', 'gtw' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		];
+
+		return $messages;
+	}
+
+	/**
+	 * Sets the bulk post updated messages for the `saved_search` post type.
+	 *
+	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 *
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
+	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+	 * @return array Bulk messages for the `saved_search` post type.
+	 */
+	public function saved_search_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		global $post;
+
+		$bulk_messages['saved_search'] = [
+			/* translators: %s: Number of Saved Searches. */
+			'updated'   => _n( '%s saved_search updated.', '%s Saved Searches updated.', $bulk_counts['updated'], 'gtw' ),
+			'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 saved_search not updated, somebody is editing it.', 'gtw' ) :
+			/* translators: %s: Number of Saved Searches. */
+			_n( '%s saved_search not updated, somebody is editing it.', '%s Saved Searches not updated, somebody is editing them.', $bulk_counts['locked'], 'gtw' ),
+			/* translators: %s: Number of Saved Searches. */
+			'deleted'   => _n( '%s saved_search permanently deleted.', '%s Saved Searches permanently deleted.', $bulk_counts['deleted'], 'gtw' ),
+			/* translators: %s: Number of Saved Searches. */
+			'trashed'   => _n( '%s saved_search moved to the Trash.', '%s Saved Searches moved to the Trash.', $bulk_counts['trashed'], 'gtw' ),
+			/* translators: %s: Number of Saved Searches. */
+			'untrashed' => _n( '%s saved_search restored from the Trash.', '%s Saved Searches restored from the Trash.', $bulk_counts['untrashed'], 'gtw' ),
+		];
+
+		return $bulk_messages;
+	}
+
+	/**
+	 * Blocks the user from accessing the admin area if they are not an administrator.
+	 *
+	 * @return void
+	 */
+	public function blockusers_init() {
+		if ( is_admin() && ! current_user_can( 'administrator' ) &&
+			! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			wp_redirect( home_url() );
+			exit;
+		}
 	}
 }

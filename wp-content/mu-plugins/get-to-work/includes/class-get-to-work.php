@@ -59,6 +59,19 @@ class Get_To_Work {
 	protected $version;
 
 	/**
+	 * The allowed origins for CORS.
+	 *
+	 * @access   public
+	 * @var string
+	 * @since 0.1.0
+	 */
+	public $allowed_origins = [
+		'http://localhost:3000',
+		'https://gtw-frontend.pages.dev',
+		'https://dev.gtw-frontend.pages.dev',
+	];
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -78,36 +91,11 @@ class Get_To_Work {
 		// Fire away.
 		$this->load_dependencies();
 		$this->set_locale();
-		add_action( 'graphql_register_types', function () {
-			register_graphql_field( 'Query', 'usersByRole', [
-				'type'    => '[User]',
-				'args'    => [
-					'role' => [
-						'type' => 'String',
-					],
-				],
-				'resolve' => function ( $root, $args, $context, $info ) {
-					if ( ! current_user_can( 'edit_posts' ) ) {
-						return new \WP_Error( 'unauthorized', 'You are not allowed to access this information' );
-					}
-
-					if ( ! array_key_exists( 'role', $args ) ) {
-						return new \WP_Error( 'role-not-found', 'Role not provided' );
-					}
-
-					$role  = $args['role'];
-					$users = get_users( ['role' => $role] );
-
-					return $users;
-				},
-			] );
-		} );
 		$this->define_init_hooks();
+		$this->define_data_hooks();
+		$this->define_graphql_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
-		// MAYBE Use manually defined CPT (defined next on line) or framework like Pods.io
-		$this->define_data_hooks();
 	}
 
 	/**
@@ -143,6 +131,12 @@ class Get_To_Work {
 		 * The class responsible for registering data types.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-data.php';
+
+		/**
+		 * The class responsible for registering GrapQL queries and mutations.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-queries.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-mutations.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -215,12 +209,34 @@ class Get_To_Work {
 		$this->loader->add_action( 'init', $plugin_data, 'credit_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'credit_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'init', $plugin_data, 'blockusers_init' );
 
 		/**
-		 * Taxonomy: department
+		 * Taxonomy: department (`credit`)
 		 */
 		$this->loader->add_action( 'init', $plugin_data, 'department_init' );
 		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'department_updated_messages' );
+
+		/**
+		 * Custom Post Type: saved_search
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+	}
+
+	/**
+	 * Register all of the hooks related to GraphQL.
+	 *
+	 * @return void
+	 */
+	private function define_graphql_hooks() {
+		$plugin_data_queries   = new Get_To_Work_GraphQL_Queries();
+		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
+
+		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_types' );
+		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
+		$this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
 	}
 
 	/**
@@ -231,10 +247,10 @@ class Get_To_Work {
 	 * @since    0.1.0
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Get_To_Work_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Get_To_Work_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
 	}
 
 	/**
@@ -245,11 +261,10 @@ class Get_To_Work {
 	 * @since    0.1.0
 	 */
 	private function define_public_hooks() {
+		$plugin_data = new Get_To_Work_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$plugin_public = new Get_To_Work_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
 	}
 
 	/**
