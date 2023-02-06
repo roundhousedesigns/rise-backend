@@ -157,11 +157,11 @@ class Get_To_Work_Data {
 	}
 
 	/**
-	 * Registers the `department` taxonomy,
+	 * Registers the `position` taxonomy,
 	 * for use with 'credit'.
 	 */
-	public function department_init() {
-		register_taxonomy( 'department', ['credit'], [
+	public function position_init() {
+		register_taxonomy( 'position', ['credit'], [
 			'hierarchical'          => true,
 			'public'                => true,
 			'show_in_nav_menus'     => true,
@@ -176,53 +176,53 @@ class Get_To_Work_Data {
 				'assign_terms' => 'edit_posts',
 			],
 			'labels'                => [
-				'name'                       => __( 'Production Departments', 'gtw' ),
-				'singular_name'              => _x( 'Production Department', 'taxonomy general name', 'gtw' ),
-				'search_items'               => __( 'Search Production Departments', 'gtw' ),
-				'popular_items'              => __( 'Popular Production Departments', 'gtw' ),
-				'all_items'                  => __( 'All Production Departments', 'gtw' ),
-				'parent_item'                => __( 'Parent Production Department', 'gtw' ),
-				'parent_item_colon'          => __( 'Parent Production Department:', 'gtw' ),
-				'edit_item'                  => __( 'Edit Production Department', 'gtw' ),
-				'update_item'                => __( 'Update Production Department', 'gtw' ),
-				'view_item'                  => __( 'View Production Department', 'gtw' ),
-				'add_new_item'               => __( 'Add New Production Department', 'gtw' ),
-				'new_item_name'              => __( 'New Production Department', 'gtw' ),
-				'separate_items_with_commas' => __( 'Separate Production Departments with commas', 'gtw' ),
-				'add_or_remove_items'        => __( 'Add or remove Production Departments', 'gtw' ),
-				'choose_from_most_used'      => __( 'Choose from the most used Production Departments', 'gtw' ),
-				'not_found'                  => __( 'No Production Departments found.', 'gtw' ),
-				'no_terms'                   => __( 'No Production Departments', 'gtw' ),
-				'menu_name'                  => __( 'Production Departments', 'gtw' ),
-				'items_list_navigation'      => __( 'Production Departments list navigation', 'gtw' ),
-				'items_list'                 => __( 'Production Departments list', 'gtw' ),
-				'most_used'                  => _x( 'Most Used', 'department', 'gtw' ),
-				'back_to_items'              => __( '&larr; Back to Production Departments', 'gtw' ),
+				'name'                       => __( 'Production Positions', 'gtw' ),
+				'singular_name'              => _x( 'Production Position', 'taxonomy general name', 'gtw' ),
+				'search_items'               => __( 'Search Production Positions', 'gtw' ),
+				'popular_items'              => __( 'Popular Production Positions', 'gtw' ),
+				'all_items'                  => __( 'All Production Positions', 'gtw' ),
+				'parent_item'                => __( 'Parent Production Position', 'gtw' ),
+				'parent_item_colon'          => __( 'Parent Production Position:', 'gtw' ),
+				'edit_item'                  => __( 'Edit Production Position', 'gtw' ),
+				'update_item'                => __( 'Update Production Position', 'gtw' ),
+				'view_item'                  => __( 'View Production Position', 'gtw' ),
+				'add_new_item'               => __( 'Add New Production Position', 'gtw' ),
+				'new_item_name'              => __( 'New Production Position', 'gtw' ),
+				'separate_items_with_commas' => __( 'Separate Production Positions with commas', 'gtw' ),
+				'add_or_remove_items'        => __( 'Add or remove Production Positions', 'gtw' ),
+				'choose_from_most_used'      => __( 'Choose from the most used Production Positions', 'gtw' ),
+				'not_found'                  => __( 'No Production Positions found.', 'gtw' ),
+				'no_terms'                   => __( 'No Production Positions', 'gtw' ),
+				'menu_name'                  => __( 'Production Positions', 'gtw' ),
+				'items_list_navigation'      => __( 'Production Positions list navigation', 'gtw' ),
+				'items_list'                 => __( 'Production Positions list', 'gtw' ),
+				'most_used'                  => _x( 'Most Used', 'position', 'gtw' ),
+				'back_to_items'              => __( '&larr; Back to Production Positions', 'gtw' ),
 			],
 			'show_in_rest'          => true,
 			'show_in_graphql'       => true,
-			'graphql_single_name'   => 'department',
-			'graphql_plural_name'   => 'departments',
-			'rest_base'             => 'department',
+			'graphql_single_name'   => 'position',
+			'graphql_plural_name'   => 'positions',
+			'rest_base'             => 'position',
 			'rest_controller_class' => 'WP_REST_Terms_Controller',
 		] );
 	}
 
 	/**
-	 * Sets the post updated messages for the `department` taxonomy.
+	 * Sets the post updated messages for the `position` taxonomy.
 	 *
 	 * @param  array $messages Post updated messages.
-	 * @return array Messages for the `department` taxonomy.
+	 * @return array Messages for the `position` taxonomy.
 	 */
-	public function department_updated_messages( $messages ) {
-		$messages['department'] = [
+	public function position_updated_messages( $messages ) {
+		$messages['position'] = [
 			0 => '', // Unused. Messages start at index 1.
-			1 => __( 'Production Department added.', 'gtw' ),
-			2 => __( 'Production Department deleted.', 'gtw' ),
-			3 => __( 'Production Department updated.', 'gtw' ),
-			4 => __( 'Production Department not added.', 'gtw' ),
-			5 => __( 'Production Department not updated.', 'gtw' ),
-			6 => __( 'Production Departments deleted.', 'gtw' ),
+			1 => __( 'Production Position added.', 'gtw' ),
+			2 => __( 'Production Position deleted.', 'gtw' ),
+			3 => __( 'Production Position updated.', 'gtw' ),
+			4 => __( 'Production Position not added.', 'gtw' ),
+			5 => __( 'Production Position not updated.', 'gtw' ),
+			6 => __( 'Production Positions deleted.', 'gtw' ),
 		];
 
 		return $messages;

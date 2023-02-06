@@ -212,10 +212,10 @@ class Get_To_Work {
 		$this->loader->add_action( 'init', $plugin_data, 'blockusers_init' );
 
 		/**
-		 * Taxonomy: department (`credit`)
+		 * Taxonomy: position (`credit`)
 		 */
-		$this->loader->add_action( 'init', $plugin_data, 'department_init' );
-		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'department_updated_messages' );
+		$this->loader->add_action( 'init', $plugin_data, 'position_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'position_updated_messages' );
 
 		/**
 		 * Custom Post Type: saved_search
