@@ -229,6 +229,78 @@ class Get_To_Work_Data {
 	}
 
 	/**
+	 * Registers the `skill` taxonomy,
+	 * for use with 'credit'.
+	 */
+	public function skill_init() {
+		register_taxonomy( 'skill', ['credit'], [
+			'hierarchical'          => false,
+			'public'                => true,
+			'show_in_nav_menus'     => true,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => true,
+			'capabilities'          => [
+				'manage_terms' => 'edit_posts',
+				'edit_terms'   => 'edit_posts',
+				'delete_terms' => 'edit_posts',
+				'assign_terms' => 'edit_posts',
+			],
+			'labels'                => [
+				'name'                       => __( 'Production Skills', 'gtw' ),
+				'singular_name'              => _x( 'Production Skill', 'taxonomy general name', 'gtw' ),
+				'search_items'               => __( 'Search Production Skills', 'gtw' ),
+				'popular_items'              => __( 'Popular Production Skills', 'gtw' ),
+				'all_items'                  => __( 'All Production Skills', 'gtw' ),
+				'parent_item'                => __( 'Parent Production Skill', 'gtw' ),
+				'parent_item_colon'          => __( 'Parent Production Skill:', 'gtw' ),
+				'edit_item'                  => __( 'Edit Production Skill', 'gtw' ),
+				'update_item'                => __( 'Update Production Skill', 'gtw' ),
+				'view_item'                  => __( 'View Production Skill', 'gtw' ),
+				'add_new_item'               => __( 'Add New Production Skill', 'gtw' ),
+				'new_item_name'              => __( 'New Production Skill', 'gtw' ),
+				'separate_items_with_commas' => __( 'Separate Production Skills with commas', 'gtw' ),
+				'add_or_remove_items'        => __( 'Add or remove Production Skills', 'gtw' ),
+				'choose_from_most_used'      => __( 'Choose from the most used Production Skills', 'gtw' ),
+				'not_found'                  => __( 'No Production Skills found.', 'gtw' ),
+				'no_terms'                   => __( 'No Production Skills', 'gtw' ),
+				'menu_name'                  => __( 'Production Skills', 'gtw' ),
+				'items_list_navigation'      => __( 'Production Skills list navigation', 'gtw' ),
+				'items_list'                 => __( 'Production Skills list', 'gtw' ),
+				'most_used'                  => _x( 'Most Used', 'skill', 'gtw' ),
+				'back_to_items'              => __( '&larr; Back to Production Skills', 'gtw' ),
+			],
+			'show_in_rest'          => true,
+			'show_in_graphql'       => true,
+			'graphql_single_name'   => 'skill',
+			'graphql_plural_name'   => 'skills',
+			'rest_base'             => 'skill',
+			'rest_controller_class' => 'WP_REST_Terms_Controller',
+		] );
+	}
+
+/**
+ * Sets the post updated messages for the `skill` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ * @return array Messages for the `skill` taxonomy.
+ */
+	public function skill_updated_messages( $messages ) {
+		$messages['skill'] = [
+			0 => '', // Unused. Messages start at index 1.
+			1 => __( 'Production Skill added.', 'gtw' ),
+			2 => __( 'Production Skill deleted.', 'gtw' ),
+			3 => __( 'Production Skill updated.', 'gtw' ),
+			4 => __( 'Production Skill not added.', 'gtw' ),
+			5 => __( 'Production Skill not updated.', 'gtw' ),
+			6 => __( 'Production Skills deleted.', 'gtw' ),
+		];
+
+		return $messages;
+	}
+
+	/**
 	 * Registers the `saved_search` post type.
 	 *
 	 * @access    private

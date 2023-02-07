@@ -8,4 +8,4 @@ Current tooling:
 - WordPress 6.1+
 - PHP 8.0
 - GraphQL
-- Advanced Custom Fields Pro
+- Pods.io

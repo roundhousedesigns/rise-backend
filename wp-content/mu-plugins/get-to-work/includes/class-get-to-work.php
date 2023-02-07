@@ -218,6 +218,12 @@ class Get_To_Work {
 		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'position_updated_messages' );
 
 		/**
+		 * Taxonomy: skill (`credit`)
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'skill_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'skill_updated_messages' );
+
+		/**
 		 * Custom Post Type: saved_search
 		 */
 		$this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
