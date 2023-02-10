@@ -41,7 +41,7 @@ class Get_To_Work_GraphQL_Mutations {
 	 */
 	protected function register_login_mutation() {
 		register_graphql_mutation(
-			'loginWithCookies',
+			'login',
 			[
 				'inputFields'         => [
 					'login'    => [
