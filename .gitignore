@@ -72,3 +72,4 @@ Thumbs.db
 !wp-content/themes/rhd-headless-theme
 !wp-content/mu-plugins/get-to-work
 !wp-content/mu-plugins/get-to-work/**/*.zip
+!wp-content/plugins/bulk-taxonomy-term-editor
