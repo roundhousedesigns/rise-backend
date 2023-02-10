@@ -67,6 +67,7 @@ class Get_To_Work {
 	 */
 	public $allowed_origins = [
 		'http://localhost:3000',
+		'http://localhost:4173',
 		'https://gtw-frontend.pages.dev',
 		'https://dev.gtw-frontend.pages.dev',
 	];
