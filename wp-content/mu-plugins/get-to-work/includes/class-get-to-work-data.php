@@ -12,27 +12,6 @@
 
 class Get_To_Work_Data {
 	/**
-	 * Add user roles with capabilities.
-	 *
-	 * @return void
-	 */
-	public function add_roles() {
-		$roles = [
-			'crew-member' => [
-				'read'         => true,
-				'list_users'   => true,
-				'create_posts' => true,
-				'edit_posts'   => true,
-				'delete_posts' => true,
-			],
-		];
-
-		foreach ( $roles as $role => $caps ) {
-			add_role( $role, $caps );
-		}
-	}
-
-	/**
 	 * Registers the `credit` post type.
 	 *
 	 * @access    private
@@ -161,51 +140,54 @@ class Get_To_Work_Data {
 	 * for use with 'credit'.
 	 */
 	public function position_init() {
-		register_taxonomy( 'position', ['credit'], [
-			'hierarchical'          => true,
-			'public'                => true,
-			'show_in_nav_menus'     => true,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => true,
-			'capabilities'          => [
-				'manage_terms' => 'edit_posts',
-				'edit_terms'   => 'edit_posts',
-				'delete_terms' => 'edit_posts',
-				'assign_terms' => 'edit_posts',
-			],
-			'labels'                => [
-				'name'                       => __( 'Production Positions', 'gtw' ),
-				'singular_name'              => _x( 'Production Position', 'taxonomy general name', 'gtw' ),
-				'search_items'               => __( 'Search Production Positions', 'gtw' ),
-				'popular_items'              => __( 'Popular Production Positions', 'gtw' ),
-				'all_items'                  => __( 'All Production Positions', 'gtw' ),
-				'parent_item'                => __( 'Parent Production Position', 'gtw' ),
-				'parent_item_colon'          => __( 'Parent Production Position:', 'gtw' ),
-				'edit_item'                  => __( 'Edit Production Position', 'gtw' ),
-				'update_item'                => __( 'Update Production Position', 'gtw' ),
-				'view_item'                  => __( 'View Production Position', 'gtw' ),
-				'add_new_item'               => __( 'Add New Production Position', 'gtw' ),
-				'new_item_name'              => __( 'New Production Position', 'gtw' ),
-				'separate_items_with_commas' => __( 'Separate Production Positions with commas', 'gtw' ),
-				'add_or_remove_items'        => __( 'Add or remove Production Positions', 'gtw' ),
-				'choose_from_most_used'      => __( 'Choose from the most used Production Positions', 'gtw' ),
-				'not_found'                  => __( 'No Production Positions found.', 'gtw' ),
-				'no_terms'                   => __( 'No Production Positions', 'gtw' ),
-				'menu_name'                  => __( 'Production Positions', 'gtw' ),
-				'items_list_navigation'      => __( 'Production Positions list navigation', 'gtw' ),
-				'items_list'                 => __( 'Production Positions list', 'gtw' ),
-				'most_used'                  => _x( 'Most Used', 'position', 'gtw' ),
-				'back_to_items'              => __( '&larr; Back to Production Positions', 'gtw' ),
-			],
-			'show_in_rest'          => true,
-			'show_in_graphql'       => true,
-			'graphql_single_name'   => 'position',
-			'graphql_plural_name'   => 'positions',
-			'rest_base'             => 'position',
-			'rest_controller_class' => 'WP_REST_Terms_Controller',
-		] );
+		register_taxonomy(
+			'position',
+			['credit'],
+			[
+				'hierarchical'          => true,
+				'public'                => true,
+				'show_in_nav_menus'     => true,
+				'show_ui'               => true,
+				'show_admin_column'     => true,
+				'query_var'             => true,
+				'rewrite'               => true,
+				'capabilities'          => [
+					'manage_terms' => 'edit_posts',
+					'edit_terms'   => 'edit_posts',
+					'delete_terms' => 'edit_posts',
+					'assign_terms' => 'edit_posts',
+				],
+				'labels'                => [
+					'name'                       => __( 'Production Positions', 'gtw' ),
+					'singular_name'              => _x( 'Production Position', 'taxonomy general name', 'gtw' ),
+					'search_items'               => __( 'Search Production Positions', 'gtw' ),
+					'popular_items'              => __( 'Popular Production Positions', 'gtw' ),
+					'all_items'                  => __( 'All Production Positions', 'gtw' ),
+					'parent_item'                => __( 'Parent Production Position', 'gtw' ),
+					'parent_item_colon'          => __( 'Parent Production Position:', 'gtw' ),
+					'edit_item'                  => __( 'Edit Production Position', 'gtw' ),
+					'update_item'                => __( 'Update Production Position', 'gtw' ),
+					'view_item'                  => __( 'View Production Position', 'gtw' ),
+					'add_new_item'               => __( 'Add New Production Position', 'gtw' ),
+					'new_item_name'              => __( 'New Production Position', 'gtw' ),
+					'separate_items_with_commas' => __( 'Separate Production Positions with commas', 'gtw' ),
+					'add_or_remove_items'        => __( 'Add or remove Production Positions', 'gtw' ),
+					'choose_from_most_used'      => __( 'Choose from the most used Production Positions', 'gtw' ),
+					'not_found'                  => __( 'No Production Positions found.', 'gtw' ),
+					'no_terms'                   => __( 'No Production Positions', 'gtw' ),
+					'menu_name'                  => __( 'Production Positions', 'gtw' ),
+					'items_list_navigation'      => __( 'Production Positions list navigation', 'gtw' ),
+					'items_list'                 => __( 'Production Positions list', 'gtw' ),
+					'most_used'                  => _x( 'Most Used', 'position', 'gtw' ),
+					'back_to_items'              => __( '&larr; Back to Production Positions', 'gtw' ),
+				],
+				'show_in_rest'          => true,
+				'show_in_graphql'       => true,
+				'graphql_single_name'   => 'position',
+				'graphql_plural_name'   => 'positions',
+				'rest_base'             => 'position',
+				'rest_controller_class' => 'WP_REST_Terms_Controller',
+			] );
 	}
 
 	/**
@@ -280,12 +262,12 @@ class Get_To_Work_Data {
 		] );
 	}
 
-/**
- * Sets the post updated messages for the `skill` taxonomy.
- *
- * @param  array $messages Post updated messages.
- * @return array Messages for the `skill` taxonomy.
- */
+	/**
+	 * Sets the post updated messages for the `skill` taxonomy.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `skill` taxonomy.
+	 */
 	public function skill_updated_messages( $messages ) {
 		$messages['skill'] = [
 			0 => '', // Unused. Messages start at index 1.
@@ -298,6 +280,130 @@ class Get_To_Work_Data {
 		];
 
 		return $messages;
+	}
+
+	/**
+	 * Registers the `project` post type.
+	 *
+	 * @access    private
+	 * @since     0.1.0
+	 */
+	public function project_init() {
+		register_post_type(
+			'project',
+			[
+				'labels'                => [
+					'name'                  => __( 'Projects', 'gtw' ),
+					'singular_name'         => __( 'Project', 'gtw' ),
+					'all_items'             => __( 'All Projects', 'gtw' ),
+					'archives'              => __( 'Project Archives', 'gtw' ),
+					'attributes'            => __( 'Project Attributes', 'gtw' ),
+					'insert_into_item'      => __( 'Insert into project', 'gtw' ),
+					'uploaded_to_this_item' => __( 'Uploaded to this project', 'gtw' ),
+					'featured_image'        => _x( 'Featured Image', 'project', 'gtw' ),
+					'set_featured_image'    => _x( 'Set featured image', 'project', 'gtw' ),
+					'remove_featured_image' => _x( 'Remove featured image', 'project', 'gtw' ),
+					'use_featured_image'    => _x( 'Use as featured image', 'project', 'gtw' ),
+					'filter_items_list'     => __( 'Filter projects list', 'gtw' ),
+					'items_list_navigation' => __( 'Projects list navigation', 'gtw' ),
+					'items_list'            => __( 'Projects list', 'gtw' ),
+					'new_item'              => __( 'New Project', 'gtw' ),
+					'add_new'               => __( 'Add New', 'gtw' ),
+					'add_new_item'          => __( 'Add New Project', 'gtw' ),
+					'edit_item'             => __( 'Edit Project', 'gtw' ),
+					'view_item'             => __( 'View Project', 'gtw' ),
+					'view_items'            => __( 'View Projects', 'gtw' ),
+					'search_items'          => __( 'Search projects', 'gtw' ),
+					'not_found'             => __( 'No projects found', 'gtw' ),
+					'not_found_in_trash'    => __( 'No projects found in trash', 'gtw' ),
+					'parent_item_colon'     => __( 'Parent Project:', 'gtw' ),
+					'menu_name'             => __( 'Projects', 'gtw' ),
+				],
+				'public'                => true,
+				'publicly_queryable'    => false,
+				'hierarchical'          => false,
+				'show_ui'               => true,
+				'show_in_nav_menus'     => true,
+				'supports'              => ['title', 'author'],
+				'has_archive'           => true,
+				'rewrite'               => true,
+				'query_var'             => true,
+				'menu_position'         => null,
+				'menu_icon'             => 'dashicons-portfolio',
+				'show_in_graphql'       => true,
+				'graphql_single_name'   => 'project',
+				'graphql_plural_name'   => 'projects',
+				'show_in_rest'          => true,
+				'rest_base'             => 'project',
+				'rest_controller_class' => 'WP_REST_Posts_Controller',
+			]
+		);
+
+	}
+
+	/**
+	 * Sets the post updated messages for the `project` post type.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `project` post type.
+	 */
+	public function project_updated_messages( $messages ) {
+		global $post;
+
+		$permalink = get_permalink( $post );
+
+		$messages['project'] = [
+			// Unused. Messages start at index 1.
+			0  => '',
+			/* translators: %s: post permalink */
+			1  => sprintf( __( 'Project updated. <a target="_blank" href="%s">View project</a>', 'gtw' ), esc_url( $permalink ) ),
+			2  => __( 'Custom field updated.', 'gtw' ),
+			3  => __( 'Custom field deleted.', 'gtw' ),
+			4  => __( 'Project updated.', 'gtw' ),
+			/* translators: %s: date and time of the revision */
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			5  => isset( $_GET['revision'] ) ? sprintf( __( 'Project restored to revision from %s', 'gtw' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			/* translators: %s: post permalink */
+			6  => sprintf( __( 'Project published. <a href="%s">View project</a>', 'gtw' ), esc_url( $permalink ) ),
+			7  => __( 'Project saved.', 'gtw' ),
+			/* translators: %s: post permalink */
+			8  => sprintf( __( 'Project submitted. <a target="_blank" href="%s">Preview project</a>', 'gtw' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+			/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
+			9  => sprintf( __( 'Project scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview project</a>', 'gtw' ), date_i18n( __( 'M j, Y @ G:i', 'gtw' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+			/* translators: %s: post permalink */
+			10 => sprintf( __( 'Project draft updated. <a target="_blank" href="%s">Preview project</a>', 'gtw' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		];
+
+		return $messages;
+	}
+
+	/**
+	 * Sets the bulk post updated messages for the `project` post type.
+	 *
+	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 *
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type.
+	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+	 * @return array Bulk messages for the `project` post type.
+	 */
+	public function project_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		global $post;
+
+		$bulk_messages['project'] = [
+			/* translators: %s: Number of projects. */
+			'updated'   => _n( '%s project updated.', '%s projects updated.', $bulk_counts['updated'], 'gtw' ),
+			'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 project not updated, somebody is editing it.', 'gtw' ) :
+			/* translators: %s: Number of projects. */
+			_n( '%s project not updated, somebody is editing it.', '%s projects not updated, somebody is editing them.', $bulk_counts['locked'], 'gtw' ),
+			/* translators: %s: Number of projects. */
+			'deleted'   => _n( '%s project permanently deleted.', '%s projects permanently deleted.', $bulk_counts['deleted'], 'gtw' ),
+			/* translators: %s: Number of projects. */
+			'trashed'   => _n( '%s project moved to the Trash.', '%s projects moved to the Trash.', $bulk_counts['trashed'], 'gtw' ),
+			/* translators: %s: Number of projects. */
+			'untrashed' => _n( '%s project restored from the Trash.', '%s projects restored from the Trash.', $bulk_counts['untrashed'], 'gtw' ),
+		];
+
+		return $bulk_messages;
 	}
 
 	/**
@@ -356,7 +462,6 @@ class Get_To_Work_Data {
 				'rest_controller_class' => 'WP_REST_Posts_Controller',
 			]
 		);
-
 	}
 
 	/**
@@ -432,7 +537,7 @@ class Get_To_Work_Data {
 	public function blockusers_init() {
 		if ( is_admin() && ! current_user_can( 'administrator' ) &&
 			! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			wp_redirect( home_url() );
+			wp_safe_redirect( home_url() );
 			exit;
 		}
 	}

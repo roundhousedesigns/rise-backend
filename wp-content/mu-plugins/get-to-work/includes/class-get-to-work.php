@@ -93,8 +93,10 @@ class Get_To_Work {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_init_hooks();
+		$this->define_user_hooks();
 		$this->define_data_hooks();
-		$this->define_graphql_hooks();
+		$this->define_graphql_queries();
+		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -132,6 +134,11 @@ class Get_To_Work {
 		 * The class responsible for registering data types.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-data.php';
+
+		/**
+		 * The class responsible for registering user data.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-users.php';
 
 		/**
 		 * The class responsible for registering GrapQL queries and mutations.
@@ -191,18 +198,58 @@ class Get_To_Work {
 	}
 
 	/**
-	 * Register all of the main plugin hooks.
+	 * Register all of the custom user data hooks.
+	 *
+	 * @access private
+	 * @since 0.1.0
+	 */
+	private function define_user_hooks() {
+		$user_data = new Get_To_Work_Users();
+
+		/**
+		 * User roles.
+		 */
+		$this->loader->add_action( 'admin_init', $user_data, 'add_roles' );
+
+		/**
+		 * Custom taxonomy: gender_identity (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'gender_identity_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_gender_identity_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_gender_identity_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_gender_identity_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_gender_identity_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_gender_identity_on_user_profile' );
+		
+		/**
+		 * Custom taxonomy: personal_identity (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'personal_identity_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_personal_identity_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_personal_identity_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_personal_identity_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_personal_identity_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_personal_identity_on_user_profile' );
+		
+		/**
+		 * Custom taxonomy: racial_identity (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'racial_identity_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_racial_identity_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_racial_identity_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_racial_identity_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_racial_identity_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_racial_identity_on_user_profile' );
+	}
+
+	/**
+	 * Register all of the custom data hooks.
 	 *
 	 * @access private
 	 * @since 0.1.0
 	 */
 	private function define_data_hooks() {
 		$plugin_data = new Get_To_Work_Data();
-
-		/**
-		 * User roles.
-		 */
-		$this->loader->add_action( 'admin_init', $plugin_data, 'add_roles' );
 
 		/**
 		 * Custom Post Type: credit
@@ -230,18 +277,35 @@ class Get_To_Work {
 		$this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+
+		/**
+		 * Custom Post Type: project
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'project_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'project_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_mesages', 10, 2 );
+
 	}
 
 	/**
-	 * Register all of the hooks related to GraphQL.
+	 * Register custom GraphQL queries.
 	 *
 	 * @return void
 	 */
-	private function define_graphql_hooks() {
-		$plugin_data_queries   = new Get_To_Work_GraphQL_Queries();
-		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
+	private function define_graphql_queries() {
+		$plugin_data_queries = new Get_To_Work_GraphQL_Queries();
 
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_types' );
+	}
+
+	/**
+	 * Register custom GraphQL mutations.
+	 *
+	 * @return void
+	 */
+	private function define_graphql_mutations() {
+		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
+
 		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
 		$this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
 	}

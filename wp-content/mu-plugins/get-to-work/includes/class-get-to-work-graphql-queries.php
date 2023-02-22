@@ -190,6 +190,5 @@ class Get_To_Work_GraphQL_Queries {
 				},
 			],
 		);
-
 	}
 }
