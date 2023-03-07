@@ -38,7 +38,7 @@ class Get_To_Work_Users {
 	 * for use with 'user'.
 	 */
 	public function gender_identity_init() {
-		self::register_user_taxonomy( 'gender_identity', 'gender_identities', 'Gender Identity', 'Gender Identities' );
+		Get_To_Work_Factory::register_taxonomy( ['user'], 'gender_identity', 'gender_identities', 'Gender Identity', 'Gender Identities' );
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Get_To_Work_Users {
 	 * for use with 'user'.
 	 */
 	public function racial_identity_init() {
-		self::register_user_taxonomy( 'racial_identity', 'racial_identities', 'Racial Identity', 'Racial Identities' );
+		Get_To_Work_Factory::register_taxonomy( ['user'], 'racial_identity', 'racial_identities', 'Racial Identity', 'Racial Identities' );
 	}
 
 	/**
@@ -110,9 +110,11 @@ class Get_To_Work_Users {
 	/**
 	 * Registers the `personal_identity` taxonomy,
 	 * for use with 'user'.
+	 * 
+	 * @return void
 	 */
 	public function personal_identity_init() {
-		self::register_user_taxonomy( 'personal_identity', 'personal_identities', 'Personal Identity', 'Personal Identities' );
+		Get_To_Work_Factory::register_taxonomy( ['user'], 'personal_identity', 'personal_identities', 'Personal Identity', 'Personal Identities' );
 	}
 
 	/**
@@ -145,67 +147,32 @@ class Get_To_Work_Users {
 	}
 
 	/**
-	 * Register a taxonomy for use with `user`.
+	 * Registers the `union` taxonomy,
+	 * for use with 'user'.
 	 *
-	 * @param  string $taxonomy        The taxonomy slug.
-	 * @param  string $taxonomy_plural The plural taxonomy slug (for GraphQL).
-	 * @param  string $singular        The singular name of the taxonomy.
-	 * @param  string $plural          The plural name of the taxonomy.
-	 * @param  bool   $hierarchical    Whether the taxonomy is hierarchical.
 	 * @return void
 	 */
-	private function register_user_taxonomy( $taxonomy, $taxonomy_plural, $singular, $plural, $hierarchical = false ) {
-		$args = [
-			'hierarchical'          => $hierarchical,
-			'public'                => true,
-			'show_in_nav_menus'     => true,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => true,
-			'capabilities'          => [
-				'manage_terms' => 'edit_posts',
-				'edit_terms'   => 'edit_posts',
-				'delete_terms' => 'edit_posts',
-				'assign_terms' => 'edit_posts',
-			],
-			'labels'                => [
-				'name'                       => __( $plural, 'gtw' ),
-				'singular_name'              => _x( $singular, 'taxonomy general name', 'gtw' ),
-				'search_items'               => __( 'Search ' . $plural, 'gtw' ),
-				'popular_items'              => __( 'Popular ' . $plural, 'gtw' ),
-				'all_items'                  => __( 'All ' . $plural, 'gtw' ),
-				'parent_item'                => __( 'Parent ' . $singular, 'gtw' ),
-				'parent_item_colon'          => __( 'Parent Personal Identity:', 'gtw' ),
-				'edit_item'                  => __( 'Edit ' . $singular, 'gtw' ),
-				'update_item'                => __( 'Update ' . $singular, 'gtw' ),
-				'view_item'                  => __( 'View ' . $singular, 'gtw' ),
-				'add_new_item'               => __( 'Add New Personal Identity', 'gtw' ),
-				'new_item_name'              => __( 'New ' . $singular, 'gtw' ),
-				'separate_items_with_commas' => __( 'Separate ' . $plural . ' with commas', 'gtw' ),
-				'add_or_remove_items'        => __( 'Add or remove ' . $plural, 'gtw' ),
-				'choose_from_most_used'      => __( 'Choose from the most used ' . $plural, 'gtw' ),
-				'not_found'                  => __( 'No ' . $plural . ' found.', 'gtw' ),
-				'no_terms'                   => __( 'No ' . $plural, 'gtw' ),
-				'menu_name'                  => __( $plural, 'gtw' ),
-				'items_list_navigation'      => __( $plural . ' list navigation', 'gtw' ),
-				'items_list'                 => __( $plural . ' list', 'gtw' ),
-				'most_used'                  => _x( 'Most Used', $taxonomy, 'gtw' ),
-				'back_to_items'              => __( '&larr; Back to ' . $plural, 'gtw' ),
-			],
-			'show_in_rest'          => true,
-			'show_in_graphql'       => true,
-			'graphql_single_name'   => $taxonomy,
-			'graphql_plural_name'   => $taxonomy_plural,
-			'rest_base'             => $taxonomy,
-			'rest_controller_class' => 'WP_REST_Terms_Controller',
-		];
+	public function union_init() {
+		Get_To_Work_Factory::register_taxonomy( ['user'], 'union', 'unions', 'Union', 'Unions', false );
+	}
 
-		register_taxonomy(
-			$taxonomy,
-			['user'],
-			$args
-		);
+	/**
+	 * Add Unions to User menu
+	 *
+	 * @return void
+	 */
+	public function add_union_to_user_menu() {
+		self::add_taxonomy_to_user_menu( __( 'Unions', 'gtw' ), __( 'Unions', 'gtw' ), 'union' );
+	}
+
+	/**
+	 * Add Unions field to user profile
+	 *
+	 * @param WP_User $user
+	 * @return void
+	 */
+	public function add_union_to_user_profile( $user ) {
+		self::user_profile_taxonomy_term_checkboxes( $user, 'union', 'Unions' );
 	}
 
 	/**

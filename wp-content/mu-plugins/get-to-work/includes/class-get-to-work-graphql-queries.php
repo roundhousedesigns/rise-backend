@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Registers GraphQL queries.
  *
@@ -10,7 +11,10 @@
  * @since      0.1.0
  */
 
-class Get_To_Work_GraphQL_Queries {
+// FIXME phpfmt is shifting comments to start of line
+
+class Get_To_Work_GraphQL_Queries
+{
 	/**
 	 * Register GraphQL queries.
 	 *
@@ -18,7 +22,8 @@ class Get_To_Work_GraphQL_Queries {
 	 *
 	 * @return void
 	 */
-	public function register_types() {
+	public function register_queries()
+	{
 		$this->register_fields();
 	}
 
@@ -29,7 +34,8 @@ class Get_To_Work_GraphQL_Queries {
 	 *
 	 * @return void
 	 */
-	public function register_fields() {
+	public function register_fields()
+	{
 		/**
 		 * Query for skills related to the selected jobs and departments.
 		 */
@@ -38,61 +44,43 @@ class Get_To_Work_GraphQL_Queries {
 			'jobSkills',
 			[
 				'type'        => ['list_of' => 'Skill'],
-				'description' => __( 'The skills related to the selected jobs and departments.', 'gtw' ),
+				'description' => __('The skills related to the selected jobs and departments.', 'gtw'),
 				'args'        => [
-					'department' => [
-						'type' => 'String',
-					],
-					'jobs'       => [
+					'jobs' => [
 						'type' => ['list_of' => 'ID'],
 					],
 				],
-				'resolve'     => function ( $source, $args ) {
-					$selected_dept_id = intval( $args['department'] );
-					$selected_job_ids = $args['jobs'];
-
-					$skill_terms = get_terms( [
+				'resolve'     => function ($root, $args) {
+					$skill_query_args = [
 						'taxonomy'   => 'skill',
 						'hide_empty' => false,
-						// phpcs:ignore
+						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 						'meta_query' => [
 							'relation' => 'OR',
-							[
-								'key'     => 'department',
-								'value'   => $selected_dept_id,
-								'compare' => '=',
-							],
-							[
-								'key'     => 'jobs',
-								'value'   => $selected_job_ids,
-								'compare' => 'IN',
-							],
 						],
-					] );
+					];
 
-					$sorted_skill_terms = [];
-					foreach ( $skill_terms as $skill_term ) {
-						$departments = get_term_meta( $skill_term->term_id, 'departments', false );
-						$jobs        = get_term_meta( $skill_term->term_id, 'jobs', false );
-
-						if ( array_intersect( $selected_job_ids, $jobs ) ) {
-							$sorted_skill_terms[] = [
-								'databaseId' => $skill_term->term_id,
-								'name'       => $skill_term->name,
-								'slug'       => $skill_term->slug,
-							];
-						} elseif ( array_intersect( [$selected_dept_id], $departments ) ) {
-							$sorted_skill_terms[] = [
-								'databaseId' => $skill_term->term_id,
-								'name'       => $skill_term->name,
-								'slug'       => $skill_term->slug,
-							];
-						}
+					// MAYBE run individiual queries for each job and merge the results to enable job-weighted sort of results.
+					foreach ($args['jobs'] as $job) {
+						$skill_query_args['meta_query'][] = [
+							'key'     => 'jobs',
+							'value'   => (string) $job,
+							'compare' => 'LIKE',
+						];
 					}
 
-					$sorted_skill_terms = array_unique( $sorted_skill_terms, SORT_REGULAR );
+					$skill_terms     = get_terms($skill_query_args);
+					$prepared_skills = [];
 
-					return $sorted_skill_terms;
+					foreach ($skill_terms as $skill) {
+						$prepared_skills[] = [
+							'databaseId' => $skill->term_id,
+							'name'       => $skill->name,
+							'slug'       => $skill->slug,
+						];
+					}
+
+					return $prepared_skills;
 				},
 			],
 		);
@@ -102,29 +90,28 @@ class Get_To_Work_GraphQL_Queries {
 			'filteredCandidates',
 			[
 				'type'        => ['list_of' => 'Int'],
-				'description' => __( 'Users with matching selected criteria.', 'gtw' ),
+				'description' => __('Users with matching selected criteria.', 'gtw'),
 				'args'        => [
-					'department' => [
-						'description' => __( 'A top level `position` term_id', 'gtw' ),
-						'type'        => 'String',
-					],
-					'jobs'       => [
-						'description' => __( 'A list of `position` term ids', 'gtw' ),
+					'jobs'   => [
+						'description' => __('A list of `position` term ids', 'gtw'),
 						'type'        => ['list_of' => 'ID'],
 					],
-					'skills'     => [
-						'description' => __( 'A list of `skill` term ids', 'gtw' ),
+					'skills' => [
+						'description' => __('A list of `skill` term ids', 'gtw'),
 						'type'        => ['list_of' => 'ID'],
 					],
+					'exclude' => [
+						'description' => __('A list of user ids to exclude', 'gtw'),
+						'type'        => ['list_of' => 'ID'],
+					]
 					// TODO Add more filter args.
 				],
-				'resolve'     => function ( $source, $args ) {
-					$selected_department_id = isset( $args['department'] ) ? $args['department'] : '';
-					$selected_job_ids       = isset( $args['jobs'] ) ? $args['jobs'] : '';
-					$selected_skill_ids     = isset( $args['skills'] ) ? $args['skills'] : '';
+				'resolve'     => function ($root, $args) {
+					$selected_job_ids   = isset($args['jobs']) ? $args['jobs'] : '';
+					$selected_skill_ids = isset($args['skills']) ? $args['skills'] : '';
 
 					// If no terms were sent, return an empty array.
-					if ( ! $selected_department_id && ! $selected_job_ids && ! $selected_skill_ids ) {
+					if (!$selected_job_ids) {
 						return [];
 					}
 
@@ -134,16 +121,7 @@ class Get_To_Work_GraphQL_Queries {
 						'tax_query' => ['relation' => 'AND'],
 					];
 
-					// Check filters and add to query.
-					if ( $selected_department_id ) {
-						$credit_args['tax_query'][] = [
-							'taxonomy'         => 'position',
-							'field'            => 'term_id',
-							'include_children' => false,
-							'terms'            => $selected_department_id,
-						];
-					}
-					if ( $selected_job_ids ) {
+					if ($selected_job_ids) {
 						$credit_args['tax_query'][] = [
 							'taxonomy' => 'position',
 							'field'    => 'term_id',
@@ -151,7 +129,7 @@ class Get_To_Work_GraphQL_Queries {
 						];
 					}
 
-					if ( $selected_skill_ids ) {
+					if ($selected_skill_ids) {
 						$credit_args['tax_query'][] = [
 							'taxonomy' => 'skill',
 							'field'    => 'term_id',
@@ -160,33 +138,42 @@ class Get_To_Work_GraphQL_Queries {
 					}
 
 					// Query credits with the desired attributes.
-					$credits = get_posts( $credit_args );
+					$credits = get_posts($credit_args);
 
 					// If no credits are found, return an empty array.
-					if ( empty( $credits ) ) {
+					if (empty($credits)) {
 						return [];
 					}
 
 					// Get the authors of the credits.
 					$authors = [];
-					foreach ( $credits as $credit ) {
+
+					foreach ($credits as $credit) {
 						$authors[] = $credit->post_author;
 					}
 
-					// Get the user objects.
-					$users = get_users( [
-						'include' => $authors,
-					] );
-
-					// Prepare users for GraphQL.
-					// TODO move this to a function.
-
-					$prepared_users = [];
-					foreach ( $users as $user ) {
-						$prepared_users[] = $user->ID;
+					// Filter out any excluded users.
+					if (isset($args['exclude'])) {
+						$authors = array_diff($authors, $args['exclude']);
 					}
 
-					return $prepared_users;
+					$users = [];
+					$user_ids = [];
+
+					// Get the user objects.
+					if (!empty($authors)) {
+						$users = get_users([
+							'include' => $authors,
+						]);
+					}
+
+					if ($users) {
+						foreach ($users as $user) {
+							$user_ids[] = $user->ID;
+						}
+					}
+
+					return $user_ids;
 				},
 			],
 		);

@@ -82,11 +82,13 @@ class Get_To_Work {
 	 * @since    0.1.0
 	 */
 	public function __construct() {
+
 		if ( defined( 'GET_TO_WORK_VERSION' ) ) {
 			$this->version = GET_TO_WORK_VERSION;
 		} else {
 			$this->version = '0.1.0';
 		}
+
 		$this->plugin_name = 'get-to-work';
 
 		// Fire away.
@@ -94,7 +96,7 @@ class Get_To_Work {
 		$this->set_locale();
 		$this->define_init_hooks();
 		$this->define_user_hooks();
-		$this->define_data_hooks();
+		$this->define_post_type_hooks();
 		$this->define_graphql_queries();
 		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
@@ -117,8 +119,8 @@ class Get_To_Work {
 	 * @access   private
 	 * @since    0.1.0
 	 */
+	// TODO set up autoloader
 	private function load_dependencies() {
-
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -131,9 +133,14 @@ class Get_To_Work {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-init.php';
 
 		/**
+		 * The class responsible for creating post types, taxonomies, and other registerable structures.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-factory.php';
+
+		/**
 		 * The class responsible for registering data types.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-data.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-types.php';
 
 		/**
 		 * The class responsible for registering user data.
@@ -220,7 +227,7 @@ class Get_To_Work {
 		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_gender_identity_to_user_profile' );
 		$this->loader->add_action( 'personal_options_update', $user_data, 'save_gender_identity_on_user_profile' );
 		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_gender_identity_on_user_profile' );
-		
+
 		/**
 		 * Custom taxonomy: personal_identity (`user`)
 		 */
@@ -230,7 +237,7 @@ class Get_To_Work {
 		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_personal_identity_to_user_profile' );
 		$this->loader->add_action( 'personal_options_update', $user_data, 'save_personal_identity_on_user_profile' );
 		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_personal_identity_on_user_profile' );
-		
+
 		/**
 		 * Custom taxonomy: racial_identity (`user`)
 		 */
@@ -240,6 +247,16 @@ class Get_To_Work {
 		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_racial_identity_to_user_profile' );
 		$this->loader->add_action( 'personal_options_update', $user_data, 'save_racial_identity_on_user_profile' );
 		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_racial_identity_on_user_profile' );
+		
+		/**
+		 * Custom taxonomy: union (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'union_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_union_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_union_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_union_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_union_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_union_on_user_profile' );
 	}
 
 	/**
@@ -248,8 +265,8 @@ class Get_To_Work {
 	 * @access private
 	 * @since 0.1.0
 	 */
-	private function define_data_hooks() {
-		$plugin_data = new Get_To_Work_Data();
+	private function define_post_type_hooks() {
+		$plugin_data = new Get_To_Work_Types();
 
 		/**
 		 * Custom Post Type: credit
@@ -283,7 +300,7 @@ class Get_To_Work {
 		 */
 		$this->loader->add_action( 'init', $plugin_data, 'project_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'project_updated_messages' );
-		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_mesages', 10, 2 );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_messages', 10, 2 );
 
 	}
 
@@ -295,7 +312,7 @@ class Get_To_Work {
 	private function define_graphql_queries() {
 		$plugin_data_queries = new Get_To_Work_GraphQL_Queries();
 
-		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_types' );
+		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
 	}
 
 	/**
