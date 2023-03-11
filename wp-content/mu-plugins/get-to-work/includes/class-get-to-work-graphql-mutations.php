@@ -27,19 +27,51 @@ class Get_To_Work_GraphQL_Mutations {
 		$this->allowed_origins = $allowed_origins;
 	}
 
-	public function register_mutations() {
-		$this->register_login_mutation();
-		$this->register_logout_mutation();
+	/**
+	 * Set CORS to allow frontend logins
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param  array $headers The HTTP headers present.
+	 * @return array The modified headers.
+	 */
+	public function response_headers_to_send( $headers ) {
+		$http_origin = get_http_origin();
+
+		if ( in_array( $http_origin, $this->allowed_origins, true ) ) {
+			// If the request is coming from an allowed origin, tell the browser it can accept the response.
+			$headers['Access-Control-Allow-Origin'] = $http_origin;
+		}
+
+		// Tells browsers to expose the response to frontend JavaScript code when the request credentials mode is "include".
+		$headers['Access-Control-Allow-Credentials'] = 'true';
+
+		return $headers;
 	}
 
 	/**
-	 * Login mutation with HTTP Cookies.
+	 * Run the registrations.
 	 *
 	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
-	protected function register_login_mutation() {
+	public function register_mutations() {
+		$this->register_auth_mutations();
+		$this->register_update_profile_mutation();
+	}
+
+	/**
+	 * Register login and logout mutations with HTTP Cookies.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	protected function register_auth_mutations() {
+		/**
+		 * Login mutation.
+		 */
 		register_graphql_mutation(
 			'login',
 			[
@@ -108,16 +140,10 @@ class Get_To_Work_GraphQL_Mutations {
 				},
 			]
 		);
-	}
 
-	/**
-	 * Logout mutation.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return void
-	 */
-	protected function register_logout_mutation() {
+		/**
+		 * Logout mutation.
+		 */
 		register_graphql_mutation(
 			'logout',
 			[
@@ -140,24 +166,56 @@ class Get_To_Work_GraphQL_Mutations {
 	}
 
 	/**
-	 * Set CORS to allow frontend logins
+	 * Register the updateProfile mutation.
 	 *
-	 * @since 0.0.1
-	 *
-	 * @param  array $headers The HTTP headers present.
-	 * @return array The modified headers.
+	 * @return void
 	 */
-	public function response_headers_to_send( $headers ) {
-		$http_origin = get_http_origin();
+	protected function register_update_profile_mutation() {
+		register_graphql_mutation(
+			'updateProfile',
+			[
+				'inputFields'         => [
+					'profile' => [
+						'type'        => 'UserProfile',
+						'description' => __( 'Profile data to update.', 'gtw' ),
+					],
+				],
+				'outputFields'        => [
+					'result' => [
+						'type'        => 'Boolean',
+						'description' => 'The result of the get_user_meta() call.',
+						'resolve'     => function ( $payload ) {
+							return $payload['result'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Reenable/rethink security (doesn't work with GraphiQL IDE in dev)
+					// $user_id = get_current_user_id();
+					// if ( ! $user_id ) {
+					// 	return new \WP_Error( 'not_logged_in', __( 'You must be logged in to update your profile.', 'gtw' ) );
+					// }
 
-		// If the request is coming from an allowed origin, tell the browser it can accept the response.
-		if ( in_array( $http_origin, $this->allowed_origins, true ) ) {
-			$headers['Access-Control-Allow-Origin'] = $http_origin;
-		}
+					if ( ! isset( $input['profile']['id'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
+						];
+					}
 
-		// Tells browsers to expose the response to frontend JavaScript code when the request credentials mode is "include".
-		$headers['Access-Control-Allow-Credentials'] = 'true';
+					$user = new Get_To_Work_UserProfile( $input['profile'] );
 
-		return $headers;
+					$result = $user->update_user_profile();
+
+					if ( is_wp_error( $result ) ) {
+						error_log( $result->get_error_message() );
+					}
+
+					return [
+						'result' => ! is_wp_error( $result ) ? $result : 0,
+					];
+				},
+			],
+		);
 	}
+
 }

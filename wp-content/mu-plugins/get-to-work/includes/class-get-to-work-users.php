@@ -110,7 +110,7 @@ class Get_To_Work_Users {
 	/**
 	 * Registers the `personal_identity` taxonomy,
 	 * for use with 'user'.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function personal_identity_init() {
@@ -168,11 +168,21 @@ class Get_To_Work_Users {
 	/**
 	 * Add Unions field to user profile
 	 *
-	 * @param WP_User $user
+	 * @param  WP_User $user
 	 * @return void
 	 */
 	public function add_union_to_user_profile( $user ) {
 		self::user_profile_taxonomy_term_checkboxes( $user, 'union', 'Unions' );
+	}
+
+	/**
+	 * Save Unions on user profile update
+	 *
+	 * @param  int    $user_id
+	 * @return void
+	 */
+	public function save_union_on_user_profile( $user_id ) {
+		self::save_taxonomy_terms_on_user_profile( $user_id, 'union' );
 	}
 
 	/**

@@ -97,6 +97,7 @@ class Get_To_Work {
 		$this->define_init_hooks();
 		$this->define_user_hooks();
 		$this->define_post_type_hooks();
+		$this->define_graphql_types();
 		$this->define_graphql_queries();
 		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
@@ -138,8 +139,9 @@ class Get_To_Work {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-factory.php';
 
 		/**
-		 * The class responsible for registering data types.
+		 * The classes responsible for registering data types.
 		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-userprofile.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-types.php';
 
 		/**
@@ -148,8 +150,9 @@ class Get_To_Work {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-users.php';
 
 		/**
-		 * The class responsible for registering GrapQL queries and mutations.
+		 * The classes responsible for registering GraphQL types, queries, and mutations.
 		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-types.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-queries.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-mutations.php';
 
@@ -247,7 +250,7 @@ class Get_To_Work {
 		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_racial_identity_to_user_profile' );
 		$this->loader->add_action( 'personal_options_update', $user_data, 'save_racial_identity_on_user_profile' );
 		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_racial_identity_on_user_profile' );
-		
+
 		/**
 		 * Custom taxonomy: union (`user`)
 		 */
@@ -302,6 +305,15 @@ class Get_To_Work {
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'project_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_messages', 10, 2 );
 
+	}
+
+	/**
+	 * Register GraphQL object types, connections, interfaces, etc.
+	 */
+	private function define_graphql_types() {
+		$plugin_data_types = new Get_To_Work_GraphQL_Types();
+
+		$this->loader->add_action( 'graphql_register_types', $plugin_data_types, 'register_types' );
 	}
 
 	/**
