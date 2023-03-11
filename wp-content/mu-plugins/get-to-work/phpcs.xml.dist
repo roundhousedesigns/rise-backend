@@ -47,7 +47,7 @@
 
         <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
-        <!-- <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" /> -->
+        <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
         <exclude name="WordPress.PHP.DisallowShortTernary.Found" />
 
         <!-- RHD -->
@@ -62,7 +62,6 @@
     <rule ref="WordPress.Security.ValidatedSanitizedInput">
         <properties>
             <property name="customUnslashingSanitizingFunctions" type="array">
-
                 <element value="wp_verify_nonce" />
                 <element value="sn" />
             </property>
@@ -93,4 +92,3 @@
         </properties>
     </rule>
 </ruleset>
-
