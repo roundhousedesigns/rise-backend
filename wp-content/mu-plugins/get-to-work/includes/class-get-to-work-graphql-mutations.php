@@ -190,11 +190,7 @@ class Get_To_Work_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// TODO Reenable/rethink security (doesn't work with GraphiQL IDE in dev)
-					// $user_id = get_current_user_id();
-					// if ( ! $user_id ) {
-					// 	return new \WP_Error( 'not_logged_in', __( 'You must be logged in to update your profile.', 'gtw' ) );
-					// }
+					// TODO Security check. Check if user is logged in.
 
 					if ( ! isset( $input['profile']['id'] ) ) {
 						return [

@@ -50,7 +50,7 @@ class Get_To_Work_UserProfile {
 	/**
 	 * User's taxonomy data.
 	 *
-	 * @var array $taxonomies The user's taxonomy data. // TODO Document this better.
+	 * @var array $taxonomies The user's taxonomy data.
 	 * @since 0.1.0
 	 */
 	private $taxonomies;
@@ -130,7 +130,7 @@ class Get_To_Work_UserProfile {
 		$this->set_basic_data();
 		$this->set_meta_data();
 		$this->set_taxonomy_data();
-		// $this->destroy_raw();
+		$this->destroy_raw();
 	}
 
 	/**

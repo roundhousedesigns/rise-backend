@@ -11,8 +11,6 @@
  * @since      0.1.0
  */
 
-// FIXME phpfmt is shifting comments to start of line
-
 class Get_To_Work_GraphQL_Queries {
 	/**
 	 * Register GraphQL queries.
@@ -43,7 +41,6 @@ class Get_To_Work_GraphQL_Queries {
 
 		foreach ( $terms as $term ) {
 			$prepared_terms[] = [
-				// TODO change to 'id'
 				'databaseId' => $term->term_id,
 				'name'       => $term->name,
 				'slug'       => $term->slug,
