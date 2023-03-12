@@ -202,12 +202,10 @@ class Get_To_Work_GraphQL_Mutations {
 
 					$result = $user->update_user_profile();
 
-					if ( is_wp_error( $result ) ) {
-						error_log( $result->get_error_message() );
-					}
+					// TODO maybe return a WP_Error
 
 					return [
-						'result' => ! is_wp_error( $result ) ? $result : 0,
+						'result' => ! is_wp_error( $result ) ? $result : false,
 					];
 				},
 			],

@@ -24,7 +24,7 @@ class Get_To_Work_UserProfile {
 	 *
 	 * @var array $raw The user's initial raw data.
 	 */
-	private $_raw;
+	private $raw;
 
 	/**
 	 * The user's WP_User object.
@@ -90,6 +90,7 @@ class Get_To_Work_UserProfile {
 		'phone'       => 'phone',
 		'description' => 'description',
 		'location'    => 'location',
+		'willTravel'  => 'will_travel',
 		'resume'      => 'resume',
 		'education'   => 'education',
 		'media'       => 'media',
@@ -121,7 +122,7 @@ class Get_To_Work_UserProfile {
 	 * @return void
 	 */
 	public function __construct( $user_data ) {
-		$this->_raw = $user_data;
+		$this->raw = $user_data;
 
 		// MAYBE There could be a better way to do this than to pass the entire user data array to each method.
 
@@ -130,7 +131,7 @@ class Get_To_Work_UserProfile {
 		$this->set_basic_data();
 		$this->set_meta_data();
 		$this->set_taxonomy_data();
-		$this->destroy_raw();
+		$this->destroyraw();
 	}
 
 	/**
@@ -138,12 +139,12 @@ class Get_To_Work_UserProfile {
 	 *
 	 * @return void
 	 */
-	private function destroy_raw() {
-		unset( $this->_raw );
+	private function destroyraw() {
+		unset( $this->raw );
 	}
 
 	private function set_id() {
-		$this->user_id = $this->_raw['id'];
+		$this->user_id = $this->raw['id'];
 	}
 
 	/**
@@ -175,8 +176,8 @@ class Get_To_Work_UserProfile {
 	 */
 	private function set_basic_data() {
 		foreach ( self::BASIC_FIELD_PAIRS as $input_key => $save_key ) {
-			if ( isset( $this->_raw[$input_key] ) ) {
-				$this->basic[$save_key] = $this->_raw[$input_key];
+			if ( isset( $this->raw[$input_key] ) ) {
+				$this->basic[$save_key] = $this->raw[$input_key];
 			}
 		}
 	}
@@ -188,8 +189,8 @@ class Get_To_Work_UserProfile {
 	 */
 	private function set_meta_data() {
 		foreach ( self::META_FIELD_PAIRS as $input_key => $save_key ) {
-			if ( isset( $this->_raw[$input_key] ) ) {
-				$this->meta[$save_key] = $this->_raw[$input_key];
+			if ( isset( $this->raw[$input_key] ) ) {
+				$this->meta[$save_key] = $this->raw[$input_key];
 			}
 		}
 	}
@@ -201,8 +202,8 @@ class Get_To_Work_UserProfile {
 	 */
 	private function set_taxonomy_data() {
 		foreach ( self::USER_TAXONOMY_FIELDS as $input_key => $tax_slug ) {
-			if ( isset( $this->_raw[$input_key] ) ) {
-				foreach ( $this->_raw[$input_key] as $term_id ) {
+			if ( isset( $this->raw[$input_key] ) ) {
+				foreach ( $this->raw[$input_key] as $term_id ) {
 					$this->taxonomies[$tax_slug][] = $term_id;
 				}
 			}
