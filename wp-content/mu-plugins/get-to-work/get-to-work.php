@@ -3,7 +3,7 @@
  * Plugin Name:       Get To Work
  * Plugin URI:        https://gtw.roundhouse-designs.com
  * Description:       The main site functionality for the Get To Work backend.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Author:            Roundhouse Designs
  * Author URI:        https://roundhouse-designs.com
  * Text Domain:       gtw
@@ -18,7 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'GET_TO_WORK_VERSION', '0.1.0' );
+define( 'GET_TO_WORK_VERSION', '0.2.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -46,6 +46,11 @@ register_deactivation_hook( __FILE__, 'deactivate_get_to_work' );
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-get-to-work.php';
+
+/**
+ * Helper functions.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/functions.php';
 
 /**
  * Begins execution of the plugin.

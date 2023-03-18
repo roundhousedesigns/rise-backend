@@ -19,11 +19,13 @@ class Get_To_Work_Users {
 	public function add_roles() {
 		$roles = [
 			'crew-member' => [
-				'read'         => true,
-				'list_users'   => true,
-				'create_posts' => true,
-				'edit_posts'   => true,
-				'delete_posts' => true,
+				'read'          => true,
+				'list_users'    => true,
+				'create_posts'  => true,
+				'edit_posts'    => true,
+				'delete_posts'  => true,
+				'publish_posts' => true,
+				'upload_files'  => true,
 			],
 		];
 
@@ -186,6 +188,83 @@ class Get_To_Work_Users {
 	}
 
 	/**
+	 * Registers the `location` taxonomy,
+	 * for use with 'user'.
+	 *
+	 * @return void
+	 */
+	public function location_init() {
+		Get_To_Work_Factory::register_taxonomy( ['user'], 'location', 'locations', 'Location', 'Locations', false );
+	}
+
+	/**
+	 * Add Locations to User menu
+	 *
+	 * @return void
+	 */
+	public function add_location_to_user_menu() {
+		self::add_taxonomy_to_user_menu( __( 'Locations', 'gtw' ), __( 'Locations', 'gtw' ), 'location' );
+	}
+
+	/**
+	 * Add Locations field to user profile
+	 *
+	 * @param  WP_User $user
+	 * @return void
+	 */
+	public function add_location_to_user_profile( $user ) {
+		self::user_profile_taxonomy_term_checkboxes( $user, 'location', 'Locations' );
+	}
+
+	/**
+	 * Save Locations on user profile update
+	 *
+	 * @param  int    $user_id
+	 * @return void
+	 */
+	public function save_location_on_user_profile( $user_id ) {
+		self::save_taxonomy_terms_on_user_profile( $user_id, 'location' );
+	}
+	/**
+	 * Registers the `experience_level` taxonomy,
+	 * for use with 'user'.
+	 *
+	 * @return void
+	 */
+	public function experience_level_init() {
+		Get_To_Work_Factory::register_taxonomy( ['user'], 'experience_level', 'experience_levels', 'Experience Level', 'Experience Levels', false );
+	}
+
+	/**
+	 * Add Experience Levels to User menu
+	 *
+	 * @return void
+	 */
+	public function add_experience_level_to_user_menu() {
+		self::add_taxonomy_to_user_menu( __( 'Experience Levels', 'gtw' ), __( 'Experience Levels', 'gtw' ), 'experience_level' );
+	}
+
+	/**
+	 * Add Experience Levels field to user profile
+	 *
+	 * @param  WP_User $user
+	 * @return void
+	 */
+	public function add_experience_level_to_user_profile( $user ) {
+		self::user_profile_taxonomy_term_checkboxes( $user, 'experience_level', 'Experience Levels' );
+	}
+
+	/**
+	 * Save Experience Levels on user profile update
+	 *
+	 * @param  int    $user_id
+	 * @return void
+	 */
+	public function save_experience_level_on_user_profile( $user_id ) {
+		self::save_taxonomy_terms_on_user_profile( $user_id, 'experience_level' );
+	}
+
+	/**
 	 * Add the taxonomy to the user menu.
 	 *
 	 * @return void
@@ -209,12 +288,16 @@ class Get_To_Work_Users {
 	 */
 	private function user_profile_taxonomy_term_checkboxes( $user, $taxonomy, $name ) {
 		// Get the currently selected terms for the user
-		$terms          = get_the_terms( $user->ID, $taxonomy );
+		$terms = wp_get_object_terms( $user->ID, $taxonomy );
+
 		$selected_terms = $terms ? wp_list_pluck( $terms, 'term_id' ) : [];
-		$terms          = get_terms( [
-			'taxonomy'   => $taxonomy,
-			'hide_empty' => false,
-		] );
+
+		$all_terms = get_terms(
+			[
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+			]
+		);
 
 		wp_nonce_field( 'save_' . $taxonomy, $taxonomy . '_nonce' );
 		?>
@@ -226,7 +309,7 @@ class Get_To_Work_Users {
 				<!-- Add a field for the taxonomy checkboxes -->
 				<th><label><?php esc_html_e( 'Select ' . $name, 'gtw' ); ?></label></th>
 				<td>
-					<?php foreach ( $terms as $term ) : ?>
+					<?php foreach ( $all_terms as $term ) : ?>
 						<label>
 								<input type="checkbox" name="<?php echo esc_attr( $taxonomy ); ?>[]" value="<?php echo esc_attr( $term->term_id ); ?>"<?php checked( in_array( $term->term_id, $selected_terms, true ), true ); ?>>
 								<?php echo esc_html( $term->name ); ?>
@@ -247,8 +330,8 @@ class Get_To_Work_Users {
 	 * @param  string $taxonomy The taxonomy slug
 	 * @return void
 	 */
+	// TODO Maybe move this outside this file.
 	private function save_taxonomy_terms_on_user_profile( $user_id, $taxonomy ) {
-
 		if ( ! current_user_can( 'edit_user', $user_id ) && ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
@@ -263,7 +346,5 @@ class Get_To_Work_Users {
 		} else {
 			wp_set_object_terms( $user_id, [], $taxonomy );
 		}
-
 	}
-
 }

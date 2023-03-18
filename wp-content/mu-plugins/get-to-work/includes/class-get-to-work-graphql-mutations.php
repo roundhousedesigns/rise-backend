@@ -57,132 +57,30 @@ class Get_To_Work_GraphQL_Mutations {
 	 * @return void
 	 */
 	public function register_mutations() {
-		$this->register_auth_mutations();
-		$this->register_update_profile_mutation();
+		$this->register_profile_mutations();
 	}
 
 	/**
-	 * Register login and logout mutations with HTTP Cookies.
+	 * Register user mutations.
 	 *
-	 * @since 0.1.0
-	 *
-	 * @return void
+	 * @return int The user ID on success, `0` on failure.
 	 */
-	protected function register_auth_mutations() {
+	protected function register_profile_mutations() {
 		/**
-		 * Login mutation.
+		 * Update a user's profile.
 		 */
-		register_graphql_mutation(
-			'login',
-			[
-				'inputFields'         => [
-					'login'    => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'Input your username/email.' ),
-					],
-					'password' => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'Input your password.' ),
-					],
-				],
-				'outputFields'        => [
-					'status'    => [
-						'type'        => 'String',
-						'description' => __( 'Login operation status', 'gtw' ),
-						'resolve'     => function ( $payload ) {
-							return $payload['status'];
-						},
-					],
-					'id'        => [
-						'type'        => 'String',
-						'description' => __( 'User ID', 'gtw' ),
-						'resolve'     => function ( $payload ) {
-							return $payload['id'];
-						},
-					],
-					'firstName' => [
-						'type'        => 'String',
-						'description' => __( 'First Name', 'gtw' ),
-						'resolve'     => function ( $payload ) {
-							return $payload['firstName'];
-						},
-					],
-					'lastName'  => [
-						'type'        => 'String',
-						'description' => __( 'Last Name', 'gtw' ),
-						'resolve'     => function ( $payload ) {
-							return $payload['lastName'];
-						},
-					],
-				],
-				'mutateAndGetPayload' => function ( $input ) {
-					$user = wp_signon(
-						[
-							'user_login'    => wp_unslash( $input['login'] ),
-							'user_password' => $input['password'],
-							'remember'      => true,
-						],
-						true
-					);
-
-					if ( is_wp_error( $user ) ) {
-						throw new \GraphQL\Error\UserError( ! empty( $user->get_error_code() ) ? $user->get_error_code() : __( 'Invalid login', 'gtw' ) );
-					}
-
-					$userdata = get_userdata( $user->ID );
-
-					return [
-						'status'    => 'SUCCESS',
-						'id'        => $user->ID,
-						'firstName' => $userdata->first_name ? $userdata->first_name : '',
-						'lastName'  => $userdata->last_name ? $userdata->last_name : '',
-					];
-				},
-			]
-		);
-
-		/**
-		 * Logout mutation.
-		 */
-		register_graphql_mutation(
-			'logout',
-			[
-				'inputFields'         => [],
-				'outputFields'        => [
-					'status' => [
-						'type'        => 'String',
-						'description' => __( 'Logout result', 'gtw' ),
-						'resolve'     => function ( $payload ) {
-							return $payload['status'];
-						},
-					],
-				],
-				'mutateAndGetPayload' => function () {
-					wp_logout(); // This destroys the WP Login cookie.
-					return ['status' => 'SUCCESS'];
-				},
-			]
-		);
-	}
-
-	/**
-	 * Register the updateProfile mutation.
-	 *
-	 * @return void
-	 */
-	protected function register_update_profile_mutation() {
 		register_graphql_mutation(
 			'updateProfile',
 			[
 				'inputFields'         => [
 					'profile' => [
-						'type'        => 'UserProfile',
+						'type'        => 'UserProfileInput',
 						'description' => __( 'Profile data to update.', 'gtw' ),
 					],
 				],
 				'outputFields'        => [
 					'result' => [
-						'type'        => 'Boolean',
+						'type'        => 'Int',
 						'description' => 'The result of the get_user_meta() call.',
 						'resolve'     => function ( $payload ) {
 							return $payload['result'];
@@ -202,10 +100,9 @@ class Get_To_Work_GraphQL_Mutations {
 
 					$result = $user->update_user_profile();
 
-					// TODO maybe return a WP_Error
-
+					// TODO maybe return a WP_Error object instead of 0.
 					return [
-						'result' => ! is_wp_error( $result ) ? $result : false,
+						'result' => ! is_wp_error( $result ) ? $result : 0,
 					];
 				},
 			],

@@ -70,6 +70,8 @@ class Get_To_Work {
 		'http://localhost:4173',
 		'https://gtw-frontend.pages.dev',
 		'https://dev.gtw-frontend.pages.dev',
+		'https://alpha.gettowork.org',
+		'https://beta.gettowork.org',
 	];
 
 	/**
@@ -95,6 +97,7 @@ class Get_To_Work {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_init_hooks();
+		$this->define_auth_hooks();
 		$this->define_user_hooks();
 		$this->define_post_type_hooks();
 		$this->define_graphql_types();
@@ -134,6 +137,11 @@ class Get_To_Work {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-init.php';
 
 		/**
+		 * The class responsible for aiding in authentication.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-auth.php';
+
+		/**
 		 * The class responsible for creating post types, taxonomies, and other registerable structures.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-factory.php';
@@ -142,6 +150,7 @@ class Get_To_Work {
 		 * The classes responsible for registering data types.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-userprofile.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-credit.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-types.php';
 
 		/**
@@ -184,11 +193,27 @@ class Get_To_Work {
 	 *
 	 * @access   private
 	 * @since    0.1.0
+	 *
+	 * @return void
 	 */
 	private function set_locale() {
 		$plugin_i18n = new Get_To_Work_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+	}
+
+	/**
+	 * Register all of the JWT authentication hooks and filters.
+	 *
+	 * @access private
+	 * @since 0.2.0
+	 *
+	 * @return void
+	 */
+	private function define_auth_hooks() {
+		$plugin_auth = new Get_To_Work_Auth();
+
+		$this->loader->add_action( 'graphql_jwt_auth_expire', $plugin_auth, 'register_jwt_hooks', 10, 2 );
 	}
 
 	/**
@@ -260,6 +285,26 @@ class Get_To_Work {
 		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_union_to_user_profile' );
 		$this->loader->add_action( 'personal_options_update', $user_data, 'save_union_on_user_profile' );
 		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_union_on_user_profile' );
+
+		/**
+		 * Custom taxonomy: location (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'location_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_location_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_location_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_location_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_location_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_location_on_user_profile' );
+
+		/**
+		 * Custom taxonomy: experience_level (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'experience_level_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_experience_level_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_experience_level_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_experience_level_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_experience_level_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_experience_level_on_user_profile' );
 	}
 
 	/**
@@ -336,7 +381,7 @@ class Get_To_Work {
 		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
 
 		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
-		$this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
+		// $this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
 	}
 
 	/**
@@ -409,5 +454,4 @@ class Get_To_Work {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

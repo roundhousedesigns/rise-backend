@@ -14,10 +14,10 @@ class Get_To_Work_UserProfile {
 	/**
 	 * The user's ID.
 	 *
-	 * @var int $user_id The user ID.
+	 * @var int $id The user ID.
 	 * @since 0.1.0
 	 */
-	protected $user_id;
+	public $id;
 
 	/**
 	 * The user's initial raw data.
@@ -27,17 +27,12 @@ class Get_To_Work_UserProfile {
 	private $raw;
 
 	/**
-	 * The user's WP_User object.
-	 */
-	protected $init;
-
-	/**
-	 * User's basic data.
+	 * User's base data.
 	 *
-	 * @var array $basic The user's basic data.
+	 * @var array $base The user's base data.
 	 * @since 0.1.0
 	 */
-	private $basic;
+	private $base;
 
 	/**
 	 * User's meta data.
@@ -56,9 +51,9 @@ class Get_To_Work_UserProfile {
 	private $taxonomies;
 
 	/**
-	 * A user's credits.
+	 * User's credits.
 	 *
-	 * @var array $credits The user's credit IDs.
+	 * @var Get_To_Work_Credit[] $credits The user's credits.
 	 * @since 0.1.0
 	 */
 	private $credits;
@@ -69,10 +64,11 @@ class Get_To_Work_UserProfile {
 	 * @var array
 	 * @since 0.1.0
 	 */
-	const BASIC_FIELD_PAIRS = [
+	const BASE_FIELD_PAIRS = [
 		'id'        => 'ID',
 		'firstName' => 'first_name',
 		'lastName'  => 'last_name',
+		'email'     => 'user_email',
 		'website'   => 'user_url',
 	];
 
@@ -84,12 +80,10 @@ class Get_To_Work_UserProfile {
 	 */
 	const META_FIELD_PAIRS = [
 		'pronouns'    => 'pronouns',
-		'email'       => 'contactEmail',
 		'selfTitle'   => 'self_title',
 		'image'       => 'image',
 		'phone'       => 'phone',
 		'description' => 'description',
-		'location'    => 'location',
 		'willTravel'  => 'will_travel',
 		'resume'      => 'resume',
 		'education'   => 'education',
@@ -107,7 +101,9 @@ class Get_To_Work_UserProfile {
 	 * @since 0.1.0
 	 */
 	const USER_TAXONOMY_FIELDS = [
+		'locations'          => 'location',
 		'unions'             => 'union',
+		'experienceLevels'   => 'experience_level',
 		'genderIdentities'   => 'gender_identity',
 		'racialIdentities'   => 'racial_identity',
 		'personalIdentities' => 'personal_identity',
@@ -124,27 +120,21 @@ class Get_To_Work_UserProfile {
 	public function __construct( $user_data ) {
 		$this->raw = $user_data;
 
-		// MAYBE There could be a better way to do this than to pass the entire user data array to each method.
-
-		// Use the respective collections of keys to create the basic and meta data arrays.
+		// Use the respective collections of keys to create the base and meta data arrays.
 		$this->set_id();
-		$this->set_basic_data();
+		$this->set_base_data();
 		$this->set_meta_data();
 		$this->set_taxonomy_data();
-		$this->destroyraw();
+		$this->set_credits();
 	}
 
 	/**
-	 * Unset the raw data.
+	 * Set the user's ID.
 	 *
 	 * @return void
 	 */
-	private function destroyraw() {
-		unset( $this->raw );
-	}
-
 	private function set_id() {
-		$this->user_id = $this->raw['id'];
+		$this->id = $this->raw['id'];
 	}
 
 	/**
@@ -153,7 +143,7 @@ class Get_To_Work_UserProfile {
 	 * @return void
 	 */
 	public function get_id() {
-		return $this->user_id;
+		return $this->id;
 	}
 
 	/**
@@ -161,8 +151,8 @@ class Get_To_Work_UserProfile {
 	 *
 	 * @return void
 	 */
-	public function get_basic() {
-		return $this->basic;
+	public function get_base() {
+		return $this->base;
 	}
 
 	public function get_meta() {
@@ -170,14 +160,14 @@ class Get_To_Work_UserProfile {
 	}
 
 	/**
-	 * Set the user's basic data.
+	 * Set the user's base data.
 	 *
 	 * @return void
 	 */
-	private function set_basic_data() {
-		foreach ( self::BASIC_FIELD_PAIRS as $input_key => $save_key ) {
+	private function set_base_data() {
+		foreach ( self::BASE_FIELD_PAIRS as $input_key => $save_key ) {
 			if ( isset( $this->raw[$input_key] ) ) {
-				$this->basic[$save_key] = $this->raw[$input_key];
+				$this->base[$save_key] = $this->raw[$input_key];
 			}
 		}
 	}
@@ -203,10 +193,26 @@ class Get_To_Work_UserProfile {
 	private function set_taxonomy_data() {
 		foreach ( self::USER_TAXONOMY_FIELDS as $input_key => $tax_slug ) {
 			if ( isset( $this->raw[$input_key] ) ) {
+				if ( empty( $this->raw[$input_key] ) ) {
+					$this->taxonomies[$tax_slug] = [];
+					continue;
+				}
+
 				foreach ( $this->raw[$input_key] as $term_id ) {
 					$this->taxonomies[$tax_slug][] = $term_id;
 				}
 			}
+		}
+	}
+
+	/**
+	 * Set the user's credits.
+	 *
+	 * @return void
+	 */
+	private function set_credits() {
+		if ( isset( $this->raw['credits'] ) ) {
+			$this->credits = $this->raw['credits'];
 		}
 	}
 
@@ -216,28 +222,29 @@ class Get_To_Work_UserProfile {
 	 * @return int|WP_Error The user ID on success. WP_Error on failure.
 	 */
 	public function update_user_profile() {
-		$basic = $this->update_basic();
-		$meta  = $this->update_meta();
-		$tax   = $this->update_taxonomies();
+		$base    = $this->update_base();
+		$meta    = $this->update_meta();
+		$tax     = $this->update_taxonomies();
+		$credits = $this->update_credits();
 
-		if ( is_wp_error( $basic ) ) {
-			return $basic->get_error_message();
+		if ( is_wp_error( $base ) ) {
+			return $base->get_error_message();
 		} elseif ( ! $meta ) {
 			return new \WP_Error( 'update_user_profile', 'There was an error updating the user profile.' );
 		} elseif ( is_wp_error( $tax ) ) {
 			return $tax->get_error_message();
-		} else {
-			return $basic;
 		}
+
+		return $base;
 	}
 
 	/**
-	 * Update the user's basic data.
+	 * Update the user's base data.
 	 *
 	 * @return int|WP_Error The return value of wp_update_user().
 	 */
-	protected function update_basic() {
-		return wp_update_user( $this->basic );
+	protected function update_base() {
+		return wp_update_user( $this->base );
 	}
 
 	/**
@@ -247,7 +254,7 @@ class Get_To_Work_UserProfile {
 	 */
 	protected function update_meta() {
 		// Get the user's pod.
-		$pod = pods( 'user', $this->user_id );
+		$pod = pods( 'user', $this->id );
 
 		// Update the user's pod.
 		$update_fields = [];
@@ -255,6 +262,8 @@ class Get_To_Work_UserProfile {
 		foreach ( $this->meta as $key => $value ) {
 			$update_fields[$key] = $value;
 		}
+
+		// TODO investigate error handling (does $pod->save() return 0 on failure?)
 
 		return $pod->save( $update_fields );
 	}
@@ -266,11 +275,11 @@ class Get_To_Work_UserProfile {
 	 */
 	protected function update_taxonomies() {
 		if ( ! $this->taxonomies ) {
-			return new \WP_Error( 'update_taxonomies', 'There are no taxonomies to update.' );
+			return false;
 		}
 
 		foreach ( $this->taxonomies as $tax_slug => $terms ) {
-			$result = wp_set_object_terms( $this->user_id, array_map( 'absint', $terms ), $tax_slug );
+			$result = wp_set_object_terms( $this->id, array_map( 'intval', $terms ), $tax_slug );
 
 			if ( is_wp_error( $result ) ) {
 				return $result->get_error_message();
@@ -278,5 +287,16 @@ class Get_To_Work_UserProfile {
 		}
 
 		return true;
+	}
+
+	protected function update_credits() {
+		if ( ! $this->credits ) {
+			return new \WP_Error( 'update_credits', 'There are no credits to update.' );
+		}
+
+		foreach ( $this->credits as $credit ) {
+			$credit = new Get_To_Work_Credit( $credit );
+			$credit->update_credit();
+		}
 	}
 }

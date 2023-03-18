@@ -110,6 +110,7 @@ class Get_To_Work_GraphQL_Queries {
 		/**
 		 * Query for users with matching selected criteria.
 		 */
+		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		register_graphql_field(
 			'RootQuery',
 			'filteredCandidates',
@@ -117,49 +118,73 @@ class Get_To_Work_GraphQL_Queries {
 				'type'        => ['list_of' => 'Int'],
 				'description' => __( 'Users with matching selected criteria.', 'gtw' ),
 				'args'        => [
-					'jobs'    => [
+					'jobs'               => [
 						'description' => __( 'A list of `position` term ids', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
-					'skills'  => [
+					'skills'             => [
 						'description' => __( 'A list of `skill` term ids', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
-					'exclude' => [
-						'description' => __( 'A list of user ids to exclude', 'gtw' ),
+					'unions'             => [
+						'description' => __( 'A list of `union` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'locations'          => [
+						'description' => __( 'A list of `location` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'experienceLevels'   => [
+						'description' => __( 'A list of `experience_level` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'genderIdentities'   => [
+						'description' => __( 'A list of `gender_identity` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'personalIdentities' => [
+						'description' => __( 'A list of `personal_identity` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'racialIdentities'   => [
+						'description' => __( 'A list of `racial_identity` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'exclude'            => [
+						'description' => __( 'A list of user ids to exclude (for now, used for the current user)', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					// TODO Add more filter args.
 				],
 				'resolve'     => function ( $root, $args ) {
-					$selected_job_ids   = isset( $args['jobs'] ) ? $args['jobs'] : '';
-					$selected_skill_ids = isset( $args['skills'] ) ? $args['skills'] : '';
+					$credit_filters = [
+						'position' => isset( $args['jobs'] ) ? $args['jobs'] : '',
+						'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
+					];
 
-					// If no terms were sent, return an empty array.
-					if ( ! $selected_job_ids ) {
-						return [];
-					}
+					$user_filters = [
+						'union'             => isset( $args['unions'] ) ? $args['unions'] : '',
+						'location'          => isset( $args['locations'] ) ? $args['locations'] : '',
+						'experience_level'  => isset( $args['experienceLevels'] ) ? $args['experienceLevels'] : '',
+						'gender_identity'   => isset( $args['genderIdentities'] ) ? $args['genderIdentities'] : '',
+						'personal_identity' => isset( $args['personalIdentities'] ) ? $args['personalIdentities'] : '',
+						'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
+					];
 
+					// Start building the Credit query args.
 					$credit_args = [
 						'post_type' => 'credit',
-						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 						'tax_query' => ['relation' => 'AND'],
 					];
 
-					if ( $selected_job_ids ) {
-						$credit_args['tax_query'][] = [
-							'taxonomy' => 'position',
-							'field'    => 'term_id',
-							'terms'    => $selected_job_ids,
-						];
-					}
-
-					if ( $selected_skill_ids ) {
-						$credit_args['tax_query'][] = [
-							'taxonomy' => 'skill',
-							'field'    => 'term_id',
-							'terms'    => $selected_skill_ids,
-						];
+					foreach ( $credit_filters as $taxonomy => $terms ) {
+						if ( ! empty( $terms ) ) {
+							$credit_args['tax_query'][] = [
+								'taxonomy' => $taxonomy,
+								'field'    => 'term_id',
+								'terms'    => $terms,
+							];
+						}
 					}
 
 					// Query credits with the desired attributes.
@@ -178,30 +203,36 @@ class Get_To_Work_GraphQL_Queries {
 					}
 
 					// Filter out any excluded users.
-					if ( isset( $args['exclude'] ) ) {
-						$authors = array_diff( $authors, $args['exclude'] );
-					}
+					// if ( isset( $args['exclude'] ) ) {
+					// 	$authors = array_diff( $authors, $args['exclude'] );
+					// }
 
-					$users    = [];
 					$user_ids = [];
 
-					// Get the user objects.
-					if ( ! empty( $authors ) ) {
-						$users = get_users( [
-							'include' => $authors,
-						] );
+					// Start building the User query args, and if authors were found matching the `position` and `skill` filters, limit the query to those users.
+					$user_query_args = [
+						'include'   => $authors,
+						'tax_query' => ['relation' => 'AND'],
+					];
+
+					$user_taxonomy_terms = [];
+
+					// Add user taxonomy filters.
+					foreach ( $user_filters as $tax => $term_ids ) {
+						if ( empty( $term_ids ) ) {
+							continue;
+						}
+
+						$user_taxonomy_terms[$tax] = $term_ids;
 					}
 
-					if ( $users ) {
-						foreach ( $users as $user ) {
-							$user_ids[] = $user->ID;
-						}
-					}
+					$user_ids = query_users_with_terms( $user_taxonomy_terms );
 
 					return $user_ids;
 				},
 			],
 		);
+		// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 
 		/**
 		 * Query for users with matching terms from the `union` taxonomy.
@@ -211,6 +242,28 @@ class Get_To_Work_GraphQL_Queries {
 			'description' => __( 'The user\'s selected union terms.', 'gtw' ),
 			'resolve'     => function ( $user ) {
 				return self::prepare_taxonomy_terms( $user->fields['userId'], 'union' );
+			},
+		] );
+
+		/**
+		 * Query for users with matching terms from the `union` taxonomy.
+		 */
+		register_graphql_field( 'User', 'locations', [
+			'type'        => ['list_of' => 'Location'],
+			'description' => __( 'The user\'s selected location.', 'gtw' ),
+			'resolve'     => function ( $user ) {
+				return self::prepare_taxonomy_terms( $user->fields['userId'], 'location' );
+			},
+		] );
+
+		/**
+		 * Query for users with matching terms from the `genderIdentity` taxonomy.
+		 */
+		register_graphql_field( 'User', 'experienceLevels', [
+			'type'        => ['list_of' => 'Experience_Level'],
+			'description' => __( 'The user\'s selected experience level terms.', 'gtw' ),
+			'resolve'     => function ( $user ) {
+				return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
 			},
 		] );
 

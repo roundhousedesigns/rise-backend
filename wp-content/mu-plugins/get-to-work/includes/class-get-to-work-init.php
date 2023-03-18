@@ -10,9 +10,7 @@
  */
 
 /**
- * Fired during plugin activation.
- *
- * This class defines all code necessary to run during the plugin's activation.
+ * This class defines all code necessary to run during the plugin's startup.
  *
  * @package    Get_To_Work
  * @subpackage Get_To_Work/includes
@@ -88,5 +86,4 @@ class Get_To_Work_Init {
 
 		tgmpa( $plugins, $config );
 	}
-
 }

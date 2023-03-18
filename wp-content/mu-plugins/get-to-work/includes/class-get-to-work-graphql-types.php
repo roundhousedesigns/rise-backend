@@ -54,12 +54,12 @@ class Get_To_Work_GraphQL_Types {
 		);
 
 		/**
-		 * UserProfile input type.
+		 * UserProfileInput input type.
 		 */
 		register_graphql_input_type(
-			'UserProfile',
+			'UserProfileInput',
 			[
-				'description' => _( 'A user profile.', 'gtw' ),
+				'description' => __( 'A user profile.', 'gtw' ),
 				'fields'      => [
 					'id'                 => [
 						'type'        => 'ID',
@@ -97,8 +97,8 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The user\'s bio.', 'gtw' ),
 					],
-					'location'           => [
-						'type'        => 'String',
+					'locations'           => [
+						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s location.', 'gtw' ),
 					],
 					'resume'             => [
@@ -121,6 +121,10 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s unions.', 'gtw' ),
 					],
+					'experienceLevels'   => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The user\'s racial identities.', 'gtw' ),
+					],
 					'racialIdentities'   => [
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s racial identities.', 'gtw' ),
@@ -136,6 +140,46 @@ class Get_To_Work_GraphQL_Types {
 					'socials'            => [
 						'type'        => 'PersonalLinks',
 						'description' => __( 'The user\'s social media and external web links.', 'gtw' ),
+					],
+					'credits'            => [
+						'type'        => ['list_of' => 'CreditInput'],
+						'description' => __( 'The user\'s credits.', 'gtw' ),
+					],
+				],
+			]
+		);
+
+		/**
+		 * CreditInput input type.
+		 */
+		register_graphql_input_type(
+			'CreditInput',
+			[
+				'description' => __( 'A new or updated credit.', 'gtw' ),
+				'fields'      => [
+					'id'        => [
+						'type'        => 'ID',
+						'description' => __( 'The credit\'s ID.', 'gtw' ),
+					],
+					'title'     => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s title.', 'gtw' ),
+					],
+					'venue'     => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s venue.', 'gtw' ),
+					],
+					'year'      => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s year.', 'gtw' ),
+					],
+					'positions' => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The credit\'s position term IDs.', 'gtw' ),
+					],
+					'skills'    => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The credit\'s skill term IDs.', 'gtw' ),
 					],
 				],
 			]
