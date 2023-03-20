@@ -77,6 +77,10 @@ class Get_To_Work_Credit {
 		$this->skills = $data['skills'];
 	}
 
+	private function set_id( $id ) {
+		$this->id = $id;
+	}
+
 	/**
 	 * Get the user's ID.
 	 *
@@ -93,12 +97,20 @@ class Get_To_Work_Credit {
 	 */
 	public function update_credit() {
 		$credit = $this->update_base();
+
+		if ( is_wp_error( $credit ) ) {
+			return $credit->get_error_message();
+		}
+
+		$this->set_id( $credit );
+
 		$meta   = $this->update_meta();
 		$jobs   = $this->update_jobs();
 		$skills = $this->update_skills();
 
-		if ( is_wp_error( $credit ) ) {
-			return $credit->get_error_message();
+		// TODO add error condition for $meta
+		if ( 0 === $meta ) {
+			return new WP_Error( 'no_meta', 'No meta was updated.' );
 		} elseif ( is_wp_error( $jobs ) ) {
 			return $jobs->get_error_message();
 		} elseif ( is_wp_error( $skills ) ) {
@@ -114,13 +126,26 @@ class Get_To_Work_Credit {
 	 * @return int|WP_Error The post ID on success. WP_Error on failure.
 	 */
 	protected function update_base() {
-		return wp_update_post(
-			[
-				'ID'         => $this->id,
-				'post_title' => $this->title,
-			],
-			true,
-		);
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return new WP_Error( 'no_user', 'No user is logged in.' );
+		}
+
+		$update_post_args = [
+			'post_title'  => $this->title,
+			'post_author' => $user_id,
+			'post_status' => 'publish',
+			'post_type'   => 'credit',
+		];
+
+		if ( $this->id ) {
+			$update_post_args['ID'] = $this->id;
+			$result                 = wp_update_post( $update_post_args );
+		} else {
+			$result = wp_insert_post( $update_post_args );
+		}
+
+		return $result;
 	}
 
 	/**

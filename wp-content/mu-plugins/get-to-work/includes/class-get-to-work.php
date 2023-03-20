@@ -97,7 +97,6 @@ class Get_To_Work {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_init_hooks();
-		$this->define_auth_hooks();
 		$this->define_user_hooks();
 		$this->define_post_type_hooks();
 		$this->define_graphql_types();
@@ -135,11 +134,6 @@ class Get_To_Work {
 		 * The class responsible for plugin intialization.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-init.php';
-
-		/**
-		 * The class responsible for aiding in authentication.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-auth.php';
 
 		/**
 		 * The class responsible for creating post types, taxonomies, and other registerable structures.
@@ -200,20 +194,6 @@ class Get_To_Work {
 		$plugin_i18n = new Get_To_Work_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-	}
-
-	/**
-	 * Register all of the JWT authentication hooks and filters.
-	 *
-	 * @access private
-	 * @since 0.2.0
-	 *
-	 * @return void
-	 */
-	private function define_auth_hooks() {
-		$plugin_auth = new Get_To_Work_Auth();
-
-		$this->loader->add_action( 'graphql_jwt_auth_expire', $plugin_auth, 'register_jwt_hooks', 10, 2 );
 	}
 
 	/**

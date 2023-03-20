@@ -13,14 +13,15 @@
 /**
  * Retrieve the user IDs for users with the given terms.
  *
- * @param  array $terms The terms to query users for. Keys are taxonomies, values are arrays of term IDs.
+ * @param  array $terms           The terms to query users for. Keys are taxonomies, values are arrays of term IDs.
+ * @param  array $include_authors An array of user IDs to include in the query.
  * @return int[] The user IDs.
  */
-function query_users_with_terms( $terms ) {
+function query_users_with_terms( $terms, $include_authors = [] ) {
 	// Get the object IDs for the terms in the taxonomies
 	$object_ids = [];
 	foreach ( $terms as $taxonomy => $term_ids ) {
-		$object_ids = array_merge( $object_ids, get_objects_in_term( $term_ids, $taxonomy ) );
+		$object_ids = array_merge( $include_authors, get_objects_in_term( $term_ids, $taxonomy ) );
 	}
 
 	// Remove duplicates from the object IDs array

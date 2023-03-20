@@ -157,11 +157,6 @@ class Get_To_Work_GraphQL_Queries {
 					// TODO Add more filter args.
 				],
 				'resolve'     => function ( $root, $args ) {
-					$credit_filters = [
-						'position' => isset( $args['jobs'] ) ? $args['jobs'] : '',
-						'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
-					];
-
 					$user_filters = [
 						'union'             => isset( $args['unions'] ) ? $args['unions'] : '',
 						'location'          => isset( $args['locations'] ) ? $args['locations'] : '',
@@ -169,6 +164,11 @@ class Get_To_Work_GraphQL_Queries {
 						'gender_identity'   => isset( $args['genderIdentities'] ) ? $args['genderIdentities'] : '',
 						'personal_identity' => isset( $args['personalIdentities'] ) ? $args['personalIdentities'] : '',
 						'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
+					];
+
+					$credit_filters = [
+						'position' => isset( $args['jobs'] ) ? $args['jobs'] : '',
+						'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
 					];
 
 					// Start building the Credit query args.
@@ -197,27 +197,14 @@ class Get_To_Work_GraphQL_Queries {
 
 					// Get the authors of the credits.
 					$authors = [];
-
 					foreach ( $credits as $credit ) {
 						$authors[] = $credit->post_author;
 					}
 
-					// Filter out any excluded users.
-					// if ( isset( $args['exclude'] ) ) {
-					// 	$authors = array_diff( $authors, $args['exclude'] );
-					// }
+					// error_log( print_r( $authors, true ) );
 
-					$user_ids = [];
-
-					// Start building the User query args, and if authors were found matching the `position` and `skill` filters, limit the query to those users.
-					$user_query_args = [
-						'include'   => $authors,
-						'tax_query' => ['relation' => 'AND'],
-					];
-
+					// Filter users by selected taxonomies.
 					$user_taxonomy_terms = [];
-
-					// Add user taxonomy filters.
 					foreach ( $user_filters as $tax => $term_ids ) {
 						if ( empty( $term_ids ) ) {
 							continue;
@@ -226,9 +213,25 @@ class Get_To_Work_GraphQL_Queries {
 						$user_taxonomy_terms[$tax] = $term_ids;
 					}
 
-					$user_ids = query_users_with_terms( $user_taxonomy_terms );
+					// FIXME Querying users by taxonomy terms is not working yet.
 
-					return $user_ids;
+					// $filtered_authors = query_users_with_terms( $user_taxonomy_terms, $authors );
+
+					// error_log( print_r( $filtered_authors, true ) );
+
+					// error_log( print_r( $filtered_user_ids, true ) );
+
+					// Filter out any excluded users.
+					if ( isset( $args['exclude'] ) ) {
+						$authors = array_diff( $authors, $args['exclude'] );
+					}
+
+					// Start building the User query args, and if authors were found matching the `position` and `skill` filters, limit the query to those users.
+					$user_query_args = ['include' => $authors];
+
+					$results = get_users( $user_query_args );
+
+					return wp_list_pluck( $results, 'id' );
 				},
 			],
 		);
@@ -299,5 +302,36 @@ class Get_To_Work_GraphQL_Queries {
 				return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
 			},
 		] );
+
+		// register_graphql_field(
+		// 	'RootQuery',
+		// 	'UserProfile',
+		// 	[
+		// 		'type'        => 'UserProfile',
+		// 		'description' => __( 'Get a user\'s profile data.', 'gtw' ),
+		// 		'args'        => [
+		// 			'id' => [
+		// 				'type'        => 'ID',
+		// 				'description' => __( 'The user ID.', 'gtw' ),
+		// 			],
+		// 		],
+		// 		'resolve'     => function ( $root, $args ) {
+		// 			$user = get_user_by( 'id', $args['id'] );
+
+		// 			// TODO update a UserProfile class to handle construction of the user profile data instead
+		// 			// of having to feed it everything in an array.
+
+		// 			if ( ! $user ) {
+		// 				return null;
+		// 			}
+
+		// 			$profile = new Get_To_Work_UserProfile( $user );
+
+		// 			error_log( print_r( $profile, true ) );
+
+		// 			return $profile;
+		// 		},
+		// 	]
+		// );
 	}
 }
