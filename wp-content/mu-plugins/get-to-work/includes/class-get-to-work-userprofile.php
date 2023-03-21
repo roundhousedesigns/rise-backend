@@ -64,12 +64,11 @@ class Get_To_Work_UserProfile {
 	 * @var array
 	 * @since 0.1.0
 	 */
-	const BASE_FIELD_PAIRS = [
+	const BASE_INPUT_FIELDS = [
 		'id'        => 'ID',
 		'firstName' => 'first_name',
 		'lastName'  => 'last_name',
 		'email'     => 'user_email',
-		'website'   => 'user_url',
 	];
 
 	/**
@@ -78,7 +77,7 @@ class Get_To_Work_UserProfile {
 	 * @var array
 	 * @since 0.1.0
 	 */
-	const META_FIELD_PAIRS = [
+	const META_INPUT_FIELDS = [
 		'pronouns'    => 'pronouns',
 		'selfTitle'   => 'self_title',
 		'image'       => 'image',
@@ -88,10 +87,20 @@ class Get_To_Work_UserProfile {
 		'resume'      => 'resume',
 		'education'   => 'education',
 		'media'       => 'media',
-		'linkedin'    => 'linkedin',
-		'instagram'   => 'instagram',
-		'twitter'     => 'twitter',
-		'facebook'    => 'facebook',
+	];
+
+	/**
+	 * The user's social fields updatable by pods->save() keyed by frontend key.
+	 *
+	 * @var array
+	 * @since 0.2.0
+	 */
+	const SOCIAL_INPUT_FIELDS = [
+		'linkedin'  => 'linkedin',
+		'instagram' => 'instagram',
+		'twitter'   => 'twitter',
+		'facebook'  => 'facebook',
+		'website'   => 'website_url',
 	];
 
 	/**
@@ -100,7 +109,7 @@ class Get_To_Work_UserProfile {
 	 * @var array
 	 * @since 0.1.0
 	 */
-	const USER_TAXONOMY_FIELDS = [
+	const TAXONOMY_INPUT_FIELDS = [
 		'locations'          => 'location',
 		'unions'             => 'union',
 		'experienceLevels'   => 'experience_level',
@@ -124,6 +133,7 @@ class Get_To_Work_UserProfile {
 		$this->set_id();
 		$this->set_base_data();
 		$this->set_meta_data();
+		$this->set_social_data();
 		$this->set_taxonomy_data();
 		$this->set_credits();
 	}
@@ -165,7 +175,7 @@ class Get_To_Work_UserProfile {
 	 * @return void
 	 */
 	private function set_base_data() {
-		foreach ( self::BASE_FIELD_PAIRS as $input_key => $save_key ) {
+		foreach ( self::BASE_INPUT_FIELDS as $input_key => $save_key ) {
 			if ( isset( $this->raw[$input_key] ) ) {
 				$this->base[$save_key] = $this->raw[$input_key];
 			}
@@ -178,9 +188,22 @@ class Get_To_Work_UserProfile {
 	 * @return void
 	 */
 	private function set_meta_data() {
-		foreach ( self::META_FIELD_PAIRS as $input_key => $save_key ) {
+		foreach ( self::META_INPUT_FIELDS as $input_key => $save_key ) {
 			if ( isset( $this->raw[$input_key] ) ) {
 				$this->meta[$save_key] = $this->raw[$input_key];
+			}
+		}
+	}
+
+	/**
+	 * Set the user's social meta data.
+	 *
+	 * @return void
+	 */
+	private function set_social_data() {
+		foreach ( self::SOCIAL_INPUT_FIELDS as $input_key => $save_key ) {
+			if ( isset( $this->raw['socials'][$input_key] ) ) {
+				$this->meta[$save_key] = $this->raw['socials'][$input_key];
 			}
 		}
 	}
@@ -191,7 +214,7 @@ class Get_To_Work_UserProfile {
 	 * @return void
 	 */
 	private function set_taxonomy_data() {
-		foreach ( self::USER_TAXONOMY_FIELDS as $input_key => $tax_slug ) {
+		foreach ( self::TAXONOMY_INPUT_FIELDS as $input_key => $tax_slug ) {
 			if ( isset( $this->raw[$input_key] ) ) {
 				if ( empty( $this->raw[$input_key] ) ) {
 					$this->taxonomies[$tax_slug] = [];
