@@ -80,6 +80,7 @@ class Get_To_Work_UserProfile {
 	const META_INPUT_FIELDS = [
 		'pronouns'    => 'pronouns',
 		'selfTitle'   => 'self_title',
+		'homebase'    => 'homebase',
 		'image'       => 'image',
 		'phone'       => 'phone',
 		'description' => 'description',
@@ -145,15 +146,6 @@ class Get_To_Work_UserProfile {
 	 */
 	private function set_id() {
 		$this->id = $this->raw['id'];
-	}
-
-	/**
-	 * Get the user's ID.
-	 *
-	 * @return void
-	 */
-	public function get_id() {
-		return $this->id;
 	}
 
 	/**
@@ -245,10 +237,9 @@ class Get_To_Work_UserProfile {
 	 * @return int|WP_Error The user ID on success. WP_Error on failure.
 	 */
 	public function update_user_profile() {
-		$base    = $this->update_base();
-		$meta    = $this->update_meta();
-		$tax     = $this->update_taxonomies();
-		$credits = $this->update_credits();
+		$base = $this->update_base();
+		$meta = $this->update_meta();
+		$tax  = $this->update_taxonomies();
 
 		if ( is_wp_error( $base ) ) {
 			return $base->get_error_message();

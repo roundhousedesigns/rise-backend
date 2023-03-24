@@ -89,7 +89,6 @@ class Get_To_Work_GraphQL_Mutations {
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					// TODO Security check. Check if user is logged in.
-
 					if ( ! isset( $input['profile']['id'] ) ) {
 						return [
 							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
@@ -107,6 +106,123 @@ class Get_To_Work_GraphQL_Mutations {
 				},
 			],
 		);
-	}
 
+		/**
+		 * Update a user's profile.
+		 */
+		register_graphql_mutation(
+			'updateOrCreateCredit',
+			[
+				'inputFields'         => [
+					'credit' => [
+						'type'        => 'CreditInput',
+						'description' => __( 'The credit data to insert.', 'gtw' ),
+					],
+				],
+				'outputFields'        => [
+					'updatedCredit' => [
+						'type'        => 'CreditOutput',
+						'description' => __( 'The updated credit data.', 'gtw' ),
+						'resolve'     => function ( $payload ) {
+							return $payload['updatedCredit'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					if ( ! isset( $input['credit'] ) ) {
+						return [
+							'updatedCredit' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
+						];
+					}
+
+					$credit = new Get_To_Work_Credit( $input['credit'] );
+					$result = $credit->update_credit();
+
+					// TODO maybe return a WP_Error object instead of 0.
+					return [
+						'updatedCredit' => ! is_wp_error( $result ) ? $credit->prepare_for_graphql() : 0,
+					];
+				},
+			],
+		);
+
+		register_graphql_mutation(
+			'deleteOwnCredit',
+			[
+				'inputFields'         => [
+					'id' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the credit to delete.', 'gtw' ),
+					],
+				],
+				'outputFields'        => [
+					'result' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The result of the delete operation.', 'gtw' ),
+						'resolve'     => function ( $payload ) {
+							return $payload['result'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					if ( ! isset( $input['id'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
+						];
+					}
+
+					$result = wp_delete_post( $input['id'], false );
+
+					if ( $result instanceof WP_Post ) {
+						return [
+							'result' => true,
+						];
+					} else {
+						return new WP_Error( 'delete_failed', __( 'The credit could not be deleted.', 'gtw' ) );
+					}
+				},
+			]
+		);
+
+		/**
+		 * Register user mutations.
+		 *
+		 * @return int The user ID on success, `0` on failure.
+		 */
+		// register_graphql_mutation(
+		// 	'uploadFile', [
+		// 		'inputFields'         => [
+		// 			'file' => [
+		// 				'type' => ['non_null' => 'Upload'],
+		// 			],
+		// 		],
+		// 		'outputFields'        => [
+		// 			'text' => [
+		// 				'type'    => 'String',
+		// 				'resolve' => function ( $payload ) {
+		// 					return $payload['text'];
+		// 				},
+		// 			],
+		// 		],
+		// 		'mutateAndGetPayload' => function ( $input ) {
+		// 			if ( ! function_exists( 'wp_handle_sideload' ) ) {
+		// 				require_once ( ABSPATH . 'wp-admin/includes/file.php' );
+		// 			}
+
+		// 			wp_handle_sideload( $input['file'], [
+		// 				'test_form' => false,
+		// 				'test_type' => false,
+		// 			] );
+
+		// 			return [
+		// 				'text' => 'Uploaded file was "' . $input['file']['name'] . '" (' . $input['file']['type'] . ').',
+		// 			];
+		// 		},
+		// 	]
+		// );
+	}
 }

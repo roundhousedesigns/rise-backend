@@ -17,15 +17,24 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_roles() {
+		$role = get_role( 'editor' );
+		$role->add_cap( 'edit_credits' );
+		$role->add_cap( 'read_credits' );
+		$role->add_cap( 'delete_credits' );
+		$role->add_cap( 'edit_published_credits' );
+		$role->add_cap( 'publish_credits' );
+		$role->add_cap( 'delete_published_credits' );
+		
 		$roles = [
 			'crew-member' => [
-				'read'          => true,
-				'list_users'    => true,
-				'create_posts'  => true,
-				'edit_posts'    => true,
-				'delete_posts'  => true,
-				'publish_posts' => true,
-				'upload_files'  => true,
+				'read'                     => true,
+				'list_users'               => true,
+				'upload_files'             => true,
+				'edit_credits'             => true,
+				'read_credits'             => true,
+				'edit_published_credits'   => true,
+				'publish_credits'          => true,
+				'delete_published_credits' => true,
 			],
 		];
 

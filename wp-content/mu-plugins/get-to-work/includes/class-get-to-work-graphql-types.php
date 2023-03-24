@@ -85,6 +85,10 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The user\'s self title.', 'gtw' ),
 					],
+					'homebase'           => [
+						'type'        => 'String',
+						'description' => __( 'The user\'s homebase.', 'gtw' ),
+					],
 					'image'              => [
 						'type'        => 'String',
 						'description' => __( 'The user\'s image.', 'gtw' ),
@@ -97,7 +101,7 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The user\'s bio.', 'gtw' ),
 					],
-					'locations'           => [
+					'locations'          => [
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s location.', 'gtw' ),
 					],
@@ -141,10 +145,6 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'PersonalLinks',
 						'description' => __( 'The user\'s social media and external web links.', 'gtw' ),
 					],
-					'credits'            => [
-						'type'        => ['list_of' => 'CreditInput'],
-						'description' => __( 'The user\'s credits.', 'gtw' ),
-					],
 				],
 			]
 		);
@@ -157,29 +157,86 @@ class Get_To_Work_GraphQL_Types {
 			[
 				'description' => __( 'A new or updated credit.', 'gtw' ),
 				'fields'      => [
-					'id'        => [
+					'id'          => [
 						'type'        => 'ID',
 						'description' => __( 'The credit\'s ID.', 'gtw' ),
 					],
-					'title'     => [
+					'title'       => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s title.', 'gtw' ),
 					],
-					'venue'     => [
+					'jobTitle'    => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s job title.', 'gtw' ),
+					],
+					'jobLocation' => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s location.', 'gtw' ),
+					],
+					'venue'       => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s venue.', 'gtw' ),
 					],
-					'year'      => [
+					'year'        => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s year.', 'gtw' ),
 					],
-					'positions' => [
+					'positions'   => [
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The credit\'s position term IDs.', 'gtw' ),
 					],
-					'skills'    => [
+					'skills'      => [
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The credit\'s skill term IDs.', 'gtw' ),
+					],
+					'isNew'       => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the credit is a new entry.', 'gtw' ),
+					],
+				],
+			]
+		);
+
+		register_graphql_object_type(
+			'CreditOutput',
+			[
+				'description' => __( 'A credit prepared for the frontend.', 'gtw' ),
+				'fields'      => [
+					'databaseId'  => [
+						'type'        => 'ID',
+						'description' => __( 'The credit\'s ID.', 'gtw' ),
+					],
+					'title'       => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s title.', 'gtw' ),
+					],
+					'jobTitle'    => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s job title.', 'gtw' ),
+					],
+					'jobLocation' => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s location.', 'gtw' ),
+					],
+					'venue'       => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s venue.', 'gtw' ),
+					],
+					'year'        => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s year.', 'gtw' ),
+					],
+					'department'  => [
+						'type'        => 'Int',
+						'description' => __( 'The credit\'s 1st-level position term ID.', 'gtw' ),
+					],
+					'jobs'        => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The credit\'s 2nd-level position term IDs.', 'gtw' ),
+					],
+					'skills'      => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The credit\'s skill terms.', 'gtw' ),
 					],
 				],
 			]
