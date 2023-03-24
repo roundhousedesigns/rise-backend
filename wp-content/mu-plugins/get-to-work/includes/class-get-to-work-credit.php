@@ -26,6 +26,21 @@ class Get_To_Work_Credit {
 	 * @since 0.1.0
 	 */
 	private $title;
+	/**
+	 * The Credit job title.
+	 *
+	 * @var array $title The Credit title.
+	 * @since 0.1.0
+	 */
+	private $job_title;
+
+	/**
+	 * The Credit location.
+	 *
+	 * @var array $title The Credit title.
+	 * @since 0.1.0
+	 */
+	private $job_location;
 
 	/**
 	 * The Credit's venue meta field.
@@ -69,25 +84,18 @@ class Get_To_Work_Credit {
 	 */
 	public function __construct( $data ) {
 		// TODO sanitize input.
-		$this->id     = $data['id'];
-		$this->title  = $data['title'];
-		$this->venue  = $data['venue'];
-		$this->year   = $data['year'];
-		$this->jobs   = $data['positions'];
-		$this->skills = $data['skills'];
+		$this->id           = $data['isNew'] ? 0 : $data['id'];
+		$this->title        = $data['title'];
+		$this->job_title    = $data['jobTitle'];
+		$this->job_location = $data['jobLocation'];
+		$this->venue        = $data['venue'];
+		$this->year         = $data['year'];
+		$this->jobs         = $data['positions'];
+		$this->skills       = $data['skills'];
 	}
 
 	private function set_id( $id ) {
 		$this->id = $id;
-	}
-
-	/**
-	 * Get the user's ID.
-	 *
-	 * @return void
-	 */
-	public function get_id() {
-		return $this->id;
 	}
 
 	/**
@@ -138,11 +146,11 @@ class Get_To_Work_Credit {
 			'post_type'   => 'credit',
 		];
 
-		if ( $this->id ) {
+		if ( 0 === $this->id ) {
+			$result = wp_insert_post( $update_post_args );
+		} else {
 			$update_post_args['ID'] = $this->id;
 			$result                 = wp_update_post( $update_post_args );
-		} else {
-			$result = wp_insert_post( $update_post_args );
 		}
 
 		return $result;
@@ -159,8 +167,10 @@ class Get_To_Work_Credit {
 
 		// Update the credit's pod.
 		$update_fields = [
-			'year'  => $this->year,
-			'venue' => $this->venue,
+			'year'         => $this->year,
+			'venue'        => $this->venue,
+			'job_title'    => $this->job_title,
+			'job_location' => $this->job_location,
 		];
 
 		// TODO investigate error handling (does $pod->save() return 0 on failure?)
@@ -184,5 +194,25 @@ class Get_To_Work_Credit {
 	 */
 	protected function update_skills() {
 		return wp_set_object_terms( $this->id, array_map( 'intval', $this->skills ), 'skill', false );
+	}
+
+	/**
+	 * Get the credit's data for GraphQL.
+	 *
+	 * @return array The credit's data.
+	 */
+	public function prepare_for_graphql() {
+		return [
+			'databaseId'  => $this->id,
+			'title'       => $this->title,
+			'jobTitle'    => $this->job_title,
+			'jobLocation' => $this->job_location,
+			'venue'       => $this->venue,
+			'year'        => $this->year,
+			// HACK get the first job's parent term ID.
+			'department'  => $this->jobs ? get_term( $this->jobs[0], 'position' )->parent : null,
+			'jobs'        => $this->jobs,
+			'skills'      => $this->skills,
+		];
 	}
 }

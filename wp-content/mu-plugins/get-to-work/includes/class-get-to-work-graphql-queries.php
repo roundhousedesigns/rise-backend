@@ -223,7 +223,8 @@ class Get_To_Work_GraphQL_Queries {
 
 					// Filter out any excluded users.
 					if ( isset( $args['exclude'] ) ) {
-						$authors = array_diff( $authors, $args['exclude'] );
+						$authors = array_diff( $authors, $args['exclude']
+						);
 					}
 
 					// Start building the User query args, and if authors were found matching the `position` and `skill` filters, limit the query to those users.
@@ -240,98 +241,91 @@ class Get_To_Work_GraphQL_Queries {
 		/**
 		 * Query for users with matching terms from the `union` taxonomy.
 		 */
-		register_graphql_field( 'User', 'unions', [
-			'type'        => ['list_of' => 'Union'],
-			'description' => __( 'The user\'s selected union terms.', 'gtw' ),
-			'resolve'     => function ( $user ) {
-				return self::prepare_taxonomy_terms( $user->fields['userId'], 'union' );
-			},
-		] );
+		register_graphql_field(
+			'User',
+			'unions',
+			[
+				'type'        => ['list_of' => 'Union'],
+				'description' => __( 'The user\'s selected union terms.', 'gtw' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'union' );
+				},
+			]
+		);
 
 		/**
 		 * Query for users with matching terms from the `union` taxonomy.
 		 */
-		register_graphql_field( 'User', 'locations', [
-			'type'        => ['list_of' => 'Location'],
-			'description' => __( 'The user\'s selected location.', 'gtw' ),
-			'resolve'     => function ( $user ) {
-				return self::prepare_taxonomy_terms( $user->fields['userId'], 'location' );
-			},
-		] );
+		register_graphql_field(
+			'User',
+			'locations',
+			[
+				'type'        => ['list_of' => 'Location'],
+				'description' => __( 'The user\'s selected location.', 'gtw' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'location' );
+				},
+			]
+		);
 
 		/**
 		 * Query for users with matching terms from the `genderIdentity` taxonomy.
 		 */
-		register_graphql_field( 'User', 'experienceLevels', [
-			'type'        => ['list_of' => 'Experience_Level'],
-			'description' => __( 'The user\'s selected experience level terms.', 'gtw' ),
-			'resolve'     => function ( $user ) {
-				return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
-			},
-		] );
+		register_graphql_field(
+			'User',
+			'experienceLevels',
+			[
+				'type'        => ['list_of' => 'Experience_Level'],
+				'description' => __( 'The user\'s selected experience level terms.', 'gtw' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
+				},
+			]
+		);
 
 		/**
 		 * Query for users with matching terms from the `genderIdentity` taxonomy.
 		 */
-		register_graphql_field( 'User', 'genderIdentities', [
-			'type'        => ['list_of' => 'Gender_Identity'],
-			'description' => __( 'The user\'s selected gender identity terms.', 'gtw' ),
-			'resolve'     => function ( $user ) {
-				return self::prepare_taxonomy_terms( $user->fields['userId'], 'gender_identity' );
-			},
-		] );
+		register_graphql_field(
+			'User',
+			'genderIdentities',
+			[
+				'type'        => ['list_of' => 'Gender_Identity'],
+				'description' => __( 'The user\'s selected gender identity terms.', 'gtw' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'gender_identity' );
+				},
+			]
+		);
 
 		/**
 		 * Query for users with matching terms from the `racialIdentity` taxonomy.
 		 */
-		register_graphql_field( 'User', 'racialIdentities', [
-			'type'        => ['list_of' => 'Racial_Identity'],
-			'description' => __( 'The user\'s selected racial identity terms.', 'gtw' ),
-			'resolve'     => function ( $user ) {
-				return self::prepare_taxonomy_terms( $user->fields['userId'], 'racial_identity' );
-			},
-		] );
+		register_graphql_field(
+			'User',
+			'racialIdentities',
+			[
+				'type'        => ['list_of' => 'Racial_Identity'],
+				'description' => __( 'The user\'s selected racial identity terms.', 'gtw' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'racial_identity' );
+				},
+			]
+		);
 
 		/**
 		 * Query for users with matching selected criteria.
 		 */
-		register_graphql_field( 'User', 'personalIdentities', [
-			'type'        => ['list_of' => 'Personal_Identity'],
-			'description' => __( 'The user\'s seelcted personal identity terms.', 'gtw' ),
-			'resolve'     => function ( $user ) {
-				return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
-			},
-		] );
-
-		// register_graphql_field(
-		// 	'RootQuery',
-		// 	'UserProfile',
-		// 	[
-		// 		'type'        => 'UserProfile',
-		// 		'description' => __( 'Get a user\'s profile data.', 'gtw' ),
-		// 		'args'        => [
-		// 			'id' => [
-		// 				'type'        => 'ID',
-		// 				'description' => __( 'The user ID.', 'gtw' ),
-		// 			],
-		// 		],
-		// 		'resolve'     => function ( $root, $args ) {
-		// 			$user = get_user_by( 'id', $args['id'] );
-
-		// 			// TODO update a UserProfile class to handle construction of the user profile data instead
-		// 			// of having to feed it everything in an array.
-
-		// 			if ( ! $user ) {
-		// 				return null;
-		// 			}
-
-		// 			$profile = new Get_To_Work_UserProfile( $user );
-
-		// 			error_log( print_r( $profile, true ) );
-
-		// 			return $profile;
-		// 		},
-		// 	]
-		// );
+		register_graphql_field(
+			'User',
+			'personalIdentities',
+			[
+				'type'        => ['list_of' => 'Personal_Identity'],
+				'description' => __( 'The user\'s seelcted personal identity terms.', 'gtw' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
+				},
+			]
+		);
 	}
 }

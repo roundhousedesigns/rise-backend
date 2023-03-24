@@ -309,6 +309,7 @@ class Get_To_Work {
 		 */
 		$this->loader->add_action( 'init', $plugin_data, 'position_init' );
 		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'position_updated_messages' );
+		$this->loader->add_filter( 'terms_clauses', $plugin_data, 'position_terms_plural_parents_query_param', 10, 3 );
 
 		/**
 		 * Taxonomy: skill (`credit`)
@@ -319,16 +320,22 @@ class Get_To_Work {
 		/**
 		 * Custom Post Type: saved_search
 		 */
-		$this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
-		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
-		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+		// phpcs:disable
+		// TODO Implement saved_search CPT
+		// $this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
+		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
+		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+		// phpcs:enable
 
 		/**
 		 * Custom Post Type: project
 		 */
-		$this->loader->add_action( 'init', $plugin_data, 'project_init' );
-		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'project_updated_messages' );
-		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_messages', 10, 2 );
+		// phpcs:disable
+		// TODO Implement project CPT
+		// $this->loader->add_action( 'init', $plugin_data, 'project_init' );
+		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'project_updated_messages' );
+		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_messages', 10, 2 );
+		// phpcs:enable
 
 	}
 
@@ -361,6 +368,7 @@ class Get_To_Work {
 		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
 
 		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
+		// phpcs:ignore
 		// $this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
 	}
 
