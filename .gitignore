@@ -8,7 +8,7 @@
 wp-content/*
 !wp-content/mu-plugins/
 !wp-content/plugins/
-!wp-content/themes/
+#!wp-content/themes/
 
 # ignore all plugins, and themes, unless explicitly whitelisted at the end of
 # this file. Also ignore the RHDWP hosting environment plugin.

@@ -368,8 +368,7 @@ class Get_To_Work {
 		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
 
 		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
-		// phpcs:ignore
-		// $this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
+		$this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
 	}
 
 	/**

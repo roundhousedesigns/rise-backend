@@ -161,6 +161,10 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'ID',
 						'description' => __( 'The credit\'s ID.', 'gtw' ),
 					],
+					'index'       => [
+						'type'        => 'ID',
+						'description' => __( 'The credit\'s display index.', 'gtw' ),
+					],
 					'title'       => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s title.', 'gtw' ),
@@ -205,6 +209,10 @@ class Get_To_Work_GraphQL_Types {
 					'databaseId'  => [
 						'type'        => 'ID',
 						'description' => __( 'The credit\'s ID.', 'gtw' ),
+					],
+					'index'       => [
+						'type'        => 'ID',
+						'description' => __( 'The credit\'s display index.', 'gtw' ),
 					],
 					'title'       => [
 						'type'        => 'String',

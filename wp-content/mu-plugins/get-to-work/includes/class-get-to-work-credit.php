@@ -14,10 +14,18 @@ class Get_To_Work_Credit {
 	/**
 	 * The user's ID.
 	 *
-	 * @var int $ The user ID.
+	 * @var int $id The user ID.
 	 * @since 0.1.0
 	 */
 	public $id;
+
+	/**
+	 * The Credit's display index.
+	 *
+	 * @var int $index The Credit's display index.
+	 * @since 0.2.0
+	 */
+	private $index;
 
 	/**
 	 * The Credit title.
@@ -85,6 +93,7 @@ class Get_To_Work_Credit {
 	public function __construct( $data ) {
 		// TODO sanitize input.
 		$this->id           = $data['isNew'] ? 0 : $data['id'];
+		$this->index        = $data['index'];
 		$this->title        = $data['title'];
 		$this->job_title    = $data['jobTitle'];
 		$this->job_location = $data['jobLocation'];
@@ -167,6 +176,7 @@ class Get_To_Work_Credit {
 
 		// Update the credit's pod.
 		$update_fields = [
+			'index'        => $this->index,
 			'year'         => $this->year,
 			'venue'        => $this->venue,
 			'job_title'    => $this->job_title,
@@ -197,6 +207,25 @@ class Get_To_Work_Credit {
 	}
 
 	/**
+	 * Set the credit's `index` field.
+	 *
+	 * @return void
+	 */
+	public function update_index() {
+		// Get the user's pod.
+		$pod = pods( 'credit', $this->id );
+
+		// Update the credit's pod.
+		$update_fields = [
+			'index' => $this->year,
+		];
+
+		// TODO investigate error handling (does $pod->save() return 0 on failure?)
+
+		return $pod->save( $update_fields );
+	}
+
+	/**
 	 * Get the credit's data for GraphQL.
 	 *
 	 * @return array The credit's data.
@@ -205,6 +234,7 @@ class Get_To_Work_Credit {
 		return [
 			'databaseId'  => $this->id,
 			'title'       => $this->title,
+			'index'       => $this->index,
 			'jobTitle'    => $this->job_title,
 			'jobLocation' => $this->job_location,
 			'venue'       => $this->venue,

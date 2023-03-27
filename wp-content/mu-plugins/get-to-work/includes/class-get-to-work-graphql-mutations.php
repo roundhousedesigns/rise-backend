@@ -149,6 +149,46 @@ class Get_To_Work_GraphQL_Mutations {
 		);
 
 		register_graphql_mutation(
+			'updateCreditOrder',
+			[
+				'inputFields'         => [
+					'creditIds' => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The IDs of the credits in the order they should be displayed.', 'gtw' ),
+					],
+				],
+				'outputFields'        => [
+					'creditIds' => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The IDs in their saved order.', 'gtw' ),
+						'resolve'     => function ( $payload ) {
+							return $payload['creditIds'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					if ( ! isset( $input['creditIds'] ) ) {
+						return [
+							'creditIds' => new \WP_Error( 'no_id', __( 'No IDs provided.', 'gtw' ) ),
+						];
+					}
+
+					$result = [];
+					foreach ( $input['creditIds'] as $index => $id ) {
+						$result[] = update_credit_index( absint( $id ), $index );
+					}
+
+					// TODO maybe return a WP_Error object instead of 0.
+					return [
+						'creditIds' => $result,
+					];
+				},
+			]
+		);
+
+		register_graphql_mutation(
 			'deleteOwnCredit',
 			[
 				'inputFields'         => [
