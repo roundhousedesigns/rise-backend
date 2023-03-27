@@ -1,9 +1,3 @@
 # Backend TODO
 
-## TODAY
-
-- [ ] Retrieve all possible values for either taxonomy or meta field.
-
-## TODO
-
-- [ ] Create UserProfile graphql object type (register_graphql_object_type)
+- [ ] Secure S3 + CloudFront with WP Offload Media (https://deliciousbrains.com/wp-offload-media/doc/cloudfront-setup/)
