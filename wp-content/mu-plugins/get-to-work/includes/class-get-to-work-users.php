@@ -17,7 +17,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_roles() {
-		$role = get_role( 'editor' );
+		$role = get_role( 'crew-member' );
 		$role->add_cap( 'edit_credits' );
 		$role->add_cap( 'read_credits' );
 		$role->add_cap( 'delete_credits' );
@@ -30,6 +30,8 @@ class Get_To_Work_Users {
 				'read'                     => true,
 				'list_users'               => true,
 				'upload_files'             => true,
+				'unfiltered_upload'        => true,
+				'edit_files'               => true,
 				'edit_credits'             => true,
 				'read_credits'             => true,
 				'edit_published_credits'   => true,
