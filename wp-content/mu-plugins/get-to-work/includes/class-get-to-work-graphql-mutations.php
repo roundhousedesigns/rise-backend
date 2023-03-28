@@ -148,6 +148,9 @@ class Get_To_Work_GraphQL_Mutations {
 			],
 		);
 
+		/**
+		 * Update a user's credit order.
+		 */
 		register_graphql_mutation(
 			'updateCreditOrder',
 			[
@@ -188,6 +191,9 @@ class Get_To_Work_GraphQL_Mutations {
 			]
 		);
 
+		/**
+		 * Delete a user's credit.
+		 */
 		register_graphql_mutation(
 			'deleteOwnCredit',
 			[
@@ -224,6 +230,60 @@ class Get_To_Work_GraphQL_Mutations {
 					} else {
 						return new WP_Error( 'delete_failed', __( 'The credit could not be deleted.', 'gtw' ) );
 					}
+				},
+			]
+		);
+
+		/**
+		 * Upload a file.
+		 */
+		register_graphql_mutation(
+			'uploadFile', [
+				'inputFields'         => [
+					'file'   => [
+						'type'        => ['non_null' => 'Upload'],
+						'description' => __( 'The file to upload.', 'gtw' ),
+					],
+					'userId' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the user to set the profile image for.', 'gtw' ),
+					],
+				],
+				'outputFields'        => [
+					'imageUrl' => [
+						'type'    => 'String',
+						'resolve' => function ( $payload ) {
+							return $payload['imageUrl'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					if ( ! function_exists( 'wp_handle_sideload' ) ) {
+						require_once ABSPATH . 'wp-admin/includes/file.php';
+					}
+
+					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
+
+					$uploaded = wp_handle_sideload( $input['file'], [
+						'test_form' => false,
+						'test_type' => true,
+					] );
+
+					// Get the attachment ID from the uploaded file.
+					$attachment_id = get_attachment_id_by_url( $uploaded['url'] );
+
+					// Set the user's profile image.
+					if ( $attachment_id && $user_id ) {
+						$pod = pods( 'user', $user_id );
+
+						$update_fields['image'] = $attachment_id;
+
+						$pod->save( $update_fields );
+					}
+
+					return [
+						'imageUrl' => $uploaded['url'],
+					];
 				},
 			]
 		);

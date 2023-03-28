@@ -175,3 +175,35 @@ function import_positions_and_skills_from_csv( $file_path ) {
 		}
 	}
 }
+
+/**
+ * Gets a newly uploaded file's attachment ID.
+ *
+ * @param  string $url The URL of the file.
+ * @return int    The attachment ID.
+ */
+function get_attachment_id_by_url( $url ) {
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+
+	$file             = [];
+	$file['name']     = basename( $url );
+	$file['tmp_name'] = download_url( $url );
+	$file['error']    = '';
+	$file['size']     = filesize( $file['tmp_name'] );
+
+	if ( is_wp_error( $file['tmp_name'] ) ) {
+		@unlink( $file['tmp_name'] );
+		return false;
+	}
+
+	$id = media_handle_sideload( $file, 0 );
+
+	if ( is_wp_error( $id ) ) {
+		@unlink( $file['tmp_name'] );
+		return false;
+	}
+
+	return $id;
+}
