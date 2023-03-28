@@ -309,7 +309,6 @@ class Get_To_Work {
 		 */
 		$this->loader->add_action( 'init', $plugin_data, 'position_init' );
 		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'position_updated_messages' );
-		$this->loader->add_filter( 'terms_clauses', $plugin_data, 'position_terms_plural_parents_query_param', 10, 3 );
 
 		/**
 		 * Taxonomy: skill (`credit`)

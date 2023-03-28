@@ -108,6 +108,32 @@ class Get_To_Work_Credit {
 	}
 
 	/**
+	 * Retrieves the 1st-level `position` taxonomy terms by the 2nd-level terms.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return array The 1st-level `position` taxonomy terms.
+	 */
+	private function get_departments() {
+		if ( $this->jobs ) {
+			$jobs = get_terms(
+				[
+					'taxonomy'   => 'position',
+					'include'    => $this->jobs,
+					'hide_empty' => false,
+				]
+			);
+
+			$departments = [];
+			foreach ( $jobs as $job ) {
+				$departments[] = $job->parent;
+			}
+
+			return array_unique( $departments );
+		}
+	}
+
+	/**
 	 * Update the user's profile data.
 	 *
 	 * @return int|WP_Error The user ID on success. WP_Error on failure.
@@ -230,7 +256,7 @@ class Get_To_Work_Credit {
 	 *
 	 * @return array The credit's data.
 	 */
-	public function prepare_for_graphql() {
+	public function prepare_credit_for_graphql() {
 		return [
 			'databaseId'  => $this->id,
 			'title'       => $this->title,
@@ -239,10 +265,11 @@ class Get_To_Work_Credit {
 			'jobLocation' => $this->job_location,
 			'venue'       => $this->venue,
 			'year'        => $this->year,
-			// HACK get the first job's parent term ID.
-			'department'  => $this->jobs ? get_term( $this->jobs[0], 'position' )->parent : null,
-			'jobs'        => $this->jobs,
 			'skills'      => $this->skills,
+			// TODO should 'departments' be a class property?
+			// TODO department: change to plural key
+			'department'  => $this->get_departments(),
+			'jobs'        => $this->jobs,
 		];
 	}
 }

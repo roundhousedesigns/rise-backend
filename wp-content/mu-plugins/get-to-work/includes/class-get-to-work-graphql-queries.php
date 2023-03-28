@@ -82,7 +82,7 @@ class Get_To_Work_GraphQL_Queries {
 						],
 					];
 
-					// MAYBE run individiual queries for each job and merge the results to enable job-weighted sort of results.
+					// MAYBE run individiual queries for each job and merge the results to enable job-weighted sorting of results.
 					foreach ( $args['jobs'] as $job ) {
 						$skill_query_args['meta_query'][] = [
 							'key'     => 'jobs',
@@ -105,6 +105,59 @@ class Get_To_Work_GraphQL_Queries {
 					return $prepared_skills;
 				},
 			],
+		);
+
+		register_graphql_field(
+			'RootQuery',
+			'jobsByDepartments',
+			[
+				'type'        => ['list_of' => 'PositionOutput'],
+				'description' => __( 'The jobs related to the selected departments.', 'gtw' ),
+				'args'        => [
+					'departments' => [
+						'type' => ['list_of' => 'ID'],
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$departments = $args['departments'];
+					if ( count( $departments ) === 1 && empty( $departments[0] ) ) {
+						// retrieve only top-level terms for `position`
+						$terms = get_terms( [
+							'taxonomy'   => 'position',
+							'hide_empty' => false,
+							'parent'     => 0,
+						] );
+					} else {
+						// get all terms that are children of any of the term ids in the `$departments` array
+						$all_children = [];
+						foreach ( $departments as $department ) {
+							$children = get_term_children( $department, 'position' );
+							if ( ! empty( $children ) ) {
+								$all_children = array_merge( $all_children, $children );
+							}
+						}
+
+						$terms = get_terms( [
+							'taxonomy'   => 'position',
+							'hide_empty' => false,
+							'include'    => $all_children,
+						] );
+					}
+
+					$prepared_terms = [];
+
+					foreach ( $terms as $term ) {
+						$prepared_terms[] = [
+							'databaseId'       => $term->term_id,
+							'parentDatabaseId' => $term->parent,
+							'name'             => $term->name,
+							'slug'             => $term->slug,
+						];
+					}
+
+					return $prepared_terms;
+				},
+			]
 		);
 
 		/**

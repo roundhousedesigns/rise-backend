@@ -201,6 +201,9 @@ class Get_To_Work_GraphQL_Types {
 			]
 		);
 
+		/**
+		 * CreditOutput output type.
+		 */
 		register_graphql_object_type(
 			'CreditOutput',
 			[
@@ -234,9 +237,10 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The credit\'s year.', 'gtw' ),
 					],
+					// TODO department: change to plural key
 					'department'  => [
-						'type'        => 'Int',
-						'description' => __( 'The credit\'s 1st-level position term ID.', 'gtw' ),
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The credit\'s 1st-level position term IDs.', 'gtw' ),
 					],
 					'jobs'        => [
 						'type'        => ['list_of' => 'Int'],
@@ -245,6 +249,34 @@ class Get_To_Work_GraphQL_Types {
 					'skills'      => [
 						'type'        => ['list_of' => 'Int'],
 						'description' => __( 'The credit\'s skill terms.', 'gtw' ),
+					],
+				],
+			]
+		);
+
+		/**
+		 * PositionOutput output type.
+		 */
+		register_graphql_object_type(
+			'PositionOutput',
+			[
+				'description' => __( 'A position term prepared for the frontend.', 'gtw' ),
+				'fields'      => [
+					'databaseId'       => [
+						'type'        => 'ID',
+						'description' => __( 'The term ID.', 'gtw' ),
+					],
+					'parentDatabaseId' => [
+						'type'        => 'ID',
+						'description' => __( 'The term parent ID.', 'gtw' ),
+					],
+					'name'             => [
+						'type'        => 'String',
+						'description' => __( 'The term name.', 'gtw' ),
+					],
+					'slug'             => [
+						'type'        => 'String',
+						'description' => __( 'The term slug.', 'gtw' ),
 					],
 				],
 			]

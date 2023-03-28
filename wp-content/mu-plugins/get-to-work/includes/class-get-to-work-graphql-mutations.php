@@ -142,7 +142,7 @@ class Get_To_Work_GraphQL_Mutations {
 
 					// TODO maybe return a WP_Error object instead of 0.
 					return [
-						'updatedCredit' => ! is_wp_error( $result ) ? $credit->prepare_for_graphql() : 0,
+						'updatedCredit' => ! is_wp_error( $result ) ? $credit->prepare_credit_for_graphql() : 0,
 					];
 				},
 			],
@@ -227,42 +227,5 @@ class Get_To_Work_GraphQL_Mutations {
 				},
 			]
 		);
-
-		/**
-		 * Register user mutations.
-		 *
-		 * @return int The user ID on success, `0` on failure.
-		 */
-		// register_graphql_mutation(
-		// 	'uploadFile', [
-		// 		'inputFields'         => [
-		// 			'file' => [
-		// 				'type' => ['non_null' => 'Upload'],
-		// 			],
-		// 		],
-		// 		'outputFields'        => [
-		// 			'text' => [
-		// 				'type'    => 'String',
-		// 				'resolve' => function ( $payload ) {
-		// 					return $payload['text'];
-		// 				},
-		// 			],
-		// 		],
-		// 		'mutateAndGetPayload' => function ( $input ) {
-		// 			if ( ! function_exists( 'wp_handle_sideload' ) ) {
-		// 				require_once ( ABSPATH . 'wp-admin/includes/file.php' );
-		// 			}
-
-		// 			wp_handle_sideload( $input['file'], [
-		// 				'test_form' => false,
-		// 				'test_type' => false,
-		// 			] );
-
-		// 			return [
-		// 				'text' => 'Uploaded file was "' . $input['file']['name'] . '" (' . $input['file']['type'] . ').',
-		// 			];
-		// 		},
-		// 	]
-		// );
 	}
 }

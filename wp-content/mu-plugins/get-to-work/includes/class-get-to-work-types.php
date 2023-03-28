@@ -63,58 +63,6 @@ class Get_To_Work_Types {
 	}
 
 	/**
-	 * Adds the `parents` (plural) argument to `position` taxonomy queries by filtering the SQL query string.
-	 *
-	 * @param  array $pieces     The pieces of the SQL query.
-	 * @param  array $taxonomies The taxonomies being queried.
-	 * @param  array $args       The arguments for the taxonomy query.
-	 * @return array The filtered pieces of the SQL query.
-	 */
-	public function position_terms_plural_parents_query_param( $pieces, $taxonomies, $args ) {
-		// Bail if we are not currently handling our specified taxonomy
-		if ( ! in_array( 'position', $taxonomies, true ) ) {
-			return $pieces;
-		}
-
-		// Check if our custom argument, 'parents' is set, if not, bail
-		if ( ! isset( $args['parents'] )
-			|| ! is_array( $args['parents'] )
-		) {
-			return $pieces;
-		}
-
-		// If 'parents' is set, make sure that 'parent' and 'child_of' is not set
-		if ( $args['parent']
-			|| $args['child_of']
-		) {
-			return $pieces;
-		}
-
-		// Validate the array as an array of integers
-		$parents = array_map( 'intval', $args['parents'] );
-
-		// Loop through $parents and set the WHERE clause accordingly
-		$where = [];
-		foreach ( $parents as $parent ) {
-			// Make sure $parent is not 0, if so, skip and continue
-			if ( 0 === $parent ) {
-				continue;
-			}
-
-			$where[] = " tt.parent = '$parent'";
-		}
-
-		if ( ! $where ) {
-			return $pieces;
-		}
-
-		$where_string = implode( ' OR ', $where );
-		$pieces['where'] .= " AND ( $where_string ) ";
-
-		return $pieces;
-	}
-
-	/**
 	 * Registers the `skill` taxonomy,
 	 * for use with 'credit'.
 	 */
