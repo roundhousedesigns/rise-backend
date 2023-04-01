@@ -29,10 +29,6 @@ class Get_To_Work_GraphQL_Types {
 			[
 				'description' => __( 'A user\'s personal links.', 'gtw' ),
 				'fields'      => [
-					'website'   => [
-						'type'        => 'String',
-						'description' => __( 'The user\'s website.', 'gtw' ),
-					],
 					'facebook'  => [
 						'type'        => 'String',
 						'description' => __( 'The user\'s Facebook profile.', 'gtw' ),
@@ -105,6 +101,14 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s location.', 'gtw' ),
 					],
+					'website'            => [
+						'type'        => 'String',
+						'description' => __( 'The user\'s website.', 'gtw' ),
+					],
+					'socials'            => [
+						'type'        => 'PersonalLinks',
+						'description' => __( 'The user\'s social media and external web links.', 'gtw' ),
+					],
 					'resume'             => [
 						'type'        => 'String',
 						'description' => __( 'The user\'s resume.', 'gtw' ),
@@ -140,10 +144,6 @@ class Get_To_Work_GraphQL_Types {
 					'personalIdentities' => [
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s additional personal identities.', 'gtw' ),
-					],
-					'socials'            => [
-						'type'        => 'PersonalLinks',
-						'description' => __( 'The user\'s social media and external web links.', 'gtw' ),
 					],
 				],
 			]

@@ -244,24 +244,30 @@ class Get_To_Work_GraphQL_Mutations {
 						'type'        => ['non_null' => 'Upload'],
 						'description' => __( 'The file to upload.', 'gtw' ),
 					],
+					'name'   => [
+						'type'        => 'String',
+						'description' => __( 'The name of the field.', 'gtw' ),
+					],
 					'userId' => [
 						'type'        => 'ID',
 						'description' => __( 'The ID of the user to set the profile image for.', 'gtw' ),
 					],
 				],
 				'outputFields'        => [
-					'imageUrl' => [
+					'fileUrl' => [
 						'type'    => 'String',
 						'resolve' => function ( $payload ) {
-							return $payload['imageUrl'];
+							return $payload['fileUrl'];
 						},
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
+					// TODO check if this is necessary
 					if ( ! function_exists( 'wp_handle_sideload' ) ) {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
 					}
 
+					$field   = isset( $input['name'] ) ? $input['name'] : '';
 					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
 
 					$uploaded = wp_handle_sideload( $input['file'], [
@@ -276,14 +282,14 @@ class Get_To_Work_GraphQL_Mutations {
 					if ( $attachment_id && $user_id ) {
 						$pod = pods( 'user', $user_id );
 
-						$update_fields['image'] = $attachment_id;
+						$update_fields[$field] = $attachment_id;
 
 						$pod->save( $update_fields );
+
+						return ['fileUrl' => wp_get_attachment_image_url( $attachment_id, 'medium' )];
 					}
 
-					return [
-						'imageUrl' => $uploaded['url'],
-					];
+					throw new WP_Error( 'upload_failed', __( 'The file could not be uploaded.', 'gtw' ) );
 				},
 			]
 		);
