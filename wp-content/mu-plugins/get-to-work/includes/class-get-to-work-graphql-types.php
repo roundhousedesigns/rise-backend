@@ -117,6 +117,10 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the user will travel.', 'gtw' ),
 					],
+					'willTour'           => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the user will tour.', 'gtw' ),
+					],
 					// 'media'        => [
 					// 	'type'        => 'String',
 					// 	'description' => __( 'The user\'s media.', 'gtw' ),

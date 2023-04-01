@@ -85,6 +85,7 @@ class Get_To_Work_UserProfile {
 		'phone'       => 'phone',
 		'description' => 'description',
 		'willTravel'  => 'will_travel',
+		'willTour'    => 'will_tour',
 		'resume'      => 'resume',
 		'education'   => 'education',
 		'media'       => 'media',
