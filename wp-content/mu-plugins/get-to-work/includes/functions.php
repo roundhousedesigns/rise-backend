@@ -207,3 +207,16 @@ function get_attachment_id_by_url( $url ) {
 
 	return $id;
 }
+
+/**
+ * Converts a string from camelCase to underscore_notation.
+ *
+ * @param  string $string
+ * @return string The converted string.
+ */
+function camel_case_to_underscore( $string ) {
+	$string = preg_replace( '/(?!^)[[:upper:]]/', '_$0', $string );
+	$string = preg_replace( '/([a-zA-Z])([0-9])/', '$1_$2', $string );
+	$string = strtolower( $string );
+	return $string;
+}

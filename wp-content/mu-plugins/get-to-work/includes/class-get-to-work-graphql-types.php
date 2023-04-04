@@ -121,10 +121,14 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the user will tour.', 'gtw' ),
 					],
-					// 'media'        => [
-					// 	'type'        => 'String',
-					// 	'description' => __( 'The user\'s media.', 'gtw' ),
-					// ],
+					'mediaVideo1'        => [
+						'type'        => 'String',
+						'description' => __( 'A user video oEmbed URL.', 'gtw' ),
+					],
+					'mediaVideo2'        => [
+						'type'        => 'String',
+						'description' => __( 'A user video oEmbed URL.', 'gtw' ),
+					],
 					'education'          => [
 						'type'        => 'String',
 						'description' => __( 'The user\'s education.', 'gtw' ),

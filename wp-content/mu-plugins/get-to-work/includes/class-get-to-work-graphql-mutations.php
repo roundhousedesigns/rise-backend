@@ -267,7 +267,7 @@ class Get_To_Work_GraphQL_Mutations {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
 					}
 
-					$field   = isset( $input['name'] ) ? $input['name'] : '';
+					$field   = isset( $input['name'] ) ? camel_case_to_underscore( $input['name'] ) : '';
 					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
 
 					$uploaded = wp_handle_sideload( $input['file'], [
