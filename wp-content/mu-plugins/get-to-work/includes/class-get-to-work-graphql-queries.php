@@ -171,7 +171,7 @@ class Get_To_Work_GraphQL_Queries {
 				'type'        => ['list_of' => 'Int'],
 				'description' => __( 'Users with matching selected criteria.', 'gtw' ),
 				'args'        => [
-					'jobs'               => [
+					'positions'          => [
 						'description' => __( 'A list of `position` term ids', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
@@ -195,21 +195,25 @@ class Get_To_Work_GraphQL_Queries {
 						'description' => __( 'A list of `gender_identity` term ids', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
-					'personalIdentities' => [
-						'description' => __( 'A list of `personal_identity` term ids', 'gtw' ),
-						'type'        => ['list_of' => 'ID'],
-					],
 					'racialIdentities'   => [
 						'description' => __( 'A list of `racial_identity` term ids', 'gtw' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'personalIdentities' => [
+						'description' => __( 'A list of `personal_identity` term ids', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'exclude'            => [
 						'description' => __( 'A list of user ids to exclude (for now, used for the current user)', 'gtw' ),
 						'type'        => ['list_of' => 'ID'],
 					],
-					// TODO Add more filter args.
 				],
 				'resolve'     => function ( $root, $args ) {
+					$credit_filters = [
+						'position' => isset( $args['positions'] ) ? $args['positions'] : '',
+						'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
+					];
+
 					$user_filters = [
 						'union'             => isset( $args['unions'] ) ? $args['unions'] : '',
 						'location'          => isset( $args['locations'] ) ? $args['locations'] : '',
@@ -217,11 +221,6 @@ class Get_To_Work_GraphQL_Queries {
 						'gender_identity'   => isset( $args['genderIdentities'] ) ? $args['genderIdentities'] : '',
 						'personal_identity' => isset( $args['personalIdentities'] ) ? $args['personalIdentities'] : '',
 						'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
-					];
-
-					$credit_filters = [
-						'position' => isset( $args['jobs'] ) ? $args['jobs'] : '',
-						'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
 					];
 
 					// Start building the Credit query args.
@@ -248,13 +247,19 @@ class Get_To_Work_GraphQL_Queries {
 						return [];
 					}
 
-					// Get the authors of the credits.
+					// Collect the credit authors.
 					$authors = [];
 					foreach ( $credits as $credit ) {
 						$authors[] = $credit->post_author;
 					}
 
-					// error_log( print_r( $authors, true ) );
+					// Filter out any excluded users.
+					if ( isset( $args['exclude'] ) ) {
+						$authors = array_diff( $authors, $args['exclude'] );
+					}
+
+					// Filter out authors with no name set, or no contact info.
+					$authors = array_filter( array_unique( $authors ), 'remove_incomplete_profiles_from_search' );
 
 					// Filter users by selected taxonomies.
 					$user_taxonomy_terms = [];
@@ -266,26 +271,10 @@ class Get_To_Work_GraphQL_Queries {
 						$user_taxonomy_terms[$tax] = $term_ids;
 					}
 
-					// FIXME Querying users by taxonomy terms is not working yet.
+					// Filter users by taxonomy
+					$filtered_authors = query_users_with_terms( $user_taxonomy_terms, $authors );
 
-					// $filtered_authors = query_users_with_terms( $user_taxonomy_terms, $authors );
-
-					// error_log( print_r( $filtered_authors, true ) );
-
-					// error_log( print_r( $filtered_user_ids, true ) );
-
-					// Filter out any excluded users.
-					if ( isset( $args['exclude'] ) ) {
-						$authors = array_diff( $authors, $args['exclude']
-						);
-					}
-
-					// Start building the User query args, and if authors were found matching the `position` and `skill` filters, limit the query to those users.
-					$user_query_args = ['include' => $authors];
-
-					$results = get_users( $user_query_args );
-
-					return wp_list_pluck( $results, 'id' );
+					return $filtered_authors;
 				},
 			],
 		);

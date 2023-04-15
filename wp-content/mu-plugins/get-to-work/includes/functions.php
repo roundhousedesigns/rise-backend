@@ -11,34 +11,6 @@
  */
 
 /**
- * Retrieve the user IDs for users with the given terms.
- *
- * @param  array $terms           The terms to query users for. Keys are taxonomies, values are arrays of term IDs.
- * @param  array $include_authors An array of user IDs to include in the query.
- * @return int[] The user IDs.
- */
-function query_users_with_terms( $terms, $include_authors = [] ) {
-	// Get the object IDs for the terms in the taxonomies
-	$object_ids = [];
-	foreach ( $terms as $taxonomy => $term_ids ) {
-		$object_ids = get_objects_in_term( $term_ids, $taxonomy );
-	}
-
-	// Remove duplicates from the object IDs array
-	$object_ids = array_unique( $object_ids );
-
-	// Query users based on the object IDs
-	$args = [
-		'include' => $object_ids,
-		'orderby' => 'include',
-	];
-
-	$users = get_users( $args );
-
-	return wp_list_pluck( $users, 'ID' );
-}
-
-/**
  * Update a credit's display index.
  *
  * // TODO Maybe move this to a class method on Get_To_Work_Credit?
@@ -48,7 +20,6 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
  * @return int The credit's ID.
  */
 function update_credit_index( $credit_id, $index ) {
-
 	// Get the user's pod.
 	$pod = pods( 'credit', $credit_id );
 
@@ -59,6 +30,30 @@ function update_credit_index( $credit_id, $index ) {
 
 	// TODO investigate error handling (does $pod->save() return 0 on failure?)
 	return $pod->save( $update_fields );
+}
+
+/**
+ * Filters out user profiles which don't have either a first or last name, or which have no contact information.
+ *
+ * Used to prevent incomplete profiles from appearing in search.
+ *
+ * @param  int     $author_id
+ * @return boolean The result of the filter operation.
+ */
+function remove_incomplete_profiles_from_search( $author_id ) {
+	$meta = get_user_meta( $author_id );
+	if ( ! $meta['first_name'] && ! $meta['last_name'] ) {
+		return false;
+	}
+
+	$pod = pods( 'user', $author_id );
+
+	// If email, phone, and website are all unset, don't show this user.
+	if ( ! $pod->field( 'contact_email', true, true ) && ! $pod->field( 'phone', true, true ) && ! $pod->field( 'website_url', true, true ) ) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
@@ -219,4 +214,47 @@ function camel_case_to_underscore( $string ) {
 	$string = preg_replace( '/([a-zA-Z])([0-9])/', '$1_$2', $string );
 	$string = strtolower( $string );
 	return $string;
+}
+
+/**
+ * Retrieve the user IDs for users with the given terms.
+ *
+ * @param  array $terms           The terms to query users for. Keys are taxonomies, values are arrays of term IDs.
+ * @param  array $include_authors An array of user IDs to include in the query.
+ * @return int[] The user IDs.
+ */
+function query_users_with_terms( $terms, $include_authors = [] ) {
+	if ( ! $terms ) {
+		return $include_authors;
+	}
+
+	// Get the object IDs for the terms in the taxonomies
+	$user_ids = [];
+	foreach ( $terms as $taxonomy => $term_ids ) {
+		$user_ids = array_merge( $user_ids, get_objects_in_term( $term_ids, $taxonomy ) );
+	}
+
+	// Filter out IDs from the $user_ids array that are not also in the $include_authors array
+	if ( ! empty( $include_authors ) ) {
+		$user_ids = array_intersect( $user_ids, $include_authors );
+	}
+
+	// Remove duplicates from the object IDs array
+	$user_ids = array_unique( $user_ids );
+
+	if ( ! $user_ids ) {
+		return [];
+	}
+
+	// Query users based on the object IDs
+	$args = [
+		'include' => $user_ids,
+		'orderby' => 'include',
+	];
+
+	// TODO Use the $users query to adjust the search results order (otherwise this is unnecessary).
+	// Retrieve users based on all of our querying and filtration.
+	$users = get_users( $args );
+
+	return wp_list_pluck( $users, 'ID' );
 }
