@@ -12,44 +12,6 @@
 
 class Get_To_Work_GraphQL_Mutations {
 	/**
-	 * The allowed origins for CORS.
-	 *
-	 * @var array $allowed_origins The allowed origins for CORS.
-	 */
-	protected $allowed_origins;
-
-	/**
-	 * Get_To_Work_GraphQL_Mutations constructor.
-	 *
-	 * @param array $allowed_origins
-	 */
-	public function __construct( $allowed_origins = [] ) {
-		$this->allowed_origins = $allowed_origins;
-	}
-
-	/**
-	 * Set CORS to allow frontend logins
-	 *
-	 * @since 0.0.1
-	 *
-	 * @param  array $headers The HTTP headers present.
-	 * @return array The modified headers.
-	 */
-	public function response_headers_to_send( $headers ) {
-		$http_origin = get_http_origin();
-
-		if ( in_array( $http_origin, $this->allowed_origins, true ) ) {
-			// If the request is coming from an allowed origin, tell the browser it can accept the response.
-			$headers['Access-Control-Allow-Origin'] = $http_origin;
-		}
-
-		// Tells browsers to expose the response to frontend JavaScript code when the request credentials mode is "include".
-		$headers['Access-Control-Allow-Credentials'] = 'true';
-
-		return $headers;
-	}
-
-	/**
 	 * Run the registrations.
 	 *
 	 * @since 0.1.0

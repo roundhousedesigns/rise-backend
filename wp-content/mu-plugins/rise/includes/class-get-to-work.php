@@ -59,22 +59,6 @@ class Get_To_Work {
 	protected $version;
 
 	/**
-	 * The allowed origins for CORS.
-	 *
-	 * @access   public
-	 * @var string
-	 * @since 0.1.0
-	 */
-	public $allowed_origins = [
-		'http://localhost:3000',
-		'http://localhost:4173',
-		'https://gtw-frontend.pages.dev',
-		'https://dev.gtw-frontend.pages.dev',
-		'https://alpha.gettowork.org',
-		'https://beta.gettowork.org',
-	];
-
-	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -364,10 +348,9 @@ class Get_To_Work {
 	 * @return void
 	 */
 	private function define_graphql_mutations() {
-		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations( $this->allowed_origins );
+		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations();
 
 		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
-		$this->loader->add_filter( 'graphql_response_headers_to_send', $plugin_data_mutations, 'response_headers_to_send' );
 	}
 
 	/**

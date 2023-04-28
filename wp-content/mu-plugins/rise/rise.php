@@ -1,8 +1,7 @@
 <?php
 /**
- * Plugin Name:       Get To Work
- * Plugin URI:        https://gtw.roundhouse-designs.com
- * Description:       The main site functionality for the Get To Work backend.
+ * Plugin Name:       Rise Theatre Directory
+ * Description:       The main site functionality for the Rise Theatre Directory backend.
  * Version:           0.2.0
  * Author:            Roundhouse Designs
  * Author URI:        https://roundhouse-designs.com

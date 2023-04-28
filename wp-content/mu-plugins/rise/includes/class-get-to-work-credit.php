@@ -67,6 +67,30 @@ class Get_To_Work_Credit {
 	private $year;
 
 	/**
+	 * The Credit's work start meta field.
+	 *
+	 * @var string $year The Credit's work_start meta field.
+	 * @since 0.1.0
+	 */
+	private $work_start;
+
+	/**
+	 * The Credit's work end meta field.
+	 *
+	 * @var string $year The Credit's work_end meta field.
+	 * @since 0.1.0
+	 */
+	private $work_end;
+
+	/**
+	 * The Credit's currently working meta field.
+	 *
+	 * @var boolean $year The Credit's work_current meta field.
+	 * @since 0.1.0
+	 */
+	private $work_current;
+
+	/**
 	 * The Credit's 2nd-level `position` taxonomy terms.
 	 *
 	 * @var int[] $jobs The credit's `position` IDs.
@@ -91,6 +115,7 @@ class Get_To_Work_Credit {
 	 * @return void
 	 */
 	public function __construct( $data ) {
+		error_log( $data['workCurrent'] );
 		// TODO sanitize input.
 		$this->id           = $data['isNew'] ? 0 : $data['id'];
 		$this->index        = $data['index'];
@@ -99,6 +124,9 @@ class Get_To_Work_Credit {
 		$this->job_location = $data['jobLocation'];
 		$this->venue        = $data['venue'];
 		$this->year         = $data['year'];
+		$this->work_start   = $data['workStart'];
+		$this->work_end     = $data['workEnd'];
+		$this->work_current = $data['workCurrent'];
 		$this->jobs         = $data['positions'];
 		$this->skills       = $data['skills'];
 	}
@@ -204,6 +232,9 @@ class Get_To_Work_Credit {
 		$update_fields = [
 			'index'        => $this->index,
 			'year'         => $this->year,
+			'work_start'   => $this->work_start,
+			'work_end'     => $this->work_end,
+			'work_current' => $this->work_current,
 			'venue'        => $this->venue,
 			'job_title'    => $this->job_title,
 			'job_location' => $this->job_location,
@@ -243,11 +274,10 @@ class Get_To_Work_Credit {
 
 		// Update the credit's pod.
 		$update_fields = [
-			'index' => $this->year,
+			'index' => $this->index,
 		];
 
 		// TODO investigate error handling (does $pod->save() return 0 on failure?)
-
 		return $pod->save( $update_fields );
 	}
 
@@ -265,6 +295,9 @@ class Get_To_Work_Credit {
 			'jobLocation' => $this->job_location,
 			'venue'       => $this->venue,
 			'year'        => $this->year,
+			'workStart'   => $this->work_start,
+			'workEnd'     => $this->work_end,
+			'workCurrent' => $this->work_current,
 			'skills'      => $this->skills,
 			// TODO should 'departments' be a class property?
 			// TODO department: change to plural key

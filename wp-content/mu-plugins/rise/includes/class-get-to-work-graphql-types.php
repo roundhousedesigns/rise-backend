@@ -189,9 +189,21 @@ class Get_To_Work_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The credit\'s venue.', 'gtw' ),
 					],
-					'year'        => [
+					'year'        => [ // TODO deprecate year in favor of workStart and workEnd
 						'type'        => 'String',
 						'description' => __( 'The credit\'s year.', 'gtw' ),
+					],
+					'workStart'   => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s work start date.', 'gtw' ),
+					],
+					'workEnd'     => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s work end date.', 'gtw' ),
+					],
+					'workCurrent' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is a current job.', 'gtw' ),
 					],
 					'positions'   => [
 						'type'        => ['list_of' => 'ID'],
@@ -244,6 +256,18 @@ class Get_To_Work_GraphQL_Types {
 					'year'        => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s year.', 'gtw' ),
+					],
+					'workStart'   => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s work start date.', 'gtw' ),
+					],
+					'workEnd'     => [
+						'type'        => 'String',
+						'description' => __( 'The credit\'s work end date.', 'gtw' ),
+					],
+					'workCurrent' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is a current job.', 'gtw' ),
 					],
 					// TODO department: change to plural key
 					'department'  => [
