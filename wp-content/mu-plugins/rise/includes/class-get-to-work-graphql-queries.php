@@ -31,9 +31,11 @@ class Get_To_Work_GraphQL_Queries {
 	 * @return void
 	 */
 	private static function prepare_taxonomy_terms( $user_id, $taxonomy ) {
-		$terms = get_the_terms( $user_id, $taxonomy );
+		// Use the more general wp_get_object_terms instead of get_the_terms
+		// to ensure User object support.
+		$terms = wp_get_object_terms( $user_id, $taxonomy );
 
-		if ( ! $terms ) {
+		if (  ! $terms ) {
 			return [];
 		}
 
@@ -132,7 +134,7 @@ class Get_To_Work_GraphQL_Queries {
 						$all_children = [];
 						foreach ( $departments as $department ) {
 							$children = get_term_children( $department, 'position' );
-							if ( ! empty( $children ) ) {
+							if (  ! empty( $children ) ) {
 								$all_children = array_merge( $all_children, $children );
 							}
 						}
@@ -230,7 +232,7 @@ class Get_To_Work_GraphQL_Queries {
 					];
 
 					foreach ( $credit_filters as $taxonomy => $terms ) {
-						if ( ! empty( $terms ) ) {
+						if (  ! empty( $terms ) ) {
 							$credit_args['tax_query'][] = [
 								'taxonomy' => $taxonomy,
 								'field'    => 'term_id',
