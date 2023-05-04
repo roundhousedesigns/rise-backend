@@ -99,12 +99,12 @@ class Get_To_Work_Factory {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => true,
-			'capabilities'          => [
-				'manage_terms' => 'edit_posts',
-				'edit_terms'   => 'edit_posts',
-				'delete_terms' => 'edit_posts',
-				'assign_terms' => 'edit_posts',
-			],
+			// 'capabilities'          => [
+			// 	'manage_terms' => 'edit_posts',
+			// 	'edit_terms'   => 'edit_posts',
+			// 	'delete_terms' => 'edit_posts',
+			// 	'assign_terms' => 'edit_posts',
+			// ],
 			'labels'                => [
 				'name'                       => __( $plural, 'gtw' ),
 				'singular_name'              => _x( $singular, 'taxonomy general name', 'gtw' ),

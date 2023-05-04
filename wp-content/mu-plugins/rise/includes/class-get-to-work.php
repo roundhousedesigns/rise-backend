@@ -379,6 +379,7 @@ class Get_To_Work {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
+		$this->loader->add_filter( 'retrieve_password_message', $plugin_data, 'filter_retrieve_password_message', 20, 3 );
 	}
 
 	/**
