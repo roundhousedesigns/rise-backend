@@ -2,15 +2,15 @@
 /**
  * Registers user taxonomies and data.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 
-class Get_To_Work_Users {
+class Rise_Users {
 	/**
 	 * Add user roles with capabilities.
 	 *
@@ -51,7 +51,7 @@ class Get_To_Work_Users {
 	 * for use with 'user'.
 	 */
 	public function gender_identity_init() {
-		Get_To_Work_Factory::register_taxonomy( ['user'], 'gender_identity', 'gender_identities', 'Gender Identity', 'Gender Identities' );
+		Rise_Factory::register_taxonomy( ['user'], 'gender_identity', 'gender_identities', 'Gender Identity', 'Gender Identities' );
 	}
 
 	/**
@@ -60,7 +60,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_gender_identity_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Gender Identity', 'gtw' ), __( 'Gender Identity', 'gtw' ), 'gender_identity' );
+		self::add_taxonomy_to_user_menu( __( 'Gender Identity', 'rise' ), __( 'Gender Identity', 'rise' ), 'gender_identity' );
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Get_To_Work_Users {
 	 * for use with 'user'.
 	 */
 	public function racial_identity_init() {
-		Get_To_Work_Factory::register_taxonomy( ['user'], 'racial_identity', 'racial_identities', 'Racial Identity', 'Racial Identities' );
+		Rise_Factory::register_taxonomy( ['user'], 'racial_identity', 'racial_identities', 'Racial Identity', 'Racial Identities' );
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_racial_identity_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Racial Identity', 'gtw' ), __( 'Racial Identity', 'gtw' ), 'racial_identity' );
+		self::add_taxonomy_to_user_menu( __( 'Racial Identity', 'rise' ), __( 'Racial Identity', 'rise' ), 'racial_identity' );
 	}
 
 	/**
@@ -127,7 +127,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function personal_identity_init() {
-		Get_To_Work_Factory::register_taxonomy( ['user'], 'personal_identity', 'personal_identities', 'Personal Identity', 'Personal Identities' );
+		Rise_Factory::register_taxonomy( ['user'], 'personal_identity', 'personal_identities', 'Personal Identity', 'Personal Identities' );
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_personal_identity_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Personal Identity', 'gtw' ), __( 'Personal Identity', 'gtw' ), 'personal_identity' );
+		self::add_taxonomy_to_user_menu( __( 'Personal Identity', 'rise' ), __( 'Personal Identity', 'rise' ), 'personal_identity' );
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function union_init() {
-		Get_To_Work_Factory::register_taxonomy( ['user'], 'union', 'unions', 'Union', 'Unions', false );
+		Rise_Factory::register_taxonomy( ['user'], 'union', 'unions', 'Union', 'Unions', false );
 	}
 
 	/**
@@ -175,7 +175,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_union_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Unions', 'gtw' ), __( 'Unions', 'gtw' ), 'union' );
+		self::add_taxonomy_to_user_menu( __( 'Unions', 'rise' ), __( 'Unions', 'rise' ), 'union' );
 	}
 
 	/**
@@ -205,7 +205,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function location_init() {
-		Get_To_Work_Factory::register_taxonomy( ['user'], 'location', 'locations', 'Location', 'Locations', false );
+		Rise_Factory::register_taxonomy( ['user'], 'location', 'locations', 'Location', 'Locations', false );
 	}
 
 	/**
@@ -214,7 +214,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_location_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Locations', 'gtw' ), __( 'Locations', 'gtw' ), 'location' );
+		self::add_taxonomy_to_user_menu( __( 'Locations', 'rise' ), __( 'Locations', 'rise' ), 'location' );
 	}
 
 	/**
@@ -243,7 +243,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function experience_level_init() {
-		Get_To_Work_Factory::register_taxonomy( ['user'], 'experience_level', 'experience_levels', 'Experience Level', 'Experience Levels', false );
+		Rise_Factory::register_taxonomy( ['user'], 'experience_level', 'experience_levels', 'Experience Level', 'Experience Levels', false );
 	}
 
 	/**
@@ -252,7 +252,7 @@ class Get_To_Work_Users {
 	 * @return void
 	 */
 	public function add_experience_level_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Experience Levels', 'gtw' ), __( 'Experience Levels', 'gtw' ), 'experience_level' );
+		self::add_taxonomy_to_user_menu( __( 'Experience Levels', 'rise' ), __( 'Experience Levels', 'rise' ), 'experience_level' );
 	}
 
 	/**
@@ -314,11 +314,11 @@ class Get_To_Work_Users {
 		?>
 
 		<!-- Add a new section to the user profile edit screen for the given taxonomy -->
-		<h2><?php esc_html_e( $name, 'gtw' ); ?></h2>
+		<h2><?php esc_html_e( $name, 'rise' ); ?></h2>
 		<table class="form-table">
 			<tr>
 				<!-- Add a field for the taxonomy checkboxes -->
-				<th><label><?php esc_html_e( 'Select ' . $name, 'gtw' ); ?></label></th>
+				<th><label><?php esc_html_e( 'Select ' . $name, 'rise' ); ?></label></th>
 				<td>
 					<?php foreach ( $all_terms as $term ) : ?>
 						<label>

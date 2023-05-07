@@ -5,8 +5,8 @@
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  */
-class Get_To_Work_Loader {
+class Rise_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

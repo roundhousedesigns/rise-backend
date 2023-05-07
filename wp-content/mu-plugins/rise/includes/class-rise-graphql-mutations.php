@@ -2,15 +2,15 @@
 /**
  * Registers GraphQL mutations.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 
-class Get_To_Work_GraphQL_Mutations {
+class Rise_GraphQL_Mutations {
 	/**
 	 * Run the registrations.
 	 *
@@ -37,7 +37,7 @@ class Get_To_Work_GraphQL_Mutations {
 				'inputFields'         => [
 					'profile' => [
 						'type'        => 'UserProfileInput',
-						'description' => __( 'Profile data to update.', 'gtw' ),
+						'description' => __( 'Profile data to update.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -53,11 +53,11 @@ class Get_To_Work_GraphQL_Mutations {
 					// TODO Security check. Check if user is logged in.
 					if ( ! isset( $input['profile']['id'] ) ) {
 						return [
-							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
+							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
 						];
 					}
 
-					$user = new Get_To_Work_UserProfile( $input['profile'] );
+					$user = new Rise_UserProfile( $input['profile'] );
 
 					$result = $user->update_user_profile();
 
@@ -78,13 +78,13 @@ class Get_To_Work_GraphQL_Mutations {
 				'inputFields'         => [
 					'credit' => [
 						'type'        => 'CreditInput',
-						'description' => __( 'The credit data to insert.', 'gtw' ),
+						'description' => __( 'The credit data to insert.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'updatedCredit' => [
 						'type'        => 'CreditOutput',
-						'description' => __( 'The updated credit data.', 'gtw' ),
+						'description' => __( 'The updated credit data.', 'rise' ),
 						'resolve'     => function ( $payload ) {
 							return $payload['updatedCredit'];
 						},
@@ -95,11 +95,11 @@ class Get_To_Work_GraphQL_Mutations {
 
 					if ( ! isset( $input['credit'] ) ) {
 						return [
-							'updatedCredit' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
+							'updatedCredit' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
 						];
 					}
 
-					$credit = new Get_To_Work_Credit( $input['credit'] );
+					$credit = new Rise_Credit( $input['credit'] );
 					$result = $credit->update_credit();
 
 					// TODO maybe return a WP_Error object instead of 0.
@@ -119,13 +119,13 @@ class Get_To_Work_GraphQL_Mutations {
 				'inputFields'         => [
 					'creditIds' => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The IDs of the credits in the order they should be displayed.', 'gtw' ),
+						'description' => __( 'The IDs of the credits in the order they should be displayed.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'creditIds' => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The IDs in their saved order.', 'gtw' ),
+						'description' => __( 'The IDs in their saved order.', 'rise' ),
 						'resolve'     => function ( $payload ) {
 							return $payload['creditIds'];
 						},
@@ -136,7 +136,7 @@ class Get_To_Work_GraphQL_Mutations {
 
 					if ( ! isset( $input['creditIds'] ) ) {
 						return [
-							'creditIds' => new \WP_Error( 'no_id', __( 'No IDs provided.', 'gtw' ) ),
+							'creditIds' => new \WP_Error( 'no_id', __( 'No IDs provided.', 'rise' ) ),
 						];
 					}
 
@@ -162,13 +162,13 @@ class Get_To_Work_GraphQL_Mutations {
 				'inputFields'         => [
 					'id' => [
 						'type'        => 'ID',
-						'description' => __( 'The ID of the credit to delete.', 'gtw' ),
+						'description' => __( 'The ID of the credit to delete.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'result' => [
 						'type'        => 'Boolean',
-						'description' => __( 'The result of the delete operation.', 'gtw' ),
+						'description' => __( 'The result of the delete operation.', 'rise' ),
 						'resolve'     => function ( $payload ) {
 							return $payload['result'];
 						},
@@ -179,7 +179,7 @@ class Get_To_Work_GraphQL_Mutations {
 
 					if ( ! isset( $input['id'] ) ) {
 						return [
-							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'gtw' ) ),
+							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
 						];
 					}
 
@@ -190,7 +190,7 @@ class Get_To_Work_GraphQL_Mutations {
 							'result' => true,
 						];
 					} else {
-						return new WP_Error( 'delete_failed', __( 'The credit could not be deleted.', 'gtw' ) );
+						return new WP_Error( 'delete_failed', __( 'The credit could not be deleted.', 'rise' ) );
 					}
 				},
 			]
@@ -204,15 +204,15 @@ class Get_To_Work_GraphQL_Mutations {
 				'inputFields'         => [
 					'file'   => [
 						'type'        => ['non_null' => 'Upload'],
-						'description' => __( 'The file to upload.', 'gtw' ),
+						'description' => __( 'The file to upload.', 'rise' ),
 					],
 					'name'   => [
 						'type'        => 'String',
-						'description' => __( 'The name of the field.', 'gtw' ),
+						'description' => __( 'The name of the field.', 'rise' ),
 					],
 					'userId' => [
 						'type'        => 'ID',
-						'description' => __( 'The ID of the user to set the profile image for.', 'gtw' ),
+						'description' => __( 'The ID of the user to set the profile image for.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -251,7 +251,7 @@ class Get_To_Work_GraphQL_Mutations {
 						return ['fileUrl' => wp_get_attachment_image_url( $attachment_id, 'medium' )];
 					}
 
-					throw new WP_Error( 'upload_failed', __( 'The file could not be uploaded.', 'gtw' ) );
+					throw new WP_Error( 'upload_failed', __( 'The file could not be uploaded.', 'rise' ) );
 				},
 			]
 		);

@@ -8,8 +8,8 @@
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  */
 
 /**
@@ -19,12 +19,12 @@
  * so that it is ready for translation.
  *
  * @since      0.1.0
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  */
 // phpcs:ignore PEAR.NamingConventions.ValidClassName.Invalid
-class Get_To_Work_i18n {
+class Rise_i18n {
 
 	/**
 	 * Load the plugin text domain for translation.
@@ -33,7 +33,7 @@ class Get_To_Work_i18n {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain(
-			'gtw',
+			'rise',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

@@ -2,8 +2,8 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/public
+ * @package    Rise
+ * @subpackage Rise/public
  *
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
@@ -15,12 +15,12 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/public
+ * @package    Rise
+ * @subpackage Rise/public
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  */
-class Get_To_Work_Public {
+class Rise_Public {
 
 	/**
 	 * The ID of this plugin.
@@ -61,7 +61,7 @@ class Get_To_Work_Public {
 	 * @since    0.1.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/get-to-work-public.css', [], $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-public.css', [], $this->version, 'all' );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Get_To_Work_Public {
 	 * @since    0.1.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/get-to-work-public.js', ['jquery'], $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-public.js', ['jquery'], $this->version, false );
 	}
 
 	public function replace_retrieve_password_message( $message, $key, $user_login, $user_data ) {
@@ -87,15 +87,15 @@ class Get_To_Work_Public {
 	 */
 	public function filter_retrieve_password_message( $message, $key, $user_login ) {
 		$site_name       = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-		$reset_link_base = defined( 'GTW_FRONTEND_URL' ) ? esc_url( GTW_FRONTEND_URL ) : home_url();
+		$reset_link_base = defined( 'RISE_FRONTEND_URL' ) ? esc_url( RISE_FRONTEND_URL ) : home_url();
 		$reset_link      = esc_url( $reset_link_base ) . '/reset-password?key=' . $key . '&login=' . rawurlencode( $user_login );
 
 		// Create new message
-		$message = __( 'Someone has requested a password reset for the following account:' . $user_login, 'gtw' ) . "\n";
+		$message = __( 'Someone has requested a password reset for the following account:' . $user_login, 'rise' ) . "\n";
 		$message .= sprintf( __( 'Site Name: %s' ), $site_name ) . "\n";
-		$message .= sprintf( __( 'Username: %s', 'gtw' ), $user_login ) . "\n";
-		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'gtw' ) . "\n";
-		$message .= __( 'To reset your password, visit the following address:', 'gtw' ) . "\n";
+		$message .= sprintf( __( 'Username: %s', 'rise' ), $user_login ) . "\n";
+		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'rise' ) . "\n";
+		$message .= __( 'To reset your password, visit the following address:', 'rise' ) . "\n";
 		$message .= $reset_link . "\n";
 
 		return $message;

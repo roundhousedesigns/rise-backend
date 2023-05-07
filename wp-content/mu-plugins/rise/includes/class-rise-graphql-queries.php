@@ -3,15 +3,15 @@
 /**
  * Registers GraphQL queries.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 
-class Get_To_Work_GraphQL_Queries {
+class Rise_GraphQL_Queries {
 	/**
 	 * Register GraphQL queries.
 	 *
@@ -68,7 +68,7 @@ class Get_To_Work_GraphQL_Queries {
 			'jobSkills',
 			[
 				'type'        => ['list_of' => 'Skill'],
-				'description' => __( 'The skills related to the selected jobs and departments.', 'gtw' ),
+				'description' => __( 'The skills related to the selected jobs and departments.', 'rise' ),
 				'args'        => [
 					'jobs' => [
 						'type' => ['list_of' => 'ID'],
@@ -114,7 +114,7 @@ class Get_To_Work_GraphQL_Queries {
 			'jobsByDepartments',
 			[
 				'type'        => ['list_of' => 'PositionOutput'],
-				'description' => __( 'The jobs related to the selected departments.', 'gtw' ),
+				'description' => __( 'The jobs related to the selected departments.', 'rise' ),
 				'args'        => [
 					'departments' => [
 						'type' => ['list_of' => 'ID'],
@@ -171,42 +171,42 @@ class Get_To_Work_GraphQL_Queries {
 			'filteredCandidates',
 			[
 				'type'        => ['list_of' => 'Int'],
-				'description' => __( 'Users with matching selected criteria.', 'gtw' ),
+				'description' => __( 'Users with matching selected criteria.', 'rise' ),
 				'args'        => [
 					'positions'          => [
-						'description' => __( 'A list of `position` term ids', 'gtw' ),
+						'description' => __( 'A list of `position` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'skills'             => [
-						'description' => __( 'A list of `skill` term ids', 'gtw' ),
+						'description' => __( 'A list of `skill` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'unions'             => [
-						'description' => __( 'A list of `union` term ids', 'gtw' ),
+						'description' => __( 'A list of `union` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'locations'          => [
-						'description' => __( 'A list of `location` term ids', 'gtw' ),
+						'description' => __( 'A list of `location` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'experienceLevels'   => [
-						'description' => __( 'A list of `experience_level` term ids', 'gtw' ),
+						'description' => __( 'A list of `experience_level` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'genderIdentities'   => [
-						'description' => __( 'A list of `gender_identity` term ids', 'gtw' ),
+						'description' => __( 'A list of `gender_identity` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'racialIdentities'   => [
-						'description' => __( 'A list of `racial_identity` term ids', 'gtw' ),
+						'description' => __( 'A list of `racial_identity` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'personalIdentities' => [
-						'description' => __( 'A list of `personal_identity` term ids', 'gtw' ),
+						'description' => __( 'A list of `personal_identity` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'exclude'            => [
-						'description' => __( 'A list of user ids to exclude (for now, used for the current user)', 'gtw' ),
+						'description' => __( 'A list of user ids to exclude (for now, used for the current user)', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 				],
@@ -290,7 +290,7 @@ class Get_To_Work_GraphQL_Queries {
 			'unions',
 			[
 				'type'        => ['list_of' => 'Union'],
-				'description' => __( 'The user\'s selected union terms.', 'gtw' ),
+				'description' => __( 'The user\'s selected union terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'union' );
 				},
@@ -305,7 +305,7 @@ class Get_To_Work_GraphQL_Queries {
 			'locations',
 			[
 				'type'        => ['list_of' => 'Location'],
-				'description' => __( 'The user\'s selected location.', 'gtw' ),
+				'description' => __( 'The user\'s selected location.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'location' );
 				},
@@ -320,7 +320,7 @@ class Get_To_Work_GraphQL_Queries {
 			'experienceLevels',
 			[
 				'type'        => ['list_of' => 'Experience_Level'],
-				'description' => __( 'The user\'s selected experience level terms.', 'gtw' ),
+				'description' => __( 'The user\'s selected experience level terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
 				},
@@ -335,7 +335,7 @@ class Get_To_Work_GraphQL_Queries {
 			'genderIdentities',
 			[
 				'type'        => ['list_of' => 'Gender_Identity'],
-				'description' => __( 'The user\'s selected gender identity terms.', 'gtw' ),
+				'description' => __( 'The user\'s selected gender identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'gender_identity' );
 				},
@@ -350,7 +350,7 @@ class Get_To_Work_GraphQL_Queries {
 			'racialIdentities',
 			[
 				'type'        => ['list_of' => 'Racial_Identity'],
-				'description' => __( 'The user\'s selected racial identity terms.', 'gtw' ),
+				'description' => __( 'The user\'s selected racial identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'racial_identity' );
 				},
@@ -365,7 +365,7 @@ class Get_To_Work_GraphQL_Queries {
 			'personalIdentities',
 			[
 				'type'        => ['list_of' => 'Personal_Identity'],
-				'description' => __( 'The user\'s seelcted personal identity terms.', 'gtw' ),
+				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
 				},

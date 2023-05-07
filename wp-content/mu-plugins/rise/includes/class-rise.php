@@ -5,8 +5,8 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
@@ -21,21 +21,21 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
-class Get_To_Work {
+class Rise {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
 	 * @access   protected
-	 * @var Get_To_Work_Loader $loader Maintains and registers all hooks for the plugin.
+	 * @var Rise_Loader $loader Maintains and registers all hooks for the plugin.
 	 * @since    0.1.0
 	 */
 	protected $loader;
@@ -69,13 +69,13 @@ class Get_To_Work {
 	 */
 	public function __construct() {
 
-		if ( defined( 'GET_TO_WORK_VERSION' ) ) {
-			$this->version = GET_TO_WORK_VERSION;
+		if ( defined( 'RISE_VERSION' ) ) {
+			$this->version = RISE_VERSION;
 		} else {
 			$this->version = '0.1.0';
 		}
 
-		$this->plugin_name = 'get-to-work';
+		$this->plugin_name = 'rise';
 
 		// Fire away.
 		$this->load_dependencies();
@@ -95,10 +95,10 @@ class Get_To_Work {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Get_To_Work_Loader. Orchestrates the hooks of the plugin.
-	 * - Get_To_Work_i18n. Defines internationalization functionality.
-	 * - Get_To_Work_Admin. Defines all hooks for the admin area.
-	 * - Get_To_Work_Public. Defines all hooks for the public side of the site.
+	 * - Rise_Loader. Orchestrates the hooks of the plugin.
+	 * - Rise_i18n. Defines internationalization functionality.
+	 * - Rise_Admin. Defines all hooks for the admin area.
+	 * - Rise_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -112,61 +112,61 @@ class Get_To_Work {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-loader.php';
 
 		/**
 		 * The class responsible for plugin intialization.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-init.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-init.php';
 
 		/**
 		 * The class responsible for creating post types, taxonomies, and other registerable structures.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-factory.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-factory.php';
 
 		/**
 		 * The classes responsible for registering data types.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-userprofile.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-credit.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-types.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-userprofile.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-credit.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-types.php';
 
 		/**
 		 * The class responsible for registering user data.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-users.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-users.php';
 
 		/**
 		 * The classes responsible for registering GraphQL types, queries, and mutations.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-types.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-queries.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-graphql-mutations.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-graphql-types.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-graphql-queries.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-graphql-mutations.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-get-to-work-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-get-to-work-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-rise-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-get-to-work-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-rise-public.php';
 
-		$this->loader = new Get_To_Work_Loader();
+		$this->loader = new Rise_Loader();
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Get_To_Work_i18n class in order to set the domain and to register the hook
+	 * Uses the Rise_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @access   private
@@ -175,7 +175,7 @@ class Get_To_Work {
 	 * @return void
 	 */
 	private function set_locale() {
-		$plugin_i18n = new Get_To_Work_i18n();
+		$plugin_i18n = new Rise_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
@@ -186,7 +186,7 @@ class Get_To_Work {
 	 * @return void
 	 */
 	private function define_init_hooks() {
-		$plugin_data = new Get_To_Work_Init();
+		$plugin_data = new Rise_Init();
 
 		/**
 		 * TGMPA class.
@@ -203,7 +203,7 @@ class Get_To_Work {
 	 * @since 0.1.0
 	 */
 	private function define_user_hooks() {
-		$user_data = new Get_To_Work_Users();
+		$user_data = new Rise_Users();
 
 		/**
 		 * User roles.
@@ -278,7 +278,7 @@ class Get_To_Work {
 	 * @since 0.1.0
 	 */
 	private function define_post_type_hooks() {
-		$plugin_data = new Get_To_Work_Types();
+		$plugin_data = new Rise_Types();
 
 		/**
 		 * Custom Post Type: credit
@@ -326,7 +326,7 @@ class Get_To_Work {
 	 * Register GraphQL object types, connections, interfaces, etc.
 	 */
 	private function define_graphql_types() {
-		$plugin_data_types = new Get_To_Work_GraphQL_Types();
+		$plugin_data_types = new Rise_GraphQL_Types();
 
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_types, 'register_types' );
 	}
@@ -337,7 +337,7 @@ class Get_To_Work {
 	 * @return void
 	 */
 	private function define_graphql_queries() {
-		$plugin_data_queries = new Get_To_Work_GraphQL_Queries();
+		$plugin_data_queries = new Rise_GraphQL_Queries();
 
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
 	}
@@ -348,7 +348,7 @@ class Get_To_Work {
 	 * @return void
 	 */
 	private function define_graphql_mutations() {
-		$plugin_data_mutations = new Get_To_Work_GraphQL_Mutations();
+		$plugin_data_mutations = new Rise_GraphQL_Mutations();
 
 		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
 	}
@@ -361,7 +361,7 @@ class Get_To_Work {
 	 * @since    0.1.0
 	 */
 	private function define_admin_hooks() {
-		$plugin_data = new Get_To_Work_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Rise_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
@@ -375,7 +375,7 @@ class Get_To_Work {
 	 * @since    0.1.0
 	 */
 	private function define_public_hooks() {
-		$plugin_data = new Get_To_Work_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Rise_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
@@ -408,7 +408,7 @@ class Get_To_Work {
 	 *
 	 * @since     0.1.0
 	 *
-	 * @return Get_To_Work_Loader Orchestrates the hooks of the plugin.
+	 * @return Rise_Loader Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

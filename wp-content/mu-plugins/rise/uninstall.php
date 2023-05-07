@@ -21,7 +21,7 @@
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  *
- * @package    Get_To_Work
+ * @package    Rise
  */
 
 // If uninstall not called from WordPress, then exit.

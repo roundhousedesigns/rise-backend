@@ -5,8 +5,8 @@
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  */
 
 /**
@@ -15,11 +15,11 @@
  * This class defines all code necessary to run during the plugin's deactivation.
  *
  * @since      0.1.0
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  */
-class Get_To_Work_Deactivator {
+class Rise_Deactivator {
 
 	/**
 	 * Short Description. (use period)

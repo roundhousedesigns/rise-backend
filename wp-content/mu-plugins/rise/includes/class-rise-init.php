@@ -2,8 +2,8 @@
 /**
  * Initialize the plugin and run sanity checks.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
@@ -12,14 +12,14 @@
 /**
  * This class defines all code necessary to run during the plugin's startup.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
-class Get_To_Work_Init {
+class Rise_Init {
 
 	/**
 	 * TGM Plugin Activation.
@@ -72,7 +72,7 @@ class Get_To_Work_Init {
 		 * Array of configuration settings.
 		 */
 		$config = [
-			'id'           => 'gtw',
+			'id'           => 'rise',
 			'default_path' => dirname( __DIR__ ) . '/lib/plugins',
 			'menu'         => 'tgmpa-install-plugins',
 			'parent_slug'  => 'plugins.php',

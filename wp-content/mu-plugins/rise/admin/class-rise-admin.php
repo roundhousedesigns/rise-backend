@@ -5,8 +5,8 @@
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/admin
+ * @package    Rise
+ * @subpackage Rise/admin
  */
 
 /**
@@ -15,11 +15,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/admin
+ * @package    Rise
+ * @subpackage Rise/admin
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  */
-class Get_To_Work_Admin {
+class Rise_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -64,15 +64,15 @@ class Get_To_Work_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Get_To_Work_Loader as all of the hooks are defined
+		 * defined in Rise_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Get_To_Work_Loader will then create the relationship
+		 * The Rise_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/get-to-work-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -87,15 +87,15 @@ class Get_To_Work_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Get_To_Work_Loader as all of the hooks are defined
+		 * defined in Rise_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Get_To_Work_Loader will then create the relationship
+		 * The Rise_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/get-to-work-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
 

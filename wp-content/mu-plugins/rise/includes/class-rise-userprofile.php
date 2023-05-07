@@ -2,15 +2,15 @@
 /**
  * The UserProfile class.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 
-class Get_To_Work_UserProfile {
+class Rise_UserProfile {
 	/**
 	 * The user's ID.
 	 *
@@ -53,7 +53,7 @@ class Get_To_Work_UserProfile {
 	/**
 	 * User's credits.
 	 *
-	 * @var Get_To_Work_Credit[] $credits The user's credits.
+	 * @var Rise_Credit[] $credits The user's credits.
 	 * @since 0.1.0
 	 */
 	private $credits;
@@ -317,7 +317,7 @@ class Get_To_Work_UserProfile {
 		}
 
 		foreach ( $this->credits as $credit ) {
-			$credit = new Get_To_Work_Credit( $credit );
+			$credit = new Rise_Credit( $credit );
 			$credit->update_credit();
 		}
 	}

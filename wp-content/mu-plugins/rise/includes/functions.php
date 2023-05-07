@@ -2,8 +2,8 @@
 /**
  * Functions.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
@@ -13,7 +13,7 @@
 /**
  * Update a credit's display index.
  *
- * // TODO Maybe move this to a class method on Get_To_Work_Credit?
+ * // TODO Maybe move this to a class method on Rise_Credit?
  *
  * @param  int $credit_id The credit's ID.
  * @param  int $index     The credit's new display index.

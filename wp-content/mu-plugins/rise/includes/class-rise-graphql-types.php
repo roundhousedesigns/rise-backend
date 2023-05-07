@@ -2,15 +2,15 @@
 /**
  * Register GraphQL object types, connections, interfaces, etc.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 
-class Get_To_Work_GraphQL_Types {
+class Rise_GraphQL_Types {
 	public function register_types() {
 		$this->register_graphql_input_types();
 	}
@@ -27,23 +27,23 @@ class Get_To_Work_GraphQL_Types {
 		register_graphql_input_type(
 			'PersonalLinks',
 			[
-				'description' => __( 'A user\'s personal links.', 'gtw' ),
+				'description' => __( 'A user\'s personal links.', 'rise' ),
 				'fields'      => [
 					'facebook'  => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s Facebook profile.', 'gtw' ),
+						'description' => __( 'The user\'s Facebook profile.', 'rise' ),
 					],
 					'twitter'   => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s Twitter profile.', 'gtw' ),
+						'description' => __( 'The user\'s Twitter profile.', 'rise' ),
 					],
 					'linkedin'  => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s LinkedIn profile.', 'gtw' ),
+						'description' => __( 'The user\'s LinkedIn profile.', 'rise' ),
 					],
 					'instagram' => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s Instagram profile.', 'gtw' ),
+						'description' => __( 'The user\'s Instagram profile.', 'rise' ),
 					],
 				],
 			]
@@ -55,103 +55,103 @@ class Get_To_Work_GraphQL_Types {
 		register_graphql_input_type(
 			'UserProfileInput',
 			[
-				'description' => __( 'A user profile.', 'gtw' ),
+				'description' => __( 'A user profile.', 'rise' ),
 				'fields'      => [
 					'id'                 => [
 						'type'        => 'ID',
-						'description' => __( 'The user\'s ID.', 'gtw' ),
+						'description' => __( 'The user\'s ID.', 'rise' ),
 					],
 					'firstName'          => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s first name.', 'gtw' ),
+						'description' => __( 'The user\'s first name.', 'rise' ),
 					],
 					'lastName'           => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s last name.', 'gtw' ),
+						'description' => __( 'The user\'s last name.', 'rise' ),
 					],
 					'pronouns'           => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s pronouns.', 'gtw' ),
+						'description' => __( 'The user\'s pronouns.', 'rise' ),
 					],
 					'email'              => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s contact email.', 'gtw' ),
+						'description' => __( 'The user\'s contact email.', 'rise' ),
 					],
 					'selfTitle'          => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s self title.', 'gtw' ),
+						'description' => __( 'The user\'s self title.', 'rise' ),
 					],
 					'homebase'           => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s homebase.', 'gtw' ),
+						'description' => __( 'The user\'s homebase.', 'rise' ),
 					],
 					'image'              => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s image.', 'gtw' ),
+						'description' => __( 'The user\'s image.', 'rise' ),
 					],
 					'phone'              => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s phone number.', 'gtw' ),
+						'description' => __( 'The user\'s phone number.', 'rise' ),
 					],
 					'description'        => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s bio.', 'gtw' ),
+						'description' => __( 'The user\'s bio.', 'rise' ),
 					],
 					'locations'          => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The user\'s location.', 'gtw' ),
+						'description' => __( 'The user\'s location.', 'rise' ),
 					],
 					'website'            => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s website.', 'gtw' ),
+						'description' => __( 'The user\'s website.', 'rise' ),
 					],
 					'socials'            => [
 						'type'        => 'PersonalLinks',
-						'description' => __( 'The user\'s social media and external web links.', 'gtw' ),
+						'description' => __( 'The user\'s social media and external web links.', 'rise' ),
 					],
 					'resume'             => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s resume.', 'gtw' ),
+						'description' => __( 'The user\'s resume.', 'rise' ),
 					],
 					'willTravel'         => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the user will travel.', 'gtw' ),
+						'description' => __( 'Whether the user will travel.', 'rise' ),
 					],
 					'willTour'           => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the user will tour.', 'gtw' ),
+						'description' => __( 'Whether the user will tour.', 'rise' ),
 					],
 					'mediaVideo1'        => [
 						'type'        => 'String',
-						'description' => __( 'A user video oEmbed URL.', 'gtw' ),
+						'description' => __( 'A user video oEmbed URL.', 'rise' ),
 					],
 					'mediaVideo2'        => [
 						'type'        => 'String',
-						'description' => __( 'A user video oEmbed URL.', 'gtw' ),
+						'description' => __( 'A user video oEmbed URL.', 'rise' ),
 					],
 					'education'          => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s education.', 'gtw' ),
+						'description' => __( 'The user\'s education.', 'rise' ),
 					],
 					'unions'             => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The user\'s unions.', 'gtw' ),
+						'description' => __( 'The user\'s unions.', 'rise' ),
 					],
 					'experienceLevels'   => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The user\'s racial identities.', 'gtw' ),
+						'description' => __( 'The user\'s racial identities.', 'rise' ),
 					],
 					'racialIdentities'   => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The user\'s racial identities.', 'gtw' ),
+						'description' => __( 'The user\'s racial identities.', 'rise' ),
 					],
 					'genderIdentities'   => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The user\'s gender identities.', 'gtw' ),
+						'description' => __( 'The user\'s gender identities.', 'rise' ),
 					],
 					'personalIdentities' => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The user\'s additional personal identities.', 'gtw' ),
+						'description' => __( 'The user\'s additional personal identities.', 'rise' ),
 					],
 				],
 			]
@@ -163,59 +163,59 @@ class Get_To_Work_GraphQL_Types {
 		register_graphql_input_type(
 			'CreditInput',
 			[
-				'description' => __( 'A new or updated credit.', 'gtw' ),
+				'description' => __( 'A new or updated credit.', 'rise' ),
 				'fields'      => [
 					'id'          => [
 						'type'        => 'ID',
-						'description' => __( 'The credit\'s ID.', 'gtw' ),
+						'description' => __( 'The credit\'s ID.', 'rise' ),
 					],
 					'index'       => [
 						'type'        => 'ID',
-						'description' => __( 'The credit\'s display index.', 'gtw' ),
+						'description' => __( 'The credit\'s display index.', 'rise' ),
 					],
 					'title'       => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s title.', 'gtw' ),
+						'description' => __( 'The credit\'s title.', 'rise' ),
 					],
 					'jobTitle'    => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s job title.', 'gtw' ),
+						'description' => __( 'The credit\'s job title.', 'rise' ),
 					],
 					'jobLocation' => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s location.', 'gtw' ),
+						'description' => __( 'The credit\'s location.', 'rise' ),
 					],
 					'venue'       => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s venue.', 'gtw' ),
+						'description' => __( 'The credit\'s venue.', 'rise' ),
 					],
 					'year'        => [ // TODO deprecate year in favor of workStart and workEnd
 						'type'        => 'String',
-						'description' => __( 'The credit\'s year.', 'gtw' ),
+						'description' => __( 'The credit\'s year.', 'rise' ),
 					],
 					'workStart'   => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s work start date.', 'gtw' ),
+						'description' => __( 'The credit\'s work start date.', 'rise' ),
 					],
 					'workEnd'     => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s work end date.', 'gtw' ),
+						'description' => __( 'The credit\'s work end date.', 'rise' ),
 					],
 					'workCurrent' => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the this is a current job.', 'gtw' ),
+						'description' => __( 'Whether the this is a current job.', 'rise' ),
 					],
 					'positions'   => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The credit\'s position term IDs.', 'gtw' ),
+						'description' => __( 'The credit\'s position term IDs.', 'rise' ),
 					],
 					'skills'      => [
 						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The credit\'s skill term IDs.', 'gtw' ),
+						'description' => __( 'The credit\'s skill term IDs.', 'rise' ),
 					],
 					'isNew'       => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the credit is a new entry.', 'gtw' ),
+						'description' => __( 'Whether the credit is a new entry.', 'rise' ),
 					],
 				],
 			]
@@ -227,60 +227,60 @@ class Get_To_Work_GraphQL_Types {
 		register_graphql_object_type(
 			'CreditOutput',
 			[
-				'description' => __( 'A credit prepared for the frontend.', 'gtw' ),
+				'description' => __( 'A credit prepared for the frontend.', 'rise' ),
 				'fields'      => [
 					'databaseId'  => [
 						'type'        => 'ID',
-						'description' => __( 'The credit\'s ID.', 'gtw' ),
+						'description' => __( 'The credit\'s ID.', 'rise' ),
 					],
 					'index'       => [
 						'type'        => 'ID',
-						'description' => __( 'The credit\'s display index.', 'gtw' ),
+						'description' => __( 'The credit\'s display index.', 'rise' ),
 					],
 					'title'       => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s title.', 'gtw' ),
+						'description' => __( 'The credit\'s title.', 'rise' ),
 					],
 					'jobTitle'    => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s job title.', 'gtw' ),
+						'description' => __( 'The credit\'s job title.', 'rise' ),
 					],
 					'jobLocation' => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s location.', 'gtw' ),
+						'description' => __( 'The credit\'s location.', 'rise' ),
 					],
 					'venue'       => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s venue.', 'gtw' ),
+						'description' => __( 'The credit\'s venue.', 'rise' ),
 					],
 					'year'        => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s year.', 'gtw' ),
+						'description' => __( 'The credit\'s year.', 'rise' ),
 					],
 					'workStart'   => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s work start date.', 'gtw' ),
+						'description' => __( 'The credit\'s work start date.', 'rise' ),
 					],
 					'workEnd'     => [
 						'type'        => 'String',
-						'description' => __( 'The credit\'s work end date.', 'gtw' ),
+						'description' => __( 'The credit\'s work end date.', 'rise' ),
 					],
 					'workCurrent' => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the this is a current job.', 'gtw' ),
+						'description' => __( 'Whether the this is a current job.', 'rise' ),
 					],
 					// TODO department: change to plural key
 					'department'  => [
 						'type'        => ['list_of' => 'Int'],
-						'description' => __( 'The credit\'s 1st-level position term IDs.', 'gtw' ),
+						'description' => __( 'The credit\'s 1st-level position term IDs.', 'rise' ),
 					],
 					'jobs'        => [
 						'type'        => ['list_of' => 'Int'],
-						'description' => __( 'The credit\'s 2nd-level position term IDs.', 'gtw' ),
+						'description' => __( 'The credit\'s 2nd-level position term IDs.', 'rise' ),
 					],
 					'skills'      => [
 						'type'        => ['list_of' => 'Int'],
-						'description' => __( 'The credit\'s skill terms.', 'gtw' ),
+						'description' => __( 'The credit\'s skill terms.', 'rise' ),
 					],
 				],
 			]
@@ -292,23 +292,23 @@ class Get_To_Work_GraphQL_Types {
 		register_graphql_object_type(
 			'PositionOutput',
 			[
-				'description' => __( 'A position term prepared for the frontend.', 'gtw' ),
+				'description' => __( 'A position term prepared for the frontend.', 'rise' ),
 				'fields'      => [
 					'databaseId'       => [
 						'type'        => 'ID',
-						'description' => __( 'The term ID.', 'gtw' ),
+						'description' => __( 'The term ID.', 'rise' ),
 					],
 					'parentDatabaseId' => [
 						'type'        => 'ID',
-						'description' => __( 'The term parent ID.', 'gtw' ),
+						'description' => __( 'The term parent ID.', 'rise' ),
 					],
 					'name'             => [
 						'type'        => 'String',
-						'description' => __( 'The term name.', 'gtw' ),
+						'description' => __( 'The term name.', 'rise' ),
 					],
 					'slug'             => [
 						'type'        => 'String',
-						'description' => __( 'The term slug.', 'gtw' ),
+						'description' => __( 'The term slug.', 'rise' ),
 					],
 				],
 			]

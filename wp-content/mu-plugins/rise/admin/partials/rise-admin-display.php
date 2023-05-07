@@ -7,8 +7,8 @@
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/admin/partials
+ * @package    Rise
+ * @subpackage Rise/admin/partials
  */
 ?>
 

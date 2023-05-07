@@ -70,6 +70,6 @@ Thumbs.db
 
 # Plugins and Themes
 !wp-content/themes/rhd-headless-theme
-!wp-content/mu-plugins/get-to-work
-!wp-content/mu-plugins/get-to-work/**/*.zip
+!wp-content/mu-plugins/rise
+!wp-content/mu-plugins/rise/**/*.zip
 !wp-content/plugins/bulk-taxonomy-term-editor

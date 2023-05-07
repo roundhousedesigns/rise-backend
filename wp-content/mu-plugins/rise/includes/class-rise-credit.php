@@ -2,15 +2,15 @@
 /**
  * The Credit class.
  *
- * @package    Get_To_Work
- * @subpackage Get_To_Work/includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 
-class Get_To_Work_Credit {
+class Rise_Credit {
 	/**
 	 * The user's ID.
 	 *
