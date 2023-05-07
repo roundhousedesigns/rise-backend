@@ -2,14 +2,12 @@
 /**
  * Plugin Name:       Rise Theatre Directory
  * Description:       The main site functionality for the Rise Theatre Directory backend.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Author:            Roundhouse Designs
  * Author URI:        https://roundhouse-designs.com
  * Text Domain:       rise
  * Domain Path:       /languages
  */
-
-// TODO rebrand GTW (including textdomain) to RISE
 
 // If this file is called directly, abort.
 if (  ! defined( 'WPINC' ) ) {
@@ -19,7 +17,7 @@ if (  ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '0.2.0' );
+define( 'RISE_VERSION', '0.3.0' );
 
 /**
  * The code that runs during plugin activation.
