@@ -42,14 +42,14 @@ function update_credit_index( $credit_id, $index ) {
  */
 function remove_incomplete_profiles_from_search( $author_id ) {
 	$meta = get_user_meta( $author_id );
-	if ( ! $meta['first_name'] && ! $meta['last_name'] ) {
+	if (  ! $meta['first_name'] && ! $meta['last_name'] ) {
 		return false;
 	}
 
 	$pod = pods( 'user', $author_id );
 
 	// If email, phone, and website are all unset, don't show this user.
-	if ( ! $pod->field( 'contact_email', true, true ) && ! $pod->field( 'phone', true, true ) && ! $pod->field( 'website_url', true, true ) ) {
+	if (  ! $pod->field( 'contact_email', true, true ) && ! $pod->field( 'phone', true, true ) && ! $pod->field( 'website_url', true, true ) ) {
 		return false;
 	}
 
@@ -93,7 +93,7 @@ function import_positions_and_skills_from_csv( $file_path ) {
 							'parent' => $dept_parent_id,
 						] );
 
-						if ( ! is_wp_error( $dept_id ) ) {
+						if (  ! is_wp_error( $dept_id ) ) {
 							$dept_id = $dept_id['term_id'];
 						} else {
 							error_log( 'error inserting dept: ' . $dept_id->get_error_message() );
@@ -123,7 +123,7 @@ function import_positions_and_skills_from_csv( $file_path ) {
 								'parent' => $current_dept_id,
 							] );
 
-							if ( ! is_wp_error( $job_id ) ) {
+							if (  ! is_wp_error( $job_id ) ) {
 								$job_id = $job_id['term_id'];
 							}
 						}
@@ -132,7 +132,7 @@ function import_positions_and_skills_from_csv( $file_path ) {
 
 				// Loop through the remaining cells in the row, adding or updating each skill term
 				for ( $i = $index + 1; $i < count( $data ); $i++ ) {
-					if ( ! $data[$i] || ! trim( $data[$i] ) ) {
+					if (  ! $data[$i] || ! trim( $data[$i] ) ) {
 						continue;
 					}
 
@@ -224,7 +224,7 @@ function camel_case_to_underscore( $string ) {
  * @return int[] The user IDs.
  */
 function query_users_with_terms( $terms, $include_authors = [] ) {
-	if ( ! $terms ) {
+	if (  ! $terms ) {
 		return $include_authors;
 	}
 
@@ -235,14 +235,14 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 	}
 
 	// Filter out IDs from the $user_ids array that are not also in the $include_authors array
-	if ( ! empty( $include_authors ) ) {
+	if (  ! empty( $include_authors ) ) {
 		$user_ids = array_intersect( $user_ids, $include_authors );
 	}
 
 	// Remove duplicates from the object IDs array
 	$user_ids = array_unique( $user_ids );
 
-	if ( ! $user_ids ) {
+	if (  ! $user_ids ) {
 		return [];
 	}
 
@@ -257,4 +257,60 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 	$users = get_users( $args );
 
 	return wp_list_pluck( $users, 'ID' );
+}
+
+/**
+ * Checks whether the given reCAPTCHA response is valid.
+ *
+ * @param  string  $response The reCAPTCHA response.
+ * @return boolean Whether the response is valid.
+ */
+function recaptcha_is_valid( $response ) {
+	if (  ! defined( 'RECAPTCHA_SECRET_KEY' ) ) {
+		return false;
+	}
+
+	$url  = 'https://www.google.com/recaptcha/api/siteverify';
+	$data = [
+		'secret'   => RECAPTCHA_SECRET_KEY,
+		'response' => $response,
+		// 'remoteip'        => $_SERVER['REMOTE_ADDR']
+	];
+
+	$options = [
+		'http' => [
+			'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+			'method'  => 'POST',
+			'content' => http_build_query( $data ),
+		],
+	];
+
+	$context = stream_context_create( $options );
+	$result  = file_get_contents( $url, false, $context );
+
+	return json_decode( $result )->success;
+}
+
+/**
+ * Get the site name.
+ *
+ * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
+ * @since 1.0.0beta
+ *
+ * @return string
+ */
+function get_email_friendly_site_name() {
+	if ( is_multisite() ) {
+		$network = get_network();
+		if ( isset( $network->site_name ) ) {
+			return $network->site_name;
+		}
+	}
+
+	/*
+			* The blogname option is escaped with esc_html on the way into the database
+			* in sanitize_option we want to reverse this for the plain text arena of emails.
+		*/
+
+	return wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 }
