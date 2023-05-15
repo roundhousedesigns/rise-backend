@@ -328,6 +328,21 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
+		 * Query for users with matching terms from the `partnerDirectory` taxonomy.
+		 */
+		register_graphql_field(
+			'User',
+			'partnerDirectories',
+			[
+				'type'        => ['list_of' => 'Partner_Directory'],
+				'description' => __( 'The user\'s selected partner directory terms.', 'rise' ),
+				'resolve'     => function ( $user ) {
+					return self::prepare_taxonomy_terms( $user->fields['userId'], 'partner_directory' );
+				},
+			]
+		);
+
+		/**
 		 * Query for users with matching terms from the `genderIdentity` taxonomy.
 		 */
 		register_graphql_field(

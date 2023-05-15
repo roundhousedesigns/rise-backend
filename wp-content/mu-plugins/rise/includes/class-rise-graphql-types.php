@@ -137,6 +137,10 @@ class Rise_GraphQL_Types {
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s unions.', 'rise' ),
 					],
+					'partnerDirectories' => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The user\'s partner directories.', 'rise' ),
+					],
 					'experienceLevels'   => [
 						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The user\'s racial identities.', 'rise' ),

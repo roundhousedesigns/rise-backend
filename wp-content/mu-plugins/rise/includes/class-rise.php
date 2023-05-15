@@ -269,6 +269,16 @@ class Rise {
 		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_experience_level_to_user_profile' );
 		$this->loader->add_action( 'personal_options_update', $user_data, 'save_experience_level_on_user_profile' );
 		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_experience_level_on_user_profile' );
+
+		/**
+		 * Custom taxonomy: partner_directory (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'partner_directory_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_partner_directory_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_partner_directory_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_partner_directory_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_partner_directory_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_partner_directory_on_user_profile' );
 	}
 
 	/**

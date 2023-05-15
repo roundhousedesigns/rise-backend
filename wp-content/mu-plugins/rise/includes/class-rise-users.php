@@ -276,6 +276,43 @@ class Rise_Users {
 	}
 
 	/**
+	 * Registers the `partner_directory` taxonomy,
+	 * for use with 'user'.
+	 */
+	public function partner_directory_init() {
+		Rise_Factory::register_taxonomy( ['user'], 'partner_directory', 'partner_directories', 'Partner Directory', 'Partner Directories' );
+	}
+
+	/**
+	 * Add Partner Directory to User menu
+	 *
+	 * @return void
+	 */
+	public function add_partner_directory_to_user_menu() {
+		self::add_taxonomy_to_user_menu( __( 'Partner Directory', 'rise' ), __( 'Partner Directory', 'rise' ), 'partner_directory' );
+	}
+
+	/**
+	 * Add Partner Directory field to user profile
+	 *
+	 * @param  WP_User $user
+	 * @return void
+	 */
+	public function add_partner_directory_to_user_profile( $user ) {
+		self::user_profile_taxonomy_term_checkboxes( $user, 'partner_directory', 'Partner Directory' );
+	}
+
+	/**
+	 * Save Partner Directory on user profile update
+	 *
+	 * @param  int    $user_id
+	 * @return void
+	 */
+	public function save_partner_directory_on_user_profile( $user_id ) {
+		self::save_taxonomy_terms_on_user_profile( $user_id, 'partner_directory' );
+	}
+
+	/**
 	 * Add the taxonomy to the user menu.
 	 *
 	 * @return void

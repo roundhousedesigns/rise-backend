@@ -122,6 +122,7 @@ class Rise_UserProfile {
 		'locations'          => 'location',
 		'unions'             => 'union',
 		'experienceLevels'   => 'experience_level',
+		'partnerDirectories' => 'partner_directory',
 		'genderIdentities'   => 'gender_identity',
 		'racialIdentities'   => 'racial_identity',
 		'personalIdentities' => 'personal_identity',
@@ -251,7 +252,7 @@ class Rise_UserProfile {
 
 		if ( is_wp_error( $base ) ) {
 			return $base->get_error_message();
-		} elseif ( ! $meta ) {
+		} elseif (  ! $meta ) {
 			return new \WP_Error( 'update_user_profile', 'There was an error updating the user profile.' );
 		} elseif ( is_wp_error( $tax ) ) {
 			return $tax->get_error_message();
@@ -296,7 +297,7 @@ class Rise_UserProfile {
 	 * @return boolean|WP_Error True on success. WP_Error on failure.
 	 */
 	protected function update_taxonomies() {
-		if ( ! $this->taxonomies ) {
+		if (  ! $this->taxonomies ) {
 			return false;
 		}
 
@@ -312,7 +313,7 @@ class Rise_UserProfile {
 	}
 
 	protected function update_credits() {
-		if ( ! $this->credits ) {
+		if (  ! $this->credits ) {
 			return new \WP_Error( 'update_credits', 'There are no credits to update.' );
 		}
 
