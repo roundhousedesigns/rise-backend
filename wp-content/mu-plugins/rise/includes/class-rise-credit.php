@@ -115,7 +115,6 @@ class Rise_Credit {
 	 * @return void
 	 */
 	public function __construct( $data ) {
-		error_log( $data['workCurrent'] );
 		// TODO sanitize input.
 		$this->id           = $data['isNew'] ? 0 : $data['id'];
 		$this->index        = $data['index'];

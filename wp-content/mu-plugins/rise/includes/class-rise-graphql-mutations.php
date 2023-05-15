@@ -283,7 +283,6 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					error_log( print_r( $input, true ) );
 					if (  ! self::was_username_provided( $input ) ) {
 						throw new UserError( __( 'Enter a username or email address.', 'wp-graphql' ) );
 					}
@@ -306,8 +305,6 @@ class Rise_GraphQL_Mutations {
 					];
 
 					$user_data = get_user_by( 'email', $input['username'] );
-
-					error_log( print_r( $user_data, true ) );
 
 					if (  ! $user_data ) {
 						graphql_debug( __( 'There is no user registered with that email address.', 'wp-graphql' ) );
