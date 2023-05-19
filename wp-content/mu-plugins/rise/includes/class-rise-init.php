@@ -46,26 +46,14 @@ class Rise_Init {
 				'version'  => '2.9.10.2',
 				'required' => true,
 			],
-			// [
-			// 	'name'             => 'WP GraphQL CORS',
-			// 	'slug'             => 'wp-graphql-cors',
-			// 	'source'           => '/wp-graphql-cors.zip',
-			// 	'required'         => true,
-			// 	'force_activation' => true,
-			// 	'external_url'     => 'https://github.com/funkhaus/wp-graphql-cors',
-			// ],
-			// [
-			// 	'name'         => 'WP GraphQL for Advanced Custom Fields',
-			// 	'slug'         => 'wp-graphql-acf-master',
-			// 	'source'       => /wp-graphql-acf.zip',
-			// 	'required'     => true,
-			// 	'external_url' => 'https://github.com/wp-graphql/wp-graphql-acf',
-			// ],
-			// [
-			// 	'name'     => 'Advanced Custom Fields',
-			// 	'slug'     => 'advanced-custom-fields',
-			// 	'required' => true,
-			// ],
+			[
+				'name'             => 'WP GraphQL CORS',
+				'slug'             => 'wp-graphql-cors',
+				'source'           => '/wp-graphql-cors.zip',
+				'required'         => true,
+				'force_activation' => true,
+				'external_url'     => 'https://github.com/funkhaus/wp-graphql-cors',
+			],
 		];
 
 		/**

@@ -238,12 +238,11 @@ class Rise_GraphQL_Mutations {
 							$credentials[$credential_keys[$key]] = $value;
 						}
 					}
-
 					// Authenticate User.
 					$user = wpgraphql_cors_signon( $credentials );
 
 					if ( is_wp_error( $user ) ) {
-						throw new UserError(  ! empty( $user->get_error_code() ) ? $user->get_error_code() : 'invalid login' );
+						throw new UserError(  ! empty( $user->get_error_code() ) ? $user->get_error_code() : 'Login error' );
 					}
 
 					return ['status' => 'SUCCESS'];
@@ -597,7 +596,7 @@ class Rise_GraphQL_Mutations {
 		$message .= sprintf( __( 'Username: %s', 'wp-graphql' ), $user_data->user_login ) . "\r\n\r\n";
 		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'wp-graphql' ) . "\r\n\r\n";
 		$message .= __( 'To reset your password, visit the following address:', 'wp-graphql' ) . "\r\n\r\n";
-		$message .= '<' . network_site_url( "wp-login.php?action=rp&key={$key}&login=" . rawurlencode( $user_data->user_login ), 'login' ) . ">\r\n";
+		$message .= '<' . RISE_FRONTEND_URL . "?key={$key}&login=" . rawurlencode( $user_data->user_login ) . ">\r\n";
 
 		/**
 		 * Filters the message body of the password reset mail.
@@ -623,7 +622,7 @@ class Rise_GraphQL_Mutations {
 	 */
 	private static function get_password_reset_email_subject( $user_data ) {
 		/* translators: Password reset email subject. %s: Site name */
-		$title = sprintf( __( '[%s] Password Reset WHOOPEE', 'wp-graphql' ), get_email_friendly_site_name() );
+		$title = sprintf( __( '[%s] Password Reset', 'wp-graphql' ), get_email_friendly_site_name() );
 
 		/**
 		 * Filters the subject of the password reset email.

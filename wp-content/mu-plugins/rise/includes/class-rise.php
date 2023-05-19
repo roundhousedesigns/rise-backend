@@ -375,6 +375,12 @@ class Rise {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
+
+		/**
+		 * Options menu (boilerplate, not implemented)
+		 */
+		// $this->loader->add_action( 'admin_menu', $plugin_data, 'plugin_options_page' );
+		// $this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );
 	}
 
 	/**
