@@ -121,9 +121,9 @@ class Rise_Admin {
 			<h1>RISE Directory Options</h1>
 			<form method="post" action="options.php">
 				<?php
-				settings_fields('rise_directory_options'); // Add the settings field group
-				do_settings_sections('rise-directory-options'); // Render the settings section(s)
-				submit_button(); // Add the submit button
+					settings_fields( 'rise_directory_options' ); // Add the settings field group
+					do_settings_sections( 'rise-directory-options' ); // Render the settings section(s)
+					submit_button(); // Add the submit button
 				?>
 			</form>
 		</div>
