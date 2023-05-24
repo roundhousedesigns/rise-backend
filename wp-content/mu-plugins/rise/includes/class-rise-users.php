@@ -43,7 +43,6 @@ class Rise_Users {
 		foreach ( $roles as $role => $caps ) {
 			add_role( $role, $caps );
 		}
-
 	}
 
 	/**

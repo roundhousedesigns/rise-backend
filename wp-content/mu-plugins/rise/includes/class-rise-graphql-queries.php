@@ -163,6 +163,54 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
+		 * Query for users by name.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'usersByName',
+			[
+				'type'        => ['list_of' => 'Int'],
+				'description' => __( 'Query users by name', 'rise' ),
+				'args'        => [
+					'name' => [
+						'type' => 'String',
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$search_string = sanitize_text_field( $args['name'] );
+
+					// Prepare an array of arguments for the user query
+					$query_args = [
+						'search'         => '*' . $search_string . '*',
+						'search_columns' => [
+							'meta_value', // Assumes first name and last name are stored as user meta
+							// 'user_email',
+							// 'user_display_name',
+						],
+						'role__in'       => ['crew-member'],
+					];
+
+					// Create a new instance of WP_User_Query
+					$user_query = new WP_User_Query( $query_args );
+
+					// Retrieve the results
+					$users = $user_query->get_results();
+
+					// Process the results
+					$user_ids = [];
+
+					if (  ! empty( $users ) ) {
+						foreach ( $users as $user ) {
+							$user_ids[] = $user->ID;
+						}
+					}
+
+					return array_filter( array_unique( $user_ids ), 'remove_incomplete_profiles_from_search' );
+				},
+			],
+		);
+
+		/**
 		 * Query for users with matching selected criteria.
 		 */
 		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
@@ -227,16 +275,19 @@ class Rise_GraphQL_Queries {
 
 					// Start building the Credit query args.
 					$credit_args = [
-						'post_type' => 'credit',
-						'tax_query' => ['relation' => 'AND'],
+						'post_type'      => 'credit',
+						'tax_query'      => ['relation' => 'AND'],
+						'posts_per_page' => -1, // TODO replace with pagination.
+						'orderby'        => 'rand',
 					];
 
 					foreach ( $credit_filters as $taxonomy => $terms ) {
 						if (  ! empty( $terms ) ) {
 							$credit_args['tax_query'][] = [
-								'taxonomy' => $taxonomy,
-								'field'    => 'term_id',
-								'terms'    => $terms,
+								'taxonomy'         => $taxonomy,
+								'field'            => 'term_id',
+								'terms'            => $terms,
+								'include_children' => true,
 							];
 						}
 					}

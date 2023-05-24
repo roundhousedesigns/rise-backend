@@ -36,6 +36,7 @@ class Rise_GraphQL_Mutations {
 		/**
 		 * Create a user with reCAPTCHA verification.
 		 */
+		// TODO remove extra fields not sent from GQL
 		register_graphql_mutation(
 			'registerUserWithReCaptcha',
 			[

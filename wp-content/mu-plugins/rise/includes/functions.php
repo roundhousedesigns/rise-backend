@@ -42,13 +42,13 @@ function update_credit_index( $credit_id, $index ) {
  */
 function remove_incomplete_profiles_from_search( $author_id ) {
 	$meta = get_user_meta( $author_id );
-	if (  ! $meta['first_name'] && ! $meta['last_name'] ) {
+	if (  ! $meta['first_name'][0] && ! $meta['last_name'][0] ) {
 		return false;
 	}
 
 	$pod = pods( 'user', $author_id );
 
-	// If email, phone, and website are all unset, don't show this user.
+	// If email, phone, and website are all unset, ignore this user.
 	if (  ! $pod->field( 'contact_email', true, true ) && ! $pod->field( 'phone', true, true ) && ! $pod->field( 'website_url', true, true ) ) {
 		return false;
 	}
@@ -224,8 +224,11 @@ function camel_case_to_underscore( $string ) {
  * @return int[] The user IDs.
  */
 function query_users_with_terms( $terms, $include_authors = [] ) {
+	$authors = $include_authors;
+
 	if (  ! $terms ) {
-		return $include_authors;
+		shuffle( $authors );
+		return $authors;
 	}
 
 	// Get the object IDs for the terms in the taxonomies
@@ -234,9 +237,9 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 		$user_ids = array_merge( $user_ids, get_objects_in_term( $term_ids, $taxonomy ) );
 	}
 
-	// Filter out IDs from the $user_ids array that are not also in the $include_authors array
-	if (  ! empty( $include_authors ) ) {
-		$user_ids = array_intersect( $user_ids, $include_authors );
+	// Filter out IDs from the $user_ids array that are not also in the $authors array
+	if (  ! empty( $authors ) ) {
+		$user_ids = array_intersect( $user_ids, $authors );
 	}
 
 	// Remove duplicates from the object IDs array
@@ -249,10 +252,8 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 	// Query users based on the object IDs
 	$args = [
 		'include' => $user_ids,
-		'orderby' => 'include',
 	];
 
-	// TODO Use the $users query to adjust the search results order (otherwise this is unnecessary).
 	// Retrieve users based on all of our querying and filtration.
 	$users = get_users( $args );
 
@@ -313,4 +314,28 @@ function get_email_friendly_site_name() {
 		*/
 
 	return wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+}
+
+/**
+ * Determines if a user has at least one credit and at least a first or last name set.
+ *
+ * @param  int     $user_id
+ * @return boolean True if the user is searchable, false otherwise.
+ */
+function user_is_searchable( $user_id ) {
+	// TODO verify and implement this function
+	$usermeta = get_user_meta( $user_id );
+
+	// check if user is the author of at least one item of the `credit` post type
+	$credit_query = new WP_Query( [
+		'post_type'      => 'credit',
+		'posts_per_page' => 1,
+		'author'         => $user_id,
+	] );
+
+	// check if user has a first or last name set
+	$first_name = isset( $usermeta['first_name'][0] ) ? $usermeta['first_name'][0] : '';
+	$last_name  = isset( $usermeta['last_name'][0] ) ? $usermeta['last_name'][0] : '';
+
+	return $credit_query->have_posts() && ( $first_name || $last_name );
 }
