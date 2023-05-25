@@ -148,12 +148,13 @@ class Rise_GraphQL_Mutations {
 					$user_id = wp_insert_user( $user_args );
 
 					/**
-					 * Throw an exception if the post failed to create
+					 * Throw an exception if the user failed to create
 					 */
 					if ( is_wp_error( $user_id ) ) {
-						$error_message = $user_id->get_error_message();
-						if (  ! empty( $error_message ) ) {
-							throw new UserError( esc_html( $error_message ) );
+						$error_code = $user_id->get_error_code();
+
+						if (  ! empty( $error_code ) ) {
+							throw new UserError( $error_code );
 						} else {
 							throw new UserError( __( 'The object failed to create but no error was provided', 'wp-graphql' ) );
 						}

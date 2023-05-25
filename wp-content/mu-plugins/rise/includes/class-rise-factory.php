@@ -99,12 +99,6 @@ class Rise_Factory {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => true,
-			// 'capabilities'          => [
-			// 	'manage_terms' => 'edit_posts',
-			// 	'edit_terms'   => 'edit_posts',
-			// 	'delete_terms' => 'edit_posts',
-			// 	'assign_terms' => 'edit_posts',
-			// ],
 			'labels'                => [
 				'name'                       => __( $plural, 'rise' ),
 				'singular_name'              => _x( $singular, 'taxonomy general name', 'rise' ),
@@ -160,6 +154,7 @@ class Rise_Factory {
 		$permalink     = get_permalink( $post );
 		$name_singular = strtolower( $singular );
 		$title         = ucwords( $singular );
+		$date          = is_a( $post, 'WP_Post' ) ? date_i18n( __( 'M j, Y @ G:i', 'rise' ), strtotime( $post->post_date ) ) : '';
 
 		$messages[$post_type] = [
 			// Unused. Messages start at index 1.
@@ -178,7 +173,7 @@ class Rise_Factory {
 			/* translators: %s: post permalink */
 			8  => sprintf( __( $title . ' submitted. <a target="_blank" href="%s">Preview ' . $name_singular . '</a>', 'rise' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 			/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
-			9  => sprintf( __( $title . ' scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview ' . $name_singular . '</a>', 'rise' ), date_i18n( __( 'M j, Y @ G:i', 'rise' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+			9  => sprintf( __( $title . ' scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview ' . $name_singular . '</a>', 'rise' ), $date, esc_url( $permalink ) ),
 			/* translators: %s: post permalink */
 			10 => sprintf( __( $title . ' draft updated. <a target="_blank" href="%s">Preview ' . $name_singular . '</a>', 'rise' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 		];
