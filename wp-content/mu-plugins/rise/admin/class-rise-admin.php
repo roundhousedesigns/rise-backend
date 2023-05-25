@@ -199,10 +199,22 @@ class Rise_Admin {
 				$non_authors[] = $crew_member;
 			}
 		}
+		// Get all non-author email addresses, first names (user meta), and last names (user meta)
+		$non_authors_data = "Email,First Name,Last Name\n";
+		foreach ( $non_authors as $non_author ) {
+			$data = [
+				'email'      => '"' . $non_author->user_email . '"',
+				'first_name' => '"' . get_user_meta( $non_author->ID, 'first_name', true ) . '"',
+				'last_name'  => '"' . get_user_meta( $non_author->ID, 'last_name', true ) . '"',
+			];
+
+			$non_authors_data .= implode( ',', $data ) . "\n";
+		}
 
 		printf( '<p>There are <strong>%s</strong> users registered on the site.</p>', count( $crew_members ) );
 		printf( '<p>There are <strong>%s</strong> users who have at least one credit.</p>', count( $authors ) );
 		printf( '<p>There are <strong>%s</strong> users who have <strong>no</strong> credits.</p>', count( $non_authors ) );
+		printf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
 	}
 
 	/**
