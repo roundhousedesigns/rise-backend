@@ -301,7 +301,7 @@ class Rise_GraphQL_Mutations {
 
 					// We obsfucate the actual success of this mutation to prevent user enumeration.
 					$payload = [
-						'success' => true,
+						'success' => false,
 						'id'      => null,
 					];
 
@@ -378,11 +378,14 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
+					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					$payload = [
+						'success' => false,
+					];
+
 					if (  ! $input['username'] || ! $input['currentPassword'] || ! $input['newPassword'] ) {
 						// TODO throw error here?
-						return [
-							'success' => false,
-						];
+						return $payload;
 					}
 
 					// Authenticate the user with their current password.
@@ -394,6 +397,26 @@ class Rise_GraphQL_Mutations {
 
 					// Update the user's password.
 					wp_set_password( $input['newPassword'], $user->ID );
+
+					// Send the confirmation email
+					$message = self::get_password_change_email_message( $user );
+					$subject = self::get_password_change_email_subject();
+
+					// TODO verify that change password notices are sending
+					$email_sent = wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
+						$user->user_email,
+						wp_specialchars_decode( $subject ),
+						$message
+					);
+
+					// wp_mail can return a wp_error, but the docblock for it in WP Core is incorrect.
+					// phpstan should ignore this check.
+					// @phpstan-ignore-next-line
+					if ( is_wp_error( $email_sent ) ) {
+						graphql_debug( __( 'The email could not be sent.', 'wp-graphql' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'wp-graphql' ) );
+
+						return $payload;
+					}
 
 					return [
 						'success' => true,
@@ -685,6 +708,42 @@ class Rise_GraphQL_Mutations {
 		 * @param WP_User $user_data  WP_User object.
 		 */
 		return apply_filters( 'retrieve_password_title', $title, $user_data->user_login, $user_data );
+	}
+
+	/**
+	 * Get the message body of the changed password alert email
+	 *
+	 * @since 1.0.3beta
+	 *
+	 * @param  WP_User $user_data User data
+	 * @return string  Message body
+	 */
+	private static function get_password_change_email_message( $user_data ) {
+		$first_name = get_user_meta( $user_data->ID, 'first_name', true );
+
+		$message = __( 'Hi', 'rise' ) . esc_html( $first_name ) . "\r\n\r\n";
+		/* translators: %s: site name */
+		$message .= sprintf( __( 'This notice confirms that your password was changed on: %s', 'rise' ), get_email_friendly_site_name() ) . "\r\n\r\n";
+		/* translators: %s: user login */
+		$message .= sprintf( __( 'If you did not change your password, please contact us at <a href="mailto:%1$s">%1$s</a>', 'rise' ), 'support@risetheatre.org' ) . "\r\n\r\n";
+		$message .= sprintf( __( 'This email has been sent to %s', 'rise' ), $user_data->user_email ) . "\r\n\r\n";
+		$message .= __( 'Thanks,', 'rise' ) . "\r\n\r\n";
+		$message .= get_email_friendly_site_name() . "\r\n";
+		$message .= RISE_FRONTEND_URL . "\r\n";
+
+		return $message;
+	}
+
+	/**
+	 * Get the subject of the changed password email
+	 *
+	 * @since 1.0.3beta
+	 *
+	 * @return string
+	 */
+	private static function get_password_change_email_subject() {
+		/* translators: Password reset email subject. %s: Site name */
+		return sprintf( __( '[%s] Password Changed', 'wp-graphql' ), get_email_friendly_site_name() );
 	}
 
 	/**
