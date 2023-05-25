@@ -721,11 +721,11 @@ class Rise_GraphQL_Mutations {
 	private static function get_password_change_email_message( $user_data ) {
 		$first_name = get_user_meta( $user_data->ID, 'first_name', true );
 
-		$message = __( 'Hi', 'rise' ) . esc_html( $first_name ) . "\r\n\r\n";
+		$message = __( 'Hi', 'rise' ) . ' ' . esc_html( $first_name ) . "\r\n\r\n";
 		/* translators: %s: site name */
 		$message .= sprintf( __( 'This notice confirms that your password was changed on: %s', 'rise' ), get_email_friendly_site_name() ) . "\r\n\r\n";
 		/* translators: %s: user login */
-		$message .= sprintf( __( 'If you did not change your password, please contact us at <a href="mailto:%1$s">%1$s</a>', 'rise' ), 'support@risetheatre.org' ) . "\r\n\r\n";
+		$message .= sprintf( __( 'If you did not change your password, please contact us at %s', 'rise' ), get_option( 'admin_email' ) ) . "\r\n\r\n";
 		$message .= sprintf( __( 'This email has been sent to %s', 'rise' ), $user_data->user_email ) . "\r\n\r\n";
 		$message .= __( 'Thanks,', 'rise' ) . "\r\n\r\n";
 		$message .= get_email_friendly_site_name() . "\r\n";
