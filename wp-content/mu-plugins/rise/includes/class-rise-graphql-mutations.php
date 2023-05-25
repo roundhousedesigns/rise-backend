@@ -352,6 +352,57 @@ class Rise_GraphQL_Mutations {
 		);
 
 		/**
+		 * Change a user's password
+		 */
+		register_graphql_mutation(
+			'changePassword',
+			[
+				'inputFields'         => [
+					'username'        => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The user\'s username or email address', 'wp-graphql' ),
+					],
+					'currentPassword' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The user\'s current password', 'wp-graphql' ),
+					],
+					'newPassword'     => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The user\'s new password', 'wp-graphql' ),
+					],
+				],
+				'outputFields'        => [
+					'success' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'wp-graphql' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					if (  ! $input['username'] || ! $input['currentPassword'] || ! $input['newPassword'] ) {
+						// TODO throw error here?
+						return [
+							'success' => false,
+						];
+					}
+
+					// Authenticate the user with their current password.
+					$user = wp_authenticate( $input['username'], $input['currentPassword'] );
+
+					if ( is_wp_error( $user ) ) {
+						throw new UserError( $user->get_error_code() );
+					}
+
+					// Update the user's password.
+					wp_set_password( $input['newPassword'], $user->ID );
+
+					return [
+						'success' => true,
+					];
+				},
+			]
+		);
+
+		/**
 		 * Update a user's profile.
 		 */
 		register_graphql_mutation(
