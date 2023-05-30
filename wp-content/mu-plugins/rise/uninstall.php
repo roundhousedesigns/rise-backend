@@ -18,13 +18,13 @@
  * For more information, see the following discussion:
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
+ * @package    Rise
+ *
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
- *
- * @package    Rise
  */
 
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }

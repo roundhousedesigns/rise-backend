@@ -152,8 +152,8 @@ class Rise_Types {
 	 * @return void
 	 */
 	public function blockusers_init() {
-		if ( is_admin() && ! current_user_can( 'administrator' ) &&
-			! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		if ( is_admin() && !current_user_can( 'administrator' ) &&
+			!( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			wp_safe_redirect( home_url() );
 			exit;
 		}

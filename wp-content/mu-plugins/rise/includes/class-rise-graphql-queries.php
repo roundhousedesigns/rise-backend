@@ -35,7 +35,7 @@ class Rise_GraphQL_Queries {
 		// to ensure User object support.
 		$terms = wp_get_object_terms( $user_id, $taxonomy );
 
-		if (  ! $terms ) {
+		if ( !$terms ) {
 			return [];
 		}
 
@@ -134,7 +134,7 @@ class Rise_GraphQL_Queries {
 						$all_children = [];
 						foreach ( $departments as $department ) {
 							$children = get_term_children( $department, 'position' );
-							if (  ! empty( $children ) ) {
+							if ( !empty( $children ) ) {
 								$all_children = array_merge( $all_children, $children );
 							}
 						}
@@ -199,7 +199,7 @@ class Rise_GraphQL_Queries {
 					// Process the results
 					$user_ids = [];
 
-					if (  ! empty( $users ) ) {
+					if ( !empty( $users ) ) {
 						foreach ( $users as $user ) {
 							$user_ids[] = $user->ID;
 						}
@@ -282,7 +282,7 @@ class Rise_GraphQL_Queries {
 					];
 
 					foreach ( $credit_filters as $taxonomy => $terms ) {
-						if (  ! empty( $terms ) ) {
+						if ( !empty( $terms ) ) {
 							$credit_args['tax_query'][] = [
 								'taxonomy'         => $taxonomy,
 								'field'            => 'term_id',

@@ -159,6 +159,7 @@ class Rise_Admin {
 		/**
 		 * Sample setting: Frontend URL
 		 */
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 		// add_settings_field(
 		// 	'rise_frontend_url',
 		// 	'Frontend URL',

@@ -42,14 +42,14 @@ function update_credit_index( $credit_id, $index ) {
  */
 function remove_incomplete_profiles_from_search( $author_id ) {
 	$meta = get_user_meta( $author_id );
-	if (  ! $meta['first_name'][0] && ! $meta['last_name'][0] ) {
+	if ( !$meta['first_name'][0] && !$meta['last_name'][0] ) {
 		return false;
 	}
 
 	$pod = pods( 'user', $author_id );
 
 	// If email, phone, and website are all unset, ignore this user.
-	if (  ! $pod->field( 'contact_email', true, true ) && ! $pod->field( 'phone', true, true ) && ! $pod->field( 'website_url', true, true ) ) {
+	if ( !$pod->field( 'contact_email', true, true ) && !$pod->field( 'phone', true, true ) && !$pod->field( 'website_url', true, true ) ) {
 		return false;
 	}
 
@@ -61,17 +61,21 @@ function remove_incomplete_profiles_from_search( $author_id ) {
  *
  * Uses source @link https://docs.google.com/spreadsheets/d/1OmGwyvZCvKbWO3GU-AKES4WJ-_Xi4GgYiTfsQ9GTN-4/edit#gid=514651634
  *
+ * @deprecated 1.0.2beta
+ *
  * @param  [type] $file_path
  * @return void
  */
+// phpcs:disable
 function import_positions_and_skills_from_csv( $file_path ) {
 	// Open the CSV file for reading
 	$handle = fopen( $file_path, 'r' );
 
 	// Loop through each row of the CSV file
 	$current_dept_id = 0;
+	$data            = fgetcsv( $handle );
 
-	while (  ( $data = fgetcsv( $handle ) ) !== FALSE ) {
+	while ( false !== $data ) {
 		// Loop through each cell in the current row
 		foreach ( $data as $index => $cell ) {
 			if ( 0 === $index ) {
@@ -93,11 +97,11 @@ function import_positions_and_skills_from_csv( $file_path ) {
 							'parent' => $dept_parent_id,
 						] );
 
-						if (  ! is_wp_error( $dept_id ) ) {
+						if ( !is_wp_error( $dept_id ) ) {
 							$dept_id = $dept_id['term_id'];
 						} else {
 							error_log( 'error inserting dept: ' . $dept_id->get_error_message() );
-							wp_die( $dept_id->get_error_message() );
+							wp_die( esc_textarea( $dept_id->get_error_message() ) );
 						}
 					}
 
@@ -111,8 +115,6 @@ function import_positions_and_skills_from_csv( $file_path ) {
 					if ( $existing_job_term ) {
 						$job_id = $existing_job_term['term_id'];
 
-						error_log( 'existing update: ' . $job_name . ' (' . $job_id . ')' . ' in ' . $current_dept_id );
-
 						wp_update_term( $job_id, 'position', [
 							'name'   => $job_name,
 							'parent' => $current_dept_id,
@@ -123,7 +125,7 @@ function import_positions_and_skills_from_csv( $file_path ) {
 								'parent' => $current_dept_id,
 							] );
 
-							if (  ! is_wp_error( $job_id ) ) {
+							if ( !is_wp_error( $job_id ) ) {
 								$job_id = $job_id['term_id'];
 							}
 						}
@@ -131,8 +133,9 @@ function import_positions_and_skills_from_csv( $file_path ) {
 				}
 
 				// Loop through the remaining cells in the row, adding or updating each skill term
-				for ( $i = $index + 1; $i < count( $data ); $i++ ) {
-					if (  ! $data[$i] || ! trim( $data[$i] ) ) {
+				$count = count( $data );
+				for ( $i = $index + 1; $i < $count; $i++ ) {
+					if ( !$data[$i] || !trim( $data[$i] ) ) {
 						continue;
 					}
 
@@ -170,6 +173,7 @@ function import_positions_and_skills_from_csv( $file_path ) {
 		}
 	}
 }
+// phpcs:enable
 
 /**
  * Gets a newly uploaded file's attachment ID.
@@ -189,14 +193,14 @@ function get_attachment_id_by_url( $url ) {
 	$file['size']     = filesize( $file['tmp_name'] );
 
 	if ( is_wp_error( $file['tmp_name'] ) ) {
-		@unlink( $file['tmp_name'] );
+		unlink( $file['tmp_name'] );
 		return false;
 	}
 
 	$id = media_handle_sideload( $file, 0 );
 
 	if ( is_wp_error( $id ) ) {
-		@unlink( $file['tmp_name'] );
+		unlink( $file['tmp_name'] );
 		return false;
 	}
 
@@ -226,7 +230,7 @@ function camel_case_to_underscore( $string ) {
 function query_users_with_terms( $terms, $include_authors = [] ) {
 	$authors = $include_authors;
 
-	if (  ! $terms ) {
+	if ( !$terms ) {
 		shuffle( $authors );
 		return $authors;
 	}
@@ -238,14 +242,14 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 	}
 
 	// Filter out IDs from the $user_ids array that are not also in the $authors array
-	if (  ! empty( $authors ) ) {
+	if ( !empty( $authors ) ) {
 		$user_ids = array_intersect( $user_ids, $authors );
 	}
 
 	// Remove duplicates from the object IDs array
 	$user_ids = array_unique( $user_ids );
 
-	if (  ! $user_ids ) {
+	if ( !$user_ids ) {
 		return [];
 	}
 
@@ -267,7 +271,7 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
  * @return boolean Whether the response is valid.
  */
 function recaptcha_is_valid( $response ) {
-	if (  ! defined( 'RECAPTCHA_SECRET_KEY' ) ) {
+	if ( !defined( 'RECAPTCHA_SECRET_KEY' ) ) {
 		return false;
 	}
 
@@ -275,7 +279,6 @@ function recaptcha_is_valid( $response ) {
 	$data = [
 		'secret'   => RECAPTCHA_SECRET_KEY,
 		'response' => $response,
-		// 'remoteip'        => $_SERVER['REMOTE_ADDR']
 	];
 
 	$options = [
@@ -287,7 +290,8 @@ function recaptcha_is_valid( $response ) {
 	];
 
 	$context = stream_context_create( $options );
-	$result  = file_get_contents( $url, false, $context );
+	// TODO use wp_remote_get() instead of file_get_contents()
+	$result = file_get_contents( $url, false, $context );
 
 	return json_decode( $result )->success;
 }

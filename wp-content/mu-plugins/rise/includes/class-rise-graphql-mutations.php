@@ -126,14 +126,14 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input, AppContext $context, ResolveInfo $info ) {
-					if (  ! isset( $input['reCaptchaToken'] ) || ! $input['reCaptchaToken'] ) {
+					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
 						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
-					if (  ! recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
+					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
 						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
 					}
 
@@ -153,7 +153,7 @@ class Rise_GraphQL_Mutations {
 					if ( is_wp_error( $user_id ) ) {
 						$error_code = $user_id->get_error_code();
 
-						if (  ! empty( $error_code ) ) {
+						if ( !empty( $error_code ) ) {
 							throw new UserError( $error_code );
 						} else {
 							throw new UserError( __( 'The object failed to create but no error was provided', 'wp-graphql' ) );
@@ -217,14 +217,14 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					if (  ! isset( $input['reCaptchaToken'] ) || ! $input['reCaptchaToken'] ) {
+					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
 						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
-					if (  ! recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
+					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
 						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
 					}
 
@@ -244,7 +244,7 @@ class Rise_GraphQL_Mutations {
 					$user = wpgraphql_cors_signon( $credentials );
 
 					if ( is_wp_error( $user ) ) {
-						throw new UserError(  ! empty( $user->get_error_code() ) ? $user->get_error_code() : 'Login error' );
+						throw new UserError( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'Login error' );
 					}
 
 					return ['status' => 'SUCCESS'];
@@ -275,7 +275,7 @@ class Rise_GraphQL_Mutations {
 						'description'       => __( 'The user that the password reset email was sent to', 'wp-graphql' ),
 						'deprecationReason' => __( 'This field will be removed in a future version of WPGraphQL', 'wp-graphql' ),
 						'resolve'           => function ( $payload, $args, AppContext $context ) {
-							return  ! empty( $payload['id'] ) ? $context->get_loader( 'user' )->load_deferred( $payload['id'] ) : null;
+							return !empty( $payload['id'] ) ? $context->get_loader( 'user' )->load_deferred( $payload['id'] ) : null;
 						},
 					],
 					'success' => [
@@ -284,18 +284,18 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					if (  ! self::was_username_provided( $input ) ) {
+					if ( !self::was_username_provided( $input ) ) {
 						throw new UserError( __( 'Enter a username or email address.', 'wp-graphql' ) );
 					}
 
-					if (  ! isset( $input['reCaptchaToken'] ) || ! $input['reCaptchaToken'] ) {
+					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
 						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
-					if (  ! recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
+					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
 						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
 					}
 
@@ -307,7 +307,7 @@ class Rise_GraphQL_Mutations {
 
 					$user_data = get_user_by( 'email', $input['username'] );
 
-					if (  ! $user_data ) {
+					if ( !$user_data ) {
 						graphql_debug( __( 'There is no user registered with that email address.', 'wp-graphql' ) );
 
 						return $payload;
@@ -383,7 +383,7 @@ class Rise_GraphQL_Mutations {
 						'success' => false,
 					];
 
-					if (  ! $input['username'] || ! $input['currentPassword'] || ! $input['newPassword'] ) {
+					if ( !$input['username'] || !$input['currentPassword'] || !$input['newPassword'] ) {
 						// TODO throw error here?
 						return $payload;
 					}
@@ -448,7 +448,7 @@ class Rise_GraphQL_Mutations {
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					// TODO Security check. Check if user is logged in.
-					if (  ! isset( $input['profile']['id'] ) ) {
+					if ( !isset( $input['profile']['id'] ) ) {
 						return [
 							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
 						];
@@ -460,7 +460,7 @@ class Rise_GraphQL_Mutations {
 
 					// TODO maybe return a WP_Error object instead of 0.
 					return [
-						'result' =>  ! is_wp_error( $result ) ? $result : 0,
+						'result' => !is_wp_error( $result ) ? $result : 0,
 					];
 				},
 			],
@@ -490,7 +490,7 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					// TODO Security check. Check if user is logged in.
 
-					if (  ! isset( $input['credit'] ) ) {
+					if ( !isset( $input['credit'] ) ) {
 						return [
 							'updatedCredit' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
 						];
@@ -501,7 +501,7 @@ class Rise_GraphQL_Mutations {
 
 					// TODO maybe return a WP_Error object instead of 0.
 					return [
-						'updatedCredit' =>  ! is_wp_error( $result ) ? $credit->prepare_credit_for_graphql() : 0,
+						'updatedCredit' => !is_wp_error( $result ) ? $credit->prepare_credit_for_graphql() : 0,
 					];
 				},
 			],
@@ -531,7 +531,7 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					// TODO Security check. Check if user is logged in.
 
-					if (  ! isset( $input['creditIds'] ) ) {
+					if ( !isset( $input['creditIds'] ) ) {
 						return [
 							'creditIds' => new \WP_Error( 'no_id', __( 'No IDs provided.', 'rise' ) ),
 						];
@@ -574,7 +574,7 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					// TODO Security check. Check if user is logged in.
 
-					if (  ! isset( $input['id'] ) ) {
+					if ( !isset( $input['id'] ) ) {
 						return [
 							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
 						];
@@ -622,7 +622,7 @@ class Rise_GraphQL_Mutations {
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					// TODO check if this is necessary
-					if (  ! function_exists( 'wp_handle_sideload' ) ) {
+					if ( !function_exists( 'wp_handle_sideload' ) ) {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
 					}
 
@@ -756,6 +756,6 @@ class Rise_GraphQL_Mutations {
 	 * @return bool
 	 */
 	private static function was_username_provided( $input ) {
-		return  ! empty( $input['username'] ) && is_string( $input['username'] );
+		return !empty( $input['username'] ) && is_string( $input['username'] );
 	}
 }
