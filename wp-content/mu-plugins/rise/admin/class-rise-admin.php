@@ -180,9 +180,13 @@ class Rise_Admin {
 	 */
 	public function rise_directory_stats_section_callback() {
 		self::section_html_start();
+
 		echo wp_kses_post( self::crew_member_stats__basic() );
+
 		echo wp_kses_post( self::crew_member_stats__detailed() );
+
 		echo wp_kses_post( self::dev_info() );
+
 		self::section_html_end();
 	}
 
@@ -337,7 +341,7 @@ class Rise_Admin {
 			}
 		}
 
-		$output .= '<p>USER BREAKDOWN:</p><pre>';
+		$output .= '<p>USER BREAKDOWN (Uncomment datapoints in class-rise-admin.php):</p><pre>';
 		$output .= 'Label,Count' . "\n";
 		foreach ( $data as $datum ) {
 			$output .= sprintf( '"%s",%s' . "\n", $datum['name'], $datum['count'] );
