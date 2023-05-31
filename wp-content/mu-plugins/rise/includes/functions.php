@@ -292,6 +292,7 @@ function recaptcha_is_valid( $response ) {
 
 	$context = stream_context_create( $options );
 	// TODO use wp_remote_get() instead of file_get_contents()
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 	$result = file_get_contents( $url, false, $context );
 
 	return json_decode( $result )->success;
