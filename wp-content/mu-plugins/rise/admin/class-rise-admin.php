@@ -113,21 +113,18 @@ class Rise_Admin {
 	/**
 	 * Callback function to render the options page.
 	 *
-	 * @return void
+	 * @return string HTML output.
 	 */
 	public function plugin_options_page_callback() {
-		?>
-		<div class="wrap">
-			<h1>RISE Directory Options</h1>
-			<form method="post" action="options.php">
-				<?php
-					settings_fields( 'rise_directory_options' ); // Add the settings field group
-					do_settings_sections( 'rise-directory-options' ); // Render the settings section(s)
-					submit_button(); // Add the submit button
-				?>
-			</form>
-		</div>
-		<?php
+		self::section_html_start();
+
+		settings_fields( 'rise_directory_options' ); // Add the settings field group
+		do_settings_sections( 'rise-directory-options' ); // Render the settings section(s)
+		
+		// Not currently in use
+		// submit_button(); // Add the submit button
+
+		self::section_html_end();
 	}
 
 	/**
@@ -148,12 +145,12 @@ class Rise_Admin {
 		);
 
 		// Add a section for the settings
-		add_settings_section(
-			'rise_directory_settings_section',
-			'RISE Directory Settings',
-			[$this, 'rise_directory_settings_section_callback'],
-			'rise-directory-options'
-		);
+		// add_settings_section(
+		// 	'rise_directory_settings_section',
+		// 	'RISE Directory Settings',
+		// 	[$this, 'rise_directory_settings_section_callback'],
+		// 	'rise-directory-options'
+		// );
 
 		// Add a field for 'rise_frontend_url' in the section
 		/**
@@ -182,6 +179,36 @@ class Rise_Admin {
 	 * Callback function to render the stats section.
 	 */
 	public function rise_directory_stats_section_callback() {
+		self::section_html_start();
+		echo wp_kses_post( self::crew_member_stats__basic() );
+		echo wp_kses_post( self::dev_info() );
+		self::section_html_end();
+	}
+
+	/**
+	 * Output the HTML for the start of a section.
+	 *
+	 * @return string HTML output.
+	 */
+	private static function section_html_start() {
+		return "<div class='wrap'>\n<h1>RISE Directory Options</h1>\n<form method='post' action='options.php'>";
+	}
+
+	/**
+	 * Output the HTML for the end of a section.
+	 *
+	 * @return string HTML output.
+	 */
+	private static function section_html_end() {
+		return "</form>\n</div>";
+	}
+
+	/**
+	 * Generate basic stats for
+	 *
+	 * @return string HTML output.
+	 */
+	private static function crew_member_stats__basic() {
 		// Get all users with the 'crew-member' role. Then separate the users by those who are authors of at least one `credit` post type post, and those who are not.
 		$crew_members = get_users( ['role' => 'crew-member'] );
 		$authors      = [];
@@ -200,6 +227,7 @@ class Rise_Admin {
 				$non_authors[] = $crew_member;
 			}
 		}
+
 		// Get all non-author email addresses, first names (user meta), and last names (user meta)
 		$non_authors_data = "Email,First Name,Last Name\n";
 		foreach ( $non_authors as $non_author ) {
@@ -212,10 +240,36 @@ class Rise_Admin {
 			$non_authors_data .= implode( ',', $data ) . "\n";
 		}
 
-		printf( '<p>There are <strong>%s</strong> users registered on the site.</p>', count( $crew_members ) );
-		printf( '<p>There are <strong>%s</strong> users who have at least one credit.</p>', count( $authors ) );
-		printf( '<p>There are <strong>%s</strong> users who have <strong>no</strong> credits.</p>', count( $non_authors ) );
-		printf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
+		$output = '';
+		$output .= sprintf( '<p>There are <strong>%s</strong> users registered on the site.</p>', count( $crew_members ) );
+		$output .= sprintf( '<p>There are <strong>%s</strong> users who have at least one credit.</p>', count( $authors ) );
+		$output .= sprintf( '<p>There are <strong>%s</strong> users who have <strong>no</strong> credits.</p>', count( $non_authors ) );
+		
+		// Output all users with no credits
+		// $output .= sprintf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
+
+		return $output;
+	}
+
+	/**
+	 * Generate basic stats for
+	 *
+	 * @return string HTML output.
+	 */
+	private static function dev_info() {
+		$info = [
+			'PHP Version'       => phpversion(),
+			'WP Version'        => get_bloginfo( 'version' ),
+			'RISE_FRONTEND_URL' => defined( 'RISE_FRONTEND_URL' ) ? RISE_FRONTEND_URL : 'Not set',
+		];
+
+		$output = '<p>Development Info:</p><pre>';
+		foreach ( $info as $key => $value ) {
+			$output .= sprintf( "%s: %s\n", $key, $value );
+		}
+		$output .= '</pre>';
+
+		return $output;
 	}
 
 	/**
