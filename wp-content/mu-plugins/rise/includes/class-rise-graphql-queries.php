@@ -213,7 +213,6 @@ class Rise_GraphQL_Queries {
 		/**
 		 * Query for users with matching selected criteria.
 		 */
-		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		register_graphql_field(
 			'RootQuery',
 			'filteredCandidates',
@@ -259,79 +258,10 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$credit_filters = [
-						'position' => isset( $args['positions'] ) ? $args['positions'] : '',
-						'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
-					];
-
-					$user_filters = [
-						'union'             => isset( $args['unions'] ) ? $args['unions'] : '',
-						'location'          => isset( $args['locations'] ) ? $args['locations'] : '',
-						'experience_level'  => isset( $args['experienceLevels'] ) ? $args['experienceLevels'] : '',
-						'gender_identity'   => isset( $args['genderIdentities'] ) ? $args['genderIdentities'] : '',
-						'personal_identity' => isset( $args['personalIdentities'] ) ? $args['personalIdentities'] : '',
-						'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
-					];
-
-					// Start building the Credit query args.
-					$credit_args = [
-						'post_type'      => 'credit',
-						'tax_query'      => ['relation' => 'AND'],
-						'posts_per_page' => -1, // TODO replace with pagination.
-						'orderby'        => 'rand',
-					];
-
-					foreach ( $credit_filters as $taxonomy => $terms ) {
-						if ( !empty( $terms ) ) {
-							$credit_args['tax_query'][] = [
-								'taxonomy'         => $taxonomy,
-								'field'            => 'term_id',
-								'terms'            => $terms,
-								'include_children' => true,
-							];
-						}
-					}
-
-					// Query credits with the desired attributes.
-					$credits = get_posts( $credit_args );
-
-					// If no credits are found, return an empty array.
-					if ( empty( $credits ) ) {
-						return [];
-					}
-
-					// Collect the credit authors.
-					$authors = [];
-					foreach ( $credits as $credit ) {
-						$authors[] = $credit->post_author;
-					}
-
-					// Filter out any excluded users.
-					if ( isset( $args['exclude'] ) ) {
-						$authors = array_diff( $authors, $args['exclude'] );
-					}
-
-					// Filter out authors with no name set, or no contact info.
-					$authors = array_filter( array_unique( $authors ), 'remove_incomplete_profiles_from_search' );
-
-					// Filter users by selected taxonomies.
-					$user_taxonomy_terms = [];
-					foreach ( $user_filters as $tax => $term_ids ) {
-						if ( empty( $term_ids ) ) {
-							continue;
-						}
-
-						$user_taxonomy_terms[$tax] = $term_ids;
-					}
-
-					// Filter users by taxonomy
-					$filtered_authors = query_users_with_terms( $user_taxonomy_terms, $authors );
-
-					return $filtered_authors;
+					return search_and_filter_crew_members( $args );
 				},
 			],
 		);
-		// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 
 		/**
 		 * Query for users with matching terms from the `union` taxonomy.

@@ -120,7 +120,7 @@ class Rise_Admin {
 
 		settings_fields( 'rise_directory_options' ); // Add the settings field group
 		do_settings_sections( 'rise-directory-options' ); // Render the settings section(s)
-		
+
 		// Not currently in use
 		// submit_button(); // Add the submit button
 
@@ -181,6 +181,7 @@ class Rise_Admin {
 	public function rise_directory_stats_section_callback() {
 		self::section_html_start();
 		echo wp_kses_post( self::crew_member_stats__basic() );
+		echo wp_kses_post( self::crew_member_stats__detailed() );
 		echo wp_kses_post( self::dev_info() );
 		self::section_html_end();
 	}
@@ -244,11 +245,108 @@ class Rise_Admin {
 		$output .= sprintf( '<p>There are <strong>%s</strong> users registered on the site.</p>', count( $crew_members ) );
 		$output .= sprintf( '<p>There are <strong>%s</strong> users who have at least one credit.</p>', count( $authors ) );
 		$output .= sprintf( '<p>There are <strong>%s</strong> users who have <strong>no</strong> credits.</p>', count( $non_authors ) );
-		
+
 		// Output all users with no credits
+		// TODO Make this a download link
 		// $output .= sprintf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
 
 		return $output;
+	}
+
+	/**
+	 * Generate detailed stats for crew members.
+	 *
+	 * @return string HTML output.
+	 */
+	private static function crew_member_stats__detailed() {
+		// phpcs:disable Squiz.PHP.CommentedOutCode.Found
+
+		// FOR NOW: Uncomment any of the following to get stats for that data point. This will be automated in the future.
+		// Data points will appear in the order they're set up here, but they will all be part of the same data set.
+
+		$data__credits = [
+			'position__department' => 'position',
+			// 'position__job'        => 'position',
+			// 'skills'               => 'skill',
+		];
+
+		$data__user = [
+			// 'locations'         => 'location',
+			// 'racial_identities' => 'racial_identity',
+			// 'gender_identities' => 'gender_identity',
+		];
+
+		$output = '';
+		$data   = [];
+
+		// Credit-only data
+		if ( $data__credits ) {
+			foreach ( $data__credits as $datapoint => $tax_slug ) {
+				// Get all term IDs for the $datapoint taxonomy
+				$taxonomy_plural = 'position__job' === $datapoint || 'position__department' === $datapoint ? 'positions' : $datapoint;
+
+				$terms = get_terms( [
+					'taxonomy'   => $tax_slug,
+					'hide_empty' => false,
+					// if $datapoint is 'position__department', only get top level terms. If it is 'position__job', only get child terms. Otherwise, get all terms.
+					'parent'     => 'position__department' === $datapoint ? 0 : '',
+					'childless'  => 'position__job' === $datapoint ? true : false,
+				] );
+
+				$terms_plucked = [];
+				foreach ( $terms as $term ) {
+					$terms_plucked[$term->name] = $term->term_id;
+				}
+
+				foreach ( $terms_plucked as $name => $id ) {
+					$args    = [$taxonomy_plural => $id];
+					$results = search_and_filter_crew_members( $args );
+
+					$data[] = [
+						'name'  => $name,
+						'count' => count( $results ),
+					];
+				}
+			}
+		}
+
+		// User-only data
+		if ( $data__user ) {
+			foreach ( $data__user as $datapoint => $tax_slug ) {
+				// Get all term IDs for the $datapoint taxonomy
+				$terms = get_terms( [
+					'taxonomy'   => $tax_slug,
+					'hide_empty' => false,
+				] );
+
+				$terms_plucked = [];
+				foreach ( $terms as $term ) {
+					$terms_plucked[$term->name] = $term->term_id;
+				}
+
+				foreach ( $terms_plucked as $name => $id ) {
+					$args = [$tax_slug => $id];
+
+					$results = query_users_with_terms( $args );
+
+					$data[] = [
+						'name'  => $name,
+						'count' => count( $results ),
+					];
+				}
+			}
+		}
+
+		$output .= '<p>USER BREAKDOWN:</p><pre>';
+		$output .= 'Label,Count' . "\n";
+		foreach ( $data as $datum ) {
+			$output .= sprintf( '"%s",%s' . "\n", $datum['name'], $datum['count'] );
+		}
+		$output .= '</pre>';
+
+		return $output;
+
+		// phpcs:enable Squiz.PHP.CommentedOutCode.Found
 	}
 
 	/**
