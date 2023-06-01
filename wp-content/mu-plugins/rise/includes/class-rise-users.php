@@ -288,7 +288,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_partner_directory_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Partner Directory', 'rise' ), __( 'Partner Directory', 'rise' ), 'partner_directory' );
+		self::add_taxonomy_to_user_menu( __( 'Partner Directories', 'rise' ), __( 'Partner Directories', 'rise' ), 'partner_directory' );
 	}
 
 	/**
