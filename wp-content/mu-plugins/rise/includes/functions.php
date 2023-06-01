@@ -325,6 +325,8 @@ function get_email_friendly_site_name() {
 /**
  * Determines if a user has at least one credit and at least a first or last name set.
  *
+ * @since 1.0.0
+ *
  * @param  int     $user_id
  * @return boolean True if the user is searchable, false otherwise.
  */
@@ -428,3 +430,18 @@ function search_and_filter_crew_members( $args ) {
 
 }
 // phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+
+/**
+ * Safe redirect with nocache headers to prevent caching of the redirect. Don't forget to call `exit`
+ * after calling this function to prevent further execution.
+ *
+ * @since  1.0.4
+ *
+ * @param  string $location The path to redirect to.
+ * @param  int    $status   The HTTP status code to use (default: 302)
+ * @return void
+ */
+function rise_nocache_redirect( $location, $status = 302 ) {
+	nocache_headers();
+	wp_safe_redirect( esc_url_raw( $location ), $status, 'RISE' );
+}

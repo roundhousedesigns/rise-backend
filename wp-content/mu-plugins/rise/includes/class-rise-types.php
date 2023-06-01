@@ -145,17 +145,4 @@ class Rise_Types {
 	public function saved_search_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 		return Rise_Factory::post_type_bulk_updated_messages( 'saved_search', 'Saved Search', 'Saved Searches', $bulk_messages, $bulk_counts );
 	}
-
-	/**
-	 * Blocks the user from accessing the admin area if they are not an administrator.
-	 *
-	 * @return void
-	 */
-	public function blockusers_init() {
-		if ( is_admin() && !current_user_can( 'administrator' ) &&
-			!( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			wp_safe_redirect( home_url() );
-			exit;
-		}
-	}
 }

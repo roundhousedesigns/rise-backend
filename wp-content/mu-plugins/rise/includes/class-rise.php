@@ -194,6 +194,17 @@ class Rise {
 		require dirname( __DIR__ ) . '/lib/tgmpa/class-tgm-plugin-activation.php';
 
 		$this->loader->add_action( 'tgmpa_register', $plugin_data, 'register_required_plugins' );
+
+		/**
+		 * Authentication
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'blockusers_init' );
+		$this->loader->add_action( 'wp_login', $plugin_data, 'logout_non_admin_on_login', 10, 2 );
+
+		/**
+		 * Redirects
+		 */
+		$this->loader->add_action( 'allowed_redirect_hosts', $plugin_data, 'allowed_redirect_hosts' );
 	}
 
 	/**
@@ -296,7 +307,6 @@ class Rise {
 		$this->loader->add_action( 'init', $plugin_data, 'credit_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'credit_bulk_updated_messages', 10, 2 );
-		$this->loader->add_action( 'init', $plugin_data, 'blockusers_init' );
 
 		/**
 		 * Taxonomy: position (`credit`)
