@@ -243,4 +243,43 @@ class Rise_Factory {
 
 		return $messages;
 	}
+
+	/**
+	 * Add the taxonomy to the user menu.
+	 *
+	 * @return void
+	 */
+	public static function add_taxonomy_to_user_menu( $page_title, $menu_title, $menu_slug ) {
+		add_users_page(
+			$page_title,
+			$menu_title,
+			'edit_users',
+			'edit-tags.php?taxonomy=' . $menu_slug
+		);
+	}
+
+	/**
+	 * Save the taxonomy terms on the user profile.
+	 *
+	 * @param  int    $user_id  The user ID
+	 * @param  string $taxonomy The taxonomy slug
+	 * @return void
+	 */
+	// TODO Maybe move this outside this file.
+	public static function save_taxonomy_terms_on_user_profile( $user_id, $taxonomy ) {
+		if ( !current_user_can( 'edit_user', $user_id ) && !current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( !isset( $_POST[$taxonomy . '_nonce'] ) || !wp_verify_nonce( $_POST[$taxonomy . '_nonce'], 'save_' . $taxonomy ) ) {
+			return;
+		}
+
+		if ( isset( $_POST[$taxonomy] ) ) {
+			$terms = array_map( 'intval', (array) $_POST[$taxonomy] );
+			wp_set_object_terms( $user_id, $terms, $taxonomy );
+		} else {
+			wp_set_object_terms( $user_id, [], $taxonomy );
+		}
+	}
 }

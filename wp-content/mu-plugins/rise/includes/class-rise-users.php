@@ -24,7 +24,7 @@ class Rise_Users {
 		$role->add_cap( 'edit_published_credits' );
 		$role->add_cap( 'publish_credits' );
 		$role->add_cap( 'delete_published_credits' );
-		
+
 		$roles = [
 			'crew-member' => [
 				'read'                     => true,
@@ -59,7 +59,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_gender_identity_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Gender Identity', 'rise' ), __( 'Gender Identity', 'rise' ), 'gender_identity' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Gender Identity', 'rise' ), __( 'Gender Identity', 'rise' ), 'gender_identity' );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_gender_identity_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'gender_identity' );
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'gender_identity' );
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_racial_identity_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Racial Identity', 'rise' ), __( 'Racial Identity', 'rise' ), 'racial_identity' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Racial Identity', 'rise' ), __( 'Racial Identity', 'rise' ), 'racial_identity' );
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_racial_identity_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'racial_identity' );
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'racial_identity' );
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_personal_identity_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Personal Identity', 'rise' ), __( 'Personal Identity', 'rise' ), 'personal_identity' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Personal Identity', 'rise' ), __( 'Personal Identity', 'rise' ), 'personal_identity' );
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_personal_identity_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'personal_identity' );
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'personal_identity' );
 	}
 
 	/**
@@ -174,7 +174,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_union_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Unions', 'rise' ), __( 'Unions', 'rise' ), 'union' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Unions', 'rise' ), __( 'Unions', 'rise' ), 'union' );
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_union_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'union' );
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'union' );
 	}
 
 	/**
@@ -213,7 +213,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_location_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Locations', 'rise' ), __( 'Locations', 'rise' ), 'location' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Locations', 'rise' ), __( 'Locations', 'rise' ), 'location' );
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_location_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'location' );
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'location' );
 	}
 	/**
 	 * Registers the `experience_level` taxonomy,
@@ -251,7 +251,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_experience_level_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Experience Levels', 'rise' ), __( 'Experience Levels', 'rise' ), 'experience_level' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Experience Levels', 'rise' ), __( 'Experience Levels', 'rise' ), 'experience_level' );
 	}
 
 	/**
@@ -271,7 +271,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_experience_level_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'experience_level' );
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'experience_level' );
 	}
 
 	/**
@@ -288,7 +288,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_partner_directory_to_user_menu() {
-		self::add_taxonomy_to_user_menu( __( 'Partner Directory', 'rise' ), __( 'Partner Directory', 'rise' ), 'partner_directory' );
+		Rise_Factory::add_taxonomy_to_user_menu( __( 'Partner Directories', 'rise' ), __( 'Partner Directory', 'rise' ), 'partner_directory' );
 	}
 
 	/**
@@ -308,21 +308,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_partner_directory_on_user_profile( $user_id ) {
-		self::save_taxonomy_terms_on_user_profile( $user_id, 'partner_directory' );
-	}
-
-	/**
-	 * Add the taxonomy to the user menu.
-	 *
-	 * @return void
-	 */
-	private function add_taxonomy_to_user_menu( $page_title, $menu_title, $menu_slug ) {
-		add_users_page(
-			$page_title,
-			$menu_title,
-			'edit_users',
-			'edit-tags.php?taxonomy=' . $menu_slug
-		);
+		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'partner_directory' );
 	}
 
 	/**
@@ -368,30 +354,5 @@ class Rise_Users {
 		</table>
 
 		<?php
-	}
-
-	/**
-	 * Save the taxonomy terms on the user profile.
-	 *
-	 * @param  int    $user_id  The user ID
-	 * @param  string $taxonomy The taxonomy slug
-	 * @return void
-	 */
-	// TODO Maybe move this outside this file.
-	private function save_taxonomy_terms_on_user_profile( $user_id, $taxonomy ) {
-		if ( ! current_user_can( 'edit_user', $user_id ) && ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		if ( ! isset( $_POST[$taxonomy . '_nonce'] ) || ! wp_verify_nonce( $_POST[$taxonomy . '_nonce'], 'save_' . $taxonomy ) ) {
-			return;
-		}
-
-		if ( isset( $_POST[$taxonomy] ) ) {
-			$terms = array_map( 'intval', (array) $_POST[$taxonomy] );
-			wp_set_object_terms( $user_id, $terms, $taxonomy );
-		} else {
-			wp_set_object_terms( $user_id, [], $taxonomy );
-		}
 	}
 }
