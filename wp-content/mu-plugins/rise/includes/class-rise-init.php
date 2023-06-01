@@ -86,7 +86,7 @@ class Rise_Init {
 		// Check if user is trying to access wp-admin
 		if ( is_admin() && !is_user_logged_in() ) {
 			// User is not logged in, redirect to log in
-			wp_safe_redirect( wp_login_url() );
+			rise_nocache_redirect( wp_login_url(), 301, 'RISE' );
 			exit;
 		} elseif ( is_admin() && !current_user_can( 'administrator' ) ) {
 			// User is logged in but not an administrator
