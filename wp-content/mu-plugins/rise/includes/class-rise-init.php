@@ -82,7 +82,7 @@ class Rise_Init {
 	 *
 	 * @return void
 	 */
-	public function blockusers_init() {
+	public function restrict_admin_user_roles() {
 		// Check if user is trying to access wp-admin
 		if ( is_admin() && !is_user_logged_in() ) {
 			// User is not logged in, redirect to log in
@@ -92,25 +92,6 @@ class Rise_Init {
 			// User is logged in but not an administrator
 			wp_logout();
 			rise_nocache_redirect( defined( 'RISE_FRONTEND_URL' ) ? RISE_FRONTEND_URL : home_url(), 302, 'RISE' );
-			exit;
-		}
-	}
-
-	/**
-	 * Logs out non-admin users when they try to log in.
-	 *
-	 * @since  1.0.4
-	 *
-	 * @param  string  $user_login
-	 * @param  WP_User $user
-	 * @return void
-	 */
-	public function logout_non_admin_on_login( $user_login, $user ) {
-		$allowed_roles = ['administrator', 'editor'];
-
-		if ( !empty( $user->roles ) && !array_intersect( $allowed_roles, $user->roles ) ) {
-			wp_logout();
-			rise_nocache_redirect( defined( 'RISE_FRONTEND_URL' ) ? RISE_FRONTEND_URL : home_url() );
 			exit;
 		}
 	}
