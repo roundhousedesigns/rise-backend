@@ -336,11 +336,11 @@ class Rise_Users {
 		?>
 
 		<!-- Add a new section to the user profile edit screen for the given taxonomy -->
-		<h2><?php esc_html_e( $name, 'rise' ); ?></h2>
+		<h2><?php __( $name, 'rise' ); ?></h2>
 		<table class="form-table">
 			<tr>
 				<!-- Add a field for the taxonomy checkboxes -->
-				<th><label><?php esc_html_e( 'Select ' . $name, 'rise' ); ?></label></th>
+				<th><label><?php __( 'Select ' . $name, 'rise' ); ?></label></th>
 				<td>
 					<?php foreach ( $all_terms as $term ) : ?>
 						<label>
