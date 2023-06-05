@@ -10,7 +10,7 @@
  * @since      0.1.0
  */
 
-class Rise_Factory {
+class Rise_Taxonomies {
 	/**
 	 * Regsiter a post type.
 	 *

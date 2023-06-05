@@ -48,132 +48,15 @@ function remove_incomplete_profiles_from_search( $author_id ) {
 
 	$pod = pods( 'user', $author_id );
 
+	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 	// If email, phone, and website are all unset, ignore this user.
-	if ( !$pod->field( 'contact_email', true, true ) && !$pod->field( 'phone', true, true ) && !$pod->field( 'website_url', true, true ) ) {
-		return false;
-	}
+	// TODO determine if we actually want this search results check.
+	// if ( !$pod->field( 'contact_email', true, true ) && !$pod->field( 'phone', true, true ) && !$pod->field( 'website_url', true, true ) ) {
+	// 	return false;
+	// }
 
 	return true;
 }
-
-/**
- * Imports `position` and `skill` term data from a CSV file.
- *
- * Uses source @link https://docs.google.com/spreadsheets/d/1OmGwyvZCvKbWO3GU-AKES4WJ-_Xi4GgYiTfsQ9GTN-4/edit#gid=514651634
- *
- * @deprecated 1.0.2beta
- *
- * @param  [type] $file_path
- * @return void
- */
-// phpcs:disable
-function import_positions_and_skills_from_csv( $file_path ) {
-	// Open the CSV file for reading
-	$handle = fopen( $file_path, 'r' );
-
-	// Loop through each row of the CSV file
-	$current_dept_id = 0;
-	$data            = fgetcsv( $handle );
-
-	while ( false !== $data ) {
-		// Loop through each cell in the current row
-		foreach ( $data as $index => $cell ) {
-			if ( 0 === $index ) {
-
-				if ( strpos( $cell, 'DEPT:' ) === 0 ) {
-					// This is a department cell, so add or update it in the position taxonomy
-					$dept_name          = trim( str_replace( 'DEPT: ', '', $cell ) );
-					$dept_parent_id     = 0; // top-level term
-					$existing_dept_term = term_exists( $dept_name, 'position' );
-
-					if ( $existing_dept_term ) {
-						$dept_id = $existing_dept_term['term_id'];
-						wp_update_term( $dept_id, 'position', [
-							'name'   => $dept_name,
-							'parent' => $dept_parent_id,
-						] );
-					} else {
-						$dept_id = wp_insert_term( $dept_name, 'position', [
-							'parent' => $dept_parent_id,
-						] );
-
-						if ( !is_wp_error( $dept_id ) ) {
-							$dept_id = $dept_id['term_id'];
-						} else {
-							error_log( 'error inserting dept: ' . $dept_id->get_error_message() );
-							wp_die( esc_textarea( $dept_id->get_error_message() ) );
-						}
-					}
-
-					$current_dept_id = $dept_id;
-				} else {
-					// This is a job cell, so add or update it in the position taxonomy
-					$job_name          = trim( $cell );
-					$existing_job_term = term_exists( $job_name, 'position', $current_dept_id );
-					$job_id            = null;
-
-					if ( $existing_job_term ) {
-						$job_id = $existing_job_term['term_id'];
-
-						wp_update_term( $job_id, 'position', [
-							'name'   => $job_name,
-							'parent' => $current_dept_id,
-						] );
-					} else {
-						if ( $job_name ) {
-							$job_id = wp_insert_term( $job_name, 'position', [
-								'parent' => $current_dept_id,
-							] );
-
-							if ( !is_wp_error( $job_id ) ) {
-								$job_id = $job_id['term_id'];
-							}
-						}
-					}
-				}
-
-				// Loop through the remaining cells in the row, adding or updating each skill term
-				$count = count( $data );
-				for ( $i = $index + 1; $i < $count; $i++ ) {
-					if ( !$data[$i] || !trim( $data[$i] ) ) {
-						continue;
-					}
-
-					$skill_name          = trim( $data[$i] );
-					$existing_skill_term = term_exists( $skill_name, 'skill' );
-					$skill_id            = null;
-
-					if ( $existing_skill_term ) {
-						$skill_id = $existing_skill_term['term_id'];
-					} else {
-						$new_skill = wp_insert_term( $skill_name, 'skill' );
-
-						if ( is_wp_error( $new_skill ) ) {
-							error_log( 'error inserting skill: ' . $new_skill->get_error_message() );
-							wp_die( $new_skill->get_error_message() );
-						}
-
-						$skill_id = $new_skill['term_id'];
-					}
-
-					// Update the skill's `jobs` field to include the current job ID
-					if ( $skill_id ) {
-						$pod  = pods( 'skill', $skill_id );
-						$jobs = $pod->field( 'jobs', true, true );
-
-						$separator = ',';
-						$jobs_arr  = $jobs ? explode( $separator, $jobs ) : [];
-
-						$jobs_arr[] = $job_id;
-						$jobs_save  = implode( $separator, array_unique( $jobs_arr ) );
-						$pod->save( 'jobs', $jobs_save );
-					}
-				}
-			}
-		}
-	}
-}
-// phpcs:enable
 
 /**
  * Gets a newly uploaded file's attachment ID.
@@ -188,23 +71,45 @@ function get_attachment_id_by_url( $url ) {
 
 	$file             = [];
 	$file['name']     = basename( $url );
-	$file['tmp_name'] = download_url( $url );
+	$file['tmp_name'] = download_url( $url, 300, true );
 	$file['error']    = '';
 	$file['size']     = filesize( $file['tmp_name'] );
-
-	if ( is_wp_error( $file['tmp_name'] ) ) {
-		unlink( $file['tmp_name'] );
-		return false;
-	}
 
 	$id = media_handle_sideload( $file, 0 );
 
 	if ( is_wp_error( $id ) ) {
 		unlink( $file['tmp_name'] );
-		return false;
+		throw new WP_Error( 'attachment_processing_error', $id->get_error_message() );
 	}
 
 	return $id;
+}
+
+/**
+ * Strip EXIF data from an image file if it's a jpg.
+ *
+ * @param  string $file The path to the image file.
+ * @return string The path to the new image file without EXIF data.
+ */
+function maybe_strip_exif( $file ) {
+	// Get the image extension.
+	$extension = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+
+	if ( 'jpg' !== $extension && 'jpeg' !== $extension ) {
+		return $file;
+	}
+
+	// Create a new image resource.
+	$image = imagecreatefromjpeg( $file );
+
+	// Remove the EXIF data.
+	imagejpeg( $image, $file, 91 );
+
+	// Free the image resource.
+	imagedestroy( $image );
+
+	// Return the path to the new image file.
+	return $file;
 }
 
 /**
@@ -263,6 +168,30 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 	$users = get_users( $args );
 
 	return wp_list_pluck( $users, 'ID' );
+}
+
+/**
+ * Retrieve the user IDs for users with the given terms. Assumes unique slugs.
+ *
+ * @param  string    $slug   The user slug.
+ * @param  bool      $single Whether to return a single result or an array of results (default: false).
+ * @return array|int The user IDs, or a single user ID if $single is true.
+ */
+function get_rise_profile( $user_id ) {
+	$pod        = pods( 'user', $user_id );
+	$all_fields = $pod->export();
+
+	if ( !$all_fields ) {
+		return false;
+	}
+
+	$profile = [];
+
+	foreach ( $all_fields as $field => $value ) {
+		$profile[$field] = pods_serial_comma( $value, $field, $pod->fields );
+	}
+
+	return $profile;
 }
 
 /**
@@ -403,11 +332,6 @@ function search_and_filter_crew_members( $args ) {
 	$authors = [];
 	foreach ( $credits as $credit ) {
 		$authors[] = $credit->post_author;
-	}
-
-	// Filter out any excluded users.
-	if ( isset( $args['exclude'] ) ) {
-		$authors = array_diff( $authors, $args['exclude'] );
 	}
 
 	// Filter out authors with no name set, or no contact info.

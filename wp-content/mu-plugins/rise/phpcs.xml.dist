@@ -90,7 +90,7 @@
 		<include-pattern>*/core/*</include-pattern>
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="lipe" />
+				<element value="rise" />
 			</property>
 		</properties>
 	</rule>

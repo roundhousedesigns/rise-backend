@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Rise Theatre Directory
  * Description:       The main site functionality for the Rise Theatre Directory backend.
- * Version:           1.0.3beta
+ * Version:           1.0.4beta
  * Author:            Roundhouse Designs
  * Author URI:        https://roundhouse-designs.com
  * Text Domain:       rise
@@ -17,7 +17,7 @@ if ( !defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.0.3beta' );
+define( 'RISE_VERSION', '1.0.4beta' );
 
 /**
  * The code that runs during plugin activation.
@@ -50,9 +50,14 @@ register_deactivation_hook( __FILE__, 'deactivate_rise' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-rise.php';
 
 /**
- * Helper functions.
+ * Functions.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/functions.php';
+
+/**
+ * Utilities and helpers.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/utils.php';
 
 /**
  * Begins execution of the plugin.

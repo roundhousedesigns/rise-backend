@@ -120,9 +120,9 @@ class Rise {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-init.php';
 
 		/**
-		 * The class responsible for creating post types, taxonomies, and other registerable structures.
+		 * The class responsible for creating taxonomies.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-factory.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-taxonomies.php';
 
 		/**
 		 * The classes responsible for registering data types.

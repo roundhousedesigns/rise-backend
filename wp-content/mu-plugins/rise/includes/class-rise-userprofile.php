@@ -68,6 +68,7 @@ class Rise_UserProfile {
 		'id'        => 'ID',
 		'firstName' => 'first_name',
 		'lastName'  => 'last_name',
+		'slug'      => 'user_nicename',
 	];
 
 	/**
@@ -158,6 +159,26 @@ class Rise_UserProfile {
 	}
 
 	/**
+	 * Get an input key from its associated frontend key.
+	 *
+	 * @param  string $frontend_key
+	 * @return string The input key for use in wp_update_user() or pods->save().
+	 */
+	protected static function get_input_key( $frontend_key ) {
+		if ( array_key_exists( $frontend_key, self::BASE_INPUT_FIELDS ) ) {
+			return self::BASE_INPUT_FIELDS[$frontend_key];
+		} elseif ( array_key_exists( $frontend_key, self::META_INPUT_FIELDS ) ) {
+			return self::META_INPUT_FIELDS[$frontend_key];
+		} elseif ( array_key_exists( $frontend_key, self::SOCIAL_INPUT_FIELDS ) ) {
+			return self::SOCIAL_INPUT_FIELDS[$frontend_key];
+		} elseif ( array_key_exists( $frontend_key, self::TAXONOMY_INPUT_FIELDS ) ) {
+			return self::TAXONOMY_INPUT_FIELDS[$frontend_key];
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Undocumented function
 	 *
 	 * @return void
@@ -230,17 +251,6 @@ class Rise_UserProfile {
 	}
 
 	/**
-	 * Set the user's credits.
-	 *
-	 * @return void
-	 */
-	private function set_credits() {
-		if ( isset( $this->raw['credits'] ) ) {
-			$this->credits = $this->raw['credits'];
-		}
-	}
-
-	/**
 	 * Update the user's profile data.
 	 *
 	 * @return int|WP_Error The user ID on success. WP_Error on failure.
@@ -259,6 +269,17 @@ class Rise_UserProfile {
 		}
 
 		return $base;
+	}
+
+	/**
+	 * Set the user's credits.
+	 *
+	 * @return void
+	 */
+	private function set_credits() {
+		if ( isset( $this->raw['credits'] ) ) {
+			$this->credits = $this->raw['credits'];
+		}
 	}
 
 	/**
@@ -287,7 +308,6 @@ class Rise_UserProfile {
 		}
 
 		// TODO investigate error handling (does $pod->save() return 0 on failure?)
-
 		return $pod->save( $update_fields );
 	}
 
@@ -312,6 +332,11 @@ class Rise_UserProfile {
 		return true;
 	}
 
+	/**
+	 * Update the user's credits.
+	 *
+	 * @return void
+	 */
 	protected function update_credits() {
 		if ( !$this->credits ) {
 			return new \WP_Error( 'update_credits', 'There are no credits to update.' );
@@ -322,4 +347,67 @@ class Rise_UserProfile {
 			$credit->update_credit();
 		}
 	}
+
+	/**
+	 * Sanitize an input value.
+	 *
+	 * @since 1.0.4
+	 *
+	 * @param  string|integer|array $value The value to sanitize.
+	 * @return string|integer|array The sanitized value.
+	 */
+	public static function sanitize_input_value( $value ) {
+		// Sanitize the value, which could be a string, a number, or an array of both.
+		$type = gettype( $value );
+
+		if ( 'string' === $type ) {
+			$sanitized = sanitize_text_field( $value );
+		} elseif ( 'integer' === $type ) {
+			$sanitized = absint( $value );
+		} elseif ( 'array' === $type ) {
+			$sanitized = array_map( 'sanitize_text_field', $value );
+		}
+
+		return $sanitized;
+	}
+
+	/**
+	 * Get the input key for a profile field.
+	 *
+	 * @since 1.0.4
+	 *
+	 * @param  string               $name
+	 * @param  string|integer|array $value
+	 * @return void
+	 */
+	public function set_profile_field( $name, $value ) {
+		$pod = pods( 'user', $this->id );
+
+		// Get the field's save key.
+		$field = self::get_input_key( $name );
+
+		// Sanitize
+		$value = self::sanitize_input_value( $value );
+
+		return $pod->save( $field, $value );
+	}
+
+	/**
+	 * Clear a meta input field in the user's profile.
+	 *
+	 * @since 1.0.3
+	 *
+	 * @param  string $name The field name.
+	 * @return void
+	 */
+	public function clear_profile_field( $name ) {
+		$pod = pods( 'user', $this->id );
+
+		// Get the field's save key.
+		$field = self::get_input_key( $name );
+
+		// TODO investigate error handling (does $pod->save() return 0 on failure?)
+		return $pod->save( $field, '' );
+	}
+
 }

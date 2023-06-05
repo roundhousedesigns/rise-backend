@@ -1,6 +1,6 @@
 <?php
 /**
- * Registers user taxonomies and data.
+ * The file that defines the custom user roles and capabilities.
  *
  * @package    Rise
  * @subpackage Rise/includes
@@ -50,7 +50,7 @@ class Rise_Users {
 	 * for use with 'user'.
 	 */
 	public function gender_identity_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'gender_identity', 'gender_identities', 'Gender Identity', 'Gender Identities' );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'gender_identity', 'gender_identities', 'Gender Identity', 'Gender Identities' );
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_gender_identity_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Gender Identity', 'rise' ), __( 'Gender Identity', 'rise' ), 'gender_identity' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Gender Identity', 'rise' ), __( 'Gender Identity', 'rise' ), 'gender_identity' );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_gender_identity_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'gender_identity' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'gender_identity' );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Rise_Users {
 	 * for use with 'user'.
 	 */
 	public function racial_identity_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'racial_identity', 'racial_identities', 'Racial Identity', 'Racial Identities' );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'racial_identity', 'racial_identities', 'Racial Identity', 'Racial Identities' );
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_racial_identity_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Racial Identity', 'rise' ), __( 'Racial Identity', 'rise' ), 'racial_identity' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Racial Identity', 'rise' ), __( 'Racial Identity', 'rise' ), 'racial_identity' );
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_racial_identity_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'racial_identity' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'racial_identity' );
 	}
 
 	/**
@@ -126,7 +126,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function personal_identity_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'personal_identity', 'personal_identities', 'Personal Identity', 'Personal Identities' );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'personal_identity', 'personal_identities', 'Personal Identity', 'Personal Identities' );
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_personal_identity_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Personal Identity', 'rise' ), __( 'Personal Identity', 'rise' ), 'personal_identity' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Personal Identity', 'rise' ), __( 'Personal Identity', 'rise' ), 'personal_identity' );
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_personal_identity_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'personal_identity' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'personal_identity' );
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function union_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'union', 'unions', 'Union', 'Unions', false );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'union', 'unions', 'Union', 'Unions', false );
 	}
 
 	/**
@@ -174,7 +174,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_union_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Unions', 'rise' ), __( 'Unions', 'rise' ), 'union' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Unions', 'rise' ), __( 'Unions', 'rise' ), 'union' );
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_union_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'union' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'union' );
 	}
 
 	/**
@@ -204,7 +204,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function location_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'location', 'locations', 'Location', 'Locations', false );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'location', 'locations', 'Location', 'Locations', false );
 	}
 
 	/**
@@ -213,7 +213,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_location_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Locations', 'rise' ), __( 'Locations', 'rise' ), 'location' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Locations', 'rise' ), __( 'Locations', 'rise' ), 'location' );
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_location_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'location' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'location' );
 	}
 	/**
 	 * Registers the `experience_level` taxonomy,
@@ -242,7 +242,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function experience_level_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'experience_level', 'experience_levels', 'Experience Level', 'Experience Levels', false );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'experience_level', 'experience_levels', 'Experience Level', 'Experience Levels', false );
 	}
 
 	/**
@@ -251,7 +251,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_experience_level_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Experience Levels', 'rise' ), __( 'Experience Levels', 'rise' ), 'experience_level' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Experience Levels', 'rise' ), __( 'Experience Levels', 'rise' ), 'experience_level' );
 	}
 
 	/**
@@ -271,7 +271,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_experience_level_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'experience_level' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'experience_level' );
 	}
 
 	/**
@@ -279,7 +279,7 @@ class Rise_Users {
 	 * for use with 'user'.
 	 */
 	public function partner_directory_init() {
-		Rise_Factory::register_taxonomy( ['user'], 'partner_directory', 'partner_directories', 'Partner Directory', 'Partner Directories' );
+		Rise_Taxonomies::register_taxonomy( ['user'], 'partner_directory', 'partner_directories', 'Partner Directory', 'Partner Directories' );
 	}
 
 	/**
@@ -288,7 +288,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function add_partner_directory_to_user_menu() {
-		Rise_Factory::add_taxonomy_to_user_menu( __( 'Partner Directories', 'rise' ), __( 'Partner Directory', 'rise' ), 'partner_directory' );
+		Rise_Taxonomies::add_taxonomy_to_user_menu( __( 'Partner Directories', 'rise' ), __( 'Partner Directory', 'rise' ), 'partner_directory' );
 	}
 
 	/**
@@ -308,7 +308,7 @@ class Rise_Users {
 	 * @return void
 	 */
 	public function save_partner_directory_on_user_profile( $user_id ) {
-		Rise_Factory::save_taxonomy_terms_on_user_profile( $user_id, 'partner_directory' );
+		Rise_Taxonomies::save_taxonomy_terms_on_user_profile( $user_id, 'partner_directory' );
 	}
 
 	/**
@@ -354,5 +354,19 @@ class Rise_Users {
 		</table>
 
 		<?php
+	}
+
+	/**
+	 * Generate the default, unique slug for a user.
+	 *
+	 * @since 1.0.4
+	 *
+	 * @param  string $first_name The user's first name.
+	 * @param  string $last_name  The user's last name.
+	 * @return string The user's sanitized name-based slug.
+	 */
+	public static function generate_default_user_slug( $first_name = '', $last_name = '' ) {
+		// Generate the full name based on the user's first and last name.
+		return sanitize_title( $first_name . ' ' . $last_name );
 	}
 }

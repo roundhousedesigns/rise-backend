@@ -122,13 +122,17 @@ class Rise_GraphQL_Queries {
 				],
 				'resolve'     => function ( $root, $args ) {
 					$departments = $args['departments'];
-					if ( count( $departments ) === 1 && empty( $departments[0] ) ) {
+
+					if ( count( $departments ) === 1 && 0 === absint( $departments[0] ) ) {
 						// retrieve only top-level terms for `position`
 						$terms = get_terms( [
 							'taxonomy'   => 'position',
 							'hide_empty' => false,
 							'parent'     => 0,
 						] );
+					} elseif ( empty( $departments ) ) {
+						// If no departments are selected, return an empty array.
+						return [];
 					} else {
 						// get all terms that are children of any of the term ids in the `$departments` array
 						$all_children = [];
@@ -253,7 +257,7 @@ class Rise_GraphQL_Queries {
 						'type'        => ['list_of' => 'ID'],
 					],
 					'exclude'            => [
-						'description' => __( 'A list of user ids to exclude (for now, used for the current user)', 'rise' ),
+						'description' => __( 'Deprecated. A list of user ids to exclude (was used for the current user)', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 				],
@@ -364,6 +368,36 @@ class Rise_GraphQL_Queries {
 				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
+				},
+			]
+		);
+
+		/**
+		 * Query user by slug.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'userBySlug',
+			[
+				'type'        => 'Int',
+				'description' => __( 'Get a user ID by their slug.', 'rise' ),
+				'args'        => [
+					'slug' => [
+						'description' => __( 'The slug of the user to return.', 'rise' ),
+						'type'        => 'String',
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$user = get_user_by( 'slug', $args['slug'] );
+
+					if ( !$user ) {
+						return;
+					}
+
+					// TODO Ultimately, this should return the whole profile data set, not just the ID.
+					// Right now, we're running a separate query by ID to get the full profile data.
+
+					return $user->ID;
 				},
 			]
 		);

@@ -31,19 +31,19 @@ class Rise_GraphQL_Types {
 				'fields'      => [
 					'facebook'  => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s Facebook profile.', 'rise' ),
+						'description' => __( 'The user\'s Facebook profile URL.', 'rise' ),
 					],
 					'twitter'   => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s Twitter profile.', 'rise' ),
+						'description' => __( 'The user\'s Twitter handle.', 'rise' ),
 					],
 					'linkedin'  => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s LinkedIn profile.', 'rise' ),
+						'description' => __( 'The user\'s LinkedIn handle.', 'rise' ),
 					],
 					'instagram' => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s Instagram profile.', 'rise' ),
+						'description' => __( 'The user\'s Instagram handle.', 'rise' ),
 					],
 				],
 			]

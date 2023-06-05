@@ -11,7 +11,6 @@
  */
 
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\UserMutation;
 
@@ -125,7 +124,9 @@ class Rise_GraphQL_Mutations {
 						'description' => __( 'The User object mutation type.', 'wp-graphql' ),
 					],
 				],
-				'mutateAndGetPayload' => function ( $input, AppContext $context, ResolveInfo $info ) {
+				'mutateAndGetPayload' => function ( $input, $context, $info ) {
+					// TODO Refactor and abstract this into a function
+
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
 						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
 					}
@@ -137,10 +138,14 @@ class Rise_GraphQL_Mutations {
 						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
 					}
 
+					// Set the user's slug (user_nicename)
+					$input_data = $input;
+					$input_data = array_merge( $input_data, ['nicename' => Rise_Users::generate_default_user_slug( $input['firstName'], $input['lastName'] )] );
+
 					/**
 					 * Map all of the args from GQL to WP friendly
 					 */
-					$user_args = UserMutation::prepare_user_object( $input, 'registerUserWithReCaptcha' );
+					$user_args = UserMutation::prepare_user_object( $input_data, 'registerUserWithReCaptcha' );
 
 					/**
 					 * Create the new user
@@ -271,7 +276,7 @@ class Rise_GraphQL_Mutations {
 				],
 				'outputFields'        => [
 					'user'    => [
-						'type'              => 'User',
+						'type'              => 'User', // FIXME Should this be 'ID' instead?
 						'description'       => __( 'The user that the password reset email was sent to', 'wp-graphql' ),
 						'deprecationReason' => __( 'This field will be removed in a future version of WPGraphQL', 'wp-graphql' ),
 						'resolve'           => function ( $payload, $args, AppContext $context ) {
@@ -467,6 +472,55 @@ class Rise_GraphQL_Mutations {
 		);
 
 		/**
+		 * Clear a user's specified profile field set up in Pods.
+		 */
+		register_graphql_mutation(
+			'clearProfileField',
+			[
+				'inputFields'         => [
+					'userId'    => [
+						'type'        => 'Int',
+						'description' => __( 'The ID of the user to update.', 'rise' ),
+					],
+					'fieldName' => [
+						'type'        => 'String',
+						'description' => __( 'The name of the file field to clear.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'result' => [
+						'type'        => 'Int',
+						'description' => 'The result of the get_user_meta() call.',
+						'resolve'     => function ( $payload ) {
+							return $payload['result'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					if ( !isset( $input['userId'] ) || !isset( $input['fieldName'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_name', __( 'Not enough data provided.', 'rise' ) ),
+						];
+					}
+
+					$user_id    = absint( $input['userId'] );
+					$field_name = esc_attr( $input['fieldName'] );
+
+					$user = new Rise_UserProfile( ['id' => $user_id] );
+
+					$result = $user->clear_profile_field( $field_name );
+
+					// TODO maybe return a WP_Error object instead of 0.
+					return [
+						'result' => !is_wp_error( $result ) ? $result : 0,
+					];
+				},
+			]
+		);
+
+		/**
 		 * Update or create a Credit.
 		 */
 		register_graphql_mutation(
@@ -621,7 +675,6 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// TODO check if this is necessary
 					if ( !function_exists( 'wp_handle_sideload' ) ) {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
 					}
@@ -633,6 +686,8 @@ class Rise_GraphQL_Mutations {
 						'test_form' => false,
 						'test_type' => true,
 					] );
+
+					$uploaded['file'] = maybe_strip_exif( $uploaded['file'] );
 
 					// Get the attachment ID from the uploaded file.
 					$attachment_id = get_attachment_id_by_url( $uploaded['url'] );

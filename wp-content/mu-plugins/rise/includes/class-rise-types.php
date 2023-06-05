@@ -18,7 +18,7 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function credit_init() {
-		Rise_Factory::register_post_type( 'credit', 'credits', 'Credit', 'Credits', 'dashicons-star-half' );
+		Rise_Taxonomies::register_post_type( 'credit', 'credits', 'Credit', 'Credits', 'dashicons-star-half' );
 	}
 
 	/**
@@ -28,7 +28,7 @@ class Rise_Types {
 	 * @return array Messages for the `credit` post type.
 	 */
 	public function credit_updated_messages( $messages ) {
-		return Rise_Factory::post_type_updated_messages( 'credit', 'credit', $messages );
+		return Rise_Taxonomies::post_type_updated_messages( 'credit', 'credit', $messages );
 	}
 
 	/**
@@ -41,7 +41,7 @@ class Rise_Types {
 	 * @return array Bulk messages for the `credit` post type.
 	 */
 	public function credit_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
-		return Rise_Factory::post_type_updated_messages( 'credit', 'credit', $bulk_messages, $bulk_counts );
+		return Rise_Taxonomies::post_type_updated_messages( 'credit', 'credit', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Rise_Types {
 	 * for use with 'credit'.
 	 */
 	public function position_init() {
-		Rise_Factory::register_taxonomy( ['credit'], 'position', 'positions', 'Production Position', 'Production Positions', true );
+		Rise_Taxonomies::register_taxonomy( ['credit'], 'position', 'positions', 'Production Position', 'Production Positions', true );
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Rise_Types {
 	 * @return array Messages for the `position` taxonomy.
 	 */
 	public function position_updated_messages( $messages ) {
-		return Rise_Factory::taxonomy_updated_messages( 'position', 'Production Position', 'Production Positions', $messages );
+		return Rise_Taxonomies::taxonomy_updated_messages( 'position', 'Production Position', 'Production Positions', $messages );
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Rise_Types {
 	 * for use with 'credit'.
 	 */
 	public function skill_init() {
-		return Rise_Factory::register_taxonomy( ['credit'], 'skill', 'skills', 'Skill', 'Skills', false );
+		return Rise_Taxonomies::register_taxonomy( ['credit'], 'skill', 'skills', 'Skill', 'Skills', false );
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Rise_Types {
 	 * @return array Messages for the `skill` taxonomy.
 	 */
 	public function skill_updated_messages( $messages ) {
-		return Rise_Factory::taxonomy_updated_messages( 'skill', 'Skill', 'Skills', $messages );
+		return Rise_Taxonomies::taxonomy_updated_messages( 'skill', 'Skill', 'Skills', $messages );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function project_init() {
-		Rise_Factory::register_post_type( 'project', 'projects', 'Project', 'Projects', 'dashicons-portfolio' );
+		Rise_Taxonomies::register_post_type( 'project', 'projects', 'Project', 'Projects', 'dashicons-portfolio' );
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Rise_Types {
 	 * @return array Messages for the `project` post type.
 	 */
 	public function project_updated_messages( $messages ) {
-		return Rise_Factory::post_type_updated_messages( 'project', 'project', $messages );
+		return Rise_Taxonomies::post_type_updated_messages( 'project', 'project', $messages );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Rise_Types {
 	 * @return array Bulk messages for the `project` post type.
 	 */
 	public function project_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
-		Rise_Factory::post_type_bulk_updated_messages( 'project', 'Project', 'Projects', $bulk_messages, $bulk_counts );
+		Rise_Taxonomies::post_type_bulk_updated_messages( 'project', 'Project', 'Projects', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function saved_search_init() {
-		Rise_Factory::register_post_type( 'saved_search', 'saved_searches', 'Saved Search', 'Saved Searches', 'dashicons-search' );
+		Rise_Taxonomies::register_post_type( 'saved_search', 'saved_searches', 'Saved Search', 'Saved Searches', 'dashicons-search' );
 	}
 
 	/**
@@ -130,7 +130,7 @@ class Rise_Types {
 	 * @return array Messages for the `saved_search` post type.
 	 */
 	public function saved_search_updated_messages( $messages ) {
-		return Rise_Factory::post_type_updated_messages( 'saved_search', 'saved_search', $messages );
+		return Rise_Taxonomies::post_type_updated_messages( 'saved_search', 'saved_search', $messages );
 	}
 
 	/**
@@ -143,6 +143,6 @@ class Rise_Types {
 	 * @return array Bulk messages for the `saved_search` post type.
 	 */
 	public function saved_search_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
-		return Rise_Factory::post_type_bulk_updated_messages( 'saved_search', 'Saved Search', 'Saved Searches', $bulk_messages, $bulk_counts );
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'saved_search', 'Saved Search', 'Saved Searches', $bulk_messages, $bulk_counts );
 	}
 }
