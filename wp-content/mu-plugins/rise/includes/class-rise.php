@@ -306,6 +306,9 @@ class Rise {
 		$this->loader->add_action( 'init', $plugin_data, 'credit_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'credit_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'manage_users_columns', $plugin_data, 'add_credit_posts_column' );
+		$this->loader->add_filter( 'manage_users_custom_column', $plugin_data, 'display_credit_posts_column', 10, 3 );
+		$this->loader->add_filter( 'manage_users_sortable_columns', $plugin_data, 'make_credit_posts_column_sortable' );
 
 		/**
 		 * Taxonomy: position (`credit`)

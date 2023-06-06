@@ -45,6 +45,55 @@ class Rise_Types {
 	}
 
 	/**
+	 * Add custom `credit` column to Users list.
+	 *
+	 * @since 1.0.5
+	 *
+	 * @param  array $columns The existing columns.
+	 * @return array The modified columns.
+	 */
+	public function add_credit_posts_column( $columns ) {
+		$columns['credit_posts'] = 'Credit Posts';
+		return $columns;
+	}
+
+	/**
+	 * Populate custom `credit` Users column with data.
+	 *
+	 * @param  string $value       The existing column value.
+	 * @param  string $column_name The column name.
+	 * @param  int    $user_id     The user ID.
+	 * @return string The modified column value.
+	 */
+	public function display_credit_posts_column( $value, $column_name, $user_id ) {
+		if ( 'credit_posts' === $column_name ) {
+			$credit_count = count_user_posts( $user_id, 'credit' );
+			if ( $credit_count > 0 ) {
+				$edit_url = add_query_arg( [
+					'post_type' => 'credit',
+					'author'    => $user_id,
+				], admin_url( 'edit.php' ) );
+				$value = '<a href="' . esc_url( $edit_url ) . '">' . $credit_count . '</a>';
+			} else {
+				$value = '0';
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Make custom `credit` Users column sortable.
+	 *
+	 * @param  array $columns The existing columns.
+	 * @return array The modified columns.
+	 */
+	public function make_credit_posts_column_sortable( $columns ) {
+		$columns['credit_posts'] = 'credit_posts';
+		return $columns;
+	}
+
+	/**
 	 * Registers the `position` taxonomy,
 	 * for use with 'credit'.
 	 */

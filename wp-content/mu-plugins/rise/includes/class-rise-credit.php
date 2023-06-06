@@ -197,7 +197,7 @@ class Rise_Credit {
 	 */
 	protected function update_base() {
 		$user_id = get_current_user_id();
-		if ( ! $user_id ) {
+		if ( !$user_id ) {
 			return new WP_Error( 'no_user', 'No user is logged in.' );
 		}
 
