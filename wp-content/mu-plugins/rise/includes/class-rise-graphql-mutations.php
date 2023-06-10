@@ -431,6 +431,85 @@ class Rise_GraphQL_Mutations {
 		);
 
 		/**
+		 * Change a user's password
+		 */
+		register_graphql_mutation(
+			'changeProfileSlug',
+			[
+				'inputFields'         => [
+					'userId'  => [
+						'type'        => ['non_null' => 'Int'],
+						'description' => __( 'The user\'s ID', 'wp-graphql' ),
+					],
+					'newSlug' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The desired profile slug', 'wp-graphql' ),
+					],
+				],
+				'outputFields'        => [
+					'success' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'wp-graphql' ),
+					],
+					'slug'    => [
+						'type'        => 'String',
+						'description' => __( 'The user\'s new slug', 'wp-graphql' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					$user = get_user_by( 'id', absint( $input['userId'] ) );
+
+					if ( !$user ) {
+						throw new UserError( 'user_not_found' );
+					}
+
+					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					$payload = [
+						'success' => false,
+						'slug'    => $user->user_nicename,
+					];
+
+					if ( !$input['userId'] || !$input['newSlug'] ) {
+						// TODO throw error here?
+						return $payload;
+					}
+
+					// Check if the user is the current logged in user
+					if ( get_current_user_id() !== $user->ID ) {
+						throw new UserError( 'user_not_authorized' );
+					}
+
+					// If the new slug matches the current slug, just return success.
+					if ( $user->user_nicename === $input['newSlug'] ) {
+						$payload['success'] = true;
+
+						return $payload;
+					}
+
+					// Make sure the new slug is unique
+					$existing_slug_user = get_user_by( 'slug', $input['newSlug'] );
+
+					if ( $existing_slug_user ) {
+						throw new UserError( 'user_slug_not_unique' );
+					}
+
+					// Update the user's slug
+					$user->user_nicename = sanitize_title( $input['newSlug'] );
+					$result              = wp_update_user( $user );
+
+					if ( is_wp_error( $result ) ) {
+						throw new UserError( $result->get_error_code() );
+					}
+
+					return [
+						'success' => true,
+						'slug'    => $user->user_nicename,
+					];
+				},
+			]
+		);
+
+		/**
 		 * Update a user's profile.
 		 */
 		register_graphql_mutation(

@@ -11,11 +11,12 @@
  */
 
 /**
- * Imports `position` and `skill` term data from a CSV file.
+ * Imports `position` and `skill` term data from a CSV file. DEPRECATED, NOT UPDATED TO WORK PAST 1.0.4.
  *
  * Uses source @link https://docs.google.com/spreadsheets/d/1OmGwyvZCvKbWO3GU-AKES4WJ-_Xi4GgYiTfsQ9GTN-4/edit#gid=514651634
  *
  * @deprecated 1.0.2beta
+ * @since 0.7
  *
  * @param  string $file_path
  * @return void
@@ -147,5 +148,34 @@ function rise_generate_user_slugs() {
 			'ID'            => $user->ID,
 			'user_nicename' => Rise_Users::generate_default_user_slug( $user->ID ),
 		] );
+	}
+}
+
+/**
+ * Migrate the `jobs` field on the `skill` taxonomy to a relationship field.
+ *
+ * @return void
+ */
+function rise_migrate_skill_ids_to_relationships() {
+	$old_field = 'jobs';
+	$new_field = 'jobs_relationship';
+
+	// Get all 'skill' terms
+	$skills = get_terms( [
+		'taxonomy'   => 'skill',
+		'hide_empty' => false,
+	] );
+
+	// Loop through each skill and get the 'jobs' pod field.
+	foreach ( $skills as $skill ) {
+		$pod = pods( 'skill', $skill->term_id );
+
+		$jobs = $pod->field( $old_field, true, true );
+		$jobs = explode( ',', $jobs );
+
+		// Loop through each job ID and add it to the skill's 'jobs' relationship field.
+		foreach ( $jobs as $job_id ) {
+			$pod->add_to( $new_field, $job_id );
+		}
 	}
 }

@@ -75,27 +75,26 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$skill_query_args = [
-						'taxonomy'   => 'skill',
-						'hide_empty' => false,
-						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-						'meta_query' => [
-							'relation' => 'OR',
-						],
-					];
-
-					// MAYBE run individiual queries for each job and merge the results to enable job-weighted sorting of results.
+					$selected_skills = [];
 					foreach ( $args['jobs'] as $job ) {
-						$skill_query_args['meta_query'][] = [
-							'key'     => 'jobs',
-							'value'   => (string) $job,
-							'compare' => 'LIKE',
-						];
+						$pod       = pods( 'position', $job );
+						$retrieved = $pod->field( 'skills' );
+
+						if ( !$retrieved ) {
+							return [];
+						}
+
+						$selected_skills[] = wp_list_pluck( $retrieved, 'term_id' );
 					}
 
-					$skill_terms     = get_terms( $skill_query_args );
-					$prepared_skills = [];
+					$term_args = [
+						'include'  => $selected_skills[0],
+						'number'   => 0,
+						'taxonomy' => 'skill',
+					];
+					$skill_terms = get_terms( $term_args );
 
+					$prepared_skills = [];
 					foreach ( $skill_terms as $skill ) {
 						$prepared_skills[] = [
 							'databaseId' => $skill->term_id,
