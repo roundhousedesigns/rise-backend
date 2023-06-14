@@ -17,7 +17,7 @@ if ( !defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.0.5' );
+define( 'RISE_VERSION', '1.0.6-dev' );
 
 /**
  * The code that runs during plugin activation.
@@ -53,6 +53,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-rise.php';
  * Functions.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/functions.php';
+
+/**
+ * Backwards compatibility.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/deprecated.php';
 
 /**
  * Utilities and helpers.
