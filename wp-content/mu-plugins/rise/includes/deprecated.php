@@ -151,8 +151,8 @@ function rise_migrate_skill_ids_to_relationships() {
 	foreach ( $skills as $skill ) {
 		$pod = pods( 'skill', $skill->term_id );
 
-		$jobs = $pod->field( $old_field, true, true );
-		$jobs = explode( ',', $jobs );
+		$jobs_string = $pod->field( $old_field, true, true );
+		$jobs        = explode( ',', $jobs_string );
 
 		// Loop through each job ID and add it to the skill's 'jobs' relationship field.
 		foreach ( $jobs as $job_id ) {
@@ -160,5 +160,3 @@ function rise_migrate_skill_ids_to_relationships() {
 		}
 	}
 }
-
-// phpcs:enable
