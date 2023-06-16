@@ -323,6 +323,13 @@ class Rise {
 		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'skill_updated_messages' );
 
 		/**
+		 * Custom Post Type: global_notice
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'global_notice_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'global_notice_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'global_notice_bulk_updated_messages', 10, 2 );
+
+		/**
 		 * Custom Post Type: saved_search
 		 */
 		// phpcs:disable

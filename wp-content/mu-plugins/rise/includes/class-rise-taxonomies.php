@@ -19,9 +19,10 @@ class Rise_Taxonomies {
 	 * @param  string $singular         - The singular post type name.
 	 * @param  string $plural           - The plural post type name.
 	 * @param  string $icon             (default: '') - https://developer.wordpress.org/resource/dashicons/
+	 * @param  array  $supports         (default: ['title', 'author']) - A custom post type supports array.
 	 * @return void
 	 */
-	public static function register_post_type( $post_type, $post_type_plural, $singular, $plural, $icon = '' ) {
+	public static function register_post_type( $post_type, $post_type_plural, $singular, $plural, $icon = '', $supports = ['title', 'author'] ) {
 		// Equalize names.
 		$name_singular = ucwords( $singular );
 		$name_plural   = ucwords( $plural );
@@ -59,7 +60,7 @@ class Rise_Taxonomies {
 			'hierarchical'          => false,
 			'show_ui'               => true,
 			'show_in_nav_menus'     => true,
-			'supports'              => ['title', 'author'],
+			'supports'              => $supports,
 			'has_archive'           => true,
 			'rewrite'               => true,
 			'query_var'             => true,
