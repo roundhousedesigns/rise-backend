@@ -88,9 +88,10 @@ class Rise_GraphQL_Queries {
 					}
 
 					$term_args = [
-						'include'  => $selected_skills[0],
-						'number'   => 0,
-						'taxonomy' => 'skill',
+						'include'    => $selected_skills[0],
+						'number'     => 0,
+						'hide_empty' => false,
+						'taxonomy'   => 'skill',
 					];
 					$skill_terms = get_terms( $term_args );
 
