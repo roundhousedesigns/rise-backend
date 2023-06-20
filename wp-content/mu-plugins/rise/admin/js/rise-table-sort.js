@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		header.dataset.sortDir = newDir;
 		header.classList.toggle("asc", newDir === "asc");
 		header.classList.toggle("desc", newDir === "desc");
+		header.querySelector(".sort-indicator").textContent = newDir === "asc" ? "▲" : "▼";
+		return newDir; // Return the new sort direction
 	}
 
 	// Function to perform the sorting
@@ -44,6 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
+	// Function to create the sort indicator icons
+	function createSortIndicator(sortDirection) {
+		var indicator = document.createElement("span");
+		indicator.classList.add("sort-indicator");
+		indicator.textContent = sortDirection === "asc" ? "▲" : "▼"; // Set initial arrow direction
+		return indicator;
+	}
+
 	// Event handler for sorting
 	document.addEventListener("click", function (event) {
 		var target = event.target;
@@ -53,8 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			var columnIndex = Array.from(header.parentNode.cells).indexOf(header);
 			var sortDirection = header.dataset.sortDir;
 
-			toggleSortDirection(header);
+			sortDirection = toggleSortDirection(header); // Toggle the sort direction and get the updated value
+
 			sortTable(table, columnIndex, sortDirection);
 		}
+	});
+
+	// Add sort indicators to the column headers
+	var headers = document.querySelectorAll("th.sort");
+	headers.forEach(function (header) {
+		var sortDirection = header.dataset.sortDir || "asc";
+		var sortIndicator = createSortIndicator(sortDirection);
+		header.appendChild(sortIndicator);
 	});
 });

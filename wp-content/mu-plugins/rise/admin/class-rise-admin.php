@@ -71,7 +71,7 @@ class Rise_Admin {
 	 */
 	public function enqueue_scripts() {
 		$current_screen = get_current_screen();
-		if ( $current_screen && 'your_admin_menu_page' === $current_screen->id ) {
+		if ( $current_screen && 'toplevel_page_rise-admin' === $current_screen->id ) {
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-table-sort.js', [], $this->version, false );
 		}
 	}
@@ -249,32 +249,57 @@ class Rise_Admin {
 	 */
 	private static function crew_member_stats__detailed() {
 		$data__credits = [
-			'position__department' => 'position',
-			'position__job'        => 'position',
-			'skills'               => 'skill',
+			'position__department' => [
+				'label' => 'Departments',
+				'slug'  => 'position',
+			],
+			'position__job'        => [
+				'label' => 'Jobs',
+				'slug'  => 'position',
+			],
+			'skills'               => [
+				'label' => 'Job Skills',
+				'slug'  => 'skill',
+			],
 		];
 
 		$data__user = [
-			'locations'         => 'location',
-			'racial_identities' => 'racial_identity',
-			'gender_identities' => 'gender_identity',
+			'locations'           => [
+				'label' => 'Locations',
+				'slug'  => 'location',
+			],
+			'racial_identities'   => [
+				'label' => 'Racial Identifiers',
+				'slug'  => 'racial_identity',
+			],
+			'gender_identities'   => [
+				'label' => 'Gender Identifiers',
+				'slug'  => 'gender_identity',
+			],
+			'personal_identities' => [
+				'label' => 'Additional Identifiers',
+				'slug'  => 'personal_identity',
+			],
 		];
 
-		$output = '';
+		$output = '<div class="stats-tables">';
 
 		// Credit-only data
 		if ( $data__credits ) {
-			foreach ( $data__credits as $datapoint => $tax_slug ) {
+			foreach ( $data__credits as $datapoint => $data ) {
+				$label = $data['label'];
+				$slug  = $data['slug'];
+
 				$output .= '<table>';
-				$output .= '<caption>' . ucwords( str_replace( '_', ' ', $datapoint ) ) . '</caption>';
+				$output .= '<caption>' . $label . '</caption>';
 				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
 				$output .= '<tbody>';
 
 				// Get all term IDs for the $datapoint taxonomy
-				$taxonomy_plural = 'position__job' === $datapoint || 'position__department' === $datapoint ? 'positions' : $datapoint;
+				$taxonomy_plural = 'position__job' === $datapoint || 'position__department' === $datapoint ? 'positions' : $slug;
 
 				$terms = get_terms( [
-					'taxonomy'   => $tax_slug,
+					'taxonomy'   => $slug,
 					'hide_empty' => false,
 					'parent'     => 'position__department' === $datapoint ? 0 : '',
 					'childless'  => 'position__job' === $datapoint ? true : false,
@@ -312,21 +337,24 @@ class Rise_Admin {
 
 		// User-only data
 		if ( $data__user ) {
-			foreach ( $data__user as $datapoint => $tax_slug ) {
+			foreach ( $data__user as $datapoint => $data ) {
+				$label = $data['label'];
+				$slug  = $data['slug'];
+
 				$output .= '<table>';
-				$output .= '<caption>' . ucwords( str_replace( '_', ' ', $datapoint ) ) . '</caption>';
+				$output .= '<caption>' . $label . '</caption>';
 				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
 				$output .= '<tbody>';
 
 				$terms = get_terms( [
-					'taxonomy'   => $tax_slug,
+					'taxonomy'   => $slug,
 					'hide_empty' => false,
 				] );
 
 				$data = [];
 
 				foreach ( $terms as $term ) {
-					$args    = [$tax_slug => $term->term_id];
+					$args    = [$slug => $term->term_id];
 					$results = query_users_with_terms( $args );
 
 					$data[] = [
@@ -352,6 +380,8 @@ class Rise_Admin {
 				$output .= '</table>';
 			}
 		}
+
+		$output .= '</div>';
 
 		return $output;
 	}

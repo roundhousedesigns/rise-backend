@@ -9,7 +9,7 @@
 }
 
 .data-feature p {
-	font-size: 1.1em;
+	font-size: 1.2em;
 }
 
 .rise-admin table {
@@ -33,11 +33,32 @@
 	margin-bottom: 0.5em;
 }
 
-.rise-admin th,
-.rise-admin td {
+.rise-admin table th,
+.rise-admin table td {
 	padding: 12px 15px;
 }
 
-.rise-admin td:first-of-type {
+.rise-admin table th.sort {
+	cursor: pointer;
+}
+
+.rise-admin .sort-indicator {
+	padding-left: 4px;
+	opacity: 0.75;
+}
+
+.rise-admin tbody tr {
+	border-bottom: 1px solid #dddddd;
+}
+
+.rise-admin tbody tr:nth-of-type(even) {
+	background-color: #f3f3f3;
+}
+
+.rise-admin tbody tr:last-of-type {
+	border-bottom: 2px solid #009879;
+}
+
+.rise-admin tbody td:first-of-type {
 	min-width: 400px;
 }
