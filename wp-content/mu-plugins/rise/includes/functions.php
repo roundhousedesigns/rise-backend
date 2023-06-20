@@ -231,7 +231,7 @@ function recaptcha_is_valid( $response ) {
  * Get the site name.
  *
  * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
- * @since 1.0.0beta
+ * @since 1.0.0
  *
  * @return string
  */

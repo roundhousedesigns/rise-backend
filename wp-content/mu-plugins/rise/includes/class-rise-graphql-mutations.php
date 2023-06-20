@@ -792,7 +792,7 @@ class Rise_GraphQL_Mutations {
 	 * Get the message body of the password reset email
 	 *
 	 * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
-	 * @since 1.0.0beta
+	 * @since 1.0.0
 	 *
 	 * @param  WP_User  $user_data User data
 	 * @param  string   $key       Password reset key
@@ -825,7 +825,7 @@ class Rise_GraphQL_Mutations {
 	 * Get the subject of the password reset email
 	 *
 	 * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
-	 * @since 1.0.0beta
+	 * @since 1.0.0
 	 *
 	 * @param  WP_User  $user_data User data
 	 * @return string
@@ -847,7 +847,7 @@ class Rise_GraphQL_Mutations {
 	/**
 	 * Get the message body of the changed password alert email
 	 *
-	 * @since 1.0.3beta
+	 * @since 1.0.3
 	 *
 	 * @param  WP_User $user_data User data
 	 * @return string  Message body
@@ -871,7 +871,7 @@ class Rise_GraphQL_Mutations {
 	/**
 	 * Get the subject of the changed password email
 	 *
-	 * @since 1.0.3beta
+	 * @since 1.0.3
 	 *
 	 * @return string
 	 */
@@ -884,7 +884,7 @@ class Rise_GraphQL_Mutations {
 	 * Was a username or email address provided?
 	 *
 	 * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
-	 * @since 1.0.0beta
+	 * @since 1.0.0
 	 *
 	 * @param  array  $input The input args.
 	 * @return bool

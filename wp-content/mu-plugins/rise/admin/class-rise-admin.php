@@ -61,17 +61,6 @@ class Rise_Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_styles() {
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Rise_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Rise_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-admin.css', [], $this->version, 'all' );
 	}
 
@@ -81,32 +70,26 @@ class Rise_Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_scripts() {
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Rise_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Rise_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-admin.js', ['jquery'], $this->version, false );
+		$current_screen = get_current_screen();
+		if ( $current_screen && 'your_admin_menu_page' === $current_screen->id ) {
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-table-sort.js', [], $this->version, false );
+		}
 	}
 
 	/**
 	 * Register the admin menu for this plugin into the WordPress Dashboard menu.
 	 *
-	 * @since    1.0.2beta
+	 * @since    1.0.2
 	 */
 	public function plugin_options_page() {
-		add_options_page(
-			'RISE Directory Options', // Page title
-			'RISE Options', // Menu title
+		add_menu_page(
+			'RISE Administration', // Page title
+			'RISE Admin', // Menu title
 			'manage_options', // Capability required to access the page
-			'rise-directory-options', // Menu slug
-			[$this, 'plugin_options_page_callback']// Callback function to render the page content
+			'rise-admin', // Menu slug
+			[$this, 'plugin_options_page_callback'], // Callback function to render the page content
+			'dashicons-chart-area', // Menu icon
+			'2.2' // Menu position
 		);
 	}
 
@@ -119,7 +102,7 @@ class Rise_Admin {
 		self::section_html_start();
 
 		settings_fields( 'rise_directory_options' ); // Add the settings field group
-		do_settings_sections( 'rise-directory-options' ); // Render the settings section(s)
+		do_settings_sections( 'rise-admin' ); // Render the settings section(s)
 
 		// Not currently in use
 		// submit_button(); // Add the submit button
@@ -141,7 +124,7 @@ class Rise_Admin {
 			'rise_directory_stats_section',
 			'RISE Directory Statistics',
 			[$this, 'rise_directory_stats_section_callback'],
-			'rise-directory-options'
+			'rise-admin'
 		);
 
 		// Add a section for the settings
@@ -149,7 +132,7 @@ class Rise_Admin {
 		// 	'rise_directory_settings_section',
 		// 	'RISE Directory Settings',
 		// 	[$this, 'rise_directory_settings_section_callback'],
-		// 	'rise-directory-options'
+		// 	'rise-admin'
 		// );
 
 		// Add a field for 'rise_frontend_url' in the section
@@ -161,7 +144,7 @@ class Rise_Admin {
 		// 	'rise_frontend_url',
 		// 	'Frontend URL',
 		// 	[$this, 'rise_frontend_url_callback'],
-		// 	'rise-directory-options',
+		// 	'rise-admin',
 		// 	'rise_directory_settings_section'
 		// );
 	}
@@ -179,7 +162,7 @@ class Rise_Admin {
 	 * Callback function to render the stats section.
 	 */
 	public function rise_directory_stats_section_callback() {
-		self::section_html_start();
+		echo wp_kses_post( self::section_html_start() );
 
 		echo wp_kses_post( self::crew_member_stats__basic() );
 
@@ -187,7 +170,7 @@ class Rise_Admin {
 
 		echo wp_kses_post( self::dev_info() );
 
-		self::section_html_end();
+		echo wp_kses_post( self::section_html_end() );
 	}
 
 	/**
@@ -196,7 +179,7 @@ class Rise_Admin {
 	 * @return string HTML output.
 	 */
 	private static function section_html_start() {
-		return "<div class='wrap'>\n<h1>RISE Directory Options</h1>\n<form method='post' action='options.php'>";
+		return "<div class='wrap rise-admin'>\n<h1 class='wp-heading-inline'>RISE Directory Administration</h1>\n<form method='post' action='options.php'>";
 	}
 
 	/**
@@ -218,6 +201,7 @@ class Rise_Admin {
 		$crew_members = get_users( ['role' => 'crew-member'] );
 		$authors      = [];
 		$non_authors  = [];
+		$output       = '<h2>Base Stats</h2><div class="data-feature">';
 
 		foreach ( $crew_members as $crew_member ) {
 			$posts = get_posts( [
@@ -245,7 +229,6 @@ class Rise_Admin {
 			$non_authors_data .= implode( ',', $data ) . "\n";
 		}
 
-		$output = '';
 		$output .= sprintf( '<p>There are <strong>%s</strong> users registered on the site.</p>', count( $crew_members ) );
 		$output .= sprintf( '<p>There are <strong>%s</strong> users who have at least one credit.</p>', count( $authors ) );
 		$output .= sprintf( '<p>There are <strong>%s</strong> users who have <strong>no</strong> credits.</p>', count( $non_authors ) );
@@ -254,107 +237,127 @@ class Rise_Admin {
 		// TODO Make this a download link
 		// $output .= sprintf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
 
+		$output .= '</div>';
+
 		return $output;
 	}
 
 	/**
-	 * Generate detailed stats for crew members.
+	 * Print some more detailed user statistics.
 	 *
-	 * @return string HTML output.
+	 * @return void
 	 */
 	private static function crew_member_stats__detailed() {
-		// phpcs:disable Squiz.PHP.CommentedOutCode.Found
-
-		// FOR NOW: Uncomment any of the following to get stats for that data point. This will be automated in the future.
-		// Data points will appear in the order they're set up here, but they will all be part of the same data set.
-
 		$data__credits = [
 			'position__department' => 'position',
-			// 'position__job'        => 'position',
-			// 'skills'               => 'skill',
+			'position__job'        => 'position',
+			'skills'               => 'skill',
 		];
 
 		$data__user = [
-			// 'locations'         => 'location',
-			// 'racial_identities' => 'racial_identity',
-			// 'gender_identities' => 'gender_identity',
+			'locations'         => 'location',
+			'racial_identities' => 'racial_identity',
+			'gender_identities' => 'gender_identity',
 		];
 
 		$output = '';
-		$data   = [];
 
 		// Credit-only data
 		if ( $data__credits ) {
 			foreach ( $data__credits as $datapoint => $tax_slug ) {
+				$output .= '<table>';
+				$output .= '<caption>' . ucwords( str_replace( '_', ' ', $datapoint ) ) . '</caption>';
+				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
+				$output .= '<tbody>';
+
 				// Get all term IDs for the $datapoint taxonomy
 				$taxonomy_plural = 'position__job' === $datapoint || 'position__department' === $datapoint ? 'positions' : $datapoint;
 
 				$terms = get_terms( [
 					'taxonomy'   => $tax_slug,
 					'hide_empty' => false,
-					// if $datapoint is 'position__department', only get top level terms. If it is 'position__job', only get child terms. Otherwise, get all terms.
 					'parent'     => 'position__department' === $datapoint ? 0 : '',
 					'childless'  => 'position__job' === $datapoint ? true : false,
 				] );
 
-				$terms_plucked = [];
-				foreach ( $terms as $term ) {
-					$terms_plucked[$term->name] = $term->term_id;
-				}
+				$data = [];
 
-				foreach ( $terms_plucked as $name => $id ) {
-					$args    = [$taxonomy_plural => $id];
+				foreach ( $terms as $term ) {
+					$args    = [$taxonomy_plural => $term->term_id];
 					$results = search_and_filter_crew_members( $args );
 
 					$data[] = [
-						'name'  => $name,
+						'name'  => $term->name,
 						'count' => count( $results ),
 					];
 				}
+
+				// Sort the data array by the "count" value in descending order by default
+				usort( $data, function ( $a, $b ) {
+					return $b['count'] - $a['count'];
+				} );
+
+				foreach ( $data as $datum ) {
+					$output .= sprintf(
+						'<tr><td>%s</td><td>%s</td></tr>',
+						$datum['name'],
+						$datum['count']
+					);
+				}
+
+				$output .= '</tbody>';
+				$output .= '</table>';
 			}
 		}
 
 		// User-only data
 		if ( $data__user ) {
 			foreach ( $data__user as $datapoint => $tax_slug ) {
-				// Get all term IDs for the $datapoint taxonomy
+				$output .= '<table>';
+				$output .= '<caption>' . ucwords( str_replace( '_', ' ', $datapoint ) ) . '</caption>';
+				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
+				$output .= '<tbody>';
+
 				$terms = get_terms( [
 					'taxonomy'   => $tax_slug,
 					'hide_empty' => false,
 				] );
 
-				$terms_plucked = [];
+				$data = [];
+
 				foreach ( $terms as $term ) {
-					$terms_plucked[$term->name] = $term->term_id;
-				}
-
-				foreach ( $terms_plucked as $name => $id ) {
-					$args = [$tax_slug => $id];
-
+					$args    = [$tax_slug => $term->term_id];
 					$results = query_users_with_terms( $args );
 
 					$data[] = [
-						'name'  => $name,
+						'name'  => $term->name,
 						'count' => count( $results ),
 					];
 				}
+
+				// Sort the data array by the "count" value in descending order by default
+				usort( $data, function ( $a, $b ) {
+					return $b['count'] - $a['count'];
+				} );
+
+				foreach ( $data as $datum ) {
+					$output .= sprintf(
+						'<tr><td>%s</td><td>%s</td></tr>',
+						$datum['name'],
+						$datum['count']
+					);
+				}
+
+				$output .= '</tbody>';
+				$output .= '</table>';
 			}
 		}
 
-		$output .= '<p>USER BREAKDOWN (Uncomment datapoints in class-rise-admin.php):</p><pre>';
-		$output .= 'Label,Count' . "\n";
-		foreach ( $data as $datum ) {
-			$output .= sprintf( '"%s",%s' . "\n", $datum['name'], $datum['count'] );
-		}
-		$output .= '</pre>';
-
 		return $output;
-
-		// phpcs:enable Squiz.PHP.CommentedOutCode.Found
 	}
 
 	/**
-	 * Generate basic stats for
+	 * Generate some developer info.
 	 *
 	 * @return string HTML output.
 	 */
