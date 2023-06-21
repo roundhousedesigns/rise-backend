@@ -56,7 +56,6 @@ function import_positions_and_skills_from_csv( $file_path ) {
 						if ( !is_wp_error( $dept_id ) ) {
 							$dept_id = $dept_id['term_id'];
 						} else {
-							error_log( 'error inserting dept: ' . $dept_id->get_error_message() );
 							wp_die( esc_textarea( $dept_id->get_error_message() ) );
 						}
 					}
@@ -105,7 +104,6 @@ function import_positions_and_skills_from_csv( $file_path ) {
 						$new_skill = wp_insert_term( $skill_name, 'skill' );
 
 						if ( is_wp_error( $new_skill ) ) {
-							error_log( 'error inserting skill: ' . $new_skill->get_error_message() );
 							wp_die( $new_skill->get_error_message() );
 						}
 

@@ -295,8 +295,11 @@ class Rise_Admin {
 				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
 				$output .= '<tbody>';
 
-				// Get all term IDs for the $datapoint taxonomy
-				$taxonomy_plural = 'position__job' === $datapoint || 'position__department' === $datapoint ? 'positions' : $slug;
+				// Get all term IDs for the `$datapoint` taxonomy
+				$taxonomy_plural = 'skills';
+				if ( 'position__job' === $datapoint || 'position__department' === $datapoint ) {
+					$taxonomy_plural = 'positions';
+				}
 
 				$terms = get_terms( [
 					'taxonomy'   => $slug,
