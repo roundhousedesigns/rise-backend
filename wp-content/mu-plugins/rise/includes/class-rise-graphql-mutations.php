@@ -35,7 +35,6 @@ class Rise_GraphQL_Mutations {
 		/**
 		 * Create a user with reCAPTCHA verification.
 		 */
-		// TODO remove extra fields not sent from GQL
 		register_graphql_mutation(
 			'registerUserWithReCaptcha',
 			[
@@ -47,33 +46,13 @@ class Rise_GraphQL_Mutations {
 						// translators: the placeholder is the name of the type of post object being updated
 						'description' => __( 'A string that contains the user\'s username for logging in.', 'wp-graphql' ),
 					],
-					'reCaptchaToken' => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the reCAPTCHA response token.', 'wp-graphql' ),
-					],
-					'password'       => [
-						'type'        => 'String',
-						'description' => __( 'A string that contains the plain text password for the user.', 'wp-graphql' ),
-					],
-					'nicename'       => [
-						'type'        => 'String',
-						'description' => __( 'A string that contains a URL-friendly name for the user. The default is the user\'s username.', 'wp-graphql' ),
-					],
-					'websiteUrl'     => [
-						'type'        => 'String',
-						'description' => __( 'A string containing the user\'s URL for the user\'s web site.', 'wp-graphql' ),
-					],
 					'email'          => [
 						'type'        => 'String',
 						'description' => __( 'A string containing the user\'s email address.', 'wp-graphql' ),
 					],
-					'displayName'    => [
-						'type'        => 'String',
-						'description' => __( 'A string that will be shown on the site. Defaults to user\'s username. It is likely that you will want to change this, for both appearance and security through obscurity (that is if you dont use and delete the default admin user).', 'wp-graphql' ),
-					],
-					'nickname'       => [
-						'type'        => 'String',
-						'description' => __( 'The user\'s nickname, defaults to the user\'s username.', 'wp-graphql' ),
+					'reCaptchaToken' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'A string that contains the reCAPTCHA response token.', 'wp-graphql' ),
 					],
 					'firstName'      => [
 						'type'        => 'String',
@@ -83,39 +62,9 @@ class Rise_GraphQL_Mutations {
 						'type'        => 'String',
 						'description' => __( 'The user\'s last name.', 'wp-graphql' ),
 					],
-					'description'    => [
+					'password'       => [
 						'type'        => 'String',
-						'description' => __( 'A string containing content about the user.', 'wp-graphql' ),
-					],
-					'richEditing'    => [
-						'type'        => 'String',
-						'description' => __( 'A string for whether to enable the rich editor or not. False if not empty.', 'wp-graphql' ),
-					],
-					'registered'     => [
-						'type'        => 'String',
-						'description' => __( 'The date the user registered. Format is Y-m-d H:i:s.', 'wp-graphql' ),
-					],
-					'roles'          => [
-						'type'        => [
-							'list_of' => 'String',
-						],
-						'description' => __( 'An array of roles to be assigned to the user.', 'wp-graphql' ),
-					],
-					'jabber'         => [
-						'type'        => 'String',
-						'description' => __( 'User\'s Jabber account.', 'wp-graphql' ),
-					],
-					'aim'            => [
-						'type'        => 'String',
-						'description' => __( 'User\'s AOL IM account.', 'wp-graphql' ),
-					],
-					'yim'            => [
-						'type'        => 'String',
-						'description' => __( 'User\'s Yahoo IM account.', 'wp-graphql' ),
-					],
-					'locale'         => [
-						'type'        => 'String',
-						'description' => __( 'User\'s locale.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the plain text password for the user.', 'wp-graphql' ),
 					],
 				],
 				'outputFields'        => [

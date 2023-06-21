@@ -115,7 +115,6 @@ class Rise_Credit {
 	 * @return void
 	 */
 	public function __construct( $data ) {
-		// TODO sanitize input.
 		$this->id           = $data['isNew'] ? 0 : $data['id'];
 		$this->index        = $data['index'];
 		$this->title        = $data['title'];
@@ -298,9 +297,7 @@ class Rise_Credit {
 			'workEnd'     => $this->work_end,
 			'workCurrent' => $this->work_current,
 			'skills'      => $this->skills,
-			// TODO should 'departments' be a class property?
-			// TODO department: change to plural key
-			'department'  => $this->get_departments(),
+			'department'  => $this->get_departments(), // TODO department: change to plural key
 			'jobs'        => $this->jobs,
 		];
 	}
