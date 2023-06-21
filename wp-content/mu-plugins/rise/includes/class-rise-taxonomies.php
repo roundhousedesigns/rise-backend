@@ -64,7 +64,7 @@ class Rise_Taxonomies {
 			'has_archive'           => true,
 			'rewrite'               => true,
 			'query_var'             => true,
-			'menu_position'         => null,
+			'menu_position'         => 2,
 			'menu_icon'             => $icon,
 			'show_in_graphql'       => true,
 			'graphql_single_name'   => $post_type,

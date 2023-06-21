@@ -163,36 +163,36 @@ class Rise_Types {
 	}
 
 	/**
-	 * Registers the `global_notice` post type.
+	 * Registers the `user_notice` post type.
 	 *
 	 * @access    private
 	 * @since     0.1.0
 	 */
-	public function global_notice_init() {
-		Rise_Taxonomies::register_post_type( 'global_notice', 'global_notices', 'Global Notice', 'Global Notices', 'dashicons-flag', ['title', 'author', 'editor'] );
+	public function user_notice_init() {
+		Rise_Taxonomies::register_post_type( 'user_notice', 'user_notices', 'User Notice', 'User Notices', 'dashicons-flag', ['title', 'author', 'editor'] );
 	}
 
 	/**
-	 * Sets the post updated messages for the `global_notice` post type.
+	 * Sets the post updated messages for the `user_notice` post type.
 	 *
 	 * @param  array $messages Post updated messages.
-	 * @return array Messages for the `global_notice` post type.
+	 * @return array Messages for the `user_notice` post type.
 	 */
-	public function global_notice_updated_messages( $messages ) {
-		return Rise_Taxonomies::post_type_updated_messages( 'global_notice', 'global_notice', $messages );
+	public function user_notice_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'user_notice', 'user_notice', $messages );
 	}
 
 	/**
-	 * Sets the bulk post updated messages for the `global_notice` post type.
+	 * Sets the bulk post updated messages for the `user_notice` post type.
 	 *
 	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
 	 *
 	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
-	 * @return array Bulk messages for the `global_notice` post type.
+	 * @return array Bulk messages for the `user_notice` post type.
 	 */
-	public function global_notice_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
-		return Rise_Taxonomies::post_type_bulk_updated_messages( 'global_notice', 'Global Notice', 'Global Notices', $bulk_messages, $bulk_counts );
+	public function user_notice_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'user_notice', 'User Notice', 'User Notices', $bulk_messages, $bulk_counts );
 	}
 
 	/**

@@ -230,6 +230,25 @@ class Rise_Admin {
 	}
 
 	/**
+	 * Remove pages from the admin menu (but leave them accessible by URL).
+	 *
+	 * @return void
+	 */
+	public function remove_menu_pages() {
+		// Posts
+		remove_menu_page( 'edit.php' );
+
+		// Comments
+		remove_menu_page( 'edit-comments.php' );
+
+		// Plugins
+		remove_menu_page( 'plugins.php' );
+
+		// Appearance
+		remove_menu_page( 'themes.php' );
+	}
+
+	/**
 	 * Generate basic stats for
 	 *
 	 * @return string HTML output.

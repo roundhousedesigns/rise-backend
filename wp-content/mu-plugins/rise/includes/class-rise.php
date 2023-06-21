@@ -318,11 +318,11 @@ class Rise {
 		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'skill_updated_messages' );
 
 		/**
-		 * Custom Post Type: global_notice
+		 * Custom Post Type: user_notice
 		 */
-		$this->loader->add_action( 'init', $plugin_data, 'global_notice_init' );
-		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'global_notice_updated_messages' );
-		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'global_notice_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'init', $plugin_data, 'user_notice_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'user_notice_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'user_notice_bulk_updated_messages', 10, 2 );
 
 		/**
 		 * Custom Post Type: saved_search
@@ -391,10 +391,11 @@ class Rise {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
 
 		/**
-		 * Options menu
+		 * Menus
 		 */
-		$this->loader->add_action( 'admin_menu', $plugin_data, 'plugin_options_page' );
 		$this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );
+		$this->loader->add_action( 'admin_menu', $plugin_data, 'plugin_options_page' );
+		$this->loader->add_action( 'admin_menu', $plugin_data, 'remove_menu_pages' );
 
 		/**
 		 * Dashboard widget
