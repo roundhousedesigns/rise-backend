@@ -196,11 +196,6 @@ class Rise {
 		$this->loader->add_action( 'tgmpa_register', $plugin_data, 'register_required_plugins' );
 
 		/**
-		 * Admin authorization.
-		 */
-		$this->loader->add_action( 'init', $plugin_data, 'restrict_admin_user_roles' );
-
-		/**
 		 * Safe redirects.
 		 */
 		$this->loader->add_action( 'allowed_redirect_hosts', $plugin_data, 'allowed_redirect_hosts' );

@@ -2,3 +2,63 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.data-feature {
+	background: #fff1a3;
+	padding: 0.5em 1em;
+}
+
+.data-feature p {
+	font-size: 1.2em;
+}
+
+.rise-admin table {
+	font-size: 1rem;
+	border-collapse: collapse;
+	margin: 2em 0;
+	min-width: 400px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.rise-admin table thead tr {
+	background-color: #274f42;
+	color: #ffffff;
+	text-align: left;
+}
+
+.rise-admin table caption {
+	font-size: 1.2em;
+	text-align: left;
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
+.rise-admin table th,
+.rise-admin table td {
+	padding: 12px 15px;
+}
+
+.rise-admin table th.sort {
+	cursor: pointer;
+}
+
+.rise-admin .sort-indicator {
+	padding-left: 4px;
+	opacity: 0.75;
+}
+
+.rise-admin tbody tr {
+	border-bottom: 1px solid #dddddd;
+}
+
+.rise-admin tbody tr:nth-of-type(even) {
+	background-color: #f3f3f3;
+}
+
+.rise-admin tbody tr:last-of-type {
+	border-bottom: 2px solid #009879;
+}
+
+.rise-admin tbody td:first-of-type {
+	min-width: 400px;
+}
