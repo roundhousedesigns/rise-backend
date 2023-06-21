@@ -192,6 +192,44 @@ class Rise_Admin {
 	}
 
 	/**
+	 * Register the Basic Stats dashboard widget.
+	 *
+	 * @return void
+	 */
+	public function register_rise_basic_stats_widget() {
+		wp_add_dashboard_widget(
+			'crew_member_stats_widget',
+			'RISE Member Stats',
+			[$this, 'render_rise_stats_widget_content']
+		);
+	}
+
+	/**
+	 * Render the Basic Stats dashboard widget content.
+	 *
+	 * @return void
+	 */
+	public function render_rise_stats_widget_content() {
+		echo wp_kses_post( self::crew_member_stats__basic() );
+
+		printf( '<p><a href="%s">Details statistics</a></p>', esc_url( admin_url( 'admin.php?page=rise-admin' ) ) );
+	}
+
+	/**
+	 * Remove dashboard widgets.
+	 *
+	 * @return void
+	 */
+	public function remove_dashboard_widgets() {
+		global $wp_meta_boxes;
+
+		unset( $wp_meta_boxes['dashboard']['side']['core']['dashboard_quick_press'] );
+		unset( $wp_meta_boxes['dashboard']['side']['core']['dashboard_primary'] );
+		unset( $wp_meta_boxes['dashboard']['side']['core']['dashboard_secondary'] );
+		unset( $wp_meta_boxes['dashboard']['normal']['core']['dashboard_activity'] );
+	}
+
+	/**
 	 * Generate basic stats for
 	 *
 	 * @return string HTML output.

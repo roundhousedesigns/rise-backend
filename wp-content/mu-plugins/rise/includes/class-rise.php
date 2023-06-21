@@ -395,6 +395,12 @@ class Rise {
 		 */
 		$this->loader->add_action( 'admin_menu', $plugin_data, 'plugin_options_page' );
 		$this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );
+
+		/**
+		 * Dashboard widget
+		 */
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'register_rise_basic_stats_widget' );
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'remove_dashboard_widgets' );
 	}
 
 	/**
