@@ -19,7 +19,7 @@
  * @param  int $index     The credit's new display index.
  * @return int The credit's ID.
  */
-function update_credit_index( $credit_id, $index ) {
+function rise_update_credit_index( $credit_id, $index ) {
 	// Get the user's pod.
 	$pod = pods( 'credit', $credit_id );
 
@@ -40,7 +40,7 @@ function update_credit_index( $credit_id, $index ) {
  * @param  int     $author_id
  * @return boolean The result of the filter operation.
  */
-function remove_incomplete_profiles_from_search( $author_id ) {
+function rise_remove_incomplete_profiles_from_search( $author_id ) {
 	$meta = get_user_meta( $author_id );
 	if ( !$meta['first_name'][0] && !$meta['last_name'][0] ) {
 		return false;
@@ -64,7 +64,7 @@ function remove_incomplete_profiles_from_search( $author_id ) {
  * @param  string $url The URL of the file.
  * @return int    The attachment ID.
  */
-function get_attachment_id_by_url( $url ) {
+function rise_get_attachment_id_by_url( $url ) {
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	require_once ABSPATH . 'wp-admin/includes/media.php';
@@ -86,53 +86,13 @@ function get_attachment_id_by_url( $url ) {
 }
 
 /**
- * Strip EXIF data from an image file if it's a jpg.
- *
- * @param  string $file The path to the image file.
- * @return string The path to the new image file without EXIF data.
- */
-function maybe_strip_exif( $file ) {
-	// Get the image extension.
-	$extension = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
-
-	if ( 'jpg' !== $extension && 'jpeg' !== $extension ) {
-		return $file;
-	}
-
-	// Create a new image resource.
-	$image = imagecreatefromjpeg( $file );
-
-	// Remove the EXIF data.
-	imagejpeg( $image, $file, 91 );
-
-	// Free the image resource.
-	imagedestroy( $image );
-
-	// Return the path to the new image file.
-	return $file;
-}
-
-/**
- * Converts a string from camelCase to underscore_notation.
- *
- * @param  string $string
- * @return string The converted string.
- */
-function camel_case_to_underscore( $string ) {
-	$string = preg_replace( '/(?!^)[[:upper:]]/', '_$0', $string );
-	$string = preg_replace( '/([a-zA-Z])([0-9])/', '$1_$2', $string );
-	$string = strtolower( $string );
-	return $string;
-}
-
-/**
  * Retrieve the user IDs for users with the given terms.
  *
  * @param  array $terms           The terms to query users for. Keys are taxonomies, values are arrays of term IDs.
  * @param  array $include_authors An array of user IDs to include in the query.
  * @return int[] The user IDs.
  */
-function query_users_with_terms( $terms, $include_authors = [] ) {
+function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	$authors = $include_authors;
 
 	if ( !$terms ) {
@@ -173,6 +133,9 @@ function query_users_with_terms( $terms, $include_authors = [] ) {
 /**
  * Retrieve the user IDs for users with the given terms. Assumes unique slugs.
  *
+ * @deprecated 1.0.8
+ * @since 1.0.0
+ *
  * @param  string    $slug   The user slug.
  * @param  bool      $single Whether to return a single result or an array of results (default: false).
  * @return array|int The user IDs, or a single user ID if $single is true.
@@ -195,39 +158,6 @@ function get_rise_profile( $user_id ) {
 }
 
 /**
- * Checks whether the given reCAPTCHA response is valid.
- *
- * @param  string  $response The reCAPTCHA response.
- * @return boolean Whether the response is valid.
- */
-function recaptcha_is_valid( $response ) {
-	if ( !defined( 'RECAPTCHA_SECRET_KEY' ) ) {
-		return false;
-	}
-
-	$url  = 'https://www.google.com/recaptcha/api/siteverify';
-	$data = [
-		'secret'   => RECAPTCHA_SECRET_KEY,
-		'response' => $response,
-	];
-
-	$options = [
-		'http' => [
-			'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-			'method'  => 'POST',
-			'content' => http_build_query( $data ),
-		],
-	];
-
-	$context = stream_context_create( $options );
-	// TODO use wp_remote_get() instead of file_get_contents()
-	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-	$result = file_get_contents( $url, false, $context );
-
-	return json_decode( $result )->success;
-}
-
-/**
  * Get the site name.
  *
  * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
@@ -235,7 +165,7 @@ function recaptcha_is_valid( $response ) {
  *
  * @return string
  */
-function get_email_friendly_site_name() {
+function rise_get_email_friendly_site_name() {
 	if ( is_multisite() ) {
 		$network = get_network();
 		if ( isset( $network->site_name ) ) {
@@ -254,6 +184,7 @@ function get_email_friendly_site_name() {
 /**
  * Determines if a user has at least one credit and at least a first or last name set.
  *
+ * @deprecated 1.0.8
  * @since 1.0.0
  *
  * @param  int     $user_id
@@ -285,7 +216,7 @@ function user_is_searchable( $user_id ) {
  * @param  array $args
  * @return int[] The user IDs.
  */
-function search_and_filter_crew_members( $args ) {
+function rise_search_and_filter_crew_members( $args ) {
 	// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 	$credit_filters = [
 		'position' => isset( $args['positions'] ) ? $args['positions'] : '',
@@ -335,7 +266,7 @@ function search_and_filter_crew_members( $args ) {
 	}
 
 	// Filter out authors with no name set, or no contact info.
-	$authors = array_filter( array_unique( $authors ), 'remove_incomplete_profiles_from_search' );
+	$authors = array_filter( array_unique( $authors ), 'rise_remove_incomplete_profiles_from_search' );
 
 	// Filter users by selected taxonomies.
 	$user_taxonomy_terms = [];
@@ -348,7 +279,7 @@ function search_and_filter_crew_members( $args ) {
 	}
 
 	// Filter users by taxonomy
-	$filtered_authors = query_users_with_terms( $user_taxonomy_terms, $authors );
+	$filtered_authors = rise_query_users_with_terms( $user_taxonomy_terms, $authors );
 
 	return $filtered_authors;
 
@@ -368,4 +299,58 @@ function search_and_filter_crew_members( $args ) {
 function rise_nocache_redirect( $location, $status = 302 ) {
 	nocache_headers();
 	wp_safe_redirect( esc_url_raw( $location ), $status, 'RISE' );
+}
+
+/**
+ * Generate user slugs for all users with the 'crew-member' role.
+ *
+ * @since 1.0.4
+ *
+ * @return void
+ */
+function rise_generate_user_slugs() {
+	// Get all users with the 'crew-member' role, with no limit.
+	$users = get_users( [
+		'role' => 'crew-member',
+	] );
+
+	foreach ( $users as $user ) {
+		wp_update_user( [
+			'ID'            => $user->ID,
+			'user_nicename' => Rise_Users::generate_default_user_slug( $user->ID ),
+		] );
+	}
+}
+
+/**
+ * Get all users with a given taxonomy term.
+ *
+ * @uses rise_search_and_filter_crew_members()
+ *
+ * @since 1.0.6
+ *
+ * @param  string $taxonomy_arg The taxonomy argument for use in rise_search_and_filter_crew_members().
+ * @param  array  $term_ids     The term IDs to search for.
+ * @return void
+ */
+function rise_get_all_users_with_taxonomy_terms( $taxonomy_arg, $term_ids ) {
+	$user_ids = rise_search_and_filter_crew_members( [$taxonomy_arg => $term_ids] );
+	$users    = get_users( ['include' => $user_ids] );
+
+	$csv[] = 'Name,Email';
+
+	foreach ( $users as $user ) {
+		// get user's first and last names
+		$usermeta   = get_user_meta( $user->ID );
+		$first_name = isset( $usermeta['first_name'][0] ) ? $usermeta['first_name'][0] : '';
+		$last_name  = isset( $usermeta['last_name'][0] ) ? $usermeta['last_name'][0] : '';
+
+		$csv[] = sprintf( '"%s %s",%s', esc_textarea( $first_name ), esc_textarea( $last_name ), esc_html( $user->user_email ) );
+	}
+
+	printf( '<pre>%s</pre>', esc_textarea( implode( "\n", $csv ) ) );
+
+	echo '<br /><br />';
+
+	printf( 'Total: %d', count( $users ) );
 }

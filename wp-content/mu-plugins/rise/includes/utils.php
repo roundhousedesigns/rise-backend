@@ -11,55 +11,100 @@
  */
 
 /**
- * Generate user slugs for all users with the 'crew-member' role.
+ * Strip EXIF data from an image file if it's a jpg.
  *
- * @since 1.0.4
+ * @since 1.0.0
  *
- * @return void
+ * @param  string $file The path to the image file.
+ * @return string The path to the new image file without EXIF data.
  */
-function rise_generate_user_slugs() {
-	// Get all users with the 'crew-member' role, with no limit.
-	$users = get_users( [
-		'role' => 'crew-member',
-	] );
+function maybe_strip_exif( $file ) {
+	// Get the image extension.
+	$extension = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 
-	foreach ( $users as $user ) {
-		wp_update_user( [
-			'ID'            => $user->ID,
-			'user_nicename' => Rise_Users::generate_default_user_slug( $user->ID ),
-		] );
+	if ( 'jpg' !== $extension && 'jpeg' !== $extension ) {
+		return $file;
 	}
+
+	// Create a new image resource.
+	$image = imagecreatefromjpeg( $file );
+
+	// Remove the EXIF data.
+	imagejpeg( $image, $file, 91 );
+
+	// Free the image resource.
+	imagedestroy( $image );
+
+	// Return the path to the new image file.
+	return $file;
 }
 
 /**
- * Get all users with a given taxonomy term.
+ * Converts a string from camelCase to underscore_notation.
  *
- * @uses search_and_filter_crew_members()
+ * @since 1.0.0
  *
- * @since 1.0.6
- *
- * @param  string $taxonomy_arg The taxonomy argument for use in search_and_filter_crew_members().
- * @param  array  $term_ids     The term IDs to search for.
- * @return void
+ * @param  string $string
+ * @return string The converted string.
  */
-function rise_get_all_users_with_taxonomy_terms( $taxonomy_arg, $term_ids ) {
-	$user_ids = search_and_filter_crew_members( [$taxonomy_arg => $term_ids] );
-	$users    = get_users( ['include' => $user_ids] );
+function camel_case_to_underscore( $string ) {
+	$string = preg_replace( '/(?!^)[[:upper:]]/', '_$0', $string );
+	$string = preg_replace( '/([a-zA-Z])([0-9])/', '$1_$2', $string );
+	$string = strtolower( $string );
+	return $string;
+}
 
-	$csv[] = 'Name,Email';
-
-	foreach ( $users as $user ) {
-		// get user's first and last names
-		$usermeta   = get_user_meta( $user->ID );
-		$first_name = isset( $usermeta['first_name'][0] ) ? $usermeta['first_name'][0] : '';
-		$last_name  = isset( $usermeta['last_name'][0] ) ? $usermeta['last_name'][0] : '';
-
-		$csv[] = sprintf( '"%s %s",%s', esc_textarea( $first_name ), esc_textarea( $last_name ), esc_html( $user->user_email ) );
+/**
+ * Checks whether the given reCAPTCHA response is valid.
+ *
+ * @since 1.0.0
+ *
+ * @param  string  $response The reCAPTCHA response.
+ * @return boolean Whether the response is valid.
+ */
+function recaptcha_is_valid( $response ) {
+	if ( !defined( 'RECAPTCHA_SECRET_KEY' ) ) {
+		return false;
 	}
 
-	printf( '<pre>%s</pre>', esc_textarea( implode( "\n", $csv ) ) );
+	$url  = 'https://www.google.com/recaptcha/api/siteverify';
+	$data = [
+		'secret'   => RECAPTCHA_SECRET_KEY,
+		'response' => $response,
+	];
 
-	echo '<br /><br />';
+	$options = [
+		'http' => [
+			'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+			'method'  => 'POST',
+			'content' => http_build_query( $data ),
+		],
+	];
 
-	printf( 'Total: %d', count( $users ) );
+	$context = stream_context_create( $options );
+	// TODO use wp_remote_get() instead of file_get_contents()
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	$result = file_get_contents( $url, false, $context );
+
+	return json_decode( $result )->success;
+}
+
+/**
+ * Flatten a multidimensional array.
+ *
+ * @since 1.0.8
+ *
+ * @param  array $array The array to flatten.
+ * @return array The flattened array.
+ */
+function flatten_array( $array ) {
+	$result = [];
+	foreach ( $array as $element ) {
+		if ( is_array( $element ) ) {
+			$result = array_merge( $result, flatten_array( $element ) );
+		} else {
+			$result[] = $element;
+		}
+	}
+	return $result;
 }

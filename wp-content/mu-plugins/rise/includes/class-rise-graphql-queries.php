@@ -87,8 +87,11 @@ class Rise_GraphQL_Queries {
 						$selected_skills[] = wp_list_pluck( $retrieved, 'term_id' );
 					}
 
+					// Flatten the array of job-related skills and remove duplicates.
+					$selected_skills = array_unique( flatten_array( $selected_skills ) );
+
 					$term_args = [
-						'include'    => $selected_skills[0],
+						'include'    => $selected_skills,
 						'number'     => 0,
 						'hide_empty' => false,
 						'taxonomy'   => 'skill',
@@ -209,7 +212,7 @@ class Rise_GraphQL_Queries {
 						}
 					}
 
-					return array_filter( array_unique( $user_ids ), 'remove_incomplete_profiles_from_search' );
+					return array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
 				},
 			],
 		);
@@ -262,7 +265,7 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					return search_and_filter_crew_members( $args );
+					return rise_search_and_filter_crew_members( $args );
 				},
 			],
 		);

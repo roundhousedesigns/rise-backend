@@ -621,7 +621,7 @@ class Rise_GraphQL_Mutations {
 
 					$result = [];
 					foreach ( $input['creditIds'] as $index => $id ) {
-						$result[] = update_credit_index( absint( $id ), $index );
+						$result[] = rise_update_credit_index( absint( $id ), $index );
 					}
 
 					// TODO maybe return a WP_Error object instead of 0.
@@ -718,7 +718,7 @@ class Rise_GraphQL_Mutations {
 					$uploaded['file'] = maybe_strip_exif( $uploaded['file'] );
 
 					// Get the attachment ID from the uploaded file.
-					$attachment_id = get_attachment_id_by_url( $uploaded['url'] );
+					$attachment_id = rise_get_attachment_id_by_url( $uploaded['url'] );
 
 					// Set the user's profile image.
 					if ( $attachment_id && $user_id ) {
@@ -750,7 +750,7 @@ class Rise_GraphQL_Mutations {
 	private static function get_password_reset_email_message( $user_data, $key ) {
 		$message = __( 'Someone has requested a password reset for the following account:', 'wp-graphql' ) . "\r\n\r\n";
 		/* translators: %s: site name */
-		$message .= sprintf( __( 'Site Name: %s', 'wp-graphql' ), get_email_friendly_site_name() ) . "\r\n\r\n";
+		$message .= sprintf( __( 'Site Name: %s', 'wp-graphql' ), rise_get_email_friendly_site_name() ) . "\r\n\r\n";
 		/* translators: %s: user login */
 		$message .= sprintf( __( 'Username: %s', 'wp-graphql' ), $user_data->user_login ) . "\r\n\r\n";
 		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'wp-graphql' ) . "\r\n\r\n";
@@ -781,7 +781,7 @@ class Rise_GraphQL_Mutations {
 	 */
 	private static function get_password_reset_email_subject( $user_data ) {
 		/* translators: Password reset email subject. %s: Site name */
-		$title = sprintf( __( '[%s] Password Reset', 'wp-graphql' ), get_email_friendly_site_name() );
+		$title = sprintf( __( '[%s] Password Reset', 'wp-graphql' ), rise_get_email_friendly_site_name() );
 
 		/**
 		 * Filters the subject of the password reset email.
@@ -806,12 +806,12 @@ class Rise_GraphQL_Mutations {
 
 		$message = __( 'Hi', 'rise' ) . ' ' . esc_html( $first_name ) . "\r\n\r\n";
 		/* translators: %s: site name */
-		$message .= sprintf( __( 'This notice confirms that your password was changed on: %s', 'rise' ), get_email_friendly_site_name() ) . "\r\n\r\n";
+		$message .= sprintf( __( 'This notice confirms that your password was changed on: %s', 'rise' ), rise_get_email_friendly_site_name() ) . "\r\n\r\n";
 		/* translators: %s: user login */
 		$message .= sprintf( __( 'If you did not change your password, please contact us at %s', 'rise' ), get_option( 'admin_email' ) ) . "\r\n\r\n";
 		$message .= sprintf( __( 'This email has been sent to %s', 'rise' ), $user_data->user_email ) . "\r\n\r\n";
 		$message .= __( 'Thanks,', 'rise' ) . "\r\n\r\n";
-		$message .= get_email_friendly_site_name() . "\r\n";
+		$message .= rise_get_email_friendly_site_name() . "\r\n";
 		$message .= RISE_FRONTEND_URL . "\r\n";
 
 		return $message;
@@ -826,7 +826,7 @@ class Rise_GraphQL_Mutations {
 	 */
 	private static function get_password_change_email_subject() {
 		/* translators: Password reset email subject. %s: Site name */
-		return sprintf( __( '[%s] Password Changed', 'wp-graphql' ), get_email_friendly_site_name() );
+		return sprintf( __( '[%s] Password Changed', 'wp-graphql' ), rise_get_email_friendly_site_name() );
 	}
 
 	/**

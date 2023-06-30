@@ -369,7 +369,7 @@ class Rise_Admin {
 
 				foreach ( $terms as $term ) {
 					$args    = [$taxonomy_plural => $term->term_id];
-					$results = search_and_filter_crew_members( $args );
+					$results = rise_search_and_filter_crew_members( $args );
 
 					$data[] = [
 						'name'  => $term->name,
@@ -415,7 +415,7 @@ class Rise_Admin {
 
 				foreach ( $terms as $term ) {
 					$args    = [$slug => $term->term_id];
-					$results = query_users_with_terms( $args );
+					$results = rise_query_users_with_terms( $args );
 
 					$data[] = [
 						'name'  => $term->name,
