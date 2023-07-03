@@ -81,10 +81,14 @@ class Rise_GraphQL_Queries {
 						$retrieved = $pod->field( 'skills' );
 
 						if ( !$retrieved ) {
-							return [];
+							continue;
 						}
 
 						$selected_skills[] = wp_list_pluck( $retrieved, 'term_id' );
+					}
+
+					if ( !$selected_skills ) {
+						return [];
 					}
 
 					// Flatten the array of job-related skills and remove duplicates.
