@@ -13,7 +13,7 @@
 
 class Rise_GraphQL_Queries {
 	/**
-	 * Register GraphQL queries.
+	 * Register GraphQL queries.`1
 	 *
 	 * @since 0.1.0
 	 *
@@ -21,6 +21,21 @@ class Rise_GraphQL_Queries {
 	 */
 	public function register_queries() {
 		$this->register_fields();
+	}
+
+	/**
+	 * Allow access to certain endpoints for non-logged-in users.
+	 *
+	 * @param  [type] $allowed
+	 * @return void
+	 */
+	public function require_authentication_allowed_fields( $allowed ) {
+		$allowed[] = 'loginWithCookiesAndReCaptcha';
+		$allowed[] = 'sendPasswordResetEmailWithReCaptcha';
+		$allowed[] = 'registerUserWithReCaptcha';
+		$allowed[] = 'resetUserPasswordMutation';
+
+		return $allowed;
 	}
 
 	/**

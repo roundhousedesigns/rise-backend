@@ -363,6 +363,7 @@ class Rise {
 	private function define_graphql_queries() {
 		$plugin_data_queries = new Rise_GraphQL_Queries();
 
+		$this->loader->add_action( 'graphql_require_authentication_allowed_fields', $plugin_data_queries, 'require_authentication_allowed_fields', 10, 1 );
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
 	}
 
