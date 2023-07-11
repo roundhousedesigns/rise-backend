@@ -365,6 +365,7 @@ class Rise {
 
 		$this->loader->add_action( 'graphql_require_authentication_allowed_fields', $plugin_data_queries, 'require_authentication_allowed_fields', 10, 1 );
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
+		$this->loader->add_action( 'graphql_request_results', $plugin_data_queries, 'remove_graphql_extensions_response_data', 10, 1 );
 	}
 
 	/**
