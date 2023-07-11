@@ -735,6 +735,68 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+
+		/**
+		 * Update or create a Credit.
+		 */
+		register_graphql_mutation(
+			'toggleStarredProfiles',
+			[
+				'inputFields'         => [
+					'loggedInId'      => [
+						'type'        => 'Int',
+						'description' => __( 'The currently logged in user ID.', 'rise' ),
+					],
+					'starredProfiles' => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The updated list of starred profiles.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'updatedStarredProfiles' => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The starred profile IDs', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					$pod = pods( 'user', $input['loggedInId'] );
+
+					$starred_profiles = $pod->field( 'starred_profile_connections' );
+
+					// If the starred profiles field is not set, make it an array.
+					if ( !is_array( $starred_profiles ) ) {
+						$starred_profiles = [];
+					}
+
+					$starred_profile_ids = rise_pluck_profile_ids( $starred_profiles );
+
+					if ( !isset( $input['starredProfiles'] ) ) {
+						throw new WP_Error( 'no_profile_id', __( 'No profile IDs provided.', 'rise' ) );
+					}
+
+					// Sanitize the input.
+					$starred_profile_ids = array_map( 'absint', $input['starredProfiles'] );
+
+					// Update the starred profiles field with the new array.
+					$pod_id = $pod->save( [
+						'starred_profile_connections' => $starred_profile_ids,
+					] );
+
+					// Get the updated starred profile IDs.
+					$updated_profile_ids = rise_pluck_profile_ids( $pod->field( 'starred_profile_connections' ) );
+
+					if ( $pod_id ) {
+						return [
+							'updatedStarredProfiles' => $updated_profile_ids,
+						];
+					} else {
+						throw new WP_Error( 'starred_profile_toggle_failed', __( 'The profile could not be toggled.', 'rise' ) );
+					}
+				},
+			],
+		);
 	}
 
 	/**

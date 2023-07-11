@@ -354,3 +354,15 @@ function rise_get_all_users_with_taxonomy_terms( $taxonomy_arg, $term_ids ) {
 
 	printf( 'Total: %d', count( $users ) );
 }
+
+/**
+ * Pluck user IDs from a list of profiles, as retrieved from pods()->field().
+ *
+ * @param  array $profiles The profiles to pluck IDs from.
+ * @return array The profile IDs.
+ */
+function rise_pluck_profile_ids( $profiles ) {
+	return array_map( function ( $profile ) {
+		return absint( $profile['ID'] );
+	}, $profiles );
+}
