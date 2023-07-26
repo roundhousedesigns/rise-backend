@@ -55,22 +55,6 @@ function camel_case_to_underscore( $string ) {
 }
 
 /**
- * Converts a string from underscore_notation to camelCase.
- *
- * @since 1.0.8
- *
- * @param  string $string
- * @return string The converted string.
- */
-function underscore_to_camel_case( $string ) {
-	$words             = explode( '_', $string );
-	$camel_case_words  = array_map( 'ucfirst', $words );
-	$camel_case_string = implode( '', $camel_case_words );
-
-	return $camel_case_string;
-}
-
-/**
  * Checks whether the given reCAPTCHA response is valid.
  *
  * @since 1.0.0
