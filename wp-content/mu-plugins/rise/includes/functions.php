@@ -362,6 +362,10 @@ function rise_get_all_users_with_taxonomy_terms( $taxonomy_arg, $term_ids ) {
  * @return array The profile IDs.
  */
 function rise_pluck_profile_ids( $profiles ) {
+	if ( empty( $profiles ) ) {
+		return [];
+	}
+
 	return array_map( function ( $profile ) {
 		return absint( $profile['ID'] );
 	}, $profiles );

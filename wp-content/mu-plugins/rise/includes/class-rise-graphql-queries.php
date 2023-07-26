@@ -348,7 +348,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'experienceLevels',
 			[
-				'type'        => ['list_of' => 'Experience_Level'],
+				'type'        => ['list_of' => 'ExperienceLevel'],
 				'description' => __( 'The user\'s selected experience level terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
@@ -357,13 +357,13 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
-		 * Query for users with matching terms from the `partnerDirectory` taxonomy.
+		 * Query for users with matching terms from the `PartnerDirectory` taxonomy.
 		 */
 		register_graphql_field(
 			'User',
 			'partnerDirectories',
 			[
-				'type'        => ['list_of' => 'Partner_Directory'],
+				'type'        => ['list_of' => 'PartnerDirectory'],
 				'description' => __( 'The user\'s selected partner directory terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'partner_directory' );
@@ -378,7 +378,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'genderIdentities',
 			[
-				'type'        => ['list_of' => 'Gender_Identity'],
+				'type'        => ['list_of' => 'GenderIdentity'],
 				'description' => __( 'The user\'s selected gender identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'gender_identity' );
@@ -393,7 +393,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'racialIdentities',
 			[
-				'type'        => ['list_of' => 'Racial_Identity'],
+				'type'        => ['list_of' => 'RacialIdentity'],
 				'description' => __( 'The user\'s selected racial identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'racial_identity' );
@@ -408,7 +408,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'personalIdentities',
 			[
-				'type'        => ['list_of' => 'Personal_Identity'],
+				'type'        => ['list_of' => 'PersonalIdentity'],
 				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );

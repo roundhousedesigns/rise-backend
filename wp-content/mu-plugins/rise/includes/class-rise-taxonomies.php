@@ -126,8 +126,8 @@ class Rise_Taxonomies {
 			],
 			'show_in_rest'          => true,
 			'show_in_graphql'       => true,
-			'graphql_single_name'   => $taxonomy,
-			'graphql_plural_name'   => $taxonomy_plural,
+			'graphql_single_name'   => underscore_to_camel_case( $taxonomy ),
+			'graphql_plural_name'   => underscore_to_camel_case( $taxonomy_plural ),
 			'rest_base'             => $taxonomy,
 			'rest_controller_class' => 'WP_REST_Terms_Controller',
 		];

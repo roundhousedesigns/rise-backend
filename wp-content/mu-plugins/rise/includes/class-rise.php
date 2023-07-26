@@ -192,7 +192,6 @@ class Rise {
 		 * TGMPA class.
 		 */
 		require dirname( __DIR__ ) . '/lib/tgmpa/class-tgm-plugin-activation.php';
-
 		$this->loader->add_action( 'tgmpa_register', $plugin_data, 'register_required_plugins' );
 
 		/**
@@ -365,6 +364,8 @@ class Rise {
 
 		$this->loader->add_action( 'graphql_require_authentication_allowed_fields', $plugin_data_queries, 'require_authentication_allowed_fields', 10, 1 );
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
+
+		// TODO `remove_graphql_extensions_response_data` doesn't seem to be working. `extensions` still in responses.
 		$this->loader->add_action( 'graphql_request_results', $plugin_data_queries, 'remove_graphql_extensions_response_data', 10, 1 );
 	}
 

@@ -242,7 +242,7 @@ class Rise_Admin {
 		remove_menu_page( 'edit-comments.php' );
 
 		// Plugins
-		remove_menu_page( 'plugins.php' );
+		// remove_menu_page( 'plugins.php' );
 
 		// Appearance
 		remove_menu_page( 'themes.php' );
