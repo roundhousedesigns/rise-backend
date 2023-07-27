@@ -44,33 +44,33 @@ class Rise_GraphQL_Mutations {
 							'non_null' => 'String',
 						],
 						// translators: the placeholder is the name of the type of post object being updated
-						'description' => __( 'A string that contains the user\'s username for logging in.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the user\'s username for logging in.', 'rise' ),
 					],
 					'email'          => [
 						'type'        => 'String',
-						'description' => __( 'A string containing the user\'s email address.', 'wp-graphql' ),
+						'description' => __( 'A string containing the user\'s email address.', 'rise' ),
 					],
 					'reCaptchaToken' => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the reCAPTCHA response token.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the reCAPTCHA response token.', 'rise' ),
 					],
 					'firstName'      => [
 						'type'        => 'String',
-						'description' => __( '	The user\'s first name.', 'wp-graphql' ),
+						'description' => __( '	The user\'s first name.', 'rise' ),
 					],
 					'lastName'       => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s last name.', 'wp-graphql' ),
+						'description' => __( 'The user\'s last name.', 'rise' ),
 					],
 					'password'       => [
 						'type'        => 'String',
-						'description' => __( 'A string that contains the plain text password for the user.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the plain text password for the user.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'user' => [
 						'type'        => 'User',
-						'description' => __( 'The User object mutation type.', 'wp-graphql' ),
+						'description' => __( 'The User object mutation type.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input, $context, $info ) {
@@ -84,7 +84,7 @@ class Rise_GraphQL_Mutations {
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
+						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'rise' ) );
 					}
 
 					// Set the user's slug (user_nicename)
@@ -110,7 +110,7 @@ class Rise_GraphQL_Mutations {
 						if ( !empty( $error_code ) ) {
 							throw new UserError( $error_code );
 						} else {
-							throw new UserError( __( 'The object failed to create but no error was provided', 'wp-graphql' ) );
+							throw new UserError( __( 'The object failed to create but no error was provided', 'rise' ) );
 						}
 					}
 
@@ -118,7 +118,7 @@ class Rise_GraphQL_Mutations {
 					 * If the $post_id is empty, we should throw an exception
 					 */
 					if ( empty( $user_id ) ) {
-						throw new UserError( __( 'The object failed to create', 'wp-graphql' ) );
+						throw new UserError( __( 'The object failed to create', 'rise' ) );
 					}
 
 					/**
@@ -151,7 +151,7 @@ class Rise_GraphQL_Mutations {
 					],
 					'reCaptchaToken' => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the reCAPTCHA response token.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the reCAPTCHA response token.', 'rise' ),
 					],
 					'rememberMe'     => [
 						'type'        => 'Boolean',
@@ -179,7 +179,7 @@ class Rise_GraphQL_Mutations {
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
+						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'rise' ) );
 					}
 
 					// Prepare credentials.
@@ -212,34 +212,34 @@ class Rise_GraphQL_Mutations {
 		register_graphql_mutation(
 			'sendPasswordResetEmailWithReCaptcha',
 			[
-				'description'         => __( 'Send password reset email to user', 'wp-graphql' ),
+				'description'         => __( 'Send password reset email to user', 'rise' ),
 				'inputFields'         => [
 					'username'       => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the user\'s username or email address.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the user\'s username or email address.', 'rise' ),
 					],
 					'reCaptchaToken' => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the reCAPTCHA response token.', 'wp-graphql' ),
+						'description' => __( 'A string that contains the reCAPTCHA response token.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'user'    => [
-						'type'              => 'User', // FIXME Should this be 'ID' instead?
-						'description'       => __( 'The user that the password reset email was sent to', 'wp-graphql' ),
-						'deprecationReason' => __( 'This field will be removed in a future version of WPGraphQL', 'wp-graphql' ),
+						'type'              => 'User',
+						'description'       => __( 'The user that the password reset email was sent to', 'rise' ),
+						'deprecationReason' => __( 'This field will be removed in a future version of WPGraphQL', 'rise' ),
 						'resolve'           => function ( $payload, $args, AppContext $context ) {
 							return !empty( $payload['id'] ) ? $context->get_loader( 'user' )->load_deferred( $payload['id'] ) : null;
 						},
 					],
 					'success' => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'wp-graphql' ),
+						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					if ( !self::was_username_provided( $input ) ) {
-						throw new UserError( __( 'Enter a username or email address.', 'wp-graphql' ) );
+						throw new UserError( __( 'Enter a username or email address.', 'rise' ) );
 					}
 
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
@@ -250,7 +250,7 @@ class Rise_GraphQL_Mutations {
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'wp-graphql' ) );
+						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'rise' ) );
 					}
 
 					// We obsfucate the actual success of this mutation to prevent user enumeration.
@@ -262,7 +262,7 @@ class Rise_GraphQL_Mutations {
 					$user_data = get_user_by( 'email', $input['username'] );
 
 					if ( !$user_data ) {
-						graphql_debug( __( 'There is no user registered with that email address.', 'wp-graphql' ) );
+						graphql_debug( __( 'There is no user registered with that email address.', 'rise' ) );
 
 						return $payload;
 					}
@@ -270,7 +270,7 @@ class Rise_GraphQL_Mutations {
 					// Get the password reset key.
 					$key = get_password_reset_key( $user_data );
 					if ( is_wp_error( $key ) ) {
-						graphql_debug( __( 'Unable to generate a password reset key.', 'wp-graphql' ) );
+						graphql_debug( __( 'Unable to generate a password reset key.', 'rise' ) );
 
 						return $payload;
 					}
@@ -289,7 +289,7 @@ class Rise_GraphQL_Mutations {
 					// phpstan should ignore this check.
 					// @phpstan-ignore-next-line
 					if ( is_wp_error( $email_sent ) ) {
-						graphql_debug( __( 'The email could not be sent.', 'wp-graphql' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'wp-graphql' ) );
+						graphql_debug( __( 'The email could not be sent.', 'rise' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'rise' ) );
 
 						return $payload;
 					}
@@ -314,21 +314,21 @@ class Rise_GraphQL_Mutations {
 				'inputFields'         => [
 					'username'        => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The user\'s username or email address', 'wp-graphql' ),
+						'description' => __( 'The user\'s username or email address', 'rise' ),
 					],
 					'currentPassword' => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The user\'s current password', 'wp-graphql' ),
+						'description' => __( 'The user\'s current password', 'rise' ),
 					],
 					'newPassword'     => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The user\'s new password', 'wp-graphql' ),
+						'description' => __( 'The user\'s new password', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'success' => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'wp-graphql' ),
+						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
@@ -367,7 +367,7 @@ class Rise_GraphQL_Mutations {
 					// phpstan should ignore this check.
 					// @phpstan-ignore-next-line
 					if ( is_wp_error( $email_sent ) ) {
-						graphql_debug( __( 'The email could not be sent.', 'wp-graphql' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'wp-graphql' ) );
+						graphql_debug( __( 'The email could not be sent.', 'rise' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'rise' ) );
 
 						return $payload;
 					}
@@ -388,21 +388,21 @@ class Rise_GraphQL_Mutations {
 				'inputFields'         => [
 					'userId'  => [
 						'type'        => ['non_null' => 'Int'],
-						'description' => __( 'The user\'s ID', 'wp-graphql' ),
+						'description' => __( 'The user\'s ID', 'rise' ),
 					],
 					'newSlug' => [
 						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The desired profile slug', 'wp-graphql' ),
+						'description' => __( 'The desired profile slug', 'rise' ),
 					],
 				],
 				'outputFields'        => [
 					'success' => [
 						'type'        => 'Boolean',
-						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'wp-graphql' ),
+						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'rise' ),
 					],
 					'slug'    => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s new slug', 'wp-graphql' ),
+						'description' => __( 'The user\'s new slug', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
@@ -737,25 +737,25 @@ class Rise_GraphQL_Mutations {
 		);
 
 		/**
-		 * Update or create a Credit.
+		 * Update a user's bookmarked profiles.
 		 */
 		register_graphql_mutation(
-			'toggleStarredProfiles',
+			'updateBookmarkedProfiles',
 			[
 				'inputFields'         => [
-					'loggedInId'      => [
+					'loggedInId'         => [
 						'type'        => 'Int',
 						'description' => __( 'The currently logged in user ID.', 'rise' ),
 					],
-					'starredProfiles' => [
+					'bookmarkedProfiles' => [
 						'type'        => ['list_of' => 'Int'],
-						'description' => __( 'The updated list of starred profiles.', 'rise' ),
+						'description' => __( 'The updated list of bookmarked profiles.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
-					'updatedStarredProfiles' => [
-						'type'        => ['list_of' => 'Int'],
-						'description' => __( 'The starred profile IDs', 'rise' ),
+					'viewer' => [
+						'type'        => 'User',
+						'description' => __( 'The updated viewer field.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
@@ -763,36 +763,36 @@ class Rise_GraphQL_Mutations {
 
 					$pod = pods( 'user', $input['loggedInId'] );
 
-					$starred_profiles = $pod->field( 'starred_profile_connections' );
+					$bookmarked_profiles = $pod->field( 'bookmarked_profile_connections' );
 
-					// If the starred profiles field is not set, make it an array.
-					if ( !is_array( $starred_profiles ) ) {
-						$starred_profiles = [];
+					// If the bookmarked profiles field is not set, make it an array.
+					if ( !is_array( $bookmarked_profiles ) ) {
+						$bookmarked_profiles = [];
 					}
 
-					$starred_profile_ids = rise_pluck_profile_ids( $starred_profiles );
+					$bookmarked_profile_ids = rise_pluck_profile_ids( $bookmarked_profiles );
 
-					if ( !isset( $input['starredProfiles'] ) ) {
+					if ( !isset( $input['bookmarkedProfiles'] ) ) {
 						throw new WP_Error( 'no_profile_id', __( 'No profile IDs provided.', 'rise' ) );
 					}
 
 					// Sanitize the input.
-					$starred_profile_ids = array_map( 'absint', $input['starredProfiles'] );
+					$bookmarked_profile_ids = array_map( 'absint', $input['bookmarkedProfiles'] );
 
-					// Update the starred profiles field with the new array.
+					// Update the bookmarked profiles field with the new array.
 					$pod_id = $pod->save( [
-						'starred_profile_connections' => $starred_profile_ids,
+						'bookmarked_profile_connections' => $bookmarked_profile_ids,
 					] );
 
-					// Get the updated starred profile IDs.
-					$updated_profile_ids = rise_pluck_profile_ids( $pod->field( 'starred_profile_connections' ) );
+					// Get the updated bookmarked profile IDs.
+					$updated_profile_ids = rise_pluck_profile_ids( $pod->field( 'bookmarked_profile_connections' ) );
 
 					if ( $pod_id ) {
 						return [
-							'updatedStarredProfiles' => $updated_profile_ids,
+							'updatedBookmarkedProfiles' => $updated_profile_ids,
 						];
 					} else {
-						throw new WP_Error( 'starred_profile_toggle_failed', __( 'The profile could not be toggled.', 'rise' ) );
+						throw new WP_Error( 'bookmarked_profile_toggle_failed', __( 'The profile could not be toggled.', 'rise' ) );
 					}
 				},
 			],
@@ -810,13 +810,13 @@ class Rise_GraphQL_Mutations {
 	 * @return string
 	 */
 	private static function get_password_reset_email_message( $user_data, $key ) {
-		$message = __( 'Someone has requested a password reset for the following account:', 'wp-graphql' ) . "\r\n\r\n";
+		$message = __( 'Someone has requested a password reset for the following account:', 'rise' ) . "\r\n\r\n";
 		/* translators: %s: site name */
-		$message .= sprintf( __( 'Site Name: %s', 'wp-graphql' ), rise_get_email_friendly_site_name() ) . "\r\n\r\n";
+		$message .= sprintf( __( 'Site Name: %s', 'rise' ), rise_get_email_friendly_site_name() ) . "\r\n\r\n";
 		/* translators: %s: user login */
-		$message .= sprintf( __( 'Username: %s', 'wp-graphql' ), $user_data->user_login ) . "\r\n\r\n";
-		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'wp-graphql' ) . "\r\n\r\n";
-		$message .= __( 'To reset your password, visit the following address:', 'wp-graphql' ) . "\r\n\r\n";
+		$message .= sprintf( __( 'Username: %s', 'rise' ), $user_data->user_login ) . "\r\n\r\n";
+		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'rise' ) . "\r\n\r\n";
+		$message .= __( 'To reset your password, visit the following address:', 'rise' ) . "\r\n\r\n";
 		$message .= '<' . RISE_FRONTEND_URL . "?key={$key}&login=" . rawurlencode( $user_data->user_login ) . ">\r\n";
 
 		/**
@@ -843,7 +843,7 @@ class Rise_GraphQL_Mutations {
 	 */
 	private static function get_password_reset_email_subject( $user_data ) {
 		/* translators: Password reset email subject. %s: Site name */
-		$title = sprintf( __( '[%s] Password Reset', 'wp-graphql' ), rise_get_email_friendly_site_name() );
+		$title = sprintf( __( '[%s] Password Reset', 'rise' ), rise_get_email_friendly_site_name() );
 
 		/**
 		 * Filters the subject of the password reset email.
@@ -888,7 +888,7 @@ class Rise_GraphQL_Mutations {
 	 */
 	private static function get_password_change_email_subject() {
 		/* translators: Password reset email subject. %s: Site name */
-		return sprintf( __( '[%s] Password Changed', 'wp-graphql' ), rise_get_email_friendly_site_name() );
+		return sprintf( __( '[%s] Password Changed', 'rise' ), rise_get_email_friendly_site_name() );
 	}
 
 	/**
