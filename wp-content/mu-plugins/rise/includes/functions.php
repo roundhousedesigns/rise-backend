@@ -96,6 +96,7 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	$authors = $include_authors;
 
 	if ( !$terms ) {
+		shuffle( $authors );
 		return $authors;
 	}
 
