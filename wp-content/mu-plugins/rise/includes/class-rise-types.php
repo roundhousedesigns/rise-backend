@@ -169,7 +169,7 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function user_notice_init() {
-		Rise_Taxonomies::register_post_type( 'user_notice', 'user_notices', 'User Notice', 'User Notices (inactive)', 'dashicons-flag', ['title', 'author', 'editor'] );
+		Rise_Taxonomies::register_post_type( 'user_notice', 'user_notices', 'User Notice', 'Dashboard Updates/Notices', 'dashicons-flag', ['title', 'author', 'editor'] );
 	}
 
 	/**
