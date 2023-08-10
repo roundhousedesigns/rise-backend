@@ -88,9 +88,9 @@ function rise_get_attachment_id_by_url( $url ) {
 /**
  * Retrieve the user IDs for users with the given terms.
  *
- * @param  array $terms           The terms to query users for. Keys are taxonomies, values are arrays of term IDs.
- * @param  array $include_authors An array of user IDs to include in the query.
- * @return int[] The user IDs.
+ * @param  array    $terms           Array of terms ID arrays to query users for, keyed by taxonomy ID.
+ * @param  string[] $include_authors An array of user IDs to include in the query.
+ * @return int[]    The user IDs.
  */
 function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	$authors = $include_authors;
@@ -103,7 +103,16 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	// Get the object IDs for the terms in the taxonomies
 	$user_ids = [];
 	foreach ( $terms as $taxonomy => $term_ids ) {
-		$user_ids = array_merge( $user_ids, get_objects_in_term( $term_ids, $taxonomy ) );
+		// Get users with the selected terms
+		$users_in_term = get_objects_in_term( $term_ids, $taxonomy );
+
+		// If $user_ids is empty, set it to $users_in_term.
+		// Otherwise, strip any users from $user_ids that are not also in $users_in_term.
+		if ( !$user_ids ) {
+			$user_ids = $users_in_term;
+		} else {
+			$user_ids = array_intersect( $user_ids, $users_in_term );
+		}
 	}
 
 	// Filter out IDs from the $user_ids array that are not also in the $authors array
@@ -232,11 +241,13 @@ function rise_search_and_filter_crew_members( $args ) {
 		'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
 	];
 
+	error_log( print_r( $user_filters, true ) );
+
 	// Start building the Credit query args.
 	$credit_args = [
 		'post_type'      => 'credit',
 		'tax_query'      => ['relation' => 'AND'],
-		'posts_per_page' => -1, // TODO replace with pagination.
+		'posts_per_page' => -1,
 		'orderby'        => 'rand',
 	];
 
