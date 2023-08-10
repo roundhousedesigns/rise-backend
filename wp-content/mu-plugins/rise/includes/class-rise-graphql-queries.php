@@ -348,7 +348,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'experienceLevels',
 			[
-				'type'        => ['list_of' => 'ExperienceLevel'],
+				'type'        => ['list_of' => 'Experience_Level'],
 				'description' => __( 'The user\'s selected experience level terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
@@ -363,7 +363,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'partnerDirectories',
 			[
-				'type'        => ['list_of' => 'PartnerDirectory'],
+				'type'        => ['list_of' => 'Partner_Directory'],
 				'description' => __( 'The user\'s selected partner directory terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'partner_directory' );
@@ -378,7 +378,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'genderIdentities',
 			[
-				'type'        => ['list_of' => 'GenderIdentity'],
+				'type'        => ['list_of' => 'Gender_Identity'],
 				'description' => __( 'The user\'s selected gender identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'gender_identity' );
@@ -393,7 +393,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'racialIdentities',
 			[
-				'type'        => ['list_of' => 'RacialIdentity'],
+				'type'        => ['list_of' => 'Racial_Identity'],
 				'description' => __( 'The user\'s selected racial identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'racial_identity' );
@@ -408,7 +408,7 @@ class Rise_GraphQL_Queries {
 			'User',
 			'personalIdentities',
 			[
-				'type'        => ['list_of' => 'PersonalIdentity'],
+				'type'        => ['list_of' => 'Personal_Identity'],
 				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
