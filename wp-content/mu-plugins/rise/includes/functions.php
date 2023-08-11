@@ -241,8 +241,6 @@ function rise_search_and_filter_crew_members( $args ) {
 		'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
 	];
 
-	error_log( print_r( $user_filters, true ) );
-
 	// Start building the Credit query args.
 	$credit_args = [
 		'post_type'      => 'credit',
