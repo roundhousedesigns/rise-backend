@@ -238,7 +238,9 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					if ( !self::was_username_provided( $input ) ) {
+					$username_provided = !empty( $input['username'] ) && is_string( $input['username'] );
+
+					if ( !$username_provided( $input ) ) {
 						throw new UserError( __( 'Enter a username or email address.', 'rise' ) );
 					}
 
@@ -276,8 +278,8 @@ class Rise_GraphQL_Mutations {
 					}
 
 					// Mail the reset key.
-					$subject = self::get_password_reset_email_subject( $user_data );
-					$message = self::get_password_reset_email_message( $user_data, $key );
+					$subject = rise_get_password_reset_email_subject( $user_data );
+					$message = rise_get_password_reset_email_message( $user_data, $key );
 
 					$email_sent = wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
 						$user_data->user_email,
@@ -299,6 +301,85 @@ class Rise_GraphQL_Mutations {
 					 */
 					return [
 						'id'      => $user_data->ID,
+						'success' => true,
+					];
+				},
+			]
+		);
+
+		/**
+		 * Change a user's email address
+		 */
+		register_graphql_mutation(
+			'changeEmail',
+			[
+				'inputFields'         => [
+					'username' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The user\'s username or current email address', 'rise' ),
+					],
+					'password' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The user\'s password', 'rise' ),
+					],
+					'newEmail' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The user\'s new email address', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'success' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the mutation completed successfully. This does NOT necessarily mean that an email was sent.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					$payload = [
+						'success' => false,
+					];
+
+					if ( !$input['username'] || !$input['password'] || !$input['newEmail'] || $input['username'] ) {
+						// TODO throw error here?
+						return $payload;
+					}
+
+					// Authenticate the user with their current password.
+					$user = wp_authenticate( $input['username'], $input['password'] );
+
+					if ( is_wp_error( $user ) ) {
+						throw new UserError( $user->get_error_code() );
+					}
+
+					// Update the user's password.
+					wp_update_user(
+						[
+							'ID'         => $user->ID,
+							'user_email' => $input['newEmail'],
+						]
+					);
+
+					// Send the confirmation email
+					$message = rise_get_email_change_email_message( $user );
+					$subject = rise_get_email_change_email_subject();
+
+					// TODO verify that change password notices are sending
+					$email_sent = wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
+						$user->user_email,
+						wp_specialchars_decode( $subject ),
+						$message
+					);
+
+					// wp_mail can return a wp_error, but the docblock for it in WP Core is incorrect.
+					// phpstan should ignore this check.
+					// @phpstan-ignore-next-line
+					if ( is_wp_error( $email_sent ) ) {
+						graphql_debug( __( 'The email could not be sent.', 'rise' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'rise' ) );
+
+						return $payload;
+					}
+
+					return [
 						'success' => true,
 					];
 				},
@@ -353,8 +434,8 @@ class Rise_GraphQL_Mutations {
 					wp_set_password( $input['newPassword'], $user->ID );
 
 					// Send the confirmation email
-					$message = self::get_password_change_email_message( $user );
-					$subject = self::get_password_change_email_subject();
+					$message = rise_get_password_change_email_message( $user );
+					$subject = rise_get_password_change_email_subject();
 
 					// TODO verify that change password notices are sending
 					$email_sent = wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
@@ -737,6 +818,40 @@ class Rise_GraphQL_Mutations {
 		);
 
 		/**
+		 * Toggle a user's hide_profile option.
+		 */
+		register_graphql_mutation(
+			'toggleHideProfile',
+			[
+				'inputFields'         => [
+					'userId' => [
+						'type'        => ['non_null' => 'Int'],
+						'description' => __( 'The user\'s ID', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'updatedHideProfile' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The updated value.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					$pod = pods( 'user', $input['userId'] );
+
+					$pod->save( [
+						'hide_profile' => $pod->field( 'hide_profile' ) ? false : true,
+					] );
+
+					return [
+						'updatedHideProfile' => $pod->field( 'hide_profile' ),
+					];
+				},
+			]
+		);
+
+		/**
 		 * Update a user's bookmarked profiles.
 		 */
 		register_graphql_mutation(
@@ -797,110 +912,5 @@ class Rise_GraphQL_Mutations {
 				},
 			],
 		);
-	}
-
-	/**
-	 * Get the message body of the password reset email
-	 *
-	 * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
-	 * @since 1.0.0
-	 *
-	 * @param  WP_User  $user_data User data
-	 * @param  string   $key       Password reset key
-	 * @return string
-	 */
-	private static function get_password_reset_email_message( $user_data, $key ) {
-		$message = __( 'Someone has requested a password reset for the following account:', 'rise' ) . "\r\n\r\n";
-		/* translators: %s: site name */
-		$message .= sprintf( __( 'Site Name: %s', 'rise' ), rise_get_email_friendly_site_name() ) . "\r\n\r\n";
-		/* translators: %s: user login */
-		$message .= sprintf( __( 'Username: %s', 'rise' ), $user_data->user_login ) . "\r\n\r\n";
-		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'rise' ) . "\r\n\r\n";
-		$message .= __( 'To reset your password, visit the following address:', 'rise' ) . "\r\n\r\n";
-		$message .= '<' . RISE_FRONTEND_URL . "?key={$key}&login=" . rawurlencode( $user_data->user_login ) . ">\r\n";
-
-		/**
-		 * Filters the message body of the password reset mail.
-		 *
-		 * If the filtered message is empty, the password reset email will not be sent.
-		 *
-		 * @param string  $message    Default mail message.
-		 * @param string  $key        The activation key.
-		 * @param string  $user_login The username for the user.
-		 * @param WP_User $user_data  WP_User object.
-		 */
-		return apply_filters( 'retrieve_password_message', $message, $key, $user_data->user_login, $user_data );
-	}
-
-	/**
-	 * Get the subject of the password reset email
-	 *
-	 * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
-	 * @since 1.0.0
-	 *
-	 * @param  WP_User  $user_data User data
-	 * @return string
-	 */
-	private static function get_password_reset_email_subject( $user_data ) {
-		/* translators: Password reset email subject. %s: Site name */
-		$title = sprintf( __( '[%s] Password Reset', 'rise' ), rise_get_email_friendly_site_name() );
-
-		/**
-		 * Filters the subject of the password reset email.
-		 *
-		 * @param string  $title      Default email title.
-		 * @param string  $user_login The username for the user.
-		 * @param WP_User $user_data  WP_User object.
-		 */
-		return apply_filters( 'retrieve_password_title', $title, $user_data->user_login, $user_data );
-	}
-
-	/**
-	 * Get the message body of the changed password alert email
-	 *
-	 * @since 1.0.3
-	 *
-	 * @param  WP_User $user_data User data
-	 * @return string  Message body
-	 */
-	private static function get_password_change_email_message( $user_data ) {
-		$first_name = get_user_meta( $user_data->ID, 'first_name', true );
-
-		$message = __( 'Hi', 'rise' ) . ' ' . esc_html( $first_name ) . "\r\n\r\n";
-		/* translators: %s: site name */
-		$message .= sprintf( __( 'This notice confirms that your password was changed on: %s', 'rise' ), rise_get_email_friendly_site_name() ) . "\r\n\r\n";
-		/* translators: %s: user login */
-		$message .= sprintf( __( 'If you did not change your password, please contact us at %s', 'rise' ), get_option( 'admin_email' ) ) . "\r\n\r\n";
-		$message .= sprintf( __( 'This email has been sent to %s', 'rise' ), $user_data->user_email ) . "\r\n\r\n";
-		$message .= __( 'Thanks,', 'rise' ) . "\r\n\r\n";
-		$message .= rise_get_email_friendly_site_name() . "\r\n";
-		$message .= RISE_FRONTEND_URL . "\r\n";
-
-		return $message;
-	}
-
-	/**
-	 * Get the subject of the changed password email
-	 *
-	 * @since 1.0.3
-	 *
-	 * @return string
-	 */
-	private static function get_password_change_email_subject() {
-		/* translators: Password reset email subject. %s: Site name */
-		return sprintf( __( '[%s] Password Changed', 'rise' ), rise_get_email_friendly_site_name() );
-	}
-
-	/**
-	 * Was a username or email address provided?
-	 *
-	 * @source wp-graphql/src/Mutation/SendPasswordResetEmail.php Original source
-	 * @since 1.0.0
-	 *
-	 * @param  array  $input The input args.
-	 * @return bool
-	 */
-	private static function was_username_provided( $input ) {
-		return !empty( $input['username'] ) && is_string( $input['username'] );
 	}
 }
