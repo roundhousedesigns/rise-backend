@@ -300,13 +300,20 @@ class Rise_GraphQL_Queries {
 						'description' => __( 'A list of `personal_identity` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
+					'searchUserId'       => [
+						'description' => __( 'The ID of the user performing the search', 'rise' ),
+						'type'        => 'ID',
+					],
 					'exclude'            => [
-						'description' => __( 'Deprecated. A list of user ids to exclude (was used for the current user)', 'rise' ),
+						'description' => __( 'Deprecated. A list of user ids to exclude', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					return rise_search_and_filter_crew_members( $args );
+					$user_id = isset( $args['searchUserId'] ) ? $args['searchUserId'] : null;
+					unset( $args['searchUserId'] );
+
+					return rise_search_and_filter_crew_members( $args, $user_id );
 				},
 			],
 		);

@@ -369,4 +369,41 @@ class Rise_Users {
 		// Generate the full name based on the user's first and last name.
 		return sanitize_title( $first_name . ' ' . $last_name );
 	}
+
+	/**
+	 * Save a search to the user's search history.
+	 *
+	 * @param  int   $user_id       The user ID.
+	 * @param  array $search_params The search parameters.
+	 * @return array The updated search history.
+	 */
+	public static function save_search_to_history( $user_id, $search_params ) {
+		// Get user pod
+		$pod = pods( 'user', $user_id );
+
+		// Get search_history pod field
+		$search_history = json_decode( $pod->field( 'search_history' ) );
+
+		// If search_history is empty, set it to an empty array
+		if ( !$search_history ) {
+			$search_history = [];
+		}
+
+		// Convert the search history to an array
+		$search_history_array = json_decode( wp_json_encode( $search_history ), true );
+
+		// If not already in the search_history array, add search params to the front of the search_history array, and remove the last item if there are more than 5 items
+		if ( !in_array( $search_params, $search_history_array, true ) ) {
+			array_unshift( $search_history_array, $search_params );
+		}
+
+		if ( count( $search_history_array ) > 5 ) {
+			array_pop( $search_history_array );
+		}
+
+		// Update the user pod with the new search_history
+		$pod->save( 'search_history', wp_json_encode( $search_history_array ) );
+
+		return $search_history_array;
+	}
 }

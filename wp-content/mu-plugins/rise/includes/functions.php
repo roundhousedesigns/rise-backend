@@ -223,10 +223,17 @@ function user_is_searchable( $user_id ) {
  * Used by the frontend search filters, and by reporting functions.
  *
  * @param  array $args
+ * @param  int   $user_id The user ID to exclude from the query. Default 0.
  * @return int[] The user IDs.
  */
-function rise_search_and_filter_crew_members( $args ) {
+function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 	// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+
+	// Save args for future recall
+	if ( 0 !== $user_id ) {
+		Rise_Users::save_search_to_history( $user_id, $args );
+	}
+
 	$credit_filters = [
 		'position' => isset( $args['positions'] ) ? $args['positions'] : '',
 		'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
@@ -291,7 +298,6 @@ function rise_search_and_filter_crew_members( $args ) {
 	$filtered_authors = rise_query_users_with_terms( $user_taxonomy_terms, $authors );
 
 	return $filtered_authors;
-
 }
 // phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 
