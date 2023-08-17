@@ -39,7 +39,7 @@ class Rise_GraphQL_Types {
 					],
 					'linkedin'  => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s LinkedIn handle.', 'rise' ),
+						'description' => __( 'The user\'s LinkedIn URL.', 'rise' ),
 					],
 					'instagram' => [
 						'type'        => 'String',
