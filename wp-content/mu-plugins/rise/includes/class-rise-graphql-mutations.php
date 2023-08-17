@@ -258,7 +258,6 @@ class Rise_GraphQL_Mutations {
 					// We obsfucate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'success' => false,
-						'id'      => null,
 					];
 
 					$user_data = get_user_by( 'email', $input['username'] );
@@ -300,7 +299,6 @@ class Rise_GraphQL_Mutations {
 					 * Return the ID of the user
 					 */
 					return [
-						'id'      => $user_data->ID,
 						'success' => true,
 					];
 				},
@@ -911,6 +909,61 @@ class Rise_GraphQL_Mutations {
 					}
 				},
 			],
+		);
+
+		/**
+		 * Save a search filter set.
+		 */
+		register_graphql_mutation(
+			'saveSearchFilters',
+			[
+				'inputFields'         => [
+					'filterSet'     => [
+						'type'        => 'SearchFilterSetRaw',
+						'description' => __( 'The search filter set to save.', 'rise' ),
+					],
+					'searchUserId'  => [
+						'description' => __( 'The ID of the user performing the search', 'rise' ),
+						'type'        => 'ID',
+					],
+					'oldSearchName' => [
+						'description' => __( 'The original user-generated search name.', 'rise' ),
+						'type'        => 'String',
+					],
+					'searchName'    => [
+						'description' => __( 'The user-generated search name.', 'rise' ),
+						'type'        => 'String',
+					],
+				],
+				'outputFields'        => [
+					'success' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the mutation completed successfully.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					$payload = [
+						'success' => false,
+					];
+
+					if ( !isset( $input['filterSet'] ) || !$input['searchUserId'] || !$input['searchName'] ) {
+						return $payload;
+					}
+
+					// Add the search name to the filter set
+					$input['filterSet']['searchName'] = $input['searchName'];
+
+					$old_search_name = isset( $input['oldSearchName'] ) ? $input['oldSearchName'] : '';
+
+					// Save args for future recall
+					Rise_Users::save_user_saved_searches( $input['searchUserId'], $input['filterSet'], $old_search_name );
+
+					return [
+						'success' => true,
+					];
+				},
+			]
 		);
 	}
 }

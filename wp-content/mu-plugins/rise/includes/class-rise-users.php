@@ -377,11 +377,11 @@ class Rise_Users {
 	 * @param  array $search_params The search parameters.
 	 * @return array The updated search history.
 	 */
-	public static function save_search_to_history( $user_id, $search_params ) {
+	public static function save_user_search_history( $user_id, $search_params ) {
 		// Get user pod
 		$pod = pods( 'user', $user_id );
 
-		// Get search_history pod field
+		// Get search_history pod field and convert to an array
 		$search_history = json_decode( $pod->field( 'search_history' ) );
 
 		// If search_history is empty, set it to an empty array
@@ -389,21 +389,57 @@ class Rise_Users {
 			$search_history = [];
 		}
 
-		// Convert the search history to an array
-		$search_history_array = json_decode( wp_json_encode( $search_history ), true );
-
-		// If not already in the search_history array, add search params to the front of the search_history array, and remove the last item if there are more than 5 items
-		if ( !in_array( $search_params, $search_history_array, true ) ) {
-			array_unshift( $search_history_array, $search_params );
+		// If not already in the search_history array, add search params to the front of the search_history array.
+		if ( !in_array( $search_params, $search_history, true ) ) {
+			array_unshift( $search_history, $search_params );
 		}
 
-		if ( count( $search_history_array ) > 5 ) {
-			array_pop( $search_history_array );
+		// Ensure a limit of 5 items.
+		if ( count( $search_history ) > 5 ) {
+			array_pop( $search_history );
 		}
 
 		// Update the user pod with the new search_history
-		$pod->save( 'search_history', wp_json_encode( $search_history_array ) );
+		$pod->save( 'search_history', wp_json_encode( $search_history ) );
 
-		return $search_history_array;
+		return $search_history;
+	}
+
+	/**
+	 * Save a search to the user's search history.
+	 *
+	 * @param  int    $user_id         The user ID.
+	 * @param  array  $search_params   The search parameters.
+	 * @param  string $old_search_name The old saved search name (default: '')
+	 * @return array  The updated search history.
+	 */
+	public static function save_user_saved_searches( $user_id, $search_params, $old_search_name = '' ) {
+		// Get user pod
+		$pod = pods( 'user', $user_id );
+
+		// Get saved_searches pod field and convert to an array
+		$saved_searches = json_decode( $pod->field( 'saved_searches' ), true );
+
+		// If saved_searches is empty, set it to an empty array
+		if ( !$saved_searches ) {
+			$saved_searches = [];
+		}
+
+		// Look for an existing saved search with the same name. If one exists, change its name to the new name.
+		if ( $old_search_name ) {
+			$search_count = count( $saved_searches );
+			for ( $i = 0; $i < $search_count; $i++ ) {
+				if ( $saved_searches[$i]['searchName'] === $old_search_name ) {
+					$saved_searches[$i]['searchName'] = $search_params['searchName'];
+				}
+			}
+		} else {
+			array_unshift( $saved_searches, $search_params );
+		}
+
+		// Update the user pod with the new saved_searches
+		$pod->save( 'saved_searches', wp_json_encode( $saved_searches ) );
+
+		return $saved_searches;
 	}
 }

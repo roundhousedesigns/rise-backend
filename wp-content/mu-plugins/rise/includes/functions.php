@@ -231,7 +231,8 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 
 	// Save args for future recall
 	if ( 0 !== $user_id ) {
-		Rise_Users::save_search_to_history( $user_id, $args );
+		$field = 'search_history';
+		Rise_Users::save_user_search_history( $user_id, $args );
 	}
 
 	$credit_filters = [

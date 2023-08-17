@@ -226,6 +226,50 @@ class Rise_GraphQL_Types {
 		);
 
 		/**
+		 * SearchFilterSetRaw input type.
+		 */
+		register_graphql_input_type(
+			'SearchFilterSetRaw',
+			[
+				'description' => __( 'A set of search filters.', 'rise' ),
+				'fields'      => [
+					'positions'          => [
+						'description' => __( 'A list of `position` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'skills'             => [
+						'description' => __( 'A list of `skill` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'unions'             => [
+						'description' => __( 'A list of `union` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'locations'          => [
+						'description' => __( 'A list of `location` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'experienceLevels'   => [
+						'description' => __( 'A list of `experience_level` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'genderIdentities'   => [
+						'description' => __( 'A list of `gender_identity` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'racialIdentities'   => [
+						'description' => __( 'A list of `racial_identity` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+					'personalIdentities' => [
+						'description' => __( 'A list of `personal_identity` term ids', 'rise' ),
+						'type'        => ['list_of' => 'ID'],
+					],
+				],
+			]
+		);
+
+		/**
 		 * CreditOutput output type.
 		 */
 		register_graphql_object_type(
