@@ -818,10 +818,10 @@ class Rise_GraphQL_Mutations {
 		);
 
 		/**
-		 * Toggle a user's hide_profile option.
+		 * Toggle a user's disable_profile option.
 		 */
 		register_graphql_mutation(
-			'toggleHideProfile',
+			'toggleDisableProfile',
 			[
 				'inputFields'         => [
 					'userId' => [
@@ -830,7 +830,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'outputFields'        => [
-					'updatedHideProfile' => [
+					'updatedDisableProfile' => [
 						'type'        => 'Boolean',
 						'description' => __( 'The updated value.', 'rise' ),
 					],
@@ -841,11 +841,11 @@ class Rise_GraphQL_Mutations {
 					$pod = pods( 'user', $input['userId'] );
 
 					$pod->save( [
-						'hide_profile' => $pod->field( 'hide_profile' ) ? false : true,
+						'disable_profile' => $pod->field( 'disable_profile' ) ? false : true,
 					] );
 
 					return [
-						'updatedHideProfile' => $pod->field( 'hide_profile' ),
+						'updatedDisableProfile' => $pod->field( 'disable_profile' ),
 					];
 				},
 			]
