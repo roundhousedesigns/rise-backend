@@ -230,6 +230,26 @@ class Rise_GraphQL_Types {
 		);
 
 		/**
+		 * ScoredCandidates output type.
+		 */
+		register_graphql_object_type(
+			'ScoredCandidateOutput',
+			[
+				'description' => __( 'A scored candidate prepared for the frontend.', 'rise' ),
+				'fields'      => [
+					'user_id' => [
+						'type'        => 'ID',
+						'description' => __( 'The user ID.', 'rise' ),
+					],
+					'score'   => [
+						'type'        => 'Int',
+						'description' => __( 'The candidate\'s search score.', 'rise' ),
+					],
+				],
+			]
+		);
+
+		/**
 		 * CreditOutput output type.
 		 */
 		register_graphql_object_type(

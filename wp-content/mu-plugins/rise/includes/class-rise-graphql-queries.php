@@ -260,12 +260,14 @@ class Rise_GraphQL_Queries {
 
 		/**
 		 * Query for users with matching selected criteria.
+		 *
+		 * Returns an associative array of user IDs as keys, with search score as values.
 		 */
 		register_graphql_field(
 			'RootQuery',
 			'filteredCandidates',
 			[
-				'type'        => ['list_of' => 'Int'],
+				'type'        => ['list_of' => 'ScoredCandidateOutput'],
 				'description' => __( 'Users with matching selected criteria.', 'rise' ),
 				'args'        => [
 					'positions'          => [
@@ -306,7 +308,9 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					return rise_search_and_filter_crew_members( $args );
+					$candidate_ids = rise_search_and_filter_crew_members( $args );
+
+					return rise_score_search_results( $args, $candidate_ids );
 				},
 			],
 		);
