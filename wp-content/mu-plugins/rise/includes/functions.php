@@ -388,8 +388,6 @@ function rise_score_search_results( $args, $candidate_ids ) {
 
 			foreach ( $term_ids as $term_id ) {
 				if ( in_array( $term_id, $user_taxonomy_term_ids, true ) ) {
-					// debug
-					error_log( 'term: ' . $term_id . ' found in user: ' . $user_id );
 					$users[$user_id]++;
 				}
 			}
