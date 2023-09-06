@@ -314,9 +314,9 @@ class Rise_Users {
 	/**
 	 * Generates a checkbox list of terms for a given taxonomy.
 	 *
-	 * @param  [type] $user
-	 * @param  [type] $taxonomy
-	 * @param  [type] $name
+	 * @param  WP_User $user
+	 * @param  string $taxonomy
+	 * @param  string $name
 	 * @return void
 	 */
 	private function user_profile_taxonomy_term_checkboxes( $user, $taxonomy, $name ) {

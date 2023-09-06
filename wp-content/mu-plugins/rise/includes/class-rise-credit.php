@@ -94,6 +94,14 @@ class Rise_Credit {
 	 * The Credit's 2nd-level `position` taxonomy terms.
 	 *
 	 * @var int[] $jobs The credit's `position` IDs.
+	 * @since 1.0.9
+	 */
+	private $departments;
+
+	/**
+	 * The Credit's 2nd-level `position` taxonomy terms.
+	 *
+	 * @var int[] $jobs The credit's `position` IDs.
 	 * @since 0.1.0
 	 */
 	private $jobs;
@@ -125,38 +133,13 @@ class Rise_Credit {
 		$this->work_start   = $data['workStart'];
 		$this->work_end     = $data['workEnd'];
 		$this->work_current = $data['workCurrent'];
-		$this->jobs         = $data['positions'];
+		$this->departments  = $data['departments'];
+		$this->jobs         = $data['jobs'];
 		$this->skills       = $data['skills'];
 	}
 
 	private function set_id( $id ) {
 		$this->id = $id;
-	}
-
-	/**
-	 * Retrieves the 1st-level `position` taxonomy terms by the 2nd-level terms.
-	 *
-	 * @since 0.2.0
-	 *
-	 * @return array The 1st-level `position` taxonomy terms.
-	 */
-	private function get_departments() {
-		if ( $this->jobs ) {
-			$jobs = get_terms(
-				[
-					'taxonomy'   => 'position',
-					'include'    => $this->jobs,
-					'hide_empty' => false,
-				]
-			);
-
-			$departments = [];
-			foreach ( $jobs as $job ) {
-				$departments[] = $job->parent;
-			}
-
-			return array_unique( $departments );
-		}
 	}
 
 	/**
@@ -174,7 +157,7 @@ class Rise_Credit {
 		$this->set_id( $credit );
 
 		$meta   = $this->update_meta();
-		$jobs   = $this->update_jobs();
+		$jobs   = $this->update_positions();
 		$skills = $this->update_skills();
 
 		// TODO add error condition for $meta
@@ -248,8 +231,9 @@ class Rise_Credit {
 	 *
 	 * @return int[]|WP_Error The term IDs on success. WP_Error on failure.
 	 */
-	protected function update_jobs() {
-		return wp_set_object_terms( $this->id, array_map( 'intval', $this->jobs ), 'position', false );
+	protected function update_positions() {
+		$positions = array_merge( $this->departments, $this->jobs );
+		return wp_set_object_terms( $this->id, array_map( 'intval', $positions ), 'position', false );
 	}
 
 	/**
@@ -296,9 +280,9 @@ class Rise_Credit {
 			'workStart'   => $this->work_start,
 			'workEnd'     => $this->work_end,
 			'workCurrent' => $this->work_current,
-			'skills'      => $this->skills,
-			'department'  => $this->get_departments(), // TODO department: change to plural key
 			'jobs'        => $this->jobs,
+			'departments' => $this->departments,
+			'skills'      => $this->skills,
 		];
 	}
 }

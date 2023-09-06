@@ -39,7 +39,7 @@ class Rise_GraphQL_Types {
 					],
 					'linkedin'  => [
 						'type'        => 'String',
-						'description' => __( 'The user\'s LinkedIn handle.', 'rise' ),
+						'description' => __( 'The user\'s LinkedIn URL.', 'rise' ),
 					],
 					'instagram' => [
 						'type'        => 'String',
@@ -209,9 +209,13 @@ class Rise_GraphQL_Types {
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the this is a current job.', 'rise' ),
 					],
-					'positions'   => [
-						'type'        => ['list_of' => 'ID'],
-						'description' => __( 'The credit\'s position term IDs.', 'rise' ),
+					'departments' => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The credit\'s 1st-level position term IDs.', 'rise' ),
+					],
+					'jobs'        => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The credit\'s 2nd-level position term IDs.', 'rise' ),
 					],
 					'skills'      => [
 						'type'        => ['list_of' => 'ID'],
@@ -317,8 +321,7 @@ class Rise_GraphQL_Types {
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the this is a current job.', 'rise' ),
 					],
-					// TODO department: change to plural key
-					'department'  => [
+					'departments' => [
 						'type'        => ['list_of' => 'Int'],
 						'description' => __( 'The credit\'s 1st-level position term IDs.', 'rise' ),
 					],
