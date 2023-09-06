@@ -136,6 +136,13 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	// Retrieve users based on all of our querying and filtration.
 	$users = get_users( $args );
 
+	// Remove any users with the 'disable_profile' pod meta set to true
+	$users = array_filter( $users, function ( $user ) {
+		$pod = pods( 'user', $user->ID );
+
+		return boolval( $pod->field( 'disable_profile' ) ) === false;
+	} );
+
 	return wp_list_pluck( $users, 'ID' );
 }
 

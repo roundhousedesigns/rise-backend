@@ -253,7 +253,17 @@ class Rise_GraphQL_Queries {
 						}
 					}
 
-					return array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
+					// Remove incomplete profiles
+					$user_ids = array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
+
+					// Remove users with the 'disable_profile' pod meta set to true
+					$user_ids = array_filter( $user_ids, function ( $id ) {
+						$pod = pods( 'user', $id );
+
+						return boolval( $pod->field( 'disable_profile' ) ) === false;
+					} );
+
+					return $user_ids;
 				},
 			],
 		);
