@@ -286,9 +286,18 @@ class Rise_Admin {
 			$non_authors_data .= implode( ',', $data ) . "\n";
 		}
 
-		$output .= sprintf( '<p>There are <strong>%s</strong> users registered on the site.</p>', count( $crew_members ) );
-		$output .= sprintf( '<p>There are <strong>%s</strong> users who have at least one credit.</p>', count( $authors ) );
-		$output .= sprintf( '<p>There are <strong>%s</strong> users who have <strong>no</strong> credits.</p>', count( $non_authors ) );
+		// Use the find() method to query users
+		$disabled_user_profiles = pods(
+			'user',
+			[
+				'where' => 'd.disable_profile = 1',
+			]
+		);
+
+		$output .= sprintf( '<p>Users registered on the site: <strong>%s</strong></p>', count( $crew_members ) );
+		$output .= sprintf( '<p>Users with at least one credit: <strong>%s</strong></p>', count( $authors ) );
+		$output .= sprintf( '<p>Users with <strong>no</strong> credits: <strong>%s</strong></p>', count( $non_authors ) );
+		$output .= sprintf( '<p>Users with hidden profiles ("search only"): <strong>%s</strong></p>', $disabled_user_profiles->total_found() );
 
 		// Output all users with no credits
 		// TODO Make this a download link
