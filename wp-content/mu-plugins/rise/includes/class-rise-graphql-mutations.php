@@ -240,7 +240,7 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					$username_provided = !empty( $input['username'] ) && is_string( $input['username'] );
 
-					if ( !$username_provided( $input ) ) {
+					if ( !$username_provided ) {
 						throw new UserError( __( 'Enter a username or email address.', 'rise' ) );
 					}
 
