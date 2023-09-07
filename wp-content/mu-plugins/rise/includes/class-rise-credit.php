@@ -94,7 +94,7 @@ class Rise_Credit {
 	 * The Credit's 2nd-level `position` taxonomy terms.
 	 *
 	 * @var int[] $jobs The credit's `position` IDs.
-	 * @since 1.0.8-hotfix1
+	 * @since 1.0.9
 	 */
 	private $departments;
 
