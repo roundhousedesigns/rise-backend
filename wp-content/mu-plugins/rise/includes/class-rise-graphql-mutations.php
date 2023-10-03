@@ -77,14 +77,14 @@ class Rise_GraphQL_Mutations {
 					// TODO Refactor and abstract this into a function
 
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
+						throw new UserError( __( 'no_recaptcha_token.', 'rise' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'rise' ) );
+						throw new UserError( __( 'bad_recaptcha_token.', 'rise' ) );
 					}
 
 					// Set the user's slug (user_nicename)
@@ -110,7 +110,7 @@ class Rise_GraphQL_Mutations {
 						if ( !empty( $error_code ) ) {
 							throw new UserError( $error_code );
 						} else {
-							throw new UserError( __( 'The object failed to create but no error was provided', 'rise' ) );
+							throw new UserError( __( 'unspecified_create_user_error', 'rise' ) );
 						}
 					}
 
@@ -118,7 +118,7 @@ class Rise_GraphQL_Mutations {
 					 * If the $post_id is empty, we should throw an exception
 					 */
 					if ( empty( $user_id ) ) {
-						throw new UserError( __( 'The object failed to create', 'rise' ) );
+						throw new UserError( __( 'unspecified_create_user_error', 'rise' ) );
 					}
 
 					/**
@@ -172,14 +172,14 @@ class Rise_GraphQL_Mutations {
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
+						throw new UserError( __( 'no_recaptcha_token.', 'rise' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'rise' ) );
+						throw new UserError( __( 'bad_recaptcha_token', 'rise' ) );
 					}
 
 					// Prepare credentials.
@@ -194,11 +194,23 @@ class Rise_GraphQL_Mutations {
 							$credentials[$credential_keys[$key]] = $value;
 						}
 					}
+
+					// Verify that the user is retrievable.
+					$user = get_user_by( 'email', $credentials['user_login'] );
+					if ( !$user ) {
+						throw new UserError( __( 'invalid_email', 'rise' ) );
+					}
+
+					// Verify that the user's role is 'crew-member'.
+					if ( in_array( 'administrator', $user->roles, true ) ) {
+						throw new UserError( __( 'invalid_account', 'rise' ) );
+					}
+
 					// Authenticate User.
 					$user = wpgraphql_cors_signon( $credentials );
 
 					if ( is_wp_error( $user ) ) {
-						throw new UserError( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'Login error' );
+						throw new UserError( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'bad_login' );
 					}
 
 					return ['status' => 'SUCCESS'];
@@ -241,18 +253,18 @@ class Rise_GraphQL_Mutations {
 					$username_provided = !empty( $input['username'] ) && is_string( $input['username'] );
 
 					if ( !$username_provided ) {
-						throw new UserError( __( 'Enter a username or email address.', 'rise' ) );
+						throw new UserError( __( 'no_username', 'rise' ) );
 					}
 
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( __( 'No reCAPTCHA response token was provided.', 'rise' ) );
+						throw new UserError( __( 'no_recaptcha_token.', 'rise' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'The reCAPTCHA response was invalid.', 'rise' ) );
+						throw new UserError( __( 'bad_recpatcha_response.', 'rise' ) );
 					}
 
 					// We obsfucate the actual success of this mutation to prevent user enumeration.
@@ -264,17 +276,13 @@ class Rise_GraphQL_Mutations {
 					$user_data = get_user_by( 'email', $input['username'] );
 
 					if ( !$user_data ) {
-						graphql_debug( __( 'There is no user registered with that email address.', 'rise' ) );
-
-						return $payload;
+						throw new UserError( __('invalid_username' ) );
 					}
 
 					// Get the password reset key.
 					$key = get_password_reset_key( $user_data );
 					if ( is_wp_error( $key ) ) {
-						graphql_debug( __( 'Unable to generate a password reset key.', 'rise' ) );
-
-						return $payload;
+						throw new UserError( __( 'invalid_reset_key', 'rise' ) );
 					}
 
 					// Mail the reset key.
@@ -292,8 +300,6 @@ class Rise_GraphQL_Mutations {
 					// @phpstan-ignore-next-line
 					if ( is_wp_error( $email_sent ) ) {
 						graphql_debug( __( 'The email could not be sent.', 'rise' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'rise' ) );
-
-						return $payload;
 					}
 
 					/**
