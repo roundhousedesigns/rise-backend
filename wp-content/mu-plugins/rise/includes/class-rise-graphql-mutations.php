@@ -276,7 +276,7 @@ class Rise_GraphQL_Mutations {
 					$user_data = get_user_by( 'email', $input['username'] );
 
 					if ( !$user_data ) {
-						throw new UserError( __('invalid_username' ) );
+						throw new UserError( __( 'invalid_username' ) );
 					}
 
 					// Get the password reset key.
