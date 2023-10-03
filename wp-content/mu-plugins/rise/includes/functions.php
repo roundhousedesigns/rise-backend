@@ -120,6 +120,13 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 		$user_ids = array_intersect( $user_ids, $authors );
 	}
 
+	// Remove users who are not in the 'crew-member' role
+	$user_ids = array_filter( $user_ids, function ( $user_id ) {
+		$user = get_userdata( $user_id );
+
+		return in_array( 'crew-member', $user->roles, true );
+	} );
+
 	// Remove duplicates from the object IDs array
 	$user_ids = array_unique( $user_ids );
 

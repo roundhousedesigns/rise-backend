@@ -91,6 +91,22 @@ class Rise_Credit {
 	private $work_current;
 
 	/**
+	 * The Credit's intern meta field.
+	 *
+	 * @var boolean $intern The Credit's intern meta field.
+	 * @since 1.0.9.2
+	 */
+	private $intern;
+
+	/**
+	 * The Credit's fellow meta field.
+	 *
+	 * @var boolean $fellow The Credit's fellow meta field.
+	 * @since 1.0.9.2
+	 */
+	private $fellow;
+
+	/**
 	 * The Credit's 2nd-level `position` taxonomy terms.
 	 *
 	 * @var int[] $jobs The credit's `position` IDs.
@@ -133,6 +149,8 @@ class Rise_Credit {
 		$this->work_start   = $data['workStart'];
 		$this->work_end     = $data['workEnd'];
 		$this->work_current = $data['workCurrent'];
+		$this->intern       = $data['intern'];
+		$this->fellow       = $data['fellow'];
 		$this->departments  = $data['departments'];
 		$this->jobs         = $data['jobs'];
 		$this->skills       = $data['skills'];
@@ -216,6 +234,8 @@ class Rise_Credit {
 			'work_start'   => $this->work_start,
 			'work_end'     => $this->work_end,
 			'work_current' => $this->work_current,
+			'intern'       => $this->intern,
+			'fellow'       => $this->fellow,
 			'venue'        => $this->venue,
 			'job_title'    => $this->job_title,
 			'job_location' => $this->job_location,
@@ -280,6 +300,8 @@ class Rise_Credit {
 			'workStart'   => $this->work_start,
 			'workEnd'     => $this->work_end,
 			'workCurrent' => $this->work_current,
+			'intern'      => $this->intern,
+			'fellow'      => $this->fellow,
 			'jobs'        => $this->jobs,
 			'departments' => $this->departments,
 			'skills'      => $this->skills,

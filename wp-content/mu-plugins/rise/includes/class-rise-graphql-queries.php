@@ -229,13 +229,8 @@ class Rise_GraphQL_Queries {
 
 					// Prepare an array of arguments for the user query
 					$query_args = [
-						'search'         => '*' . $search_string . '*',
-						'search_columns' => [
-							'meta_value', // Assumes first name and last name are stored as user meta
-							// 'user_email',
-							// 'user_display_name',
-						],
-						'role__in'       => ['crew-member'],
+						'search' => '*' . $search_string . '*',
+						'role'   => 'crew-member',
 					];
 
 					// Create a new instance of WP_User_Query
@@ -312,8 +307,12 @@ class Rise_GraphQL_Queries {
 						'description' => __( 'A list of `personal_identity` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
+					'searchUserId'       => [
+						'description' => __( 'The ID of the user performing the search', 'rise' ),
+						'type'        => 'ID',
+					],
 					'exclude'            => [
-						'description' => __( 'Deprecated. A list of user ids to exclude (was used for the current user)', 'rise' ),
+						'description' => __( 'Deprecated. A list of user ids to exclude', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 				],
