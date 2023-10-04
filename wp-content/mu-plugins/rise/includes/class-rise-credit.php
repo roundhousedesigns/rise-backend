@@ -62,6 +62,7 @@ class Rise_Credit {
 	 * The Credit's year meta field.
 	 *
 	 * @var string $year The Credit's year meta field.
+	 * @deprecated 0.2.0
 	 * @since 0.1.0
 	 */
 	private $year;
