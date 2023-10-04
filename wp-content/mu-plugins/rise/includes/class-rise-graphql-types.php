@@ -209,6 +209,14 @@ class Rise_GraphQL_Types {
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the this is a current job.', 'rise' ),
 					],
+					'intern'      => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is an internship.', 'rise' ),
+					],
+					'fellow'      => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is a fellowship.', 'rise' ),
+					],
 					'departments' => [
 						'type'        => ['list_of' => 'Int'],
 						'description' => __( 'The credit\'s 1st-level position term IDs.', 'rise' ),
