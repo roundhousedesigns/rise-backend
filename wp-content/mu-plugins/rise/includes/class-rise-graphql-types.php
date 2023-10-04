@@ -193,10 +193,6 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The credit\'s venue.', 'rise' ),
 					],
-					'year'        => [ // TODO deprecate year in favor of workStart and workEnd
-						'type'        => 'String',
-						'description' => __( 'The credit\'s year.', 'rise' ),
-					],
 					'workStart'   => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s work start date.', 'rise' ),
@@ -288,10 +284,6 @@ class Rise_GraphQL_Types {
 					'venue'       => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s venue.', 'rise' ),
-					],
-					'year'        => [
-						'type'        => 'String',
-						'description' => __( 'The credit\'s year.', 'rise' ),
 					],
 					'workStart'   => [
 						'type'        => 'String',

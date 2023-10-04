@@ -146,7 +146,6 @@ class Rise_Credit {
 		$this->job_title    = $data['jobTitle'];
 		$this->job_location = $data['jobLocation'];
 		$this->venue        = $data['venue'];
-		$this->year         = $data['year'];
 		$this->work_start   = $data['workStart'];
 		$this->work_end     = $data['workEnd'];
 		$this->work_current = $data['workCurrent'];
@@ -231,7 +230,6 @@ class Rise_Credit {
 		// Update the credit's pod.
 		$update_fields = [
 			'index'        => $this->index,
-			'year'         => $this->year,
 			'work_start'   => $this->work_start,
 			'work_end'     => $this->work_end,
 			'work_current' => $this->work_current,
@@ -297,7 +295,6 @@ class Rise_Credit {
 			'jobTitle'    => $this->job_title,
 			'jobLocation' => $this->job_location,
 			'venue'       => $this->venue,
-			'year'        => $this->year,
 			'workStart'   => $this->work_start,
 			'workEnd'     => $this->work_end,
 			'workCurrent' => $this->work_current,
