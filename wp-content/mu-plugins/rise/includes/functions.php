@@ -124,6 +124,10 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	$user_ids = array_filter( $user_ids, function ( $user_id ) {
 		$user = get_userdata( $user_id );
 
+		if ( !$user ) {
+			return false;
+		}
+
 		return in_array( 'crew-member', $user->roles, true );
 	} );
 
