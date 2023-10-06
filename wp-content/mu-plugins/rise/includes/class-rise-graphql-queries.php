@@ -458,5 +458,28 @@ class Rise_GraphQL_Queries {
 				},
 			]
 		);
+
+		/**
+		 * Get RISE site settings.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'frontendSetting',
+			[
+				'type'        => 'String',
+				'description' => __( 'Retrieve RISE settings (insecure values only).', 'rise' ),
+				'args'        => [
+					'key' => [
+						'description' => __( 'The key of the option to return.', 'rise' ),
+						'type'        => 'String',
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$value = get_option( $args['key'] );
+
+					return $value ? $value : null;
+				},
+			]
+		);
 	}
 }
