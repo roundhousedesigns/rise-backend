@@ -229,13 +229,8 @@ class Rise_GraphQL_Queries {
 
 					// Prepare an array of arguments for the user query
 					$query_args = [
-						'search'         => '*' . $search_string . '*',
-						'search_columns' => [
-							'meta_value', // Assumes first name and last name are stored as user meta
-							// 'user_email',
-							// 'user_display_name',
-						],
-						'role__in'       => ['crew-member'],
+						'search' => '*' . $search_string . '*',
+						'role'   => 'crew-member',
 					];
 
 					// Create a new instance of WP_User_Query
@@ -270,12 +265,14 @@ class Rise_GraphQL_Queries {
 
 		/**
 		 * Query for users with matching selected criteria.
+		 *
+		 * Returns an associative array of user IDs as keys, with search score as values.
 		 */
 		register_graphql_field(
 			'RootQuery',
 			'filteredCandidates',
 			[
-				'type'        => ['list_of' => 'Int'],
+				'type'        => ['list_of' => 'ScoredCandidateOutput'],
 				'description' => __( 'Users with matching selected criteria.', 'rise' ),
 				'args'        => [
 					'positions'          => [
@@ -320,10 +317,9 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$user_id = isset( $args['searchUserId'] ) ? $args['searchUserId'] : null;
-					unset( $args['searchUserId'] );
+					$candidate_ids = rise_search_and_filter_crew_members( $args );
 
-					return rise_search_and_filter_crew_members( $args, $user_id );
+					return rise_score_search_results( $args, $candidate_ids );
 				},
 			],
 		);
@@ -459,6 +455,29 @@ class Rise_GraphQL_Queries {
 					// Right now, we're running a separate query by ID to get the full profile data.
 
 					return $user->ID;
+				},
+			]
+		);
+
+		/**
+		 * Get RISE site settings.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'frontendSetting',
+			[
+				'type'        => 'String',
+				'description' => __( 'Retrieve RISE settings (insecure values only).', 'rise' ),
+				'args'        => [
+					'key' => [
+						'description' => __( 'The key of the option to return.', 'rise' ),
+						'type'        => 'String',
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$value = get_option( $args['key'] );
+
+					return $value ? $value : null;
 				},
 			]
 		);

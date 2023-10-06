@@ -120,6 +120,13 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 		$user_ids = array_intersect( $user_ids, $authors );
 	}
 
+	// Remove users who are not in the 'crew-member' role
+	$user_ids = array_filter( $user_ids, function ( $user_id ) {
+		$user = get_userdata( $user_id );
+
+		return in_array( 'crew-member', $user->roles, true );
+	} );
+
 	// Remove duplicates from the object IDs array
 	$user_ids = array_unique( $user_ids );
 
@@ -225,6 +232,23 @@ function user_is_searchable( $user_id ) {
 }
 
 /**
+ * Translate the frontend search filters to backend query arguments.
+ *
+ * @param  array $args The frontend search filters.
+ * @return array The arguments for use in a WP_Query.
+ */
+function rise_translate_taxonomy_filters( $args ) {
+	return [
+		'union'             => isset( $args['unions'] ) ? $args['unions'] : '',
+		'location'          => isset( $args['locations'] ) ? $args['locations'] : '',
+		'experience_level'  => isset( $args['experienceLevels'] ) ? $args['experienceLevels'] : '',
+		'gender_identity'   => isset( $args['genderIdentities'] ) ? $args['genderIdentities'] : '',
+		'personal_identity' => isset( $args['personalIdentities'] ) ? $args['personalIdentities'] : '',
+		'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
+	];
+}
+
+/**
  * Query crew members based on the given arguments.
  *
  * Used by the frontend search filters, and by reporting functions.
@@ -247,14 +271,7 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 		'skill'    => isset( $args['skills'] ) ? $args['skills'] : '',
 	];
 
-	$user_filters = [
-		'union'             => isset( $args['unions'] ) ? $args['unions'] : '',
-		'location'          => isset( $args['locations'] ) ? $args['locations'] : '',
-		'experience_level'  => isset( $args['experienceLevels'] ) ? $args['experienceLevels'] : '',
-		'gender_identity'   => isset( $args['genderIdentities'] ) ? $args['genderIdentities'] : '',
-		'personal_identity' => isset( $args['personalIdentities'] ) ? $args['personalIdentities'] : '',
-		'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
-	];
+	$user_filters = rise_translate_taxonomy_filters( $args );
 
 	// Start building the Credit query args.
 	$credit_args = [
@@ -293,21 +310,122 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 	$authors = array_filter( array_unique( $authors ), 'rise_remove_incomplete_profiles_from_search' );
 
 	// Filter users by selected taxonomies.
-	$user_taxonomy_terms = [];
+	$user_taxonomy_term_ids = [];
 	foreach ( $user_filters as $tax => $term_ids ) {
 		if ( empty( $term_ids ) ) {
 			continue;
 		}
 
-		$user_taxonomy_terms[$tax] = $term_ids;
+		$user_taxonomy_term_ids[$tax] = $term_ids;
 	}
 
 	// Filter users by taxonomy
-	$filtered_authors = rise_query_users_with_terms( $user_taxonomy_terms, $authors );
+	$filtered_authors = rise_query_users_with_terms( $user_taxonomy_term_ids, $authors );
 
 	return $filtered_authors;
 }
 // phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+
+/**
+ * Score filtered candidates based on the given search terms.
+ *
+ * @param  array $args          The search terms.
+ * @param  array $candidate_ids The candidate user IDs.
+ * @return array The scored candidates.
+ */
+function rise_score_search_results( $args, $candidate_ids ) {
+	// Set up the scoring array with user IDs as keys and starting score of 0 as values.
+	$users = [];
+	foreach ( $candidate_ids as $id ) {
+		$users[$id] = 0;
+	}
+
+	$positions = [];
+	$skills    = [];
+	/**
+	 * Split positions into departments and jobs. If no jobs are present,
+	 * we'll score based on departments.
+	 */
+	$skills = empty( $args['skills'] ) ? [] : $args['skills'];
+
+	foreach ( $args['positions'] as $position_id ) {
+		$position = get_term_by( 'id', $position_id, 'position' );
+
+		if ( $position ) {
+			if ( $position->parent ) {
+				$positions[] = $position->term_id;
+			} else {
+				$departments[] = $position->term_id;
+			}
+		}
+	}
+
+	if ( !empty( $positions ) ) {
+		$positions = $positions;
+	} else {
+		$positions = $departments;
+	}
+
+	// Score candidates based on positions, skills, and filters.
+	foreach ( $users as $user_id => $score ) {
+		// Get the user's credits.
+		$credits = get_posts( [
+			'post_type'      => 'credit',
+			'posts_per_page' => -1,
+			'author'         => $user_id,
+		] );
+
+		foreach ( $credits as $credit ) {
+			// First, score positions
+			foreach ( $positions as $position ) {
+				if ( has_term( $position, 'position', $credit->ID ) ) {
+					$users[$user_id]++;
+				}
+			}
+
+			// Next, score skills
+			foreach ( $skills as $skill ) {
+				if ( has_term( $skill, 'skill', $credit->ID ) ) {
+					$users[$user_id]++;
+				}
+			}
+		}
+
+		// Remove 'positions' and 'skills' from the $args array so we don't score them again.
+		unset( $args['positions'], $args['skills'] );
+
+		// Score the rest of the filters.
+		$filters = rise_translate_taxonomy_filters( $args );
+
+		foreach ( $filters as $user_taxonomy => $term_ids ) {
+			if ( empty( $term_ids ) ) {
+				continue;
+			}
+
+			// Cast the term IDs to integers.
+			$term_ids = array_map( 'absint', $term_ids );
+
+			$user_taxonomy_term_ids = wp_get_object_terms( $user_id, $user_taxonomy, ['fields' => 'ids'] );
+
+			foreach ( $term_ids as $term_id ) {
+				if ( in_array( $term_id, $user_taxonomy_term_ids, true ) ) {
+					$users[$user_id]++;
+				}
+			}
+		}
+	}
+
+	// Transform the array into a list conforming to the ScoredCandidateOutput shape.
+	$scored_candidates = [];
+	foreach ( $users as $user_id => $score ) {
+		$scored_candidates[] = [
+			'user_id' => $user_id,
+			'score'   => $score,
+		];
+	}
+
+	return $scored_candidates;
+}
 
 /**
  * Safe redirect with nocache headers to prevent caching of the redirect. Don't forget to call `exit`

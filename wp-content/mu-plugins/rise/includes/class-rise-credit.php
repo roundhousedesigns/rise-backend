@@ -62,6 +62,7 @@ class Rise_Credit {
 	 * The Credit's year meta field.
 	 *
 	 * @var string $year The Credit's year meta field.
+	 * @deprecated 0.2.0
 	 * @since 0.1.0
 	 */
 	private $year;
@@ -89,6 +90,22 @@ class Rise_Credit {
 	 * @since 0.1.0
 	 */
 	private $work_current;
+
+	/**
+	 * The Credit's intern meta field.
+	 *
+	 * @var boolean $intern The Credit's intern meta field.
+	 * @since 1.0.9.2
+	 */
+	private $intern;
+
+	/**
+	 * The Credit's fellow meta field.
+	 *
+	 * @var boolean $fellow The Credit's fellow meta field.
+	 * @since 1.0.9.2
+	 */
+	private $fellow;
 
 	/**
 	 * The Credit's 2nd-level `position` taxonomy terms.
@@ -129,10 +146,11 @@ class Rise_Credit {
 		$this->job_title    = $data['jobTitle'];
 		$this->job_location = $data['jobLocation'];
 		$this->venue        = $data['venue'];
-		$this->year         = $data['year'];
 		$this->work_start   = $data['workStart'];
 		$this->work_end     = $data['workEnd'];
 		$this->work_current = $data['workCurrent'];
+		$this->intern       = $data['intern'];
+		$this->fellow       = $data['fellow'];
 		$this->departments  = $data['departments'];
 		$this->jobs         = $data['jobs'];
 		$this->skills       = $data['skills'];
@@ -212,10 +230,11 @@ class Rise_Credit {
 		// Update the credit's pod.
 		$update_fields = [
 			'index'        => $this->index,
-			'year'         => $this->year,
 			'work_start'   => $this->work_start,
 			'work_end'     => $this->work_end,
 			'work_current' => $this->work_current,
+			'intern'       => $this->intern,
+			'fellow'       => $this->fellow,
 			'venue'        => $this->venue,
 			'job_title'    => $this->job_title,
 			'job_location' => $this->job_location,
@@ -276,10 +295,11 @@ class Rise_Credit {
 			'jobTitle'    => $this->job_title,
 			'jobLocation' => $this->job_location,
 			'venue'       => $this->venue,
-			'year'        => $this->year,
 			'workStart'   => $this->work_start,
 			'workEnd'     => $this->work_end,
 			'workCurrent' => $this->work_current,
+			'intern'      => $this->intern,
+			'fellow'      => $this->fellow,
 			'jobs'        => $this->jobs,
 			'departments' => $this->departments,
 			'skills'      => $this->skills,

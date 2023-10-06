@@ -193,10 +193,6 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The credit\'s venue.', 'rise' ),
 					],
-					'year'        => [ // TODO deprecate year in favor of workStart and workEnd
-						'type'        => 'String',
-						'description' => __( 'The credit\'s year.', 'rise' ),
-					],
 					'workStart'   => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s work start date.', 'rise' ),
@@ -208,6 +204,14 @@ class Rise_GraphQL_Types {
 					'workCurrent' => [
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the this is a current job.', 'rise' ),
+					],
+					'intern'      => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is an internship.', 'rise' ),
+					],
+					'fellow'      => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is a fellowship.', 'rise' ),
 					],
 					'departments' => [
 						'type'        => ['list_of' => 'Int'],
@@ -274,6 +278,26 @@ class Rise_GraphQL_Types {
 		);
 
 		/**
+		 * ScoredCandidates output type.
+		 */
+		register_graphql_object_type(
+			'ScoredCandidateOutput',
+			[
+				'description' => __( 'A scored candidate prepared for the frontend.', 'rise' ),
+				'fields'      => [
+					'user_id' => [
+						'type'        => 'ID',
+						'description' => __( 'The user ID.', 'rise' ),
+					],
+					'score'   => [
+						'type'        => 'Int',
+						'description' => __( 'The candidate\'s search score.', 'rise' ),
+					],
+				],
+			]
+		);
+
+		/**
 		 * CreditOutput output type.
 		 */
 		register_graphql_object_type(
@@ -305,10 +329,6 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The credit\'s venue.', 'rise' ),
 					],
-					'year'        => [
-						'type'        => 'String',
-						'description' => __( 'The credit\'s year.', 'rise' ),
-					],
 					'workStart'   => [
 						'type'        => 'String',
 						'description' => __( 'The credit\'s work start date.', 'rise' ),
@@ -320,6 +340,14 @@ class Rise_GraphQL_Types {
 					'workCurrent' => [
 						'type'        => 'Boolean',
 						'description' => __( 'Whether the this is a current job.', 'rise' ),
+					],
+					'intern'      => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is an internship.', 'rise' ),
+					],
+					'fellow'      => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the this is a fellowship.', 'rise' ),
 					],
 					'departments' => [
 						'type'        => ['list_of' => 'Int'],
