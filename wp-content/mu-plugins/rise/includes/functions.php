@@ -46,11 +46,10 @@ function rise_remove_incomplete_profiles_from_search( $author_id ) {
 		return false;
 	}
 
-	$pod = pods( 'user', $author_id );
-
 	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 	// If email, phone, and website are all unset, ignore this user.
 	// TODO determine if we actually want this search results check.
+	// $pod = pods( 'user', $author_id );
 	// if ( !$pod->field( 'contact_email', true, true ) && !$pod->field( 'phone', true, true ) && !$pod->field( 'website_url', true, true ) ) {
 	// 	return false;
 	// }

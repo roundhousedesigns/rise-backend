@@ -279,8 +279,9 @@ class Rise_Taxonomies {
 		if ( isset( $_POST[$taxonomy] ) ) {
 			$terms = array_map( 'intval', (array) $_POST[$taxonomy] );
 			wp_set_object_terms( $user_id, $terms, $taxonomy );
-		} else {
-			wp_set_object_terms( $user_id, [], $taxonomy );
+			return;
 		}
+
+		wp_set_object_terms( $user_id, [], $taxonomy );
 	}
 }

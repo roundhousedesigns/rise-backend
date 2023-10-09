@@ -68,15 +68,16 @@ class Rise_Types {
 	public function display_credit_posts_column( $value, $column_name, $user_id ) {
 		if ( 'credit_posts' === $column_name ) {
 			$credit_count = count_user_posts( $user_id, 'credit' );
+
 			if ( $credit_count > 0 ) {
 				$edit_url = add_query_arg( [
 					'post_type' => 'credit',
 					'author'    => $user_id,
 				], admin_url( 'edit.php' ) );
-				$value = '<a href="' . esc_url( $edit_url ) . '">' . $credit_count . '</a>';
-			} else {
-				$value = '0';
+				return '<a href="' . esc_url( $edit_url ) . '">' . $credit_count . '</a>';
 			}
+
+			return '0';
 		}
 
 		return $value;

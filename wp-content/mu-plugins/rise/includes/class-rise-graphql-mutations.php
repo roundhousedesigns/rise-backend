@@ -889,18 +889,18 @@ class Rise_GraphQL_Mutations {
 						$bookmarked_profiles = [];
 					}
 
-					$bookmarked_profile_ids = rise_pluck_profile_ids( $bookmarked_profiles );
+					$bookmarked_ids = rise_pluck_profile_ids( $bookmarked_profiles );
 
 					if ( !isset( $input['bookmarkedProfiles'] ) ) {
 						throw new WP_Error( 'no_profile_id', __( 'No profile IDs provided.', 'rise' ) );
 					}
 
 					// Sanitize the input.
-					$bookmarked_profile_ids = array_map( 'absint', $input['bookmarkedProfiles'] );
+					$bookmarked_ids = array_map( 'absint', $input['bookmarkedProfiles'] );
 
 					// Update the bookmarked profiles field with the new array.
 					$pod_id = $pod->save( [
-						'bookmarked_profile_connections' => $bookmarked_profile_ids,
+						'bookmarked_profile_connections' => $bookmarked_ids,
 					] );
 
 					// Get the updated bookmarked profile IDs.

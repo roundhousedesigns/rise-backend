@@ -99,12 +99,15 @@ function recaptcha_is_valid( $response ) {
  */
 function flatten_array( $array ) {
 	$result = [];
+
 	foreach ( $array as $element ) {
 		if ( is_array( $element ) ) {
 			$result = array_merge( $result, flatten_array( $element ) );
-		} else {
-			$result[] = $element;
+			continue;
 		}
+
+		$result[] = $element;
 	}
+
 	return $result;
 }

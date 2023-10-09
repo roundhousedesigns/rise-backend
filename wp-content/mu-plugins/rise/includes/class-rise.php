@@ -71,8 +71,6 @@ class Rise {
 
 		if ( defined( 'RISE_VERSION' ) ) {
 			$this->version = RISE_VERSION;
-		} else {
-			$this->version = '0.1.0';
 		}
 
 		$this->plugin_name = 'rise';
@@ -375,9 +373,9 @@ class Rise {
 	 * @return void
 	 */
 	private function define_graphql_mutations() {
-		$plugin_data_mutations = new Rise_GraphQL_Mutations();
+		$plugin_gql_muts = new Rise_GraphQL_Mutations();
 
-		$this->loader->add_filter( 'graphql_register_types', $plugin_data_mutations, 'register_mutations' );
+		$this->loader->add_filter( 'graphql_register_types', $plugin_gql_muts, 'register_mutations' );
 	}
 
 	/**

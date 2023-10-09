@@ -173,9 +173,9 @@ class Rise_UserProfile {
 			return self::SOCIAL_INPUT_FIELDS[$frontend_key];
 		} elseif ( array_key_exists( $frontend_key, self::TAXONOMY_INPUT_FIELDS ) ) {
 			return self::TAXONOMY_INPUT_FIELDS[$frontend_key];
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	/**
