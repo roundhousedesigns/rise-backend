@@ -90,6 +90,244 @@ class Rise_GraphQL_Queries {
 	}
 
 	/**
+	 * Get jobs from departments.
+	 *
+	 * @param  array $departments
+	 * @return array An array of job IDs.
+	 */
+	private static function get_job_skills( $jobs ) {
+		$selected_skills = [];
+		foreach ( $jobs as $job ) {
+			$pod       = pods( 'position', $job );
+			$retrieved = $pod->field( 'skills' );
+
+			if ( !$retrieved ) {
+				continue;
+			}
+
+			$selected_skills[] = wp_list_pluck( $retrieved, 'term_id' );
+		}
+
+		if ( !$selected_skills ) {
+			return [];
+		}
+
+		// Flatten the array of job-related skills and remove duplicates.
+		$selected_skills = array_unique( flatten_array( $selected_skills ) );
+
+		$term_args = [
+			'include'    => $selected_skills,
+			'number'     => 0,
+			'hide_empty' => false,
+			'taxonomy'   => 'skill',
+		];
+		$skill_terms = get_terms( $term_args );
+
+		$prepared_skills = [];
+		foreach ( $skill_terms as $skill ) {
+			$prepared_skills[] = [
+				'databaseId' => $skill->term_id,
+				'name'       => $skill->name,
+				'slug'       => $skill->slug,
+			];
+		}
+
+		return $prepared_skills;
+	}
+
+	/**
+	 * Get jobs from departments.
+	 *
+	 * @param  array $departments
+	 * @return array An array of job IDs.
+	 */
+	private static function get_department_jobs( $departments ) {
+		if ( count( $departments ) === 1 && 0 === absint( $departments[0] ) ) {
+			// retrieve only top-level terms for `position`
+			$terms = get_terms( [
+				'taxonomy'   => 'position',
+				'hide_empty' => false,
+				'parent'     => 0,
+			] );
+		} elseif ( empty( $departments ) ) {
+			// If no departments are selected, return an empty array.
+			return [];
+		} else {
+			// get all terms that are children of any of the term ids in the `$departments` array
+			$all_children = [];
+			foreach ( $departments as $department ) {
+				$children = get_term_children( $department, 'position' );
+				if ( !empty( $children ) ) {
+					$all_children = array_merge( $all_children, $children );
+				}
+			}
+
+			$terms = get_terms( [
+				'taxonomy'   => 'position',
+				'hide_empty' => false,
+				'include'    => $all_children,
+			] );
+		}
+
+		$prepared_terms = [];
+
+		foreach ( $terms as $term ) {
+			$prepared_terms[] = [
+				'databaseId'       => $term->term_id,
+				'parentDatabaseId' => $term->parent,
+				'name'             => $term->name,
+				'slug'             => $term->slug,
+			];
+		}
+
+		return $prepared_terms;
+	}
+
+	/**
+	 * Search users by name.
+	 *
+	 * @param  string $name
+	 * @return array  An array of user IDs.
+	 */
+	private static function search_users_by_name( $name ) {
+		$search_string = sanitize_text_field( $name );
+
+		// Prepare an array of arguments for the user query
+		$query_args = [
+			'search' => '*' . $search_string . '*',
+			'role'   => 'crew-member',
+		];
+
+		// Create a new instance of WP_User_Query
+		$user_query = new WP_User_Query( $query_args );
+
+		// Retrieve the results
+		$users = $user_query->get_results();
+
+		// Process the results
+		$user_ids = [];
+
+		if ( !empty( $users ) ) {
+			foreach ( $users as $user ) {
+				$user_ids[] = $user->ID;
+			}
+		}
+
+		// Remove incomplete profiles
+		$user_ids = array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
+
+		// Remove users with the 'disable_profile' pod meta set to true
+		$user_ids = array_filter( $user_ids, function ( $id ) {
+			$pod = pods( 'user', $id );
+
+			return boolval( $pod->field( 'disable_profile' ) ) === false;
+		} );
+
+		return $user_ids;
+	}
+
+	/**
+	 * Score filtered candidates based on the given search terms.
+	 *
+	 * @param  array $args          The search terms.
+	 * @param  array $candidate_ids The candidate user IDs.
+	 * @return array The scored candidates.
+	 */
+	private static function rise_score_search_results( $args, $candidate_ids ) {
+		// Set up the scoring array with user IDs as keys and starting score of 0 as values.
+		$users = [];
+		foreach ( $candidate_ids as $id ) {
+			$users[$id] = 0;
+		}
+
+		$positions = [];
+		$skills    = [];
+		/**
+		 * Split positions into departments and jobs. If no jobs are present,
+		 * we'll score based on departments.
+		 */
+		$skills = empty( $args['skills'] ) ? [] : $args['skills'];
+
+		foreach ( $args['positions'] as $position_id ) {
+			$position = get_term_by( 'id', $position_id, 'position' );
+
+			if ( $position ) {
+				if ( $position->parent ) {
+					$positions[] = $position->term_id;
+				} else {
+					$departments[] = $position->term_id;
+				}
+			}
+		}
+
+		if ( !empty( $positions ) ) {
+			$positions = $positions;
+		} else {
+			$positions = $departments;
+		}
+
+		// Score candidates based on positions, skills, and filters.
+		foreach ( $users as $user_id => $score ) {
+			// Get the user's credits.
+			$credits = get_posts( [
+				'post_type'      => 'credit',
+				'posts_per_page' => -1,
+				'author'         => $user_id,
+			] );
+
+			foreach ( $credits as $credit ) {
+				// First, score positions
+				foreach ( $positions as $position ) {
+					if ( has_term( $position, 'position', $credit->ID ) ) {
+						$users[$user_id]++;
+					}
+				}
+
+				// Next, score skills
+				foreach ( $skills as $skill ) {
+					if ( has_term( $skill, 'skill', $credit->ID ) ) {
+						$users[$user_id]++;
+					}
+				}
+			}
+
+			// Remove 'positions' and 'skills' from the $args array so we don't score them again.
+			unset( $args['positions'], $args['skills'] );
+
+			// Score the rest of the filters.
+			$filters = rise_translate_taxonomy_filters( $args );
+
+			foreach ( $filters as $user_taxonomy => $term_ids ) {
+				if ( empty( $term_ids ) ) {
+					continue;
+				}
+
+				// Cast the term IDs to integers.
+				$term_ids = array_map( 'absint', $term_ids );
+
+				$user_taxonomy_term_ids = wp_get_object_terms( $user_id, $user_taxonomy, ['fields' => 'ids'] );
+
+				foreach ( $term_ids as $term_id ) {
+					if ( in_array( $term_id, $user_taxonomy_term_ids, true ) ) {
+						$users[$user_id]++;
+					}
+				}
+			}
+		}
+
+		// Transform the array into a list conforming to the ScoredCandidateOutput shape.
+		$scored_candidates = [];
+		foreach ( $users as $user_id => $score ) {
+			$scored_candidates[] = [
+				'user_id' => $user_id,
+				'score'   => $score,
+			];
+		}
+
+		return $scored_candidates;
+	}
+
+	/**
 	 * Register GraphQL queries for skills.
 	 *
 	 * @since 0.1.0
@@ -112,43 +350,11 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$selected_skills = [];
-					foreach ( $args['jobs'] as $job ) {
-						$pod       = pods( 'position', $job );
-						$retrieved = $pod->field( 'skills' );
-
-						if ( !$retrieved ) {
-							continue;
-						}
-
-						$selected_skills[] = wp_list_pluck( $retrieved, 'term_id' );
+					if ( $args['jobs'] && count( $args['jobs'] ) > 0 ) {
+						return self::get_job_skills( $args['jobs'] );
 					}
 
-					if ( !$selected_skills ) {
-						return [];
-					}
-
-					// Flatten the array of job-related skills and remove duplicates.
-					$selected_skills = array_unique( flatten_array( $selected_skills ) );
-
-					$term_args = [
-						'include'    => $selected_skills,
-						'number'     => 0,
-						'hide_empty' => false,
-						'taxonomy'   => 'skill',
-					];
-					$skill_terms = get_terms( $term_args );
-
-					$prepared_skills = [];
-					foreach ( $skill_terms as $skill ) {
-						$prepared_skills[] = [
-							'databaseId' => $skill->term_id,
-							'name'       => $skill->name,
-							'slug'       => $skill->slug,
-						];
-					}
-
-					return $prepared_skills;
+					return [];
 				},
 			],
 		);
@@ -165,47 +371,11 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$departments = $args['departments'];
-
-					if ( count( $departments ) === 1 && 0 === absint( $departments[0] ) ) {
-						// retrieve only top-level terms for `position`
-						$terms = get_terms( [
-							'taxonomy'   => 'position',
-							'hide_empty' => false,
-							'parent'     => 0,
-						] );
-					} elseif ( empty( $departments ) ) {
-						// If no departments are selected, return an empty array.
-						return [];
-					} else {
-						// get all terms that are children of any of the term ids in the `$departments` array
-						$all_children = [];
-						foreach ( $departments as $department ) {
-							$children = get_term_children( $department, 'position' );
-							if ( !empty( $children ) ) {
-								$all_children = array_merge( $all_children, $children );
-							}
-						}
-
-						$terms = get_terms( [
-							'taxonomy'   => 'position',
-							'hide_empty' => false,
-							'include'    => $all_children,
-						] );
+					if ( $args['departments'] && count( $args['departments'] ) > 0 ) {
+						return self::get_department_jobs( $args['departments'] );
 					}
 
-					$prepared_terms = [];
-
-					foreach ( $terms as $term ) {
-						$prepared_terms[] = [
-							'databaseId'       => $term->term_id,
-							'parentDatabaseId' => $term->parent,
-							'name'             => $term->name,
-							'slug'             => $term->slug,
-						];
-					}
-
-					return $prepared_terms;
+					return [];
 				},
 			]
 		);
@@ -225,40 +395,11 @@ class Rise_GraphQL_Queries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$search_string = sanitize_text_field( $args['name'] );
-
-					// Prepare an array of arguments for the user query
-					$query_args = [
-						'search' => '*' . $search_string . '*',
-						'role'   => 'crew-member',
-					];
-
-					// Create a new instance of WP_User_Query
-					$user_query = new WP_User_Query( $query_args );
-
-					// Retrieve the results
-					$users = $user_query->get_results();
-
-					// Process the results
-					$user_ids = [];
-
-					if ( !empty( $users ) ) {
-						foreach ( $users as $user ) {
-							$user_ids[] = $user->ID;
-						}
+					if ( $args['name'] ) {
+						return self::search_users_by_name( $args['name'] );
 					}
 
-					// Remove incomplete profiles
-					$user_ids = array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
-
-					// Remove users with the 'disable_profile' pod meta set to true
-					$user_ids = array_filter( $user_ids, function ( $id ) {
-						$pod = pods( 'user', $id );
-
-						return boolval( $pod->field( 'disable_profile' ) ) === false;
-					} );
-
-					return $user_ids;
+					return [];
 				},
 			],
 		);
@@ -319,7 +460,7 @@ class Rise_GraphQL_Queries {
 				'resolve'     => function ( $root, $args ) {
 					$candidate_ids = rise_search_and_filter_crew_members( $args );
 
-					return rise_score_search_results( $args, $candidate_ids );
+					return self::rise_score_search_results( $args, $candidate_ids );
 				},
 			],
 		);
