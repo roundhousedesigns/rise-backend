@@ -170,7 +170,7 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function user_notice_init() {
-		Rise_Taxonomies::register_post_type( 'user_notice', 'user_notices', 'User Notice', 'Dashboard Updates/Notices', 'dashicons-flag', ['title', 'author', 'editor'] );
+		Rise_Taxonomies::register_post_type( 'user_notice', 'user_notices', 'User Notice', 'Dashboard Updates/Notices', 'dashicons-flag', ['supports' => ['title', 'author', 'editor']] );
 	}
 
 	/**
@@ -203,7 +203,21 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function saved_search_init() {
-		Rise_Taxonomies::register_post_type( 'saved_search', 'saved_searches', 'Saved Search', 'Saved Searches', 'dashicons-search' );
+		Rise_Taxonomies::register_post_type(
+			'saved_search',
+			'saved_searches',
+			'Saved Search',
+			'Saved Searches',
+			'dashicons-search',
+			[
+				'public'              => true,
+				'exclude_from_search' => true,
+				'publicly_queryable'  => true,
+				'supports'            => ['title', 'author', 'editor'],
+				'show_ui'             => false,
+				'show_in_nav'         => false,
+			]
+		);
 	}
 
 	/**
@@ -227,5 +241,34 @@ class Rise_Types {
 	 */
 	public function saved_search_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 		return Rise_Taxonomies::post_type_bulk_updated_messages( 'saved_search', 'Saved Search', 'Saved Searches', $bulk_messages, $bulk_counts );
+	}
+
+	/**
+	 * Disable the Block Editor for the `saved_search` post type.
+	 *
+	 * @param  string $current_status
+	 * @param  string $post_type
+	 * @return void
+	 */
+	public function saved_search_disable_block_editor( $current_status, $post_type ) {
+		if ( 'saved_search' === $post_type ) {
+			return false;
+		}
+
+		return $current_status;
+	}
+
+	/**
+	 * Disable the WYSIWYG Editor for the `saved_search` post type.
+	 *
+	 * @param  boolean $default
+	 * @return boolean True to enable the editor, false to disable.
+	 */
+	public function saved_search_remove_visual_editor( $default ) {
+		if ( get_post_type() === 'saved_search' ) {
+			return false;
+		}
+
+		return $default;
 	}
 }

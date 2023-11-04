@@ -724,9 +724,67 @@ class Rise_GraphQL_Mutations {
 			'deleteOwnCredit',
 			[
 				'inputFields'         => [
-					'id' => [
+					'id'     => [
 						'type'        => 'ID',
 						'description' => __( 'The ID of the credit to delete.', 'rise' ),
+					],
+					'userId' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the user to delete the credit for.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'result' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The result of the delete operation.', 'rise' ),
+						'resolve'     => function ( $payload ) {
+							return $payload['result'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+					$payload = [
+						'result' => false,
+					];
+
+					if ( !isset( $input['id'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
+						];
+					}
+
+					if ( !isset( $input['userId'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_user_id', __( 'No user ID provided.', 'rise' ) ),
+						];
+					}
+
+					$result = rise_delete_own_allowed_post_item( $input['id'], $input['userId'] );
+
+					if ( $result ) {
+						$payload['result'] = true;
+					}
+
+					return $payload;
+				},
+			]
+		);
+
+		/**
+		 * Delete a user's saved search.
+		 */
+		register_graphql_mutation(
+			'deleteOwnSavedSearch',
+			[
+				'inputFields'         => [
+					'id'     => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the saved search to delete.', 'rise' ),
+					],
+					'userId' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the user to delete the saved search for.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -747,15 +805,19 @@ class Rise_GraphQL_Mutations {
 						];
 					}
 
-					$result = wp_delete_post( $input['id'], false );
-
-					if ( $result instanceof WP_Post ) {
+					if ( !isset( $input['userId'] ) ) {
 						return [
-							'result' => true,
+							'result' => new \WP_Error( 'no_user_id', __( 'No user ID provided.', 'rise' ) ),
 						];
-					} else {
-						return new WP_Error( 'delete_failed', __( 'The credit could not be deleted.', 'rise' ) );
 					}
+
+					$result = rise_delete_own_allowed_post_item( $input['id'], $input['userId'] );
+
+					if ( $result ) {
+						$payload['result'] = true;
+					}
+
+					return $payload;
 				},
 			]
 		);
@@ -921,30 +983,30 @@ class Rise_GraphQL_Mutations {
 		 * Save a search filter set.
 		 */
 		register_graphql_mutation(
-			'saveSearchFilters',
+			'updateOrCreateSavedSearch',
 			[
 				'inputFields'         => [
-					'filterSet'     => [
+					'id'        => [
+						'description' => __( 'The ID of the saved search, if it already exists.', 'rise' ),
+						'type'        => 'ID',
+					],
+					'userId'    => [
+						'description' => __( 'The ID of the user performing the search.', 'rise' ),
+						'type'        => 'ID',
+					],
+					'filterSet' => [
 						'type'        => 'SearchFilterSetRaw',
 						'description' => __( 'The search filter set to save.', 'rise' ),
 					],
-					'searchUserId'  => [
-						'description' => __( 'The ID of the user performing the search', 'rise' ),
-						'type'        => 'ID',
-					],
-					'oldSearchName' => [
-						'description' => __( 'The original user-generated search name.', 'rise' ),
-						'type'        => 'String',
-					],
-					'searchName'    => [
-						'description' => __( 'The user-generated search name.', 'rise' ),
+					'title'     => [
+						'description' => __( 'The user-generated title.', 'rise' ),
 						'type'        => 'String',
 					],
 				],
 				'outputFields'        => [
-					'success' => [
-						'type'        => 'Boolean',
-						'description' => __( 'Whether the mutation completed successfully.', 'rise' ),
+					'id' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the saved search item.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
@@ -953,17 +1015,17 @@ class Rise_GraphQL_Mutations {
 						'success' => false,
 					];
 
-					if ( !isset( $input['filterSet'] ) || !$input['searchUserId'] || !$input['searchName'] ) {
+					if ( !isset( $input['filterSet'] ) || !$input['userId'] ) {
 						return $payload;
 					}
 
-					// Add the search name to the filter set
-					$input['filterSet']['searchName'] = $input['searchName'];
+					$saved_search_id = isset( $input['id'] ) && $input['id'] ? $input['id'] : 0;
 
-					$old_search_name = isset( $input['oldSearchName'] ) ? $input['oldSearchName'] : '';
+					$result = Rise_Users::update_saved_search( $input['userId'], $input['filterSet'], $input['title'], $saved_search_id );
 
-					// Save args for future recall
-					Rise_Users::save_user_saved_searches( $input['searchUserId'], $input['filterSet'], $old_search_name );
+					if ( is_wp_error( $result ) ) {
+						throw new UserError( $result->get_error_code() );
+					}
 
 					return [
 						'success' => true,
@@ -971,5 +1033,7 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+
+		// TODO Add Delete Search Filter here.
 	}
 }

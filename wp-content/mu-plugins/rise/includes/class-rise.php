@@ -325,10 +325,11 @@ class Rise {
 		 * Custom Post Type: saved_search
 		 */
 		// phpcs:disable
-		// TODO Implement saved_search CPT
-		// $this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
-		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
-		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'saved_search_disable_block_editor', 10, 2 );
+		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'saved_search_remove_visual_editor' );
 		// phpcs:enable
 
 		/**

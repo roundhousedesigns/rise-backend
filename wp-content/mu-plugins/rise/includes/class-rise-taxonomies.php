@@ -14,15 +14,15 @@ class Rise_Taxonomies {
 	/**
 	 * Regsiter a post type.
 	 *
-	 * @param  string $post_type        - The post type slug.
-	 * @param  string $post_type_plural - The plural post type slug.
-	 * @param  string $singular         - The singular post type name.
-	 * @param  string $plural           - The plural post type name.
-	 * @param  string $icon             (default: '') - https://developer.wordpress.org/resource/dashicons/
-	 * @param  array  $supports         (default: ['title', 'author']) - A custom post type supports array.
+	 * @param  string $post_type        The post type slug.
+	 * @param  string $post_type_plural The plural post type slug (for GraphQL).
+	 * @param  string $singular         The singular post type name.
+	 * @param  string $plural           The plural post type name.
+	 * @param  string $icon             (default: '') https://developer.wordpress.org/resource/dashicons/
+	 * @param  array  $args_override    (default: []) A custom post type args array. Overwrites defaults if present.
 	 * @return void
 	 */
-	public static function register_post_type( $post_type, $post_type_plural, $singular, $plural, $icon = '', $supports = ['title', 'author'] ) {
+	public static function register_post_type( $post_type, $post_type_plural, $singular, $plural, $icon = '', $args_override = [] ) {
 		// Equalize names.
 		$name_singular = ucwords( $singular );
 		$name_plural   = ucwords( $plural );
@@ -60,7 +60,7 @@ class Rise_Taxonomies {
 			'hierarchical'          => false,
 			'show_ui'               => true,
 			'show_in_nav_menus'     => true,
-			'supports'              => $supports,
+			'supports'              => ['title', 'author'],
 			'has_archive'           => true,
 			'rewrite'               => true,
 			'query_var'             => true,
@@ -69,10 +69,14 @@ class Rise_Taxonomies {
 			'show_in_graphql'       => true,
 			'graphql_single_name'   => $post_type,
 			'graphql_plural_name'   => $post_type_plural,
+			'capability_type'       => [$post_type, $post_type_plural],
 			'show_in_rest'          => true,
 			'rest_base'             => $post_type,
 			'rest_controller_class' => 'WP_REST_Posts_Controller',
 		];
+
+		// Merge $args with $args_override. $args_override overwrites $args if present.
+		$args = array_merge( $args, $args_override );
 
 		register_post_type(
 			$post_type,

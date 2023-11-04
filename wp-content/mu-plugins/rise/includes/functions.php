@@ -541,3 +541,33 @@ function rise_get_password_reset_email_subject( $user_data ) {
 	 */
 	return apply_filters( 'retrieve_password_title', $title, $user_data->user_login, $user_data );
 }
+
+/**
+ * Delete a post item authored by the current user.
+ *
+ * @param  int     $id      The post ID.
+ * @param  int     $user_id The requesting user's ID.
+ * @return boolean True if the post was deleted, false otherwise.
+ */
+function rise_delete_own_allowed_post_item( $id, $user_id ) {
+	$allowed_post_types = ['credit', 'saved_search'];
+
+	$post_type = get_post_type( $id );
+	$author_id = get_post_field( 'post_author', $id );
+
+	if ( $author_id !== $user_id ) {
+		return false;
+	}
+
+	if ( !in_array( $post_type, $allowed_post_types, true ) ) {
+		return false;
+	}
+
+	$result = wp_delete_post( $id, false );
+
+	if ( $result instanceof WP_Post ) {
+		return true;
+	}
+
+	return false;
+}

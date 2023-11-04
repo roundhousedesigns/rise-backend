@@ -18,25 +18,37 @@ class Rise_Users {
 	 */
 	public function add_roles() {
 		$role = get_role( 'crew-member' );
-		$role->add_cap( 'edit_credits' );
+
 		$role->add_cap( 'read_credits' );
-		$role->add_cap( 'delete_credits' );
-		$role->add_cap( 'edit_published_credits' );
 		$role->add_cap( 'publish_credits' );
+		$role->add_cap( 'edit_credits' );
+		$role->add_cap( 'edit_published_credits' );
+		$role->add_cap( 'delete_credits' );
 		$role->add_cap( 'delete_published_credits' );
+		$role->add_cap( 'read_saved_searches' );
+		$role->add_cap( 'publish_saved_searches' );
+		$role->add_cap( 'edit_saved_searches' );
+		$role->add_cap( 'edit_published_saved_searches' );
+		$role->add_cap( 'delete_saved_searches' );
+		$role->add_cap( 'delete_published_saved_searches' );
 
 		$roles = [
 			'crew-member' => [
-				'read'                     => true,
-				'list_users'               => true,
-				'upload_files'             => true,
-				'unfiltered_upload'        => true,
-				'edit_files'               => true,
-				'edit_credits'             => true,
-				'read_credits'             => true,
-				'edit_published_credits'   => true,
-				'publish_credits'          => true,
-				'delete_published_credits' => true,
+				'read'                            => true,
+				'list_users'                      => true,
+				'unfiltered_upload'               => true,
+				'upload_files'                    => true,
+				'edit_files'                      => true,
+				'read_credits'                    => true,
+				'publish_credits'                 => true,
+				'edit_credits'                    => true,
+				'edit_published_credits'          => true,
+				'delete_published_credits'        => true,
+				'read_saved_searches'             => true,
+				'publish_saved_searches'          => true,
+				'edit_saved_searches'             => true,
+				'edit_published_saved_searches'   => true,
+				'delete_published_saved_searches' => true,
 			],
 		];
 
@@ -315,8 +327,8 @@ class Rise_Users {
 	 * Generates a checkbox list of terms for a given taxonomy.
 	 *
 	 * @param  WP_User $user
-	 * @param  string $taxonomy
-	 * @param  string $name
+	 * @param  string  $taxonomy
+	 * @param  string  $name
 	 * @return void
 	 */
 	private function user_profile_taxonomy_term_checkboxes( $user, $taxonomy, $name ) {
@@ -333,6 +345,7 @@ class Rise_Users {
 		);
 
 		wp_nonce_field( 'save_' . $taxonomy, $taxonomy . '_nonce' );
+
 		?>
 
 		<!-- Add a new section to the user profile edit screen for the given taxonomy -->
@@ -406,40 +419,24 @@ class Rise_Users {
 	}
 
 	/**
-	 * Save a search to the user's search history.
+	 * Save or update a saved search entry.
 	 *
-	 * @param  int    $user_id         The user ID.
-	 * @param  array  $search_params   The search parameters.
-	 * @param  string $old_search_name The old saved search name (default: '')
-	 * @return array  The updated search history.
+	 * @param  int          $user_id         The user ID.
+	 * @param  array        $search_params   The search parameters.
+	 * @param  string       $new_search_name The new saved search name (title)
+	 * @param  int          $saved_search_id (default: 0) The saved search ID.
+	 * @return int|WP_Error The post ID on success, or WP_Error on failure.
 	 */
-	public static function save_user_saved_searches( $user_id, $search_params, $old_search_name = '' ) {
-		// Get user pod
-		$pod = pods( 'user', $user_id );
+	public static function update_saved_search( $user_id, $search_params, $new_search_name, $saved_search_id = 0 ) {
+		$params = [
+			'ID'           => $saved_search_id,
+			'post_title'   => $new_search_name,
+			'post_type'    => 'saved_search',
+			'post_status'  => 'publish',
+			'post_author'  => $user_id,
+			'post_content' => wp_json_encode( $search_params ),
+		];
 
-		// Get saved_searches pod field and convert to an array
-		$saved_searches = json_decode( $pod->field( 'saved_searches' ), true );
-
-		// If saved_searches is empty, set it to an empty array
-		if ( !$saved_searches ) {
-			$saved_searches = [];
-		}
-
-		// Look for an existing saved search with the same name. If one exists, change its name to the new name.
-		if ( $old_search_name ) {
-			$search_count = count( $saved_searches );
-			for ( $i = 0; $i < $search_count; $i++ ) {
-				if ( $saved_searches[$i]['searchName'] === $old_search_name ) {
-					$saved_searches[$i]['searchName'] = $search_params['searchName'];
-				}
-			}
-		} else {
-			array_unshift( $saved_searches, $search_params );
-		}
-
-		// Update the user pod with the new saved_searches
-		$pod->save( 'saved_searches', wp_json_encode( $saved_searches ) );
-
-		return $saved_searches;
+		return wp_insert_post( $params, true, true );
 	}
 }
