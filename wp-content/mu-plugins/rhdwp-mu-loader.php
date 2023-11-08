@@ -6,8 +6,9 @@
  * Description: Loads plugins in directories from the `mu-plugins` folder.
  * Version: 1.0.0
  *
+ * PHP version 8.0
+ *
  * @package RHD
- * @version 1.0.0
  */
 
 $wpmu_plugin_dir = opendir( WPMU_PLUGIN_DIR );
