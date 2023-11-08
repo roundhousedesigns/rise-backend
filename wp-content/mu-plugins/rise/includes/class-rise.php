@@ -91,12 +91,25 @@ class Rise {
 	/**
 	 * Magic getter for our object.
 	 *
-	 * @param  mixed  $property
+	 * @param  string $property
 	 * @return void
 	 */
 	public function __get( $property ) {
 		if ( property_exists( $this, $property ) ) {
-			return $this->$property;
+			return $this->property;
+		}
+	}
+
+	/**
+	 * Magic setter for our object.
+	 *
+	 * @param  string $property
+	 * @param  mixed  $value
+	 * @return void
+	 */
+	public function __set( $property, $value ) {
+		if ( property_exists( $this, $property ) ) {
+			$this->property = $value;
 		}
 	}
 
@@ -399,7 +412,7 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_admin_hooks() {
-		$plugin_data = new Rise_Admin( $this->__get( $plugin_name ), $this->__get( $version ) );
+		$plugin_data = new Rise_Admin( $this->plugin_name, $this->version );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
@@ -426,7 +439,7 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_public_hooks() {
-		$plugin_data = new Rise_Public( $this->__get( $plugin_name ), $this->__get( $version ) );
+		$plugin_data = new Rise_Public( $this->plugin_name, $this->version );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
