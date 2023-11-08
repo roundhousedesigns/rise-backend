@@ -89,6 +89,18 @@ class Rise {
 	}
 
 	/**
+	 * Magic getter for our object.
+	 *
+	 * @param  mixed  $property
+	 * @return void
+	 */
+	public function __get( $property ) {
+		if ( property_exists( $this, $property ) ) {
+			return $this->$property;
+		}
+	}
+
+	/**
 	 * Load the required dependencies for this plugin.
 	 *
 	 * Include the following files that make up the plugin:
@@ -387,7 +399,7 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_admin_hooks() {
-		$plugin_data = new Rise_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Rise_Admin( $this->__get( $plugin_name ), $this->__get( $version ) );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
@@ -414,7 +426,7 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_public_hooks() {
-		$plugin_data = new Rise_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Rise_Public( $this->__get( $plugin_name ), $this->__get( $version ) );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
@@ -428,39 +440,5 @@ class Rise {
 	 */
 	public function run() {
 		$this->loader->run();
-	}
-
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @since     0.1.0
-	 *
-	 * @return string The name of the plugin.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @since     0.1.0
-	 *
-	 * @return Rise_Loader Orchestrates the hooks of the plugin.
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since     0.1.0
-	 *
-	 * @return string The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
 	}
 }
