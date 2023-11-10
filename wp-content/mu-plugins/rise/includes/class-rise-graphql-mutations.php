@@ -23,18 +23,30 @@ class Rise_GraphQL_Mutations {
 	 * @return void
 	 */
 	public function register_mutations() {
-		$this->register_profile_mutations();
+		$this->register_mutation__registerUserWithReCaptcha();
+		$this->register_mutation__loginWithCookiesAndReCaptcha();
+		$this->register_mutation__sendPasswordResetEmailWithReCaptcha();
+		$this->register_mutation__changeEmail();
+		$this->register_mutation__changePassword();
+		$this->register_mutation__changeProfileSlug();
+		$this->register_mutation__updateProfile();
+		$this->register_mutation__clearProfileField();
+		$this->register_mutation__updateOrCreateCredit();
+		$this->register_mutation__updateCreditOrder();
+		$this->register_mutation__deleteOwnCredit();
+		$this->register_mutation__deleteOwnSavedSearch();
+		$this->register_mutation__uploadFile();
+		$this->register_mutation__toggleDisableProfile();
+		$this->register_mutation__updateBookmarkedProfiles();
+		$this->register_mutation__updateOrCreateSavedSearch();
 	}
 
 	/**
-	 * Register user mutations.
+	 * Create a user with reCAPTCHA verification.
 	 *
-	 * @return int The user ID on success, `0` on failure.
+	 * @return void
 	 */
-	protected function register_profile_mutations() {
-		/**
-		 * Create a user with reCAPTCHA verification.
-		 */
+	protected function register_mutation__registerUserWithReCaptcha() {
 		register_graphql_mutation(
 			'registerUserWithReCaptcha',
 			[
@@ -136,7 +148,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
+	/**
+	 * Logs in a user with WordPress cookies.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__loginWithCookiesAndReCaptcha() {
 		register_graphql_mutation(
 			'loginWithCookiesAndReCaptcha',
 			[
@@ -217,10 +236,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Send a password reset email to a user.
-		 */
+	/**
+	 * Send a password reset email to a user.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__sendPasswordResetEmailWithReCaptcha() {
 		register_graphql_mutation(
 			'sendPasswordResetEmailWithReCaptcha',
 			[
@@ -310,10 +333,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Change a user's email address
-		 */
+	/**
+	 * Change a user's email address.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__changeEmail() {
 		register_graphql_mutation(
 			'changeEmail',
 			[
@@ -389,10 +416,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Change a user's password
-		 */
+	/**
+	 * Change a user's password.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__changePassword() {
 		register_graphql_mutation(
 			'changePassword',
 			[
@@ -463,10 +494,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Change a user's password
-		 */
+	/**
+	 * Change a user's profile slug.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__changeProfileSlug() {
 		register_graphql_mutation(
 			'changeProfileSlug',
 			[
@@ -542,10 +577,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Update a user's profile.
-		 */
+	/**
+	 * Update a user's profile.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__updateProfile() {
 		register_graphql_mutation(
 			'updateProfile',
 			[
@@ -583,10 +622,14 @@ class Rise_GraphQL_Mutations {
 				},
 			],
 		);
+	}
 
-		/**
-		 * Clear a user's specified profile field set up in Pods.
-		 */
+	/**
+	 * Clear a user's specified profile field set up in Pods.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__clearProfileField() {
 		register_graphql_mutation(
 			'clearProfileField',
 			[
@@ -632,10 +675,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Update or create a Credit.
-		 */
+	/**
+	 * Update or create a Credit.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__updateOrCreateCredit() {
 		register_graphql_mutation(
 			'updateOrCreateCredit',
 			[
@@ -673,10 +720,14 @@ class Rise_GraphQL_Mutations {
 				},
 			],
 		);
+	}
 
-		/**
-		 * Update a user's credit order.
-		 */
+	/**
+	 * Update a user's credit order.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__updateCreditOrder() {
 		register_graphql_mutation(
 			'updateCreditOrder',
 			[
@@ -716,10 +767,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Delete a user's credit.
-		 */
+	/**
+	 * Delete a user's credit.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__deleteOwnCredit() {
 		register_graphql_mutation(
 			'deleteOwnCredit',
 			[
@@ -770,10 +825,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Delete a user's saved search.
-		 */
+	/**
+	 * Delete a user's saved search.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__deleteOwnSavedSearch() {
 		register_graphql_mutation(
 			'deleteOwnSavedSearch',
 			[
@@ -821,10 +880,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Upload a file.
-		 */
+	/**
+	 * Upload a file.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__uploadFile() {
 		register_graphql_mutation(
 			'uploadFile', [
 				'inputFields'         => [
@@ -882,10 +945,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Toggle a user's disable_profile option.
-		 */
+	/**
+	 * Toggle a user's disable_profile option.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__toggleDisableProfile() {
 		register_graphql_mutation(
 			'toggleDisableProfile',
 			[
@@ -916,10 +983,14 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
+	}
 
-		/**
-		 * Update a user's bookmarked profiles.
-		 */
+	/**
+	 * Update a user's bookmarked profiles.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__updateBookmarkedProfiles() {
 		register_graphql_mutation(
 			'updateBookmarkedProfiles',
 			[
@@ -978,10 +1049,14 @@ class Rise_GraphQL_Mutations {
 				},
 			],
 		);
+	}
 
-		/**
-		 * Save a search filter set.
-		 */
+	/**
+	 * Save a search filter set.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__updateOrCreateSavedSearch() {
 		register_graphql_mutation(
 			'updateOrCreateSavedSearch',
 			[
@@ -1033,7 +1108,7 @@ class Rise_GraphQL_Mutations {
 				},
 			]
 		);
-
-		// TODO Add Delete Search Filter here.
 	}
+
+	// TODO Add Delete Search Filter here.
 }

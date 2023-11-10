@@ -16,6 +16,8 @@ class Rise_Types {
 	 *
 	 * @access    private
 	 * @since     0.1.0
+	 *
+	 * @return void
 	 */
 	public function credit_init() {
 		Rise_Taxonomies::register_post_type( 'credit', 'credits', 'Credit', 'Credits', 'dashicons-star-half' );

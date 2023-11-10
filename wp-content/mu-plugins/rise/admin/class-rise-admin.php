@@ -127,7 +127,7 @@ class Rise_Admin {
 			'rise-admin'
 		);
 
-		// Add a section for the settings
+		// Example: Add a section for the settings
 		// add_settings_section(
 		// 	'rise_directory_settings_section',
 		// 	'RISE Directory Settings',
@@ -135,7 +135,7 @@ class Rise_Admin {
 		// 	'rise-admin'
 		// );
 
-		// Add a field for 'rise_frontend_url' in the section
+		// Example: Add a field for 'rise_frontend_url' in the section
 		/**
 		 * Sample setting: Frontend URL
 		 */
@@ -163,13 +163,9 @@ class Rise_Admin {
 	 */
 	public function rise_directory_stats_section_callback() {
 		echo wp_kses_post( self::section_html_start() );
-
 		echo wp_kses_post( self::crew_member_stats__basic() );
-
 		echo wp_kses_post( self::crew_member_stats__detailed() );
-
 		echo wp_kses_post( self::dev_info() );
-
 		echo wp_kses_post( self::section_html_end() );
 	}
 

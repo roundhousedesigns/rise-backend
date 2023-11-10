@@ -17,12 +17,12 @@
 	border-collapse: collapse;
 	margin: 2em 0;
 	min-width: 400px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 0 20px rgba(0 0 0 15%);
 }
 
 .rise-admin table thead tr {
 	background-color: #274f42;
-	color: #ffffff;
+	color: #fff;
 	text-align: left;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .rise-admin tbody tr {
-	border-bottom: 1px solid #dddddd;
+	border-bottom: 1px solid #ddd;
 }
 
 .rise-admin tbody tr:nth-of-type(even) {
