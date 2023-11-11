@@ -74,14 +74,14 @@ function rise_get_attachment_id_by_url( $url ) {
 	$file['error']    = '';
 	$file['size']     = filesize( $file['tmp_name'] );
 
-	$id = media_handle_sideload( $file, 0 );
+	$attachment_id = media_handle_sideload( $file, 0 );
 
-	if ( is_wp_error( $id ) ) {
+	if ( is_wp_error( $attachment_id ) ) {
 		unlink( $file['tmp_name'] );
-		throw new WP_Error( 'attachment_processing_error', $id->get_error_message() );
+		throw new WP_Error( 'attachment_processing_error', esc_html( $attachment_id->get_error_message() ) );
 	}
 
-	return $id;
+	return $attachment_id;
 }
 
 /**
@@ -109,9 +109,10 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 		// Otherwise, strip any users from $user_ids that are not also in $users_in_term.
 		if ( !$user_ids ) {
 			$user_ids = $users_in_term;
-		} else {
-			$user_ids = array_intersect( $user_ids, $users_in_term );
+			continue;
 		}
+
+		$user_ids = array_intersect( $user_ids, $users_in_term );
 	}
 
 	// Filter out IDs from the $user_ids array that are not also in the $authors array
