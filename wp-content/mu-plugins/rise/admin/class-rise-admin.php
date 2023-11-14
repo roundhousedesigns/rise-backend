@@ -155,18 +155,18 @@ class Rise_Admin {
 	 * @return void
 	 */
 	public function rise_directory_settings_section_callback() {
-		echo '<p>Customize the RISE Directory plugin settings.</p>';
+		printf( wp_kses( '<p>Customize the RISE Directory plugin settings.</p>', ['p' => []] ) );
 	}
 
 	/**
 	 * Callback function to render the stats section.
 	 */
 	public function rise_directory_stats_section_callback() {
-		echo wp_kses_post( self::section_html_start() );
-		echo wp_kses_post( self::crew_member_stats__basic() );
-		echo wp_kses_post( self::crew_member_stats__detailed() );
-		echo wp_kses_post( self::dev_info() );
-		echo wp_kses_post( self::section_html_end() );
+		printf( '%s', self::section_html_start() );
+		printf( '%s', self::crew_member_stats__basic() );
+		printf( '%s', self::crew_member_stats__detailed() );
+		printf( '%s', self::dev_info() );
+		printf( '%s', self::section_html_end() );
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Rise_Admin {
 	 * @return void
 	 */
 	public function render_rise_stats_widget_content() {
-		echo wp_kses_post( self::crew_member_stats__basic() );
+		printf( '%s', self::crew_member_stats__basic() );
 
 		printf( '<p><a href="%s">Details statistics</a></p>', esc_url( admin_url( 'admin.php?page=rise-admin' ) ) );
 	}
@@ -271,7 +271,7 @@ class Rise_Admin {
 		}
 
 		// Get all non-author email addresses, first names (user meta), and last names (user meta)
-		$non_authors_data = "Email,First Name,Last Name\n";
+		// $non_authors_data = "Email,First Name,Last Name\n";
 		foreach ( $non_authors as $non_author ) {
 			$data = [
 				'email'      => '"' . $non_author->user_email . '"',
@@ -279,7 +279,7 @@ class Rise_Admin {
 				'last_name'  => '"' . get_user_meta( $non_author->ID, 'last_name', true ) . '"',
 			];
 
-			$non_authors_data .= implode( ',', $data ) . "\n";
+			// $non_authors_data .= implode( ',', $data ) . "\n";
 		}
 
 		// Use the find() method to query users
@@ -352,10 +352,7 @@ class Rise_Admin {
 				$label = $data['label'];
 				$slug  = $data['slug'];
 
-				$output .= '<table>';
-				$output .= '<caption>' . $label . '</caption>';
-				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
-				$output .= '<tbody>';
+				$output .= self::generate_table_open( $label );
 
 				// Get all term IDs for the `$datapoint` taxonomy
 				$taxonomy_plural = 'skills';
@@ -382,21 +379,7 @@ class Rise_Admin {
 					];
 				}
 
-				// Sort the data array by the "count" value in descending order by default
-				usort( $data, function ( $a, $b ) {
-					return $b['count'] - $a['count'];
-				} );
-
-				foreach ( $data as $datum ) {
-					$output .= sprintf(
-						'<tr><td>%s</td><td>%s</td></tr>',
-						$datum['name'],
-						$datum['count']
-					);
-				}
-
-				$output .= '</tbody>';
-				$output .= '</table>';
+				$output .= self::generate_table_close( $data );
 			}
 		}
 
@@ -406,10 +389,7 @@ class Rise_Admin {
 				$label = $data['label'];
 				$slug  = $data['slug'];
 
-				$output .= '<table>';
-				$output .= '<caption>' . $label . '</caption>';
-				$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
-				$output .= '<tbody>';
+				$output .= self::generate_table_open( $label );
 
 				$terms = get_terms( [
 					'taxonomy'   => $slug,
@@ -428,21 +408,7 @@ class Rise_Admin {
 					];
 				}
 
-				// Sort the data array by the "count" value in descending order by default
-				usort( $data, function ( $a, $b ) {
-					return $b['count'] - $a['count'];
-				} );
-
-				foreach ( $data as $datum ) {
-					$output .= sprintf(
-						'<tr><td>%s</td><td>%s</td></tr>',
-						$datum['name'],
-						$datum['count']
-					);
-				}
-
-				$output .= '</tbody>';
-				$output .= '</table>';
+				$output .= self::generate_table_close( $data );
 			}
 		}
 
@@ -479,6 +445,49 @@ class Rise_Admin {
 	 */
 	public function rise_frontend_url_callback() {
 		$value = get_option( 'rise_frontend_url' );
-		echo '<input type="text" name="rise_frontend_url" value="' . esc_attr( $value ) . '" />';
+		printf( '<input type="text" name="rise_frontend_url" value="%s" />', esc_attr( $value ) );
+	}
+
+	/**
+	 * Generate the opening HTML for the stats tables.
+	 *
+	 * @param  string $label
+	 * @return void
+	 */
+	private static function generate_table_open( $label ) {
+		$output = '<table>';
+		$output .= '<caption>' . $label . '</caption>';
+		$output .= '<thead><tr><th style="text-align: left;">Label</th><th class="sort" data-sort-dir="desc">Count</th></tr></thead>';
+		$output .= '<tbody>';
+
+		return $output;
+	}
+
+	/**
+	 * Generate the closing HTML for the stats tables.
+	 *
+	 * @param  array  $data The data to be output in the table.
+	 * @return void
+	 */
+	private static function generate_table_close( $data ) {
+		// Sort the data array by the "count" value in descending order by default
+		usort( $data, function ( $a, $b ) {
+			return $b['count'] - $a['count'];
+		} );
+
+		$output = '';
+
+		foreach ( $data as $datum ) {
+			$output .= sprintf(
+				'<tr><td>%s</td><td>%s</td></tr>',
+				$datum['name'],
+				$datum['count']
+			);
+		}
+
+		$output .= '</tbody>';
+		$output .= '</table>';
+
+		return $output;
 	}
 }

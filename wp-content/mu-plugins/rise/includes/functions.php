@@ -392,10 +392,7 @@ function rise_get_all_users_with_taxonomy_terms( $taxonomy_arg, $term_ids ) {
 		$csv[] = sprintf( '"%s %s",%s', esc_textarea( $first_name ), esc_textarea( $last_name ), esc_html( $user->user_email ) );
 	}
 
-	printf( '<pre>%s</pre>', esc_textarea( implode( "\n", $csv ) ) );
-
-	echo '<br /><br />';
-
+	printf( '<pre>%s</pre><br /><br />', esc_textarea( implode( "\n", $csv ) ) );
 	printf( 'Total: %d', count( $users ) );
 }
 

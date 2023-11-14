@@ -96,7 +96,7 @@ class Rise_GraphQL_Mutations {
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'bad_recaptcha_token.', 'rise' ) );
+						throw new UserError( esc_html__( 'bad_recaptcha_token.', 'rise' ) );
 					}
 
 					// Set the user's slug (user_nicename)
@@ -120,9 +120,9 @@ class Rise_GraphQL_Mutations {
 						$error_code = $user_id->get_error_code();
 
 						if ( !empty( $error_code ) ) {
-							throw new UserError( $error_code );
+							throw new UserError( esc_html( $error_code ) );
 						} else {
-							throw new UserError( __( 'unspecified_create_user_error', 'rise' ) );
+							throw new UserError( esc_html__( 'unspecified_create_user_error', 'rise' ) );
 						}
 					}
 
@@ -934,7 +934,7 @@ class Rise_GraphQL_Mutations {
 					if ( $attachment_id && $user_id ) {
 						$pod = pods( 'user', $user_id );
 
-						$update_fields[$field] = $attachment_id;
+						$update_fields = [$field => $attachment_id];
 
 						$pod->save( $update_fields );
 
@@ -1025,7 +1025,7 @@ class Rise_GraphQL_Mutations {
 					$bookmarked_ids = rise_pluck_profile_ids( $bookmarked_profiles );
 
 					if ( !isset( $input['bookmarkedProfiles'] ) ) {
-						throw new WP_Error( 'no_profile_id', __( 'No profile IDs provided.', 'rise' ) );
+						throw new WP_Error( esc_html( 'no_profile_id' ), esc_html__( 'No profile IDs provided.', 'rise' ) );
 					}
 
 					// Sanitize the input.
@@ -1044,7 +1044,7 @@ class Rise_GraphQL_Mutations {
 							'updatedBookmarkedProfiles' => $updated_profile_ids,
 						];
 					} else {
-						throw new WP_Error( 'bookmarked_profile_toggle_failed', __( 'The profile could not be toggled.', 'rise' ) );
+						throw new WP_Error( esc_html( 'bookmarked_profile_toggle_failed' ), __( 'The profile could not be toggled.', 'rise' ) );
 					}
 				},
 			],

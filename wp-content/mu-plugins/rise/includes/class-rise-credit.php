@@ -1,6 +1,6 @@
 <?php
 /**
- * The Credit class.
+ * The credit class.
  *
  * @package    Rise
  * @subpackage Rise/includes
@@ -12,103 +12,94 @@
 
 class Rise_Credit {
 	/**
-	 * The user's ID.
+	 * The credit's ID.
 	 *
-	 * @var int $id The user ID.
+	 * @var int $id The credit post ID.
 	 * @since 0.1.0
 	 */
-	public $id;
+	public $credit_id;
 
 	/**
-	 * The Credit's display index.
+	 * The credit's display index.
 	 *
-	 * @var int $index The Credit's display index.
+	 * @var int $index The credit's display index.
 	 * @since 0.2.0
 	 */
 	private $index;
 
 	/**
-	 * The Credit title.
+	 * The credit title.
 	 *
-	 * @var array $title The Credit title.
+	 * @var array $title The credit title.
 	 * @since 0.1.0
 	 */
 	private $title;
 	/**
-	 * The Credit job title.
+	 * The credit job title.
 	 *
-	 * @var array $title The Credit title.
+	 * @var array $title The credit title.
 	 * @since 0.1.0
 	 */
 	private $job_title;
 
 	/**
-	 * The Credit location.
+	 * The credit location.
 	 *
-	 * @var array $title The Credit title.
+	 * @var array $title The credit title.
 	 * @since 0.1.0
 	 */
 	private $job_location;
 
 	/**
-	 * The Credit's venue meta field.
+	 * The credit's venue meta field.
 	 *
-	 * @var string $venue The Credit's venue meta field.
+	 * @var string $venue The credit's venue meta field.
 	 * @since 0.1.0
 	 */
 	private $venue;
 
 	/**
-	 * The Credit's year meta field.
+	 * The credit's work start meta field.
 	 *
-	 * @var string $year The Credit's year meta field.
-	 * @deprecated 0.2.0
-	 * @since 0.1.0
-	 */
-	private $year;
-
-	/**
-	 * The Credit's work start meta field.
-	 *
-	 * @var string $year The Credit's work_start meta field.
+	 * @var string $year The credit's work_start meta field.
 	 * @since 0.1.0
 	 */
 	private $work_start;
 
 	/**
-	 * The Credit's work end meta field.
+	 * The credit's work end meta field.
 	 *
-	 * @var string $year The Credit's work_end meta field.
+	 * @var string $year The credit's work_end meta field.
 	 * @since 0.1.0
 	 */
 	private $work_end;
 
 	/**
-	 * The Credit's currently working meta field.
+	 * The credit's currently working meta field.
 	 *
-	 * @var boolean $year The Credit's work_current meta field.
+	 * @var boolean $year The credit's work_current meta field.
 	 * @since 0.1.0
 	 */
 	private $work_current;
 
 	/**
-	 * The Credit's intern meta field.
+	 * The credit's intern meta field.
 	 *
-	 * @var boolean $intern The Credit's intern meta field.
+	 * @var boolean $intern The credit's intern meta field.
 	 * @since 1.0.9.2
 	 */
 	private $intern;
 
 	/**
-	 * The Credit's fellow meta field.
+	 * The credit's fellow meta field.
 	 *
-	 * @var boolean $fellow The Credit's fellow meta field.
+	 * @var boolean $fellow The credit's fellow meta field.
 	 * @since 1.0.9.2
 	 */
 	private $fellow;
 
 	/**
-	 * The Credit's 2nd-level `position` taxonomy terms.
+	 * The credit's 2nd-level `position` taxonomy terms.
 	 *
 	 * @var int[] $jobs The credit's `position` IDs.
 	 * @since 1.0.9
@@ -116,7 +107,7 @@ class Rise_Credit {
 	private $departments;
 
 	/**
-	 * The Credit's 2nd-level `position` taxonomy terms.
+	 * The credit's 2nd-level `position` taxonomy terms.
 	 *
 	 * @var int[] $jobs The credit's `position` IDs.
 	 * @since 0.1.0
@@ -124,7 +115,7 @@ class Rise_Credit {
 	private $jobs;
 
 	/**
-	 * The Credit's `skill` taxonomy terms.
+	 * The credit's `skill` taxonomy terms.
 	 *
 	 * @var int[] $credits The credit's credit IDs.
 	 * @since 0.1.0
@@ -140,7 +131,7 @@ class Rise_Credit {
 	 * @return void
 	 */
 	public function __construct( $data ) {
-		$this->id           = $data['isNew'] ? 0 : $data['id'];
+		$this->credit_id    = $data['isNew'] ? 0 : $data['id'];
 		$this->index        = $data['index'];
 		$this->title        = $data['title'];
 		$this->job_title    = $data['jobTitle'];
@@ -156,23 +147,29 @@ class Rise_Credit {
 		$this->skills       = $data['skills'];
 	}
 
-	private function set_id( $id ) {
-		$this->id = $id;
+	/**
+	 * Setter for the credit's ID.
+	 *
+	 * @param  int    $credit_id
+	 * @return void
+	 */
+	private function set_id( $credit_id ) {
+		$this->credit_id = $credit_id;
 	}
 
 	/**
 	 * Update the user's profile data.
 	 *
-	 * @return int|WP_Error The user ID on success. WP_Error on failure.
+	 * @return int|WP_Error The credit post ID on success. WP_Error on failure.
 	 */
 	public function update_credit() {
-		$credit = $this->update_base();
+		$credit_id = $this->update_base();
 
-		if ( is_wp_error( $credit ) ) {
-			return $credit->get_error_message();
+		if ( is_wp_error( $credit_id ) ) {
+			return $credit_id->get_error_message();
 		}
 
-		$this->set_id( $credit );
+		$this->set_id( $credit_id );
 
 		$meta   = $this->update_meta();
 		$jobs   = $this->update_positions();
@@ -187,7 +184,7 @@ class Rise_Credit {
 			return $skills->get_error_message();
 		}
 
-		return $credit;
+		return $credit_id;
 	}
 
 	/**
@@ -208,14 +205,12 @@ class Rise_Credit {
 			'post_type'   => 'credit',
 		];
 
-		if ( 0 === $this->id ) {
-			$result = wp_insert_post( $update_post_args );
-		} else {
-			$update_post_args['ID'] = $this->id;
-			$result                 = wp_update_post( $update_post_args );
+		if ( 0 === $this->credit_id ) {
+			return wp_insert_post( $update_post_args );
 		}
 
-		return $result;
+		$update_post_args['ID'] = $this->credit_id;
+		return wp_update_post( $update_post_args );
 	}
 
 	/**
@@ -225,7 +220,7 @@ class Rise_Credit {
 	 */
 	protected function update_meta() {
 		// Get the user's pod.
-		$pod = pods( 'credit', $this->id );
+		$pod = pods( 'credit', $this->credit_id );
 
 		// Update the credit's pod.
 		$update_fields = [
@@ -252,7 +247,7 @@ class Rise_Credit {
 	 */
 	protected function update_positions() {
 		$positions = array_merge( $this->departments, $this->jobs );
-		return wp_set_object_terms( $this->id, array_map( 'intval', $positions ), 'position', false );
+		return wp_set_object_terms( $this->credit_id, array_map( 'intval', $positions ), 'position', false );
 	}
 
 	/**
@@ -261,7 +256,7 @@ class Rise_Credit {
 	 * @return int[]|WP_Error The term IDs on success. WP_Error on failure.
 	 */
 	protected function update_skills() {
-		return wp_set_object_terms( $this->id, array_map( 'intval', $this->skills ), 'skill', false );
+		return wp_set_object_terms( $this->credit_id, array_map( 'intval', $this->skills ), 'skill', false );
 	}
 
 	/**
@@ -271,7 +266,7 @@ class Rise_Credit {
 	 */
 	public function update_index() {
 		// Get the user's pod.
-		$pod = pods( 'credit', $this->id );
+		$pod = pods( 'credit', $this->credit_id );
 
 		// Update the credit's pod.
 		$update_fields = [
@@ -289,7 +284,7 @@ class Rise_Credit {
 	 */
 	public function prepare_credit_for_graphql() {
 		return [
-			'databaseId'  => $this->id,
+			'databaseId'  => $this->credit_id,
 			'title'       => $this->title,
 			'index'       => $this->index,
 			'jobTitle'    => $this->job_title,
