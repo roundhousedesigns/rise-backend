@@ -96,7 +96,7 @@ class Rise_GraphQL_Mutations {
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( esc_attr( 'bad_recaptcha_token.' ) );
+						throw new UserError( esc_attr( 'bad_recaptcha_token' ) );
 					}
 
 					// Set the user's slug (user_nicename)
@@ -121,9 +121,9 @@ class Rise_GraphQL_Mutations {
 
 						if ( !empty( $error_code ) ) {
 							throw new UserError( esc_html( $error_code ) );
-						} else {
-							throw new UserError( esc_attr( 'unspecified_create_user_error' ) );
 						}
+
+						throw new UserError( esc_attr( 'unspecified_create_user_error' ) );
 					}
 
 					/**
@@ -191,14 +191,14 @@ class Rise_GraphQL_Mutations {
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( __( 'no_recaptcha_token.', 'rise' ) );
+						throw new UserError( esc_attr( 'no_recaptcha_token' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'bad_recaptcha_token', 'rise' ) );
+						throw new UserError( esc_attr( 'bad_recaptcha_token' ) );
 					}
 
 					// Prepare credentials.
@@ -229,7 +229,7 @@ class Rise_GraphQL_Mutations {
 					$user = wpgraphql_cors_signon( $credentials );
 
 					if ( is_wp_error( $user ) ) {
-						throw new UserError( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'bad_login' );
+						throw new UserError( esc_html( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'bad_login' ) );
 					}
 
 					return ['status' => 'SUCCESS'];
@@ -379,7 +379,7 @@ class Rise_GraphQL_Mutations {
 					$user = wp_authenticate( $input['username'], $input['password'] );
 
 					if ( is_wp_error( $user ) ) {
-						throw new UserError( $user->get_error_code() );
+						throw new UserError( esc_html( $user->get_error_code() ) );
 					}
 
 					// Update the user's password.
@@ -462,7 +462,7 @@ class Rise_GraphQL_Mutations {
 					$user = wp_authenticate( $input['username'], $input['currentPassword'] );
 
 					if ( is_wp_error( $user ) ) {
-						throw new UserError( $user->get_error_code() );
+						throw new UserError( esc_html( $user->get_error_code() ) );
 					}
 
 					// Update the user's password.
@@ -567,7 +567,7 @@ class Rise_GraphQL_Mutations {
 					$result              = wp_update_user( $user );
 
 					if ( is_wp_error( $result ) ) {
-						throw new UserError( $result->get_error_code() );
+						throw new UserError( esc_html( $result->get_error_code() ) );
 					}
 
 					return [
@@ -1043,9 +1043,9 @@ class Rise_GraphQL_Mutations {
 						return [
 							'updatedBookmarkedProfiles' => $updated_profile_ids,
 						];
-					} else {
-						throw new WP_Error( esc_html( 'bookmarked_profile_toggle_failed' ), __( 'The profile could not be toggled.', 'rise' ) );
 					}
+
+					throw new WP_Error( esc_html( 'bookmarked_profile_toggle_failed' ), __( 'The profile could not be toggled.', 'rise' ) );
 				},
 			],
 		);
@@ -1099,7 +1099,7 @@ class Rise_GraphQL_Mutations {
 					$result = Rise_Users::update_saved_search( $input['userId'], $input['filterSet'], $input['title'], $saved_search_id );
 
 					if ( is_wp_error( $result ) ) {
-						throw new UserError( $result->get_error_code() );
+						throw new UserError( esc_html( $result->get_error_code() ) );
 					}
 
 					return [

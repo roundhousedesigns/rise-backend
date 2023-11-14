@@ -240,8 +240,9 @@ class Rise_GraphQL_Queries {
 			$users[$id] = 0;
 		}
 
-		$positions = [];
-		$skills    = [];
+		$positions    = [];
+		$skills       = [];
+		$_departments = [];
 		/**
 		 * Split positions into departments and jobs. If no jobs are present,
 		 * we'll score based on departments.
@@ -255,16 +256,12 @@ class Rise_GraphQL_Queries {
 				if ( $position->parent ) {
 					$positions[] = $position->term_id;
 				} else {
-					$departments[] = $position->term_id;
+					$_departments[] = $position->term_id;
 				}
 			}
 		}
 
-		if ( !empty( $positions ) ) {
-			$positions = $positions;
-		} else {
-			$positions = $departments;
-		}
+		$positions = !empty( $positions ) ? $positions : $_departments;
 
 		// Score candidates based on positions, skills, and filters.
 		foreach ( $users as $user_id => $score ) {

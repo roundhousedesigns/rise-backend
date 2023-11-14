@@ -206,7 +206,7 @@ class Rise_Admin {
 	 * @return void
 	 */
 	public function render_rise_stats_widget_content() {
-		printf( '%s', self::crew_member_stats__basic() );
+		printf( '%s', wp_kses_post( self::crew_member_stats__basic() ) );
 
 		printf( '<p><a href="%s">Details statistics</a></p>', esc_url( admin_url( 'admin.php?page=rise-admin' ) ) );
 	}
@@ -271,17 +271,23 @@ class Rise_Admin {
 			$non_authors[] = $crew_member;
 		}
 
-		// Get all non-author email addresses, first names (user meta), and last names (user meta)
+		/**
+		 * Get all non-author email addresses, first names (user meta), and last names (user meta)
+		 */
 		// $non_authors_data = "Email,First Name,Last Name\n";
-		foreach ( $non_authors as $non_author ) {
-			$data = [
-				'email'      => '"' . $non_author->user_email . '"',
-				'first_name' => '"' . get_user_meta( $non_author->ID, 'first_name', true ) . '"',
-				'last_name'  => '"' . get_user_meta( $non_author->ID, 'last_name', true ) . '"',
-			];
+		// foreach ( $non_authors as $non_author ) {
+		// 	$data = [
+		// 		'email'      => '"' . $non_author->user_email . '"',
+		// 		'first_name' => '"' . get_user_meta( $non_author->ID, 'first_name', true ) . '"',
+		// 		'last_name'  => '"' . get_user_meta( $non_author->ID, 'last_name', true ) . '"',
+		// 	];
 
-			// $non_authors_data .= implode( ',', $data ) . "\n";
-		}
+		// 	// $non_authors_data .= implode( ',', $data ) . "\n";
+		// }
+
+		// TODO Make this a download link
+		// Output all users with no credits
+		// $output .= sprintf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
 
 		// Use the find() method to query users
 		$disabled_profiles = pods(
@@ -295,10 +301,6 @@ class Rise_Admin {
 		$output .= sprintf( '<p>Users with at least one credit: <strong>%s</strong></p>', count( $authors ) );
 		$output .= sprintf( '<p>Users with <strong>no</strong> credits: <strong>%s</strong></p>', count( $non_authors ) );
 		$output .= sprintf( '<p>Users with hidden profiles ("search only"): <strong>%s</strong></p>', $disabled_profiles->total_found() );
-
-		// Output all users with no credits
-		// TODO Make this a download link
-		// $output .= sprintf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
 
 		$output .= '</div>';
 
