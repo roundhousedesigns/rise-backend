@@ -89,14 +89,14 @@ class Rise_GraphQL_Mutations {
 					// TODO Refactor and abstract this into a function
 
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( __( 'no_recaptcha_token.', 'rise' ) );
+						throw new UserError( esc_attr( 'no_recaptcha_token' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( esc_html__( 'bad_recaptcha_token.', 'rise' ) );
+						throw new UserError( esc_attr( 'bad_recaptcha_token.' ) );
 					}
 
 					// Set the user's slug (user_nicename)
@@ -122,7 +122,7 @@ class Rise_GraphQL_Mutations {
 						if ( !empty( $error_code ) ) {
 							throw new UserError( esc_html( $error_code ) );
 						} else {
-							throw new UserError( esc_html__( 'unspecified_create_user_error', 'rise' ) );
+							throw new UserError( esc_attr( 'unspecified_create_user_error' ) );
 						}
 					}
 
@@ -130,7 +130,7 @@ class Rise_GraphQL_Mutations {
 					 * If the $post_id is empty, we should throw an exception
 					 */
 					if ( empty( $user_id ) ) {
-						throw new UserError( __( 'unspecified_create_user_error', 'rise' ) );
+						throw new UserError( esc_attr( 'unspecified_create_user_error' ) );
 					}
 
 					/**
@@ -217,12 +217,12 @@ class Rise_GraphQL_Mutations {
 					// Verify that the user is retrievable.
 					$user = get_user_by( 'email', $credentials['user_login'] );
 					if ( !$user ) {
-						throw new UserError( __( 'invalid_email', 'rise' ) );
+						throw new UserError( esc_attr( 'invalid_email' ) );
 					}
 
 					// Verify that the user's role is 'crew-member'.
 					if ( in_array( 'administrator', $user->roles, true ) ) {
-						throw new UserError( __( 'invalid_account', 'rise' ) );
+						throw new UserError( esc_attr( 'invalid_account' ) );
 					}
 
 					// Authenticate User.
@@ -276,18 +276,18 @@ class Rise_GraphQL_Mutations {
 					$username_provided = !empty( $input['username'] ) && is_string( $input['username'] );
 
 					if ( !$username_provided ) {
-						throw new UserError( __( 'no_username', 'rise' ) );
+						throw new UserError( esc_attr( 'no_username' ) );
 					}
 
 					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( __( 'no_recaptcha_token.', 'rise' ) );
+						throw new UserError( esc_attr( 'no_recaptcha_token' ) );
 					}
 
 					/**
 					 * Check the reCAPTCHA response
 					 */
 					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( __( 'bad_recpatcha_response.', 'rise' ) );
+						throw new UserError( esc_attr( 'bad_recpatcha_response' ) );
 					}
 
 					// We obsfucate the actual success of this mutation to prevent user enumeration.
@@ -298,13 +298,13 @@ class Rise_GraphQL_Mutations {
 					$user_data = get_user_by( 'email', $input['username'] );
 
 					if ( !$user_data ) {
-						throw new UserError( __( 'invalid_username' ) );
+						throw new UserError( esc_attr( 'invalid_username' ) );
 					}
 
 					// Get the password reset key.
 					$key = get_password_reset_key( $user_data );
 					if ( is_wp_error( $key ) ) {
-						throw new UserError( __( 'invalid_reset_key', 'rise' ) );
+						throw new UserError( esc_attr( 'invalid_reset_key' ) );
 					}
 
 					// Mail the reset key.
@@ -941,7 +941,7 @@ class Rise_GraphQL_Mutations {
 						return ['fileUrl' => wp_get_attachment_image_url( $attachment_id, 'medium' )];
 					}
 
-					throw new WP_Error( 'upload_failed', __( 'The file could not be uploaded.', 'rise' ) );
+					throw new WP_Error( 'upload_failed', esc_html__( 'The file could not be uploaded.', 'rise' ) );
 				},
 			]
 		);

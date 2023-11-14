@@ -162,11 +162,11 @@ class Rise_Admin {
 	 * Callback function to render the stats section.
 	 */
 	public function rise_directory_stats_section_callback() {
-		printf( '%s', self::section_html_start() );
-		printf( '%s', self::crew_member_stats__basic() );
-		printf( '%s', self::crew_member_stats__detailed() );
-		printf( '%s', self::dev_info() );
-		printf( '%s', self::section_html_end() );
+		printf( '%s', wp_kses_post( self::section_html_start() ) );
+		printf( '%s', wp_kses_post( self::crew_member_stats__basic() ) );
+		printf( '%s', wp_kses_post( self::crew_member_stats__detailed() ) );
+		printf( '%s', wp_kses_post( self::dev_info() ) );
+		printf( '%s', wp_kses_post( self::section_html_end() ) );
 	}
 
 	/**
@@ -265,9 +265,10 @@ class Rise_Admin {
 
 			if ( count( $posts ) > 0 ) {
 				$authors[] = $crew_member;
-			} else {
-				$non_authors[] = $crew_member;
+				continue;
 			}
+
+			$non_authors[] = $crew_member;
 		}
 
 		// Get all non-author email addresses, first names (user meta), and last names (user meta)
