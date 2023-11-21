@@ -276,7 +276,7 @@ class Rise_Taxonomies {
 			return;
 		}
 
-		if ( !isset( $_POST[$taxonomy . '_nonce'] ) || !wp_verify_nonce( $_POST[$taxonomy . '_nonce'], 'save_' . $taxonomy ) ) {
+		if ( !isset( $_POST[$taxonomy . '_nonce'] ) || !wp_verify_nonce( wp_unslash( $_POST[$taxonomy . '_nonce'] ), 'save_' . $taxonomy ) ) {
 			return;
 		}
 

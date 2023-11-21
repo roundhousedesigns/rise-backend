@@ -1045,7 +1045,7 @@ class Rise_GraphQL_Mutations {
 						];
 					}
 
-					throw new WP_Error( esc_html( 'bookmarked_profile_toggle_failed' ), __( 'The profile could not be toggled.', 'rise' ) );
+					throw new WP_Error( esc_html( 'bookmarked_profile_toggle_failed' ), esc_html__( 'The profile could not be toggled.', 'rise' ) );
 				},
 			],
 		);
@@ -1109,6 +1109,4 @@ class Rise_GraphQL_Mutations {
 			]
 		);
 	}
-
-	// TODO Add Delete Search Filter here.
 }
