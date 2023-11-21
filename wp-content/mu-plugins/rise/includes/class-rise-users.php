@@ -20,16 +20,16 @@ class Rise_Users {
 		$role = get_role( 'crew-member' );
 
 		$role->add_cap( 'read_credits' );
-		$role->add_cap( 'publish_credits' );
-		$role->add_cap( 'edit_credits' );
-		$role->add_cap( 'edit_published_credits' );
-		$role->add_cap( 'delete_credits' );
-		$role->add_cap( 'delete_published_credits' );
 		$role->add_cap( 'read_saved_searches' );
+		$role->add_cap( 'publish_credits' );
 		$role->add_cap( 'publish_saved_searches' );
+		$role->add_cap( 'edit_credits' );
 		$role->add_cap( 'edit_saved_searches' );
+		$role->add_cap( 'edit_published_credits' );
 		$role->add_cap( 'edit_published_saved_searches' );
+		$role->add_cap( 'delete_credits' );
 		$role->add_cap( 'delete_saved_searches' );
+		$role->add_cap( 'delete_published_credits' );
 		$role->add_cap( 'delete_published_saved_searches' );
 
 		$roles = [

@@ -216,8 +216,7 @@ class Rise_Types {
 				'exclude_from_search' => true,
 				'publicly_queryable'  => true,
 				'supports'            => ['title', 'author', 'editor'],
-				'show_ui'             => false,
-				'show_in_nav'         => false,
+				'show_ui'             => true,
 			]
 		);
 	}
