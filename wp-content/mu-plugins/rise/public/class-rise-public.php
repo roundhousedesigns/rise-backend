@@ -73,10 +73,6 @@ class Rise_Public {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-public.js', ['jquery'], $this->version, false );
 	}
 
-	public function replace_retrieve_password_message( $message, $key, $user_login, $user_data ) {
-
-	}
-
 	/**
 	 * Filter password reset request email's body.
 	 *
