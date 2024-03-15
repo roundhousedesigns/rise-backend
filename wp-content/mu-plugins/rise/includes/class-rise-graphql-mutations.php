@@ -36,7 +36,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__deleteOwnCredit();
 		$this->register_mutation__deleteOwnSavedSearch();
 		$this->register_mutation__uploadFile();
-		$this->register_mutation__toggleDisableProfile();
+		$this->register_mutation__togglePrivateProfile();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 	}
@@ -952,9 +952,9 @@ class Rise_GraphQL_Mutations {
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__toggleDisableProfile() {
+	protected function register_mutation__togglePrivateProfile() {
 		register_graphql_mutation(
-			'toggleDisableProfile',
+			'togglePrivateProfile',
 			[
 				'inputFields'         => [
 					'userId' => [
@@ -963,7 +963,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'outputFields'        => [
-					'updatedDisableProfile' => [
+					'updatedPrivateProfile' => [
 						'type'        => 'Boolean',
 						'description' => __( 'The updated value.', 'rise' ),
 					],
@@ -978,7 +978,7 @@ class Rise_GraphQL_Mutations {
 					] );
 
 					return [
-						'updatedDisableProfile' => $pod->field( 'disable_profile' ),
+						'updatedPrivateProfile' => $pod->field( 'disable_profile' ),
 					];
 				},
 			]
