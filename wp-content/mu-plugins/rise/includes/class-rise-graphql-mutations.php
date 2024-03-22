@@ -36,7 +36,8 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__deleteOwnCredit();
 		$this->register_mutation__deleteOwnSavedSearch();
 		$this->register_mutation__uploadFile();
-		$this->register_mutation__togglePrivateProfile();
+		$this->register_mutation__toggleDisableProfile();
+		$this->register_mutation__toggleUnavailableForWork();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 	}
@@ -952,9 +953,9 @@ class Rise_GraphQL_Mutations {
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__togglePrivateProfile() {
+	protected function register_mutation__toggleDisableProfile() {
 		register_graphql_mutation(
-			'togglePrivateProfile',
+			'toggleDisableProfile',
 			[
 				'inputFields'         => [
 					'userId' => [
@@ -963,7 +964,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'outputFields'        => [
-					'updatedPrivateProfile' => [
+					'updatedDisableProfile' => [
 						'type'        => 'Boolean',
 						'description' => __( 'The updated value.', 'rise' ),
 					],
@@ -978,7 +979,45 @@ class Rise_GraphQL_Mutations {
 					] );
 
 					return [
-						'updatedPrivateProfile' => $pod->field( 'disable_profile' ),
+						'updatedDisableProfile' => $pod->field( 'disable_profile' ),
+					];
+				},
+			]
+		);
+	}
+
+	/**
+	 * Toggle a user's unavailable option.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__toggleUnavailableForWork() {
+		register_graphql_mutation(
+			'toggleUnavailableForWork',
+			[
+				'inputFields'         => [
+					'userId' => [
+						'type'        => ['non_null' => 'Int'],
+						'description' => __( 'The user\'s ID', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'updatedUnavailableForWork' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The updated value.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					$pod = pods( 'user', $input['userId'] );
+
+					$pod->save( [
+						'unavailable' => $pod->field( 'unavailable' ) ? false : true,
+					] );
+
+					return [
+						'updatedUnavailableForWork' => $pod->field( 'unavailable' ),
 					];
 				},
 			]
