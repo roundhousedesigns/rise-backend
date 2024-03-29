@@ -38,6 +38,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__uploadFile();
 		$this->register_mutation__toggleDisableProfile();
 		$this->register_mutation__toggleLookingForWork();
+		$this->register_mutation__toggleIsOrg();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 	}
@@ -1018,6 +1019,44 @@ class Rise_GraphQL_Mutations {
 
 					return [
 						'updatedLookingForWork' => $pod->field( 'looking_for_work' ),
+					];
+				},
+			]
+		);
+	}
+
+	/**
+	 * Toggle a user's isOrganization option.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__toggleIsOrg() {
+		register_graphql_mutation(
+			'toggleIsOrg',
+			[
+				'inputFields'         => [
+					'userId' => [
+						'type'        => ['non_null' => 'Int'],
+						'description' => __( 'The user\'s ID', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'updatedIsOrg' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The updated value.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// TODO Security check. Check if user is logged in.
+
+					$pod = pods( 'user', $input['userId'] );
+
+					$pod->save( [
+						'is_org' => $pod->field( 'is_org' ) ? false : true,
+					] );
+
+					return [
+						'updatedIsOrg' => $pod->field( 'is_org' ),
 					];
 				},
 			]
