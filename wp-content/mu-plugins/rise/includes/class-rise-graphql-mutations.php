@@ -37,7 +37,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__deleteOwnSavedSearch();
 		$this->register_mutation__uploadFile();
 		$this->register_mutation__toggleDisableProfile();
-		$this->register_mutation__toggleUnavailableForWork();
+		$this->register_mutation__toggleLookingForWork();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 	}
@@ -987,13 +987,13 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
-	 * Toggle a user's unavailable option.
+	 * Toggle a user's lookingForWork option.
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__toggleUnavailableForWork() {
+	protected function register_mutation__toggleLookingForWork() {
 		register_graphql_mutation(
-			'toggleUnavailableForWork',
+			'toggleLookingForWork',
 			[
 				'inputFields'         => [
 					'userId' => [
@@ -1002,7 +1002,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'outputFields'        => [
-					'updatedUnavailableForWork' => [
+					'updatedLookingForWork' => [
 						'type'        => 'Boolean',
 						'description' => __( 'The updated value.', 'rise' ),
 					],
@@ -1013,11 +1013,11 @@ class Rise_GraphQL_Mutations {
 					$pod = pods( 'user', $input['userId'] );
 
 					$pod->save( [
-						'unavailable' => $pod->field( 'unavailable' ) ? false : true,
+						'looking_for_work' => $pod->field( 'looking_for_work' ) ? false : true,
 					] );
 
 					return [
-						'updatedUnavailableForWork' => $pod->field( 'unavailable' ),
+						'updatedLookingForWork' => $pod->field( 'looking_for_work' ),
 					];
 				},
 			]
