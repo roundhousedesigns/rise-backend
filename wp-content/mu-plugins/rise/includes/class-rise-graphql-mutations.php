@@ -36,11 +36,11 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__deleteOwnCredit();
 		$this->register_mutation__deleteOwnSavedSearch();
 		$this->register_mutation__uploadFile();
-		$this->register_mutation__toggleDisableProfile();
-		$this->register_mutation__toggleLookingForWork();
-		$this->register_mutation__toggleIsOrg();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
+		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
+		$this->register_mutation__toggleUserOption( 'toggleLookingForWork', 'looking_for_work', 'updatedLookingForWork' );
+		$this->register_mutation__toggleUserOption( 'toggleIsOrg', 'is_org', 'updatedIsOrg' );
 	}
 
 	/**
@@ -919,7 +919,7 @@ class Rise_GraphQL_Mutations {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
 					}
 
-					$field   = isset( $input['name'] ) ? camel_case_to_underscore( $input['name'] ) : '';
+					$field   = isset( $input['name'] ) ? camel_to_snake( $input['name'] ) : '';
 					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
 
 					$uploaded = wp_handle_sideload( $input['file'], [
@@ -950,113 +950,40 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
-	 * Toggle a user's disable_profile option.
+	 * Toggle a user option.
 	 *
+	 * @param  string $mutation_name The mutation name.
+	 * @param  string $field_name    The Pods field name.
+	 * @param  string $updated_field The Pods updated field name.
 	 * @return void
 	 */
-	protected function register_mutation__toggleDisableProfile() {
+	protected function register_mutation__toggleUserOption( $mutation_name, $field_name, $updated_field ) {
 		register_graphql_mutation(
-			'toggleDisableProfile',
+			$mutation_name,
 			[
 				'inputFields'         => [
 					'userId' => [
 						'type'        => ['non_null' => 'Int'],
-						'description' => __( 'The user\'s ID', 'rise' ),
+						'description' => __( 'The user\'s ID.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
-					'updatedDisableProfile' => [
+					$updated_field => [
 						'type'        => 'Boolean',
 						'description' => __( 'The updated value.', 'rise' ),
 					],
 				],
-				'mutateAndGetPayload' => function ( $input ) {
+				'mutateAndGetPayload' => function ( $input, $updated ) use ( $field_name, $updated_field ) {
 					// TODO Security check. Check if user is logged in.
 
 					$pod = pods( 'user', $input['userId'] );
 
 					$pod->save( [
-						'disable_profile' => $pod->field( 'disable_profile' ) ? false : true,
+						$field_name => $pod->field( $field_name ) ? false : true,
 					] );
 
 					return [
-						'updatedDisableProfile' => $pod->field( 'disable_profile' ),
-					];
-				},
-			]
-		);
-	}
-
-	/**
-	 * Toggle a user's lookingForWork option.
-	 *
-	 * @return void
-	 */
-	protected function register_mutation__toggleLookingForWork() {
-		register_graphql_mutation(
-			'toggleLookingForWork',
-			[
-				'inputFields'         => [
-					'userId' => [
-						'type'        => ['non_null' => 'Int'],
-						'description' => __( 'The user\'s ID', 'rise' ),
-					],
-				],
-				'outputFields'        => [
-					'updatedLookingForWork' => [
-						'type'        => 'Boolean',
-						'description' => __( 'The updated value.', 'rise' ),
-					],
-				],
-				'mutateAndGetPayload' => function ( $input ) {
-					// TODO Security check. Check if user is logged in.
-
-					$pod = pods( 'user', $input['userId'] );
-
-					$pod->save( [
-						'looking_for_work' => $pod->field( 'looking_for_work' ) ? false : true,
-					] );
-
-					return [
-						'updatedLookingForWork' => $pod->field( 'looking_for_work' ),
-					];
-				},
-			]
-		);
-	}
-
-	/**
-	 * Toggle a user's isOrganization option.
-	 *
-	 * @return void
-	 */
-	protected function register_mutation__toggleIsOrg() {
-		register_graphql_mutation(
-			'toggleIsOrg',
-			[
-				'inputFields'         => [
-					'userId' => [
-						'type'        => ['non_null' => 'Int'],
-						'description' => __( 'The user\'s ID', 'rise' ),
-					],
-				],
-				'outputFields'        => [
-					'updatedIsOrg' => [
-						'type'        => 'Boolean',
-						'description' => __( 'The updated value.', 'rise' ),
-					],
-				],
-				'mutateAndGetPayload' => function ( $input ) {
-					// TODO Security check. Check if user is logged in.
-
-					$pod = pods( 'user', $input['userId'] );
-
-					$pod->save( [
-						'is_org' => $pod->field( 'is_org' ) ? false : true,
-					] );
-
-					return [
-						'updatedIsOrg' => $pod->field( 'is_org' ),
+						$updated_field => $pod->field( $field_name ),
 					];
 				},
 			]

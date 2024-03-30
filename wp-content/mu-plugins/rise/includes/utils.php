@@ -47,10 +47,25 @@ function maybe_strip_exif( $file ) {
  * @param  string $string
  * @return string The converted string.
  */
-function camel_case_to_underscore( $string ) {
+function camel_to_snake( $string ) {
 	$string = preg_replace( '/(?!^)[[:upper:]]/', '_$0', $string );
 	$string = preg_replace( '/([a-zA-Z])([0-9])/', '$1_$2', $string );
 	$string = strtolower( $string );
+	return $string;
+}
+
+/**
+ * Converts a string from underscore_notation to camelCase.
+ *
+ * @since 1.0.0
+ *
+ * @param  string $string
+ * @return string The converted string.
+ */
+function snake_to_camel( $string ) {
+	$string = strtolower( $string );
+	$string = preg_replace( '/_([a-z0-9])/e', 'strtoupper("$1")', $string );
+	$string = lcfirst( $string );
 	return $string;
 }
 
