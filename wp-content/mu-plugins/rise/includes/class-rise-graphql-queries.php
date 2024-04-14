@@ -216,7 +216,7 @@ class Rise_GraphQL_Queries {
 		// Remove incomplete profiles
 		$user_ids = array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
 
-		// Remove users with the 'disable_profile' pod meta set to true
+		// Remove users with the 'disable_profile' pod meta set to true (but DO return organizations/companies!)
 		$user_ids = array_filter( $user_ids, function ( $id ) {
 			$pod = pods( 'user', $id );
 

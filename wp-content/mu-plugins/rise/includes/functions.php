@@ -46,14 +46,6 @@ function rise_remove_incomplete_profiles_from_search( $author_id ) {
 		return false;
 	}
 
-	// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-	// If email, phone, and website are all unset, ignore this user.
-	// TODO determine if we actually want this search results check.
-	// $pod = pods( 'user', $author_id );
-	// if ( !$pod->field( 'contact_email', true, true ) && !$pod->field( 'phone', true, true ) && !$pod->field( 'website_url', true, true ) ) {
-	// 	return false;
-	// }
-
 	return true;
 }
 
@@ -147,11 +139,11 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 	// Retrieve users based on all of our querying and filtration.
 	$users = get_users( $args );
 
-	// Remove any users with the 'disable_profile' pod meta set to true
+	// Remove any users with the 'disable_profile' or 'is_org' meta set to true
 	$users = array_filter( $users, function ( $user ) {
 		$pod = pods( 'user', $user->ID );
 
-		return boolval( $pod->field( 'disable_profile' ) ) === false;
+		return boolval( $pod->field( 'disable_profile' ) ) === false && boolval( $pod->field( 'is_org' ) ) === false;
 	} );
 
 	return wp_list_pluck( $users, 'ID' );
