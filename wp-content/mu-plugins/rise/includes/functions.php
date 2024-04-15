@@ -258,7 +258,7 @@ function rise_translate_taxonomy_filters( $args ) {
  * Used by the frontend search filters, and by reporting functions.
  *
  * @param  array $args
- * @param  int   $user_id The user ID to exclude from the query. Default 0.
+ * @param  int   $user_id The user ID to exclude from the query (current user). Default 0.
  * @return int[] The user IDs.
  */
 function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
@@ -292,7 +292,37 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 				'terms'            => $terms,
 				'include_children' => true,
 			];
+
+			if ( 'position' === $taxonomy ) {
+				foreach ( $terms as $term_id ) {
+					// Get 'also_search' terms add them to the query.
+					$pod     = pods( 'position', $term_id );
+					$related = $pod->field( 'also_search' );
+
+					// No related terms.
+					if ( empty( $related ) || !$related ) {
+						continue;
+					}
+
+					// Add the related terms to the query. Scoring happens elsewhere, so it's not affected
+					// by the query additions.
+					foreach ( $related as $term ) {
+						// If the term is already in the selected terms collection, skip it.
+						if ( in_array( $term['term_id'], $terms ) ) {
+							continue;
+						}
+
+						$credit_args['tax_query'][] = [
+							'taxonomy'         => $taxonomy,
+							'field'            => 'term_id',
+							'terms'            => $term['term_id'],
+							'include_children' => true,
+						];
+					}
+				}
+			}
 		}
+
 	}
 
 	// Query credits with the desired attributes.

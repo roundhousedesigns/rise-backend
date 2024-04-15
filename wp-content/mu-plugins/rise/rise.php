@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Rise Theatre Directory
  * Description:       The main site functionality for the Rise Theatre Directory backend.
- * Version:           1.1.1
+ * Version:           1.1.2beta
  * Author:            Roundhouse Designs
  * Author URI:        https://roundhouse-designs.com
  * Text Domain:       rise
@@ -17,7 +17,7 @@ if ( !defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.1.1' );
+define( 'RISE_VERSION', '1.1.2beta' );
 
 /**
  * The code that runs during plugin activation.
