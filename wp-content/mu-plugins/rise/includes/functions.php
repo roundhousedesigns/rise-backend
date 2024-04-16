@@ -284,15 +284,10 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 		'orderby'        => 'rand',
 	];
 
-	foreach ( $credit_filters as $taxonomy => $terms ) {
-		if ( !empty( $terms ) ) {
-			$credit_args['tax_query'][] = [
-				'taxonomy'         => $taxonomy,
-				'field'            => 'term_id',
-				'terms'            => $terms,
-				'include_children' => true,
-			];
+	foreach ( $credit_filters as $taxonomy => $selected_terms ) {
+		$terms = $selected_terms;
 
+		if ( !empty( $terms ) ) {
 			if ( 'position' === $taxonomy ) {
 				foreach ( $terms as $term_id ) {
 					// Get 'also_search' terms add them to the query.
@@ -307,20 +302,17 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 					// Add the related terms to the query. Scoring happens elsewhere, so it's not affected
 					// by the query additions.
 					foreach ( $related as $term ) {
-						// If the term is already in the selected terms collection, skip it.
-						if ( in_array( $term['term_id'], $terms ) ) {
-							continue;
-						}
-
-						$credit_args['tax_query'][] = [
-							'taxonomy'         => $taxonomy,
-							'field'            => 'term_id',
-							'terms'            => $term['term_id'],
-							'include_children' => true,
-						];
+						$terms[] = $term['term_id'];
 					}
 				}
 			}
+
+			$credit_args['tax_query'][] = [
+				'taxonomy'         => $taxonomy,
+				'field'            => 'term_id',
+				'terms'            => array_unique( $terms ),
+				'include_children' => true,
+			];
 		}
 
 	}
