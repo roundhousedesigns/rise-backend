@@ -21,6 +21,9 @@ Upload the `rise` directory to the `/wp-content/mu-plugins/` directory
 
 == Changelog ==
 
+= 1.1.2 =
+* Relate 'associate' and 'assistant' terms for more holistic searching.
+
 = 1.1.1 =
 * Minor update to function naming.
 * Finally started this changelog.
