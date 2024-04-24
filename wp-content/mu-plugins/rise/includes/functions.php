@@ -287,6 +287,10 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 	foreach ( $credit_filters as $taxonomy => $selected_terms ) {
 		$terms = $selected_terms;
 
+		if ( 'integer' === gettype( $terms ) ) {
+			$terms = [$terms];
+		}
+
 		if ( !empty( $terms ) ) {
 			if ( 'position' === $taxonomy ) {
 				foreach ( $terms as $term_id ) {
