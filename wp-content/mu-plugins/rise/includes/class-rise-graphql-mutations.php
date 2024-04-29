@@ -371,7 +371,7 @@ class Rise_GraphQL_Mutations {
 						'success' => false,
 					];
 
-					if ( !$input['username'] || !$input['password'] || !$input['newEmail'] || $input['username'] ) {
+					if ( !$input['username'] || !$input['password'] || !$input['newEmail'] ) {
 						// TODO throw error here?
 						return $payload;
 					}
@@ -387,7 +387,7 @@ class Rise_GraphQL_Mutations {
 					wp_update_user(
 						[
 							'ID'         => $user->ID,
-							'user_email' => $input['newEmail'],
+							'user_email' => sanitize_email( $input['newEmail'] ),
 						]
 					);
 
