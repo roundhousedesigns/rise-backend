@@ -39,7 +39,6 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
-		$this->register_mutation__toggleUserOption( 'toggleLookingForWork', 'looking_for_work', 'updatedLookingForWork' );
 	}
 
 	/**
