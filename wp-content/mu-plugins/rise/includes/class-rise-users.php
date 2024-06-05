@@ -40,14 +40,14 @@ class Rise_Users {
 		$role->add_cap( 'delete_published_saved_searches' );
 
 		/**
-		 * Unavailable Date Ranges
+		 * Conflict Date Ranges
 		 */
-		// $role->add_cap( 'read_unavail_ranges' );
-		// $role->add_cap( 'publish_unavail_ranges' );
-		// $role->add_cap( 'edit_unavail_ranges' );
-		// $role->add_cap( 'edit_published_unavail_ranges' );
-		// $role->add_cap( 'delete_unavail_ranges' );
-		// $role->add_cap( 'delete_published_unavail_ranges' );
+		// $role->add_cap( 'read_conflict_ranges' );
+		// $role->add_cap( 'publish_conflict_ranges' );
+		// $role->add_cap( 'edit_conflict_ranges' );
+		// $role->add_cap( 'edit_published_conflict_ranges' );
+		// $role->add_cap( 'delete_conflict_ranges' );
+		// $role->add_cap( 'delete_published_conflict_ranges' );
 
 		$roles = [
 			'crew-member' => [
@@ -66,11 +66,11 @@ class Rise_Users {
 				'edit_saved_searches'             => true,
 				'edit_published_saved_searches'   => true,
 				'delete_published_saved_searches' => true,
-				// 'read_unavail_ranges'             => true,
-				// 'publish_unavail_ranges'          => true,
-				// 'edit_unavail_ranges'             => true,
-				// 'edit_published_unavail_ranges'   => true,
-				// 'delete_published_unavail_ranges' => true,
+				// 'read_conflict_ranges'             => true,
+				// 'publish_conflict_ranges'          => true,
+				// 'edit_conflict_ranges'             => true,
+				// 'edit_published_conflict_ranges'   => true,
+				// 'delete_published_conflict_ranges' => true,
 			],
 		];
 
@@ -462,22 +462,22 @@ class Rise_Users {
 	}
 
 	/**
-	 * Updates the unavailability range for a user.
+	 * Updates the conflict range for a user.
 	 *
 	 * @param  int            $user_id          The ID of the user.
-	 * @param  string         $startDate        The start date of the unavailability range.
-	 * @param  string         $endDate          The end date of the unavailability range.
-	 * @param  int            $unavail_range_id The ID of the unavailability range to update.
+	 * @param  string         $startDate        The start date of the conflict range.
+	 * @param  string         $endDate          The end date of the conflict range.
+	 * @param  int            $conflict_range_id The ID of the conflict range to update.
 	 * @throws WP_Error       When there is an error updating the date range.
-	 * @return int|false|null The ID of the unavailability range on success, false on failure, or null if there was an issue with the Pod itself.
+	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
 	 */
-	public static function update_unavail_range( $user_id, $startDate, $endDate, $unavail_range_id = 0 ) {
-		$post_id = $unavail_range_id;
+	public static function update_conflict_range( $user_id, $startDate, $endDate, $conflict_range_id = 0 ) {
+		$post_id = $conflict_range_id;
 
 		if ( 0 === $post_id ) {
 			$params = [
-				'ID'          => $unavail_range_id,
-				'post_type'   => 'unavail_range',
+				'ID'          => $conflict_range_id,
+				'post_type'   => 'conflict_range',
 				'post_status' => 'publish',
 				'post_author' => $user_id,
 			];
@@ -486,10 +486,10 @@ class Rise_Users {
 		}
 
 		if ( is_wp_error( $post_id ) ) {
-			return new WP_Error( 'update_unavail_range', 'There was an error updating the date range.' );
+			return new WP_Error( 'update_conflict_range', 'There was an error updating the date range.' );
 		}
 
-		$pod = pods( 'unavail_range', $post_id );
+		$pod = pods( 'conflict_range', $post_id );
 
 		return $pod->save( [
 			'start_date' => $startDate,

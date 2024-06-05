@@ -17,7 +17,7 @@
  *
  * @param  int            $credit_id The credit's ID.
  * @param  int            $index     The credit's new display index.
- * @return int|false|null The ID of the unavailability range on success, false on failure, or null if there was an issue with the Pod itself.
+ * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
  */
 function rise_update_credit_index( $credit_id, $index ) {
 	// Get the user's pod.
@@ -572,7 +572,7 @@ function rise_get_password_reset_email_subject( $user_data ) {
  * @return boolean True if the post was deleted, false otherwise.
  */
 function rise_delete_own_allowed_post_item( $id, $user_id ) {
-	$allowed_post_types = ['credit', 'saved_search', 'unavail_range'];
+	$allowed_post_types = ['credit', 'saved_search', 'conflict_range'];
 
 	$post_type = get_post_type( $id );
 	$author_id = get_post_field( 'post_author', $id );

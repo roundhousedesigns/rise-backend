@@ -35,11 +35,11 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateCreditOrder();
 		$this->register_mutation__deleteOwnCredit();
 		$this->register_mutation__deleteOwnSavedSearch();
-		$this->register_mutation__deleteOwnUnavailRange();
+		$this->register_mutation__deleteOwnConflictRange();
 		$this->register_mutation__uploadFile();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
-		$this->register_mutation__updateOrCreateUnavailRange();
+		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
 	}
 
@@ -885,22 +885,22 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
-	 * Delete a user's Unavailable Date Range.
+	 * Delete a user's Conflictable Date Range.
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__deleteOwnUnavailRange() {
+	protected function register_mutation__deleteOwnConflictRange() {
 		register_graphql_mutation(
-			'deleteOwnUnavailRange',
+			'deleteOwnConflictRange',
 			[
 				'inputFields'         => [
 					'id'     => [
 						'type'        => 'ID',
-						'description' => __( 'The ID of the unavailable date range to delete.', 'rise' ),
+						'description' => __( 'The ID of the conflict date range to delete.', 'rise' ),
 					],
 					'userId' => [
 						'type'        => 'ID',
-						'description' => __( 'The ID of the user to delete the unavailable date range for.', 'rise' ),
+						'description' => __( 'The ID of the user to delete the conflict date range for.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -1171,17 +1171,17 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
-	 * Save an Unavailable Date Range.
+	 * Save an Conflictable Date Range.
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__updateOrCreateUnavailRange() {
+	protected function register_mutation__updateOrCreateConflictRange() {
 		register_graphql_mutation(
-			'updateOrCreateUnavailRange',
+			'updateOrCreateConflictRange',
 			[
 				'inputFields'         => [
 					'id'        => [
-						'description' => __( 'The ID of the unavail_range, if it already exists.', 'rise' ),
+						'description' => __( 'The ID of the conflict_range, if it already exists.', 'rise' ),
 						'type'        => 'ID',
 					],
 					'userId'    => [
@@ -1200,7 +1200,7 @@ class Rise_GraphQL_Mutations {
 				'outputFields'        => [
 					'id' => [
 						'type'        => 'ID',
-						'description' => __( 'The ID of the unavail_range item.', 'rise' ),
+						'description' => __( 'The ID of the conflict_range item.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
@@ -1209,14 +1209,14 @@ class Rise_GraphQL_Mutations {
 						'id' => 0,
 					];
 
-					$unavail_range_id = isset( $input['id'] ) && $input['id'] ? $input['id'] : 0;
+					$conflict_range_id = isset( $input['id'] ) && $input['id'] ? $input['id'] : 0;
 
-					$result = Rise_Users::update_unavail_range( $input['userId'], $input['startDate'], $input['endDate'], $unavail_range_id );
+					$result = Rise_Users::update_conflict_range( $input['userId'], $input['startDate'], $input['endDate'], $conflict_range_id );
 
 					if ( false === $result ) {
 						throw new UserError( esc_html( 'update_pod_failed' ) );
 					} elseif ( !$result ) {
-						throw new UserError( esc_html( 'pod_error_unavail_range' ) );
+						throw new UserError( esc_html( 'pod_error_conflict_range' ) );
 					}
 
 					$payload['id'] = $result;

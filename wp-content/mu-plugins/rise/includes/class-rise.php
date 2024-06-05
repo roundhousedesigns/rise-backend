@@ -356,13 +356,13 @@ class Rise {
 		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'saved_search_remove_visual_editor' );
 		
 		/**
-		 * Custom Post Type: unavail_range
+		 * Custom Post Type: conflict_range
 		 */
-		// $this->loader->add_action( 'init', $plugin_data, 'unavail_range_init' );
-		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'unavail_range_updated_messages' );
-		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'unavail_range_bulk_updated_messages', 10, 2 );
-		// $this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'unavail_range_disable_block_editor', 10, 2 );
-		// $this->loader->add_filter( 'user_can_richedit', $plugin_data, 'unavail_range_remove_visual_editor' );
+		// $this->loader->add_action( 'init', $plugin_data, 'conflict_range_init' );
+		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'conflict_range_updated_messages' );
+		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'conflict_range_bulk_updated_messages', 10, 2 );
+		// $this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'conflict_range_disable_block_editor', 10, 2 );
+		// $this->loader->add_filter( 'user_can_richedit', $plugin_data, 'conflict_range_remove_visual_editor' );
 
 		/**
 		 * Custom Post Type: project
