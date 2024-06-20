@@ -85,7 +85,7 @@ class Rise_Admin {
 		add_menu_page(
 			'RISE Administration', // Page title
 			'RISE Admin', // Menu title
-			'manage_options', // Capability required to access the page
+			'contributor', // Capability/role required to access the page
 			'rise-admin', // Menu slug
 			[$this, 'plugin_options_page_callback'], // Callback function to render the page content
 			'dashicons-chart-area', // Menu icon
