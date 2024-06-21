@@ -21,6 +21,10 @@ Upload the `rise` directory to the `/wp-content/mu-plugins/` directory
 
 == Changelog ==
 
+= 1.1.4 =
+* Conflict/Job Dates
+* Cron jobs
+
 = 1.1.3 =
 * changeEmail mutation.
 
