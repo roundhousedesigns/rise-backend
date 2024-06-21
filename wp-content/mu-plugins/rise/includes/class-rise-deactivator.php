@@ -32,6 +32,8 @@ class Rise_Deactivator {
 	 */
 	public static function deactivate() {
 		flush_rewrite_rules();
+
+		register_deactivation_hook( __FILE__, 'rise_cron_deactivate' );
 	}
 
 }

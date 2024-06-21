@@ -81,6 +81,7 @@ class Rise {
 		$this->define_init_hooks();
 		$this->define_user_hooks();
 		$this->define_post_type_hooks();
+		$this->define_cron_jobs();
 		$this->define_graphql_types();
 		$this->define_graphql_queries();
 		$this->define_graphql_mutations();
@@ -176,6 +177,11 @@ class Rise {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-rise-admin.php';
+
+		/**
+		 * The class responsible for defining cron jobs.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-cron.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -354,15 +360,15 @@ class Rise {
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
 		$this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'saved_search_disable_block_editor', 10, 2 );
 		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'saved_search_remove_visual_editor' );
-		
+
 		/**
 		 * Custom Post Type: conflict_range
 		 */
-		// $this->loader->add_action( 'init', $plugin_data, 'conflict_range_init' );
-		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'conflict_range_updated_messages' );
-		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'conflict_range_bulk_updated_messages', 10, 2 );
-		// $this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'conflict_range_disable_block_editor', 10, 2 );
-		// $this->loader->add_filter( 'user_can_richedit', $plugin_data, 'conflict_range_remove_visual_editor' );
+		$this->loader->add_action( 'init', $plugin_data, 'conflict_range_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'conflict_range_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'conflict_range_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'conflict_range_disable_block_editor', 10, 2 );
+		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'conflict_range_remove_visual_editor' );
 
 		/**
 		 * Custom Post Type: project
@@ -383,6 +389,17 @@ class Rise {
 		$plugin_data_types = new Rise_GraphQL_Types();
 
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_types, 'register_types' );
+	}
+
+	/**
+	 * Register cron jobs.
+	 *
+	 * @return void
+	 */
+	private function define_cron_jobs() {
+		$cron_data = new Rise_Cron();
+
+		$this->loader->add_action( 'rise_delete_expired_conflict_ranges_cron', $cron_data, 'delete_expired_conflict_ranges' );
 	}
 
 	/**
