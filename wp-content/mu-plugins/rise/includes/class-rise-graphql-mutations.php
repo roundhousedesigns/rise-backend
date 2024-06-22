@@ -35,9 +35,11 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateCreditOrder();
 		$this->register_mutation__deleteOwnCredit();
 		$this->register_mutation__deleteOwnSavedSearch();
+		$this->register_mutation__deleteOwnConflictRange();
 		$this->register_mutation__uploadFile();
 		$this->register_mutation__updateBookmarkedProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
+		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
 	}
 
@@ -883,6 +885,59 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
+	 * Delete a user's Conflictable Date Range.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__deleteOwnConflictRange() {
+		register_graphql_mutation(
+			'deleteOwnConflictRange',
+			[
+				'inputFields'         => [
+					'id'     => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the conflict date range to delete.', 'rise' ),
+					],
+					'userId' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the user to delete the conflict date range for.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'result' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The result of the delete operation.', 'rise' ),
+						'resolve'     => function ( $payload ) {
+							return $payload['result'];
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					if ( !isset( $input['id'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_id', __( 'No ID provided.', 'rise' ) ),
+						];
+					}
+
+					if ( !isset( $input['userId'] ) ) {
+						return [
+							'result' => new \WP_Error( 'no_user_id', __( 'No user ID provided.', 'rise' ) ),
+						];
+					}
+
+					$result = rise_delete_own_allowed_post_item( $input['id'], $input['userId'] );
+
+					if ( $result ) {
+						$payload['result'] = true;
+					}
+
+					return $payload;
+				},
+			]
+		);
+	}
+
+	/**
 	 * Upload a file.
 	 *
 	 * @return void
@@ -936,6 +991,7 @@ class Rise_GraphQL_Mutations {
 
 						$update_fields = [$field => $attachment_id];
 
+						// TODO Upload file error handling.
 						$pod->save( $update_fields );
 
 						return ['fileUrl' => wp_get_attachment_image_url( $attachment_id, 'medium' )];
@@ -976,6 +1032,7 @@ class Rise_GraphQL_Mutations {
 
 					$pod = pods( 'user', $input['userId'] );
 
+					// TODO Error handling.
 					$pod->save( [
 						$field_name => $pod->field( $field_name ) ? false : true,
 					] );
@@ -1105,9 +1162,66 @@ class Rise_GraphQL_Mutations {
 						throw new UserError( esc_html( $result->get_error_code() ) );
 					}
 
-					return [
-						'success' => true,
+					$payload['success'] = true;
+
+					return $payload;
+				},
+			]
+		);
+	}
+
+	/**
+	 * Save an Conflictable Date Range.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__updateOrCreateConflictRange() {
+		register_graphql_mutation(
+			'updateOrCreateConflictRange',
+			[
+				'inputFields'         => [
+					'id'        => [
+						'description' => __( 'The ID of the conflict_range, if it already exists.', 'rise' ),
+						'type'        => 'ID',
+					],
+					'userId'    => [
+						'description' => __( 'The ID of the user.', 'rise' ),
+						'type'        => 'ID',
+					],
+					'startDate' => [
+						'type'        => 'String',
+						'description' => __( 'The range start date.', 'rise' ),
+					],
+					'endDate'   => [
+						'description' => __( 'The range end date.', 'rise' ),
+						'type'        => 'String',
+					],
+				],
+				'outputFields'        => [
+					'id' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the conflict_range item.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					$payload = [
+						'id' => 0,
 					];
+
+					$conflict_range_id = isset( $input['id'] ) && $input['id'] ? $input['id'] : 0;
+
+					$result = Rise_Users::update_conflict_range( $input['userId'], $input['startDate'], $input['endDate'], $conflict_range_id );
+
+					if ( false === $result ) {
+						throw new UserError( esc_html( 'update_pod_failed' ) );
+					} elseif ( !$result ) {
+						throw new UserError( esc_html( 'pod_error_conflict_range' ) );
+					}
+
+					$payload['id'] = $result;
+
+					return $payload;
 				},
 			]
 		);

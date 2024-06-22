@@ -19,18 +19,35 @@ class Rise_Users {
 	public function add_roles() {
 		$role = get_role( 'crew-member' );
 
+		/**
+		 * Credits
+		 */
 		$role->add_cap( 'read_credits' );
-		$role->add_cap( 'read_saved_searches' );
 		$role->add_cap( 'publish_credits' );
-		$role->add_cap( 'publish_saved_searches' );
 		$role->add_cap( 'edit_credits' );
-		$role->add_cap( 'edit_saved_searches' );
 		$role->add_cap( 'edit_published_credits' );
-		$role->add_cap( 'edit_published_saved_searches' );
 		$role->add_cap( 'delete_credits' );
-		$role->add_cap( 'delete_saved_searches' );
 		$role->add_cap( 'delete_published_credits' );
+
+		/**
+		 * Saved Searches
+		 */
+		$role->add_cap( 'read_saved_searches' );
+		$role->add_cap( 'publish_saved_searches' );
+		$role->add_cap( 'edit_saved_searches' );
+		$role->add_cap( 'edit_published_saved_searches' );
+		$role->add_cap( 'delete_saved_searches' );
 		$role->add_cap( 'delete_published_saved_searches' );
+
+		/**
+		 * Conflict Date Ranges
+		 */
+		// $role->add_cap( 'read_conflict_ranges' );
+		// $role->add_cap( 'publish_conflict_ranges' );
+		// $role->add_cap( 'edit_conflict_ranges' );
+		// $role->add_cap( 'edit_published_conflict_ranges' );
+		// $role->add_cap( 'delete_conflict_ranges' );
+		// $role->add_cap( 'delete_published_conflict_ranges' );
 
 		$roles = [
 			'crew-member' => [
@@ -49,6 +66,11 @@ class Rise_Users {
 				'edit_saved_searches'             => true,
 				'edit_published_saved_searches'   => true,
 				'delete_published_saved_searches' => true,
+				// 'read_conflict_ranges'             => true,
+				// 'publish_conflict_ranges'          => true,
+				// 'edit_conflict_ranges'             => true,
+				// 'edit_published_conflict_ranges'   => true,
+				// 'delete_published_conflict_ranges' => true,
 			],
 		];
 
@@ -345,7 +367,6 @@ class Rise_Users {
 		);
 
 		wp_nonce_field( 'save_' . $taxonomy, $taxonomy . '_nonce' );
-
 		?>
 
 		<!-- Add a new section to the user profile edit screen for the given taxonomy -->
@@ -386,9 +407,9 @@ class Rise_Users {
 	/**
 	 * Save a search to the user's search history.
 	 *
-	 * @param  int   $user_id       The user ID.
-	 * @param  array $search_params The search parameters.
-	 * @return array The updated search history.
+	 * @param  int            $user_id       The user ID.
+	 * @param  array          $search_params The search parameters.
+	 * @return array|WP_Error The updated search history or WP_Error if there was an error.
 	 */
 	public static function save_user_search_history( $user_id, $search_params ) {
 		// Get user pod
@@ -413,9 +434,9 @@ class Rise_Users {
 		}
 
 		// Update the user pod with the new search_history
-		$pod->save( 'search_history', wp_json_encode( $search_history ) );
+		$result = $pod->save( 'search_history', wp_json_encode( $search_history ) );
 
-		return $search_history;
+		return $result ? $search_history : new WP_Error( 'failed_to_save_search_history', 'Failed to save search history.' );
 	}
 
 	/**
@@ -438,5 +459,41 @@ class Rise_Users {
 		];
 
 		return wp_insert_post( $params, true, true );
+	}
+
+	/**
+	 * Updates the conflict range for a user.
+	 *
+	 * @param  int            $user_id          The ID of the user.
+	 * @param  string         $startDate        The start date of the conflict range.
+	 * @param  string         $endDate          The end date of the conflict range.
+	 * @param  int            $conflict_range_id The ID of the conflict range to update.
+	 * @throws WP_Error       When there is an error updating the date range.
+	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
+	 */
+	public static function update_conflict_range( $user_id, $startDate, $endDate, $conflict_range_id = 0 ) {
+		$post_id = $conflict_range_id;
+
+		if ( 0 === $post_id ) {
+			$params = [
+				'ID'          => $conflict_range_id,
+				'post_type'   => 'conflict_range',
+				'post_status' => 'publish',
+				'post_author' => $user_id,
+			];
+
+			$post_id = wp_insert_post( $params, true, true );
+		}
+
+		if ( is_wp_error( $post_id ) ) {
+			return new WP_Error( 'update_conflict_range', 'There was an error updating the date range.' );
+		}
+
+		$pod = pods( 'conflict_range', $post_id );
+
+		return $pod->save( [
+			'start_date' => $startDate,
+			'end_date'   => $endDate,
+		] );
 	}
 }

@@ -135,6 +135,8 @@ class Rise_Types {
 	/**
 	 * Registers the `project` post type.
 	 *
+	 * NOT IMPLEMENTED.
+	 *
 	 * @access    private
 	 * @since     0.1.0
 	 */
@@ -145,6 +147,8 @@ class Rise_Types {
 	/**
 	 * Sets the post updated messages for the `project` post type.
 	 *
+	 * NOT IMPLEMENTED.
+	 *
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `project` post type.
 	 */
@@ -154,8 +158,9 @@ class Rise_Types {
 
 	/**
 	 * Sets the bulk post updated messages for the `project` post type.
-	 *
 	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 *
+	 * NOT IMPLEMENTED.
 	 *
 	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type.
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
@@ -267,6 +272,81 @@ class Rise_Types {
 	 */
 	public function saved_search_remove_visual_editor( $default ) {
 		if ( get_post_type() === 'saved_search' ) {
+			return false;
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Registers the `conflict_range` post type.
+	 *
+	 * @access    private
+	 * @since     0.1.0
+	 */
+	public function conflict_range_init() {
+		Rise_Taxonomies::register_post_type(
+			'conflict_range',
+			'conflict_ranges',
+			'Conflict Date Range',
+			'Conflict Date Ranges',
+			'dashicons-calendar',
+			[
+				'public'              => true,
+				'exclude_from_search' => true,
+				'publicly_queryable'  => true,
+				'supports'            => ['author'],
+				'show_ui'             => true,
+			]
+		);
+	}
+
+	/**
+	 * Sets the post updated messages for the `conflict_range` post type.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `conflict_range` post type.
+	 */
+	public function conflict_range_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'conflict_range', 'conflict_range', $messages );
+	}
+
+	/**
+	 * Sets the bulk post updated messages for the `conflict_range` post type.
+	 *
+	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 *
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
+	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+	 * @return array Bulk messages for the `conflict_range` post type.
+	 */
+	public function conflict_range_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'conflict_range', 'Conflict Date Range', 'Conflict Date Ranges', $bulk_messages, $bulk_counts );
+	}
+
+	/**
+	 * Disable the Block Editor for the `conflict_range` post type.
+	 *
+	 * @param  string $current_status
+	 * @param  string $post_type
+	 * @return void
+	 */
+	public function conflict_range_disable_block_editor( $current_status, $post_type ) {
+		if ( 'conflict_range' === $post_type ) {
+			return false;
+		}
+
+		return $current_status;
+	}
+
+	/**
+	 * Disable the WYSIWYG Editor for the `conflict_range` post type.
+	 *
+	 * @param  boolean $default
+	 * @return boolean True to enable the editor, false to disable.
+	 */
+	public function conflict_range_remove_visual_editor( $default ) {
+		if ( get_post_type() === 'conflict_range' ) {
 			return false;
 		}
 

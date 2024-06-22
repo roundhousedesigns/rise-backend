@@ -216,7 +216,7 @@ class Rise_Credit {
 	/**
 	 * Update the user's meta data.
 	 *
-	 * @return int The post ID return value of pods->save().
+	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
 	 */
 	protected function update_meta() {
 		// Get the user's pod.
@@ -234,8 +234,6 @@ class Rise_Credit {
 			'job_title'    => $this->job_title,
 			'job_location' => $this->job_location,
 		];
-
-		// TODO investigate error handling (does $pod->save() return 0 on failure?)
 
 		return $pod->save( $update_fields );
 	}
@@ -262,7 +260,7 @@ class Rise_Credit {
 	/**
 	 * Set the credit's `index` field.
 	 *
-	 * @return void
+	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
 	 */
 	public function update_index() {
 		// Get the user's pod.
@@ -273,7 +271,6 @@ class Rise_Credit {
 			'index' => $this->index,
 		];
 
-		// TODO investigate error handling (does $pod->save() return 0 on failure?)
 		return $pod->save( $update_fields );
 	}
 

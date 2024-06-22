@@ -294,7 +294,7 @@ class Rise_UserProfile {
 	/**
 	 * Update the user's meta data.
 	 *
-	 * @return int The post ID return value of pods->save().
+	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
 	 */
 	protected function update_meta() {
 		// Get the user's pod.
@@ -307,7 +307,6 @@ class Rise_UserProfile {
 			$update_fields[$key] = $value;
 		}
 
-		// TODO investigate error handling (does $pod->save() return 0 on failure?)
 		return $pod->save( $update_fields );
 	}
 
@@ -397,8 +396,8 @@ class Rise_UserProfile {
 	 *
 	 * @since 1.0.3
 	 *
-	 * @param  string $name The field name.
-	 * @return void
+	 * @param  string         $name The field name.
+	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
 	 */
 	public function clear_profile_field( $name ) {
 		$pod = pods( 'user', $this->id );
@@ -406,7 +405,6 @@ class Rise_UserProfile {
 		// Get the field's save key.
 		$field = self::get_input_key( $name );
 
-		// TODO investigate error handling (does $pod->save() return 0 on failure?)
 		return $pod->save( $field, '' );
 	}
 
