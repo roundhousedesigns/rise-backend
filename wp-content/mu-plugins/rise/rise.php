@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Rise Theatre Directory
  * Description:       The main site functionality for the Rise Theatre Directory backend.
- * Version:           1.1.4-blockedDates
+ * Version:           1.1.4-dev
  * Author:            Roundhouse Designs
  * Author URI:        https://roundhouse-designs.com
  * Text Domain:       rise
