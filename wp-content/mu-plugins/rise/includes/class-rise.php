@@ -242,6 +242,8 @@ class Rise {
 		 * User roles.
 		 */
 		$this->loader->add_action( 'admin_init', $user_data, 'add_roles' );
+		$this->loader->add_action( 'current_screen', $user_data, 'redirect_crew_members_from_dashboard' );
+		$this->loader->add_action( 'after_setup_theme', $user_data, 'remove_admin_bar_for_crew_members' );
 
 		/**
 		 * Custom taxonomy: gender_identity (`user`)

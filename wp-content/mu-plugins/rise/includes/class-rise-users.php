@@ -39,16 +39,6 @@ class Rise_Users {
 		$role->add_cap( 'delete_saved_searches' );
 		$role->add_cap( 'delete_published_saved_searches' );
 
-		/**
-		 * Conflict Date Ranges
-		 */
-		// $role->add_cap( 'read_conflict_ranges' );
-		// $role->add_cap( 'publish_conflict_ranges' );
-		// $role->add_cap( 'edit_conflict_ranges' );
-		// $role->add_cap( 'edit_published_conflict_ranges' );
-		// $role->add_cap( 'delete_conflict_ranges' );
-		// $role->add_cap( 'delete_published_conflict_ranges' );
-
 		$roles = [
 			'crew-member' => [
 				'read'                            => true,
@@ -66,16 +56,41 @@ class Rise_Users {
 				'edit_saved_searches'             => true,
 				'edit_published_saved_searches'   => true,
 				'delete_published_saved_searches' => true,
-				// 'read_conflict_ranges'             => true,
-				// 'publish_conflict_ranges'          => true,
-				// 'edit_conflict_ranges'             => true,
-				// 'edit_published_conflict_ranges'   => true,
-				// 'delete_published_conflict_ranges' => true,
 			],
 		];
 
 		foreach ( $roles as $role => $caps ) {
 			add_role( $role, $caps );
+		}
+	}
+
+	/**
+	 * Blocks access to the Dashboard for users with the 'crew-member' role.
+	 *
+	 * @return void
+	 */
+	public function redirect_crew_members_from_dashboard() {
+		// Check if the user is logged in and has the 'crew-member' role
+		if ( is_user_logged_in() && current_user_can( 'crew-member' ) ) {
+			// Get the current screen object
+			$current_screen = get_current_screen();
+
+			// Check if the user is on the dashboard
+			if ( 'dashboard' === $current_screen->base || 'admin' === $current_screen->base ) {
+				wp_redirect( 'https://work.risetheatre.org' );
+				exit;
+			}
+		}
+	}
+
+	/**
+	 * Removes the admin bar for Crew Members.
+	 *
+	 * @return void
+	 */
+	function remove_admin_bar_for_crew_members() {
+		if ( current_user_can( 'crew-member' ) ) {
+			show_admin_bar( false );
 		}
 	}
 
@@ -367,6 +382,8 @@ class Rise_Users {
 		);
 
 		wp_nonce_field( 'save_' . $taxonomy, $taxonomy . '_nonce' );
+
+		// TODO move this HTML to a template file.
 		?>
 
 		<!-- Add a new section to the user profile edit screen for the given taxonomy -->
@@ -464,9 +481,9 @@ class Rise_Users {
 	/**
 	 * Updates the conflict range for a user.
 	 *
-	 * @param  int            $user_id          The ID of the user.
-	 * @param  string         $startDate        The start date of the conflict range.
-	 * @param  string         $endDate          The end date of the conflict range.
+	 * @param  int            $user_id           The ID of the user.
+	 * @param  string         $startDate         The start date of the conflict range.
+	 * @param  string         $endDate           The end date of the conflict range.
 	 * @param  int            $conflict_range_id The ID of the conflict range to update.
 	 * @throws WP_Error       When there is an error updating the date range.
 	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
