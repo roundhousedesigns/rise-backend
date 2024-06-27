@@ -358,7 +358,7 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
  * Safe redirect with nocache headers to prevent caching of the redirect. Don't forget to call `exit`
  * after calling this function to prevent further execution.
  *
- * @deprecated Never used.
+ * @deprecated Not used.
  * @since  1.0.4
  *
  * @param  string $location The path to redirect to.
@@ -368,8 +368,7 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 function rise_nocache_redirect( $location, $status = 302 ) {
 	nocache_headers();
 	wp_safe_redirect( esc_url_raw( $location ), $status, 'RISE' );
-
-	// TODO exit??
+	exit;
 }
 
 /**

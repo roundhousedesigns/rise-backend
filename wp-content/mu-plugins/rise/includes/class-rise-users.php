@@ -77,7 +77,7 @@ class Rise_Users {
 
 			// Check if the user is on the dashboard
 			if ( 'dashboard' === $current_screen->base || 'admin' === $current_screen->base ) {
-				wp_redirect( 'https://work.risetheatre.org' );
+				wp_safe_redirect( 'https://work.risetheatre.org' );
 				exit;
 			}
 		}
