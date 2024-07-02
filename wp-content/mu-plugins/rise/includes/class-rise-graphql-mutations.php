@@ -1130,7 +1130,7 @@ class Rise_GraphQL_Mutations {
 						'type'        => 'ID',
 					],
 					'filterSet' => [
-						'type'        => 'SearchFilterSetRaw',
+						'type'        => 'QueryableSearchFilterSet',
 						'description' => __( 'The search filter set to save.', 'rise' ),
 					],
 					'title'     => [
@@ -1140,14 +1140,14 @@ class Rise_GraphQL_Mutations {
 				],
 				'outputFields'        => [
 					'id' => [
-						'type'        => 'ID',
+						'type'        => 'Int',
 						'description' => __( 'The ID of the saved search item.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					// We obsfucate the actual success of this mutation to prevent user enumeration.
 					$payload = [
-						'success' => false,
+						'id' => 0,
 					];
 
 					if ( !isset( $input['filterSet'] ) || !$input['userId'] ) {
@@ -1162,7 +1162,7 @@ class Rise_GraphQL_Mutations {
 						throw new UserError( esc_html( $result->get_error_code() ) );
 					}
 
-					$payload['success'] = true;
+					$payload['id'] = $result;
 
 					return $payload;
 				},

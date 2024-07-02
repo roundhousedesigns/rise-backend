@@ -234,15 +234,15 @@ class Rise_GraphQL_Types {
 		);
 
 		/**
-		 * SearchFilterSetRaw input type.
+		 * QueryableSearchFilterSet input type.
 		 */
 		register_graphql_input_type(
-			'SearchFilterSetRaw',
+			'QueryableSearchFilterSet',
 			[
 				'description' => __( 'A set of search filters.', 'rise' ),
 				'fields'      => [
 					'positions'          => [
-						'description' => __( 'A list of `position` term ids', 'rise' ),
+						'description' => __( 'A list of `position` term ids (jobs)', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'skills'             => [
