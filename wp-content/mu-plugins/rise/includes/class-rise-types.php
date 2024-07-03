@@ -177,7 +177,20 @@ class Rise_Types {
 	 * @since     0.1.0
 	 */
 	public function user_notice_init() {
-		Rise_Taxonomies::register_post_type( 'user_notice', 'user_notices', 'User Notice', 'Dashboard Updates/Notices', 'dashicons-flag', ['supports' => ['title', 'author', 'editor']] );
+		Rise_Taxonomies::register_post_type(
+			'user_notice',
+			'user_notices',
+			'Dashboard Notice',
+			'Dashboard Notices',
+			'dashicons-flag',
+			[
+				'supports'            => ['title', 'author', 'editor'],
+				'public'              => false,
+				'exclude_from_search' => true,
+				'publicly_queryable'  => false,
+				'show_ui'             => true,
+				'capability_type'     => 'post',
+			] );
 	}
 
 	/**
@@ -221,7 +234,7 @@ class Rise_Types {
 				'exclude_from_search' => true,
 				'publicly_queryable'  => true,
 				'supports'            => ['title', 'author', 'editor'],
-				'show_ui'             => true,
+				'show_ui'             => false,
 			]
 		);
 	}
