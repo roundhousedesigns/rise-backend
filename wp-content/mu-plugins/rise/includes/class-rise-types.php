@@ -190,7 +190,8 @@ class Rise_Types {
 				'publicly_queryable'  => false,
 				'show_ui'             => true,
 				'capability_type'     => 'post',
-			] );
+			]
+		);
 	}
 
 	/**
