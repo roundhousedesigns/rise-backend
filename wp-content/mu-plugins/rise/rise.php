@@ -17,7 +17,7 @@ if ( !defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.1.5-dev' );
+define( 'RISE_VERSION', '1.1.5' );
 
 /**
  * The code that runs during plugin activation.
