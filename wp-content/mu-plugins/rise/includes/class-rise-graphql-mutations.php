@@ -37,7 +37,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__deleteOwnSavedSearch();
 		$this->register_mutation__deleteOwnConflictRange();
 		$this->register_mutation__uploadFile();
-		$this->register_mutation__updateBookmarkedProfiles();
+		$this->register_mutation__updateStarredProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
@@ -1046,22 +1046,22 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
-	 * Update a user's bookmarked profiles.
+	 * Update a user's starred profiles.
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__updateBookmarkedProfiles() {
+	protected function register_mutation__updateStarredProfiles() {
 		register_graphql_mutation(
-			'updateBookmarkedProfiles',
+			'updateStarredProfiles',
 			[
 				'inputFields'         => [
 					'loggedInId'         => [
 						'type'        => 'Int',
 						'description' => __( 'The currently logged in user ID.', 'rise' ),
 					],
-					'bookmarkedProfiles' => [
+					'starredProfiles' => [
 						'type'        => ['list_of' => 'Int'],
-						'description' => __( 'The updated list of bookmarked profiles.', 'rise' ),
+						'description' => __( 'The updated list of starred profiles.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -1075,37 +1075,37 @@ class Rise_GraphQL_Mutations {
 
 					$pod = pods( 'user', $input['loggedInId'] );
 
-					$bookmarked_profiles = $pod->field( 'bookmarked_profile_connections' );
+					$starred_profiles = $pod->field( 'starred_profile_connections' );
 
-					// If the bookmarked profiles field is not set, make it an array.
-					if ( !is_array( $bookmarked_profiles ) ) {
-						$bookmarked_profiles = [];
+					// If the starred profiles field is not set, make it an array.
+					if ( !is_array( $starred_profiles ) ) {
+						$starred_profiles = [];
 					}
 
-					$bookmarked_ids = rise_pluck_profile_ids( $bookmarked_profiles );
+					$starred_ids = rise_pluck_profile_ids( $starred_profiles );
 
-					if ( !isset( $input['bookmarkedProfiles'] ) ) {
+					if ( !isset( $input['starredProfiles'] ) ) {
 						throw new WP_Error( esc_html( 'no_profile_id' ), esc_html__( 'No profile IDs provided.', 'rise' ) );
 					}
 
 					// Sanitize the input.
-					$bookmarked_ids = array_map( 'absint', $input['bookmarkedProfiles'] );
+					$starred_ids = array_map( 'absint', $input['starredProfiles'] );
 
-					// Update the bookmarked profiles field with the new array.
+					// Update the starred profiles field with the new array.
 					$pod_id = $pod->save( [
-						'bookmarked_profile_connections' => $bookmarked_ids,
+						'starred_profile_connections' => $starred_ids,
 					] );
 
-					// Get the updated bookmarked profile IDs.
-					$updated_profile_ids = rise_pluck_profile_ids( $pod->field( 'bookmarked_profile_connections' ) );
+					// Get the updated starred profile IDs.
+					$updated_profile_ids = rise_pluck_profile_ids( $pod->field( 'starred_profile_connections' ) );
 
 					if ( $pod_id ) {
 						return [
-							'updatedBookmarkedProfiles' => $updated_profile_ids,
+							'updatedStarredProfiles' => $updated_profile_ids,
 						];
 					}
 
-					throw new WP_Error( esc_html( 'bookmarked_profile_toggle_failed' ), esc_html__( 'The profile could not be toggled.', 'rise' ) );
+					throw new WP_Error( esc_html( 'starred_profile_toggle_failed' ), esc_html__( 'The profile could not be toggled.', 'rise' ) );
 				},
 			],
 		);
