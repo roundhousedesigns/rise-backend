@@ -126,3 +126,23 @@ function flatten_array( $array ) {
 
 	return $result;
 }
+
+/**
+ * Toggles the presence of a given ID in an array.
+ *
+ * If the ID is already in the array, it is removed. If it is not in the array, it is added.
+ *
+ * @param  int[] $array     The array of IDs to toggle.
+ * @param  int   $toggledId The ID to toggle.
+ * @return int[] The updated array of IDs.
+ */
+function toggle_id_in_array( $array, $toggledId ) {
+	if ( in_array( $toggledId, $array ) ) {
+		$key = array_search( $toggledId, $array );
+		unset( $array[$key] );
+	} else {
+		$array[] = $toggledId;
+	}
+
+	return $array;
+}

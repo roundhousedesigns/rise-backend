@@ -1055,53 +1055,51 @@ class Rise_GraphQL_Mutations {
 			'updateStarredProfiles',
 			[
 				'inputFields'         => [
-					'loggedInId'         => [
+					'toggledId' => [
 						'type'        => 'Int',
-						'description' => __( 'The currently logged in user ID.', 'rise' ),
-					],
-					'starredProfiles' => [
-						'type'        => ['list_of' => 'Int'],
 						'description' => __( 'The updated list of starred profiles.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
-					'viewer' => [
-						'type'        => 'User',
-						'description' => __( 'The updated viewer field.', 'rise' ),
+					'starredProfiles' => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The updated list of starred profiles.', 'rise' ),
+					],
+					'toggledId'       => [
+						'type'        => 'Int',
+						'description' => __( 'The id of the item that was added or removed.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// TODO Security check. Check if user is logged in.
+					$logged_in_id = get_current_user_id();
 
-					$pod = pods( 'user', $input['loggedInId'] );
+					$pod = pods( 'user', $logged_in_id );
 
-					$starred_profiles = $pod->field( 'starred_profile_connections' );
+					$current_starred_profiles = $pod->field( 'starred_profiles' );
 
 					// If the starred profiles field is not set, make it an array.
-					if ( !is_array( $starred_profiles ) ) {
-						$starred_profiles = [];
+					if ( !is_array( $current_starred_profiles ) ) {
+						$current_starred_profiles = [];
 					}
 
-					$starred_ids = rise_pluck_profile_ids( $starred_profiles );
+					// Get the current starred IDs.
+					$current_starred_profile_ids = rise_pluck_profile_ids( $current_starred_profiles );
 
-					if ( !isset( $input['starredProfiles'] ) ) {
-						throw new WP_Error( esc_html( 'no_profile_id' ), esc_html__( 'No profile IDs provided.', 'rise' ) );
-					}
+					// Update the collection.
+					$updated_starred_ids = toggle_id_in_array( $current_starred_profile_ids, $input['toggledId'] );
 
 					// Sanitize the input.
-					$starred_ids = array_map( 'absint', $input['starredProfiles'] );
+					$updated_starred_ids = array_map( 'absint', $updated_starred_ids );
 
 					// Update the starred profiles field with the new array.
 					$pod_id = $pod->save( [
-						'starred_profile_connections' => $starred_ids,
+						'starred_profiles' => $updated_starred_ids,
 					] );
-
-					// Get the updated starred profile IDs.
-					$updated_profile_ids = rise_pluck_profile_ids( $pod->field( 'starred_profile_connections' ) );
 
 					if ( $pod_id ) {
 						return [
-							'updatedStarredProfiles' => $updated_profile_ids,
+							'starredProfiles' => $updated_starred_ids,
+							'toggledId'       => $input['toggledId'],
 						];
 					}
 
