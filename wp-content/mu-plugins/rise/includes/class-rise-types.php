@@ -20,7 +20,13 @@ class Rise_Types {
 	 * @return void
 	 */
 	public function credit_init() {
-		Rise_Taxonomies::register_post_type( 'credit', 'credits', 'Credit', 'Credits', 'dashicons-star-half' );
+		Rise_Taxonomies::register_post_type( 'credit', 'credits', 'Credit', 'Credits', 'dashicons-star-half',
+			[
+				'supports'            => ['title', 'author', 'editor'],
+				'public'              => true,
+				'exclude_from_search' => true,
+				'capability_type'     => 'post',
+			] );
 	}
 
 	/**

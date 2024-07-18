@@ -105,6 +105,14 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The user\'s website.', 'rise' ),
 					],
+					'multilingual'       => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether or not the user is multilingual.', 'rise' ),
+					],
+					'languages'          => [
+						'type'        => 'String',
+						'description' => __( 'Non-English languages spoken.', 'rise' ),
+					],
 					'socials'            => [
 						'type'        => 'PersonalLinks',
 						'description' => __( 'The user\'s social media and external web links.', 'rise' ),
