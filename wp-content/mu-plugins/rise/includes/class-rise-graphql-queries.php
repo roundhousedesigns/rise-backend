@@ -572,7 +572,7 @@ class Rise_GraphQL_Queries {
 		 */
 		register_graphql_field(
 			'RootQuery',
-			'userBySlug',
+			'userIdBySlug',
 			[
 				'type'        => 'Int',
 				'description' => __( 'Get a user ID by their slug.', 'rise' ),
