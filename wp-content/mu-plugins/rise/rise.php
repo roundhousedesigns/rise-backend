@@ -7,6 +7,8 @@
  * Author URI:        https://roundhouse-designs.com
  * Text Domain:       rise
  * Domain Path:       /languages
+ *
+ * Copyright (c) 2024 Maestra Music and Roundhouse Designs. All rights reserved.
  */
 
 // If this file is called directly, abort.
