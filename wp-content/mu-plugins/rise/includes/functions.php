@@ -90,12 +90,13 @@ function rise_get_attachment_id_by_url( $url ) {
  * @param  string[] $include_authors An array of user IDs to include in the query.
  * @return int[]    The user IDs.
  */
-function rise_query_users_with_terms( $terms, $include_authors = [] ) {
-	$authors = $include_authors;
-
+function rise_query_users( $terms, $authors = [] ) {
 	if ( !$terms ) {
-		shuffle( $authors );
-		return $authors;
+		$users    = get_public_profile_users( $authors );
+		$user_ids = wp_list_pluck( $users, 'ID' );
+		shuffle( $user_ids );
+
+		return $user_ids;
 	}
 
 	// Get the object IDs for the terms in the taxonomies
@@ -137,23 +138,32 @@ function rise_query_users_with_terms( $terms, $include_authors = [] ) {
 		return [];
 	}
 
+	// Remove any users with the 'disable_profile' pod meta set to true
+	$users = get_public_profile_users( $user_ids );
+
+	return wp_list_pluck( $users, 'ID' );
+}
+
+/**
+ * Retrieves public profile users based on the given user IDs.
+ *
+ * @param  int[]     $user_ids An array of user IDs.
+ * @return WP_User[] An array of user objects with public profiles.
+ */
+function get_public_profile_users( $user_ids ) {
 	// Query users based on the object IDs
 	$args = [
 		'include' => $user_ids,
 		'role'    => 'crew-member',
 	];
 
-	// Retrieve users based on all of our querying and filtration.
 	$users = get_users( $args );
 
-	// Remove any users with the 'disable_profile' pod meta set to true
-	$users = array_filter( $users, function ( $user ) {
+	return array_filter( $users, function ( $user ) {
 		$pod = pods( 'user', $user->ID );
 
-		return boolval( $pod->field( 'disable_profile' ) ) === false;
+		return $pod->field( 'disable_profile' ) !== 1 ? true : false;
 	} );
-
-	return wp_list_pluck( $users, 'ID' );
 }
 
 /**
@@ -317,7 +327,6 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 				'include_children' => true,
 			];
 		}
-
 	}
 
 	// Query credits with the desired attributes.
@@ -347,10 +356,7 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 		$user_taxonomy_term_ids[$tax] = $term_ids;
 	}
 
-	// Filter users by taxonomy
-	$filtered_authors = rise_query_users_with_terms( $user_taxonomy_term_ids, $authors );
-
-	return $filtered_authors;
+	return rise_query_users( $user_taxonomy_term_ids, $authors );
 }
 // phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 

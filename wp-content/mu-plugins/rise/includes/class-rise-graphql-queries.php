@@ -234,6 +234,10 @@ class Rise_GraphQL_Queries {
 	 * @return array The scored candidates.
 	 */
 	private static function rise_score_search_results( $args, $candidate_ids ) {
+		if ( empty( $candidate_ids ) ) {
+			return [];
+		}
+
 		// Set up the scoring array with user IDs as keys and starting score of 0 as values.
 		$users = [];
 		foreach ( $candidate_ids as $id ) {

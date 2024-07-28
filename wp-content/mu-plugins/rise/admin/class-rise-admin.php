@@ -403,7 +403,7 @@ class Rise_Admin {
 
 				foreach ( $terms as $term ) {
 					$args    = [$slug => $term->term_id];
-					$results = rise_query_users_with_terms( $args );
+					$results = rise_query_users( $args );
 
 					$data[] = [
 						'name'  => $term->name,
