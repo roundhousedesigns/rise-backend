@@ -159,11 +159,13 @@ function get_public_profile_users( $user_ids ) {
 
 	$users = get_users( $args );
 
-	return array_filter( $users, function ( $user ) {
+	$filtered = array_filter( $users, function ( $user ) {
 		$pod = pods( 'user', $user->ID );
 
-		return $pod->field( 'disable_profile' ) !== 1 ? true : false;
+		return $pod->field( 'disable_profile' ) !== '1' ? true : false;
 	} );
+
+	return $filtered;
 }
 
 /**

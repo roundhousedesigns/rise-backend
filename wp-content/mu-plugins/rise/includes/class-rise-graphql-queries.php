@@ -405,6 +405,33 @@ class Rise_GraphQL_Queries {
 			],
 		);
 
+		// DEBUG
+		register_graphql_field(
+			'RootQuery',
+			'disabledProfileUsers',
+			[
+				'type'        => ['list_of' => 'Int'],
+				'description' => __( 'Users with disabled profiles.', 'rise' ),
+				'resolve'     => function ( $root, $args ) {
+					$params = [
+						'where' => 'd.disable_profile = 1',
+						'limit' => -1,
+					];
+
+					$users        = pods( 'user', $params );
+					$disabled_ids = [];
+
+					if ( $users->total() > 0 ) {
+						while ( $users->fetch() ) {
+							$disabled_ids[] = $users->field( 'ID' );
+						}
+					}
+
+					return $disabled_ids;
+				},
+			],
+		);
+
 		/**
 		 * Query for users with matching selected criteria.
 		 *
