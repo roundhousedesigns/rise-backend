@@ -408,20 +408,6 @@ class Rise_Users {
 	}
 
 	/**
-	 * Generate the default, unique slug for a user.
-	 *
-	 * @since 1.0.4
-	 *
-	 * @param  string $first_name The user's first name.
-	 * @param  string $last_name  The user's last name.
-	 * @return string The user's sanitized name-based slug.
-	 */
-	public static function generate_default_user_slug( $first_name = '', $last_name = '' ) {
-		// Generate the full name based on the user's first and last name.
-		return sanitize_title( $first_name . ' ' . $last_name );
-	}
-
-	/**
 	 * Save a search to the user's search history.
 	 *
 	 * @param  int            $user_id       The user ID.

@@ -18,25 +18,3 @@ interface powered by GraphQL.
 == Installation ==
 
 Upload the `rise` directory to the `/wp-content/mu-plugins/` directory
-
-== Changelog ==
-= 1.1.10-dev =
-* Started paying attention to the changelog.
-* Changed exit -> wp_die().
-
-= 1.1.5=
-* SearchFilterSetRaw -> QueryableSearchFilterSet
-
-= 1.1.4 =
-* Conflict/Job Dates
-* Cron jobs
-
-= 1.1.3 =
-* changeEmail mutation.
-
-= 1.1.2 =
-* Relate 'associate' and 'assistant' terms for more holistic searching.
-
-= 1.1.1 =
-* Minor update to function naming.
-* Finally started this changelog.

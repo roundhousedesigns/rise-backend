@@ -380,24 +380,17 @@ function rise_nocache_redirect( $location, $status = 302 ) {
 }
 
 /**
- * Generate user slugs for all users with the 'crew-member' role.
+ * Generates a default user slug based on the user's first and last name.
  *
- * @since 1.0.4
+ * @since 1.1.10
  *
- * @return void
+ * @param  string $first_name The user's first name.
+ * @param  string $last_name  The user's last name.
+ * @return string The sanitized title of the user's full name.
  */
-function rise_generate_user_slugs() {
-	// Get all users with the 'crew-member' role, with no limit.
-	$users = get_users( [
-		'role' => 'crew-member',
-	] );
-
-	foreach ( $users as $user ) {
-		wp_update_user( [
-			'ID'            => $user->ID,
-			'user_nicename' => Rise_Users::generate_default_user_slug( $user->ID ),
-		] );
-	}
+function rise_generate_default_user_slug( $first_name = '', $last_name = '' ) {
+	// Generate the full name based on the user's first and last name.
+	return sanitize_title( $first_name . ' ' . $last_name );
 }
 
 /**

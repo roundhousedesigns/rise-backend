@@ -103,7 +103,7 @@ class Rise_GraphQL_Mutations {
 
 					// Set the user's slug (user_nicename)
 					$input_data = $input;
-					$input_data = array_merge( $input_data, ['nicename' => Rise_Users::generate_default_user_slug( $input['firstName'], $input['lastName'] )] );
+					$input_data = array_merge( $input_data, ['nicename' => rise_generate_default_user_slug( $input['firstName'], $input['lastName'] )] );
 
 					/**
 					 * Map all of the args from GQL to WP friendly
@@ -1027,7 +1027,7 @@ class Rise_GraphQL_Mutations {
 						'description' => __( 'The updated value.', 'rise' ),
 					],
 				],
-				'mutateAndGetPayload' => function ( $input, $updated ) use ( $field_name, $updated_field ) {
+				'mutateAndGetPayload' => function ( $input ) use ( $field_name, $updated_field ) {
 					// TODO Security check. Check if user is logged in.
 
 					$pod = pods( 'user', $input['userId'] );
@@ -1083,10 +1083,10 @@ class Rise_GraphQL_Mutations {
 					}
 
 					// Get the current starred IDs.
-					$current_starred_profile_ids = rise_pluck_profile_ids( $current_starred_profiles );
+					$current_starred_ids = rise_pluck_profile_ids( $current_starred_profiles );
 
 					// Update the collection.
-					$updated_starred_ids = toggle_id_in_array( $current_starred_profile_ids, $input['toggledId'] );
+					$updated_starred_ids = toggle_id_in_array( $current_starred_ids, $input['toggledId'] );
 
 					// Sanitize the input.
 					$updated_starred_ids = array_map( 'absint', $updated_starred_ids );

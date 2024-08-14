@@ -40,8 +40,7 @@ class Rise_Cron {
 			$pod      = pods( 'conflict_range', $conflict_range->ID );
 			$end_date = $pod->field( 'end_date' );
 
-			$date  = DateTime::createFromFormat( 'Y-m-d', $end_date );
-			$today = new DateTime();
+			$date = DateTime::createFromFormat( 'Y-m-d', $end_date );
 
 			// Check if the date is in the past
 			if ( $date < new DateTime() ) {
