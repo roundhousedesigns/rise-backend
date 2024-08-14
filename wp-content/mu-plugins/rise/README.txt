@@ -20,6 +20,9 @@ interface powered by GraphQL.
 Upload the `rise` directory to the `/wp-content/mu-plugins/` directory
 
 == Changelog ==
+= 1.1.9-dev =
+* Started paying attention to the changelog.
+* Changed exit -> wp_die().
 
 = 1.1.5=
 * SearchFilterSetRaw -> QueryableSearchFilterSet

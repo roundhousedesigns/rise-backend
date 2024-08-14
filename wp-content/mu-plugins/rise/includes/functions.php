@@ -376,7 +376,7 @@ function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 function rise_nocache_redirect( $location, $status = 302 ) {
 	nocache_headers();
 	wp_safe_redirect( esc_url_raw( $location ), $status, 'RISE' );
-	exit;
+	wp_die();
 }
 
 /**
