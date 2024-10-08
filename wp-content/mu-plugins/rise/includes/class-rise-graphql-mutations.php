@@ -175,6 +175,7 @@ class Rise_GraphQL_Mutations {
 						'description' => __( 'A string that contains the reCAPTCHA response token.', 'rise' ),
 					],
 					'rememberMe'     => [
+						// TODO Implement 'rememberMe'
 						'type'        => 'Boolean',
 						'description' => __(
 							'Whether to "remember" the user. Increases the time that the cookie will be kept. Default false.',
@@ -234,7 +235,9 @@ class Rise_GraphQL_Mutations {
 						throw new UserError( esc_html( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'bad_login' ) );
 					}
 
-					return ['status' => 'SUCCESS'];
+					return [
+						'status' => 'SUCCESS',
+					];
 				},
 			]
 		);
