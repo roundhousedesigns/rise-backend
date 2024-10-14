@@ -3,8 +3,9 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
-## \[1.1.10-dev] - Unreleased
+## \[1.1.10] - 2024-10-14
 
+- Add: Delete account mutation.
 - Improve: Gave the changelog a proper home.
 - Improve: exit -> wp_die().
 - Improve: Move Rise_User::generate_default_user_slug() to standalone function rise_generate_default_user_slug().
