@@ -36,6 +36,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__deleteOwnCredit();
 		$this->register_mutation__deleteOwnSavedSearch();
 		$this->register_mutation__deleteOwnConflictRange();
+		$this->register_mutation__deleteOwnAccount();
 		$this->register_mutation__uploadFile();
 		$this->register_mutation__updateStarredProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
@@ -295,7 +296,7 @@ class Rise_GraphQL_Mutations {
 						throw new UserError( esc_attr( 'bad_recpatcha_response' ) );
 					}
 
-					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'success' => false,
 					];
@@ -370,7 +371,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'success' => false,
 					];
@@ -453,7 +454,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'success' => false,
 					];
@@ -537,7 +538,7 @@ class Rise_GraphQL_Mutations {
 						throw new UserError( 'user_not_found' );
 					}
 
-					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'success' => false,
 						'slug'    => $user->user_nicename,
@@ -1074,9 +1075,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					$logged_in_id = get_current_user_id();
-
-					$pod = pods( 'user', $logged_in_id );
+					$pod = pods( 'user', get_current_user_id() );
 
 					$current_starred_profiles = $pod->field( 'starred_profiles' );
 
@@ -1146,7 +1145,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'id' => 0,
 					];
@@ -1205,7 +1204,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					// We obsfucate the actual success of this mutation to prevent user enumeration.
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
 						'id' => 0,
 					];
@@ -1223,6 +1222,52 @@ class Rise_GraphQL_Mutations {
 					$payload['id'] = $result;
 
 					return $payload;
+				},
+			]
+		);
+	}
+
+	protected function register_mutation__deleteOwnAccount() {
+		register_graphql_mutation(
+			'deleteOwnAccount',
+			[
+				'inputFields'         => [
+					'userId' => [
+						'type'        => 'ID',
+						'description' => __( 'The ID of the user to delete.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'result' => [
+						'type'        => 'Boolean',
+						'description' => __( 'The result of the delete operation.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// Make sure the current user id matches the user id in the input.
+					if ( get_current_user_id() !== absint( $input['userId'] ) ) {
+						throw new UserError( 'user_not_authorized' );
+					}
+
+					$user_id = isset( $input['userId'] ) ? $input['userId'] : 0;
+
+					if ( !$user_id ) {
+						throw new UserError( esc_html( 'no_user_id' ) );
+					}
+
+					/**
+					 * @link https://developer.wordpress.org/reference/functions/wp_delete_user/
+					 */
+					require_once ( ABSPATH . 'wp-admin/includes/user.php' );
+					$result = wp_delete_user( $user_id );
+
+					if ( !$result ) {
+						throw new UserError( esc_html( 'delete_user_failed' ) );
+					}
+
+					return [
+						'result' => true,
+					];
 				},
 			]
 		);
