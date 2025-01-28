@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
+## \[1.2-jobs] - Unreleased
+
+- TODO: change `job` to `job-post` for clarity between this CPT and 'job' in directory search context.
+
 ## \[1.1.10] - 2024-10-14
 
 - Add: Delete account mutation.
