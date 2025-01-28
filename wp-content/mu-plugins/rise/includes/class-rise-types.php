@@ -416,4 +416,77 @@ class Rise_Types {
 	public function job_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 		return Rise_Taxonomies::post_type_bulk_updated_messages( 'job', 'Job', 'Jobs', $bulk_messages, $bulk_counts );
 	}
+
+	/**
+	 * Registers the `network_partner` post type.
+	 *
+	 * @access    private
+	 * @since     0.1.0
+	 */
+	public function network_partner_init() {
+		Rise_Taxonomies::register_post_type(
+			'network_partner',
+			'network_partners',
+			'Network Partner',
+			'Network Partners',
+			'dashicons-buddicons-friends',
+			[
+				'supports'            => ['title', 'editor', 'thumbnail'],
+				'public'              => true,
+				'exclude_from_search' => false,
+				'publicly_queryable'  => true,
+				'show_ui'             => true,
+				'show_in_menu'        => true,
+				'capability_type'     => 'post',
+			]
+		);
+	}
+
+	/**
+	 * Sets the post updated messages for the `network_partner` post type.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `network_partner` post type.
+	 */
+	public function network_partner_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'network_partner', 'network_partner', $messages );
+	}
+
+	/**
+	 * Sets the bulk post updated messages for the `network_partner` post type.
+	 *
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type.
+	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+	 * @return array Bulk messages for the `network_partner` post type.
+	 */
+	public function network_partner_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'network_partner', 'Network Partner', 'Network Partners', $bulk_messages, $bulk_counts );
+	}
+
+	/**
+	 * Disable the Block Editor for the `network_partner` post type.
+	 *
+	 * @param  string    $current_status
+	 * @param  string    $post_type
+	 * @return boolean
+	 */
+	public function network_partner_disable_block_editor( $current_status, $post_type ) {
+		if ( 'network_partner' === $post_type ) {
+			return false;
+		}
+		return $current_status;
+	}
+
+	/**
+	 * Disable the WYSIWYG Editor for the `network_partner` post type.
+	 *
+	 * @param  boolean $default
+	 * @return boolean True to enable the editor, false to disable.
+	 */
+	public function network_partner_remove_visual_editor( $default ) {
+		if ( get_post_type() === 'network_partner' ) {
+			return false;
+		}
+		return $default;
+	}
 }

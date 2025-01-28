@@ -378,6 +378,15 @@ class Rise {
 		$this->loader->add_action( 'init', $plugin_data, 'job_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_bulk_updated_messages', 10, 2 );
+
+		/**
+		 * Custom Post Type: network_partner
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'network_partner_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'network_partner_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'network_partner_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'network_partner_disable_block_editor', 10, 2 );
+		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'network_partner_remove_visual_editor' );
 	}
 
 	/**
