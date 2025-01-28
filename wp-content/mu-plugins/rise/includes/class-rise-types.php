@@ -44,7 +44,7 @@ class Rise_Types {
 	 *
 	 * Keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
 	 *
-	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type.
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `credit` post type.
 	 */
@@ -371,5 +371,49 @@ class Rise_Types {
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Registers the `job` post type.
+	 *
+	 * @access    private
+	 * @since     0.1.0
+	 */
+	public function job_init() {
+		Rise_Taxonomies::register_post_type(
+			'job',
+			'jobs',
+			'Job',
+			'Jobs',
+			'dashicons-businessman',
+			[
+				'supports'           => ['title', 'editor', 'author'],
+				'public'             => true,
+				'show_ui'            => true,
+				'publicly_queryable' => true,
+				'capability_type'    => 'post',
+			]
+		);
+	}
+
+	/**
+	 * Sets the post updated messages for the `job` post type.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `job` post type.
+	 */
+	public function job_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'job', 'Job', $messages );
+	}
+
+	/**
+	 * Sets the bulk post updated messages for the `job` post type.
+	 *
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type.
+	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+	 * @return array Bulk messages for the `job` post type.
+	 */
+	public function job_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'job', 'Job', 'Jobs', $bulk_messages, $bulk_counts );
 	}
 }

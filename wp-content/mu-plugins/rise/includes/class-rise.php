@@ -373,15 +373,11 @@ class Rise {
 		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'conflict_range_remove_visual_editor' );
 
 		/**
-		 * Custom Post Type: project
+		 * Custom Post Type: job
 		 */
-		// phpcs:disable
-		// TODO Implement project CPT
-		// $this->loader->add_action( 'init', $plugin_data, 'project_init' );
-		// $this->loader->add_filter( 'post_updated_messages', $plugin_data, 'project_updated_messages' );
-		// $this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'project_bulk_updated_messages', 10, 2 );
-		// phpcs:enable
-
+		$this->loader->add_action( 'init', $plugin_data, 'job_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_bulk_updated_messages', 10, 2 );
 	}
 
 	/**
