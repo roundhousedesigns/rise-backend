@@ -10,6 +10,8 @@
  * @since      0.1.0
  */
 
+// TODO: Rename this to class-rise-types.php or something more appropriate.
+
 class Rise_Taxonomies {
 	/**
 	 * Regsiter a post type.
