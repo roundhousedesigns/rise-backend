@@ -11,7 +11,8 @@
  * @since      0.1.0
  */
 
-class Rise_GraphQL_Queries {
+class Rise_GraphQL_Queries
+{
 	/**
 	 * Register GraphQL queries.`1
 	 *
@@ -19,7 +20,8 @@ class Rise_GraphQL_Queries {
 	 *
 	 * @return void
 	 */
-	public function register_queries() {
+	public function register_queries()
+	{
 		$this->register_fields();
 	}
 
@@ -32,7 +34,8 @@ class Rise_GraphQL_Queries {
 	 * @param  array $allowed The allowed fields.
 	 * @return array The modified allowed fields.
 	 */
-	public function require_authentication_allowed_fields( $allowed ) {
+	public function require_authentication_allowed_fields($allowed)
+	{
 		$allowed[] = 'loginWithCookiesAndReCaptcha';
 		$allowed[] = 'sendPasswordResetEmailWithReCaptcha';
 		$allowed[] = 'registerUserWithReCaptcha';
@@ -50,12 +53,13 @@ class Rise_GraphQL_Queries {
 	 * @param  array $response The GraphQL response.
 	 * @return array The modified GraphQL response.
 	 */
-	public function remove_graphql_extensions_response_data( $response ) {
-		if ( is_array( $response ) && isset( $response['extensions'] ) ) {
-			unset( $response['extensions'] );
+	public function remove_graphql_extensions_response_data($response)
+	{
+		if (is_array($response) && isset($response['extensions'])) {
+			unset($response['extensions']);
 		}
-		if ( is_object( $response ) && isset( $response->extensions ) ) {
-			unset( $response->extensions );
+		if (is_object($response) && isset($response->extensions)) {
+			unset($response->extensions);
 		}
 		return $response;
 	}
@@ -67,18 +71,19 @@ class Rise_GraphQL_Queries {
 	 * @param  string                $taxonomy
 	 * @return void
 	 */
-	private static function prepare_taxonomy_terms( $user_id, $taxonomy ) {
+	private static function prepare_taxonomy_terms($user_id, $taxonomy)
+	{
 		// Use the more general wp_get_object_terms instead of get_the_terms
 		// to ensure User object support.
-		$terms = wp_get_object_terms( $user_id, $taxonomy );
+		$terms = wp_get_object_terms($user_id, $taxonomy);
 
-		if ( !$terms ) {
+		if (!$terms) {
 			return [];
 		}
 
 		$prepared_terms = [];
 
-		foreach ( $terms as $term ) {
+		foreach ($terms as $term) {
 			$prepared_terms[] = [
 				'databaseId' => $term->term_id,
 				'name'       => $term->name,
@@ -95,25 +100,26 @@ class Rise_GraphQL_Queries {
 	 * @param  array $departments
 	 * @return array An array of job IDs.
 	 */
-	private static function get_job_skills( $jobs ) {
+	private static function get_job_skills($jobs)
+	{
 		$selected_skills = [];
-		foreach ( $jobs as $job ) {
-			$pod       = pods( 'position', $job );
-			$retrieved = $pod->field( 'skills' );
+		foreach ($jobs as $job) {
+			$pod       = pods('position', $job);
+			$retrieved = $pod->field('skills');
 
-			if ( !$retrieved ) {
+			if (!$retrieved) {
 				continue;
 			}
 
-			$selected_skills[] = wp_list_pluck( $retrieved, 'term_id' );
+			$selected_skills[] = wp_list_pluck($retrieved, 'term_id');
 		}
 
-		if ( !$selected_skills ) {
+		if (!$selected_skills) {
 			return [];
 		}
 
 		// Flatten the array of job-related skills and remove duplicates.
-		$selected_skills = array_unique( flatten_array( $selected_skills ) );
+		$selected_skills = array_unique(flatten_array($selected_skills));
 
 		$term_args = [
 			'include'    => $selected_skills,
@@ -121,10 +127,10 @@ class Rise_GraphQL_Queries {
 			'hide_empty' => false,
 			'taxonomy'   => 'skill',
 		];
-		$skill_terms = get_terms( $term_args );
+		$skill_terms = get_terms($term_args);
 
 		$prepared_skills = [];
-		foreach ( $skill_terms as $skill ) {
+		foreach ($skill_terms as $skill) {
 			$prepared_skills[] = [
 				'databaseId' => $skill->term_id,
 				'name'       => $skill->name,
@@ -141,37 +147,38 @@ class Rise_GraphQL_Queries {
 	 * @param  array $departments
 	 * @return array An array of job IDs.
 	 */
-	private static function get_department_jobs( $departments ) {
-		if ( count( $departments ) === 1 && 0 === absint( $departments[0] ) ) {
+	private static function get_department_jobs($departments)
+	{
+		if (count($departments) === 1 && 0 === absint($departments[0])) {
 			// retrieve only top-level terms for `position`
-			$terms = get_terms( [
+			$terms = get_terms([
 				'taxonomy'   => 'position',
 				'hide_empty' => false,
 				'parent'     => 0,
-			] );
-		} elseif ( empty( $departments ) ) {
+			]);
+		} elseif (empty($departments)) {
 			// If no departments are selected, return an empty array.
 			return [];
 		} else {
 			// get all terms that are children of any of the term ids in the `$departments` array
 			$all_children = [];
-			foreach ( $departments as $department ) {
-				$children = get_term_children( $department, 'position' );
-				if ( !empty( $children ) ) {
-					$all_children = array_merge( $all_children, $children );
+			foreach ($departments as $department) {
+				$children = get_term_children($department, 'position');
+				if (!empty($children)) {
+					$all_children = array_merge($all_children, $children);
 				}
 			}
 
-			$terms = get_terms( [
+			$terms = get_terms([
 				'taxonomy'   => 'position',
 				'hide_empty' => false,
 				'include'    => $all_children,
-			] );
+			]);
 		}
 
 		$prepared_terms = [];
 
-		foreach ( $terms as $term ) {
+		foreach ($terms as $term) {
 			$prepared_terms[] = [
 				'databaseId'       => $term->term_id,
 				'parentDatabaseId' => $term->parent,
@@ -189,8 +196,9 @@ class Rise_GraphQL_Queries {
 	 * @param  string $name
 	 * @return array  An array of user IDs.
 	 */
-	private static function search_users_by_name( $name ) {
-		$search_string = sanitize_text_field( $name );
+	private static function search_users_by_name($name)
+	{
+		$search_string = sanitize_text_field($name);
 
 		// Prepare an array of arguments for the user query
 		$query_args = [
@@ -199,7 +207,7 @@ class Rise_GraphQL_Queries {
 		];
 
 		// Create a new instance of WP_User_Query
-		$user_query = new WP_User_Query( $query_args );
+		$user_query = new WP_User_Query($query_args);
 
 		// Retrieve the results
 		$users = $user_query->get_results();
@@ -207,21 +215,21 @@ class Rise_GraphQL_Queries {
 		// Process the results
 		$user_ids = [];
 
-		if ( !empty( $users ) ) {
-			foreach ( $users as $user ) {
+		if (!empty($users)) {
+			foreach ($users as $user) {
 				$user_ids[] = $user->ID;
 			}
 		}
 
 		// Remove incomplete profiles
-		$user_ids = array_filter( array_unique( $user_ids ), 'rise_remove_incomplete_profiles_from_search' );
+		$user_ids = array_filter(array_unique($user_ids), 'rise_remove_incomplete_profiles_from_search');
 
 		// Remove users with the 'disable_profile' pod meta set to true
-		$user_ids = array_filter( $user_ids, function ( $id ) {
-			$pod = pods( 'user', $id );
+		$user_ids = array_filter($user_ids, function ($id) {
+			$pod = pods('user', $id);
 
-			return boolval( $pod->field( 'disable_profile' ) ) === false;
-		} );
+			return boolval($pod->field('disable_profile')) === false;
+		});
 
 		return $user_ids;
 	}
@@ -233,14 +241,15 @@ class Rise_GraphQL_Queries {
 	 * @param  array $candidate_ids The candidate user IDs.
 	 * @return array The scored candidates.
 	 */
-	private static function rise_score_search_results( $args, $candidate_ids ) {
-		if ( empty( $candidate_ids ) ) {
+	private static function rise_score_search_results($args, $candidate_ids)
+	{
+		if (empty($candidate_ids)) {
 			return [];
 		}
 
 		// Set up the scoring array with user IDs as keys and starting score of 0 as values.
 		$users = [];
-		foreach ( $candidate_ids as $id ) {
+		foreach ($candidate_ids as $id) {
 			$users[$id] = 0;
 		}
 
@@ -251,13 +260,13 @@ class Rise_GraphQL_Queries {
 		 * Split positions into departments and jobs. If no jobs are present,
 		 * we'll score based on departments.
 		 */
-		$skills = empty( $args['skills'] ) ? [] : $args['skills'];
+		$skills = empty($args['skills']) ? [] : $args['skills'];
 
-		foreach ( $args['positions'] as $position_id ) {
-			$position = get_term_by( 'id', $position_id, 'position' );
+		foreach ($args['positions'] as $position_id) {
+			$position = get_term_by('id', $position_id, 'position');
 
-			if ( $position ) {
-				if ( $position->parent ) {
+			if ($position) {
+				if ($position->parent) {
 					$positions[] = $position->term_id;
 				} else {
 					$_departments[] = $position->term_id;
@@ -265,51 +274,51 @@ class Rise_GraphQL_Queries {
 			}
 		}
 
-		$positions = !empty( $positions ) ? $positions : $_departments;
+		$positions = !empty($positions) ? $positions : $_departments;
 
 		// Score candidates based on positions, skills, and filters.
-		foreach ( $users as $user_id => $score ) {
+		foreach ($users as $user_id => $score) {
 			// Get the user's credits.
-			$credits = get_posts( [
+			$credits = get_posts([
 				'post_type'      => 'credit',
 				'posts_per_page' => -1,
 				'author'         => $user_id,
-			] );
+			]);
 
-			foreach ( $credits as $credit ) {
+			foreach ($credits as $credit) {
 				// First, score positions
-				foreach ( $positions as $position ) {
-					if ( has_term( $position, 'position', $credit->ID ) ) {
+				foreach ($positions as $position) {
+					if (has_term($position, 'position', $credit->ID)) {
 						$users[$user_id]++;
 					}
 				}
 
 				// Next, score skills
-				foreach ( $skills as $skill ) {
-					if ( has_term( $skill, 'skill', $credit->ID ) ) {
+				foreach ($skills as $skill) {
+					if (has_term($skill, 'skill', $credit->ID)) {
 						$users[$user_id]++;
 					}
 				}
 			}
 
 			// Remove 'positions' and 'skills' from the $args array so we don't score them again.
-			unset( $args['positions'], $args['skills'] );
+			unset($args['positions'], $args['skills']);
 
 			// Score the rest of the filters.
-			$filters = rise_translate_taxonomy_filters( $args );
+			$filters = rise_translate_taxonomy_filters($args);
 
-			foreach ( $filters as $user_taxonomy => $term_ids ) {
-				if ( empty( $term_ids ) ) {
+			foreach ($filters as $user_taxonomy => $term_ids) {
+				if (empty($term_ids)) {
 					continue;
 				}
 
 				// Cast the term IDs to integers.
-				$term_ids = array_map( 'absint', $term_ids );
+				$term_ids = array_map('absint', $term_ids);
 
-				$user_taxonomy_term_ids = wp_get_object_terms( $user_id, $user_taxonomy, ['fields' => 'ids'] );
+				$user_taxonomy_term_ids = wp_get_object_terms($user_id, $user_taxonomy, ['fields' => 'ids']);
 
-				foreach ( $term_ids as $term_id ) {
-					if ( in_array( $term_id, $user_taxonomy_term_ids, true ) ) {
+				foreach ($term_ids as $term_id) {
+					if (in_array($term_id, $user_taxonomy_term_ids, true)) {
 						$users[$user_id]++;
 					}
 				}
@@ -318,7 +327,7 @@ class Rise_GraphQL_Queries {
 
 		// Transform the array into a list conforming to the ScoredCandidateOutput shape.
 		$scored_candidates = [];
-		foreach ( $users as $user_id => $score ) {
+		foreach ($users as $user_id => $score) {
 			$scored_candidates[] = [
 				'user_id' => $user_id,
 				'score'   => $score,
@@ -335,7 +344,8 @@ class Rise_GraphQL_Queries {
 	 *
 	 * @return void
 	 */
-	public function register_fields() {
+	public function register_fields()
+	{
 		/**
 		 * Query for skills related to the selected jobs and departments.
 		 */
@@ -344,15 +354,15 @@ class Rise_GraphQL_Queries {
 			'jobSkills',
 			[
 				'type'        => ['list_of' => 'Skill'],
-				'description' => __( 'The skills related to the selected jobs and departments.', 'rise' ),
+				'description' => __('The skills related to the selected jobs and departments.', 'rise'),
 				'args'        => [
 					'jobs' => [
 						'type' => ['list_of' => 'ID'],
 					],
 				],
-				'resolve'     => function ( $root, $args ) {
-					if ( $args['jobs'] && count( $args['jobs'] ) > 0 ) {
-						return self::get_job_skills( $args['jobs'] );
+				'resolve'     => function ($root, $args) {
+					if ($args['jobs'] && count($args['jobs']) > 0) {
+						return self::get_job_skills($args['jobs']);
 					}
 
 					return [];
@@ -365,15 +375,15 @@ class Rise_GraphQL_Queries {
 			'jobsByDepartments',
 			[
 				'type'        => ['list_of' => 'PositionOutput'],
-				'description' => __( 'The jobs related to the selected departments.', 'rise' ),
+				'description' => __('The jobs related to the selected departments.', 'rise'),
 				'args'        => [
 					'departments' => [
 						'type' => ['list_of' => 'ID'],
 					],
 				],
-				'resolve'     => function ( $root, $args ) {
-					if ( $args['departments'] && count( $args['departments'] ) > 0 ) {
-						return self::get_department_jobs( $args['departments'] );
+				'resolve'     => function ($root, $args) {
+					if ($args['departments'] && count($args['departments']) > 0) {
+						return self::get_department_jobs($args['departments']);
 					}
 
 					return [];
@@ -389,15 +399,15 @@ class Rise_GraphQL_Queries {
 			'usersByName',
 			[
 				'type'        => ['list_of' => 'Int'],
-				'description' => __( 'Query users by name', 'rise' ),
+				'description' => __('Query users by name', 'rise'),
 				'args'        => [
 					'name' => [
 						'type' => 'String',
 					],
 				],
-				'resolve'     => function ( $root, $args ) {
-					if ( $args['name'] ) {
-						return self::search_users_by_name( $args['name'] );
+				'resolve'     => function ($root, $args) {
+					if ($args['name']) {
+						return self::search_users_by_name($args['name']);
 					}
 
 					return [];
@@ -411,19 +421,19 @@ class Rise_GraphQL_Queries {
 			'disabledProfileUsers',
 			[
 				'type'        => ['list_of' => 'Int'],
-				'description' => __( 'Users with disabled profiles.', 'rise' ),
-				'resolve'     => function ( $root, $args ) {
+				'description' => __('Users with disabled profiles.', 'rise'),
+				'resolve'     => function ($root, $args) {
 					$params = [
 						'where' => 'd.disable_profile = 1',
 						'limit' => -1,
 					];
 
-					$users        = pods( 'user', $params );
+					$users        = pods('user', $params);
 					$disabled_ids = [];
 
-					if ( $users->total() > 0 ) {
-						while ( $users->fetch() ) {
-							$disabled_ids[] = $users->field( 'ID' );
+					if ($users->total() > 0) {
+						while ($users->fetch()) {
+							$disabled_ids[] = $users->field('ID');
 						}
 					}
 
@@ -442,53 +452,53 @@ class Rise_GraphQL_Queries {
 			'filteredCandidates',
 			[
 				'type'        => ['list_of' => 'ScoredCandidateOutput'],
-				'description' => __( 'Users with matching selected criteria.', 'rise' ),
+				'description' => __('Users with matching selected criteria.', 'rise'),
 				'args'        => [
 					'positions'          => [
-						'description' => __( 'A list of `position` term ids', 'rise' ),
+						'description' => __('A list of `position` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'skills'             => [
-						'description' => __( 'A list of `skill` term ids', 'rise' ),
+						'description' => __('A list of `skill` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'unions'             => [
-						'description' => __( 'A list of `union` term ids', 'rise' ),
+						'description' => __('A list of `union` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'locations'          => [
-						'description' => __( 'A list of `location` term ids', 'rise' ),
+						'description' => __('A list of `location` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'experienceLevels'   => [
-						'description' => __( 'A list of `experience_level` term ids', 'rise' ),
+						'description' => __('A list of `experience_level` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'genderIdentities'   => [
-						'description' => __( 'A list of `gender_identity` term ids', 'rise' ),
+						'description' => __('A list of `gender_identity` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'racialIdentities'   => [
-						'description' => __( 'A list of `racial_identity` term ids', 'rise' ),
+						'description' => __('A list of `racial_identity` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'personalIdentities' => [
-						'description' => __( 'A list of `personal_identity` term ids', 'rise' ),
+						'description' => __('A list of `personal_identity` term ids', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 					'searchUserId'       => [
-						'description' => __( 'The ID of the user performing the search', 'rise' ),
+						'description' => __('The ID of the user performing the search', 'rise'),
 						'type'        => 'ID',
 					],
 					'exclude'            => [
-						'description' => __( 'Deprecated. A list of user ids to exclude', 'rise' ),
+						'description' => __('Deprecated. A list of user ids to exclude', 'rise'),
 						'type'        => ['list_of' => 'ID'],
 					],
 				],
-				'resolve'     => function ( $root, $args ) {
-					$candidate_ids = rise_search_and_filter_crew_members( $args );
+				'resolve'     => function ($root, $args) {
+					$candidate_ids = rise_search_and_filter_crew_members($args);
 
-					return self::rise_score_search_results( $args, $candidate_ids );
+					return self::rise_score_search_results($args, $candidate_ids);
 				},
 			],
 		);
@@ -501,9 +511,9 @@ class Rise_GraphQL_Queries {
 			'unions',
 			[
 				'type'        => ['list_of' => 'Union'],
-				'description' => __( 'The user\'s selected union terms.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'union' );
+				'description' => __('The user\'s selected union terms.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'union');
 				},
 			]
 		);
@@ -516,9 +526,9 @@ class Rise_GraphQL_Queries {
 			'locations',
 			[
 				'type'        => ['list_of' => 'Location'],
-				'description' => __( 'The user\'s selected location.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'location' );
+				'description' => __('The user\'s selected location.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'location');
 				},
 			]
 		);
@@ -531,9 +541,9 @@ class Rise_GraphQL_Queries {
 			'experienceLevels',
 			[
 				'type'        => ['list_of' => 'Experience_Level'],
-				'description' => __( 'The user\'s selected experience level terms.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'experience_level' );
+				'description' => __('The user\'s selected experience level terms.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'experience_level');
 				},
 			]
 		);
@@ -546,9 +556,9 @@ class Rise_GraphQL_Queries {
 			'partnerDirectories',
 			[
 				'type'        => ['list_of' => 'Partner_Directory'],
-				'description' => __( 'The user\'s selected partner directory terms.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'partner_directory' );
+				'description' => __('The user\'s selected partner directory terms.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'partner_directory');
 				},
 			]
 		);
@@ -561,9 +571,9 @@ class Rise_GraphQL_Queries {
 			'genderIdentities',
 			[
 				'type'        => ['list_of' => 'Gender_Identity'],
-				'description' => __( 'The user\'s selected gender identity terms.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'gender_identity' );
+				'description' => __('The user\'s selected gender identity terms.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'gender_identity');
 				},
 			]
 		);
@@ -576,9 +586,9 @@ class Rise_GraphQL_Queries {
 			'racialIdentities',
 			[
 				'type'        => ['list_of' => 'Racial_Identity'],
-				'description' => __( 'The user\'s selected racial identity terms.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'racial_identity' );
+				'description' => __('The user\'s selected racial identity terms.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'racial_identity');
 				},
 			]
 		);
@@ -591,9 +601,9 @@ class Rise_GraphQL_Queries {
 			'personalIdentities',
 			[
 				'type'        => ['list_of' => 'Personal_Identity'],
-				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
-				'resolve'     => function ( $user ) {
-					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
+				'description' => __('The user\'s seelcted personal identity terms.', 'rise'),
+				'resolve'     => function ($user) {
+					return self::prepare_taxonomy_terms($user->fields['userId'], 'personal_identity');
 				},
 			]
 		);
@@ -606,17 +616,17 @@ class Rise_GraphQL_Queries {
 			'userIdBySlug',
 			[
 				'type'        => 'Int',
-				'description' => __( 'Get a user ID by their slug.', 'rise' ),
+				'description' => __('Get a user ID by their slug.', 'rise'),
 				'args'        => [
 					'slug' => [
-						'description' => __( 'The slug of the user to return.', 'rise' ),
+						'description' => __('The slug of the user to return.', 'rise'),
 						'type'        => 'String',
 					],
 				],
-				'resolve'     => function ( $root, $args ) {
-					$user = get_user_by( 'slug', $args['slug'] );
+				'resolve'     => function ($root, $args) {
+					$user = get_user_by('slug', $args['slug']);
 
-					if ( !$user ) {
+					if (!$user) {
 						return;
 					}
 
@@ -629,6 +639,33 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
+		 * Query network partner by slug.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'networkPartnerIdBySlug',
+			[
+				'type'        => 'Int',
+				'description' => __('Get a network partner ID by their slug.', 'rise'),
+				'args'        => [
+					'slug' => [
+						'description' => __('The slug of the network partner to return.', 'rise'),
+						'type'        => 'String',
+					],
+				],
+				'resolve'     => function ($root, $args) {
+					$post = get_page_by_path($args['slug'], OBJECT, 'network_partner');
+
+					if (!$post) {
+						return null;
+					}
+
+					return $post->ID;
+				},
+			]
+		);
+
+		/**
 		 * Get RISE site settings.
 		 */
 		register_graphql_field(
@@ -636,15 +673,15 @@ class Rise_GraphQL_Queries {
 			'frontendSetting',
 			[
 				'type'        => 'String',
-				'description' => __( 'Retrieve RISE settings (insecure values only).', 'rise' ),
+				'description' => __('Retrieve RISE settings (insecure values only).', 'rise'),
 				'args'        => [
 					'key' => [
-						'description' => __( 'The key of the option to return.', 'rise' ),
+						'description' => __('The key of the option to return.', 'rise'),
 						'type'        => 'String',
 					],
 				],
-				'resolve'     => function ( $root, $args ) {
-					$value = get_option( $args['key'] );
+				'resolve'     => function ($root, $args) {
+					$value = get_option($args['key']);
 
 					return $value ? $value : null;
 				},
