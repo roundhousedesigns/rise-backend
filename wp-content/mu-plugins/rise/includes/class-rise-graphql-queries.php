@@ -644,6 +644,35 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
+		 * Query page ID by slug.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'pageIdBySlug',
+			[
+				'type'        => 'Int',
+				'description' => __( 'Get a page ID by its slug.', 'rise' ),
+				'args'        => [
+					'slug' => [
+						'description' => __( 'The slug of the page to return.', 'rise' ),
+						'type'        => 'String',
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$post = get_page_by_path( $args['slug'], OBJECT, 'page' );
+
+					if ( !$post ) {
+						return null;
+					}
+
+					error_log( print_r( $post->ID, true ) );
+
+					return $post->ID;
+				},
+			]
+		);
+
+		/**
 		 * Query network partner by slug.
 		 */
 		register_graphql_field(
