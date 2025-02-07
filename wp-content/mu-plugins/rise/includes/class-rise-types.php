@@ -11,8 +11,7 @@
  * @since      0.1.0
  */
 
-class Rise_Types
-{
+class Rise_Types {
 	/**
 	 * Registers the `credit` post type.
 	 *
@@ -21,8 +20,7 @@ class Rise_Types
 	 *
 	 * @return void
 	 */
-	public function credit_init()
-	{
+	public function credit_init() {
 		Rise_Taxonomies::register_post_type(
 			'credit',
 			'credits',
@@ -34,7 +32,7 @@ class Rise_Types
 				'public'              => true,
 				'exclude_from_search' => true,
 				'capability_type'     => 'post',
-				'taxonomies'         => ['position', 'skill'],
+				'taxonomies'          => ['position', 'skill'],
 			]
 		);
 	}
@@ -45,9 +43,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `credit` post type.
 	 */
-	public function credit_updated_messages($messages)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('credit', 'credit', $messages);
+	public function credit_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'credit', 'credit', $messages );
 	}
 
 	/**
@@ -59,9 +56,8 @@ class Rise_Types
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `credit` post type.
 	 */
-	public function credit_bulk_updated_messages($bulk_messages, $bulk_counts)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('credit', 'credit', $bulk_messages, $bulk_counts);
+	public function credit_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'credit', 'credit', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -72,8 +68,7 @@ class Rise_Types
 	 * @param  array $columns The existing columns.
 	 * @return array The modified columns.
 	 */
-	public function add_credit_posts_column($columns)
-	{
+	public function add_credit_posts_column( $columns ) {
 		$columns['credit_posts'] = 'Credit Posts';
 		return $columns;
 	}
@@ -86,17 +81,16 @@ class Rise_Types
 	 * @param  int    $user_id     The user ID.
 	 * @return string The modified column value.
 	 */
-	public function display_credit_posts_column($value, $column_name, $user_id)
-	{
-		if ('credit_posts' === $column_name) {
-			$credit_count = count_user_posts($user_id, 'credit');
+	public function display_credit_posts_column( $value, $column_name, $user_id ) {
+		if ( 'credit_posts' === $column_name ) {
+			$credit_count = count_user_posts( $user_id, 'credit' );
 
-			if ($credit_count > 0) {
-				$edit_url = add_query_arg([
+			if ( $credit_count > 0 ) {
+				$edit_url = add_query_arg( [
 					'post_type' => 'credit',
 					'author'    => $user_id,
-				], admin_url('edit.php'));
-				return '<a href="' . esc_url($edit_url) . '">' . $credit_count . '</a>';
+				], admin_url( 'edit.php' ) );
+				return '<a href="' . esc_url( $edit_url ) . '">' . $credit_count . '</a>';
 			}
 
 			return '0';
@@ -111,8 +105,7 @@ class Rise_Types
 	 * @param  array $columns The existing columns.
 	 * @return array The modified columns.
 	 */
-	public function make_credit_posts_column_sortable($columns)
-	{
+	public function make_credit_posts_column_sortable( $columns ) {
 		$columns['credit_posts'] = 'credit_posts';
 		return $columns;
 	}
@@ -121,9 +114,8 @@ class Rise_Types
 	 * Registers the `position` taxonomy,
 	 * for use with 'credit'.
 	 */
-	public function position_init()
-	{
-		Rise_Taxonomies::register_taxonomy(['credit'], 'position', 'positions', 'Production Position', 'Production Positions', true);
+	public function position_init() {
+		Rise_Taxonomies::register_taxonomy( ['credit'], 'position', 'positions', 'Production Position', 'Production Positions', true );
 	}
 
 	/**
@@ -132,18 +124,16 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `position` taxonomy.
 	 */
-	public function position_updated_messages($messages)
-	{
-		return Rise_Taxonomies::taxonomy_updated_messages('position', 'Production Position', 'Production Positions', $messages);
+	public function position_updated_messages( $messages ) {
+		return Rise_Taxonomies::taxonomy_updated_messages( 'position', 'Production Position', 'Production Positions', $messages );
 	}
 
 	/**
 	 * Registers the `skill` taxonomy,
 	 * for use with 'credit'.
 	 */
-	public function skill_init()
-	{
-		return Rise_Taxonomies::register_taxonomy(['credit'], 'skill', 'skills', 'Skill', 'Skills', false);
+	public function skill_init() {
+		return Rise_Taxonomies::register_taxonomy( ['credit'], 'skill', 'skills', 'Skill', 'Skills', false );
 	}
 
 	/**
@@ -152,9 +142,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `skill` taxonomy.
 	 */
-	public function skill_updated_messages($messages)
-	{
-		return Rise_Taxonomies::taxonomy_updated_messages('skill', 'Skill', 'Skills', $messages);
+	public function skill_updated_messages( $messages ) {
+		return Rise_Taxonomies::taxonomy_updated_messages( 'skill', 'Skill', 'Skills', $messages );
 	}
 
 	/**
@@ -163,8 +152,7 @@ class Rise_Types
 	 * @access    private
 	 * @since     0.1.0
 	 */
-	public function user_notice_init()
-	{
+	public function user_notice_init() {
 		Rise_Taxonomies::register_post_type(
 			'user_notice',
 			'user_notices',
@@ -188,9 +176,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `user_notice` post type.
 	 */
-	public function user_notice_updated_messages($messages)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('user_notice', 'user_notice', $messages);
+	public function user_notice_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'user_notice', 'user_notice', $messages );
 	}
 
 	/**
@@ -202,9 +189,8 @@ class Rise_Types
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `user_notice` post type.
 	 */
-	public function user_notice_bulk_updated_messages($bulk_messages, $bulk_counts)
-	{
-		return Rise_Taxonomies::post_type_bulk_updated_messages('user_notice', 'User Notice', 'User Notices', $bulk_messages, $bulk_counts);
+	public function user_notice_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'user_notice', 'User Notice', 'User Notices', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -213,8 +199,7 @@ class Rise_Types
 	 * @access    private
 	 * @since     0.1.0
 	 */
-	public function saved_search_init()
-	{
+	public function saved_search_init() {
 		Rise_Taxonomies::register_post_type(
 			'saved_search',
 			'saved_searches',
@@ -237,9 +222,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `saved_search` post type.
 	 */
-	public function saved_search_updated_messages($messages)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('saved_search', 'saved_search', $messages);
+	public function saved_search_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'saved_search', 'saved_search', $messages );
 	}
 
 	/**
@@ -251,9 +235,8 @@ class Rise_Types
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `saved_search` post type.
 	 */
-	public function saved_search_bulk_updated_messages($bulk_messages, $bulk_counts)
-	{
-		return Rise_Taxonomies::post_type_bulk_updated_messages('saved_search', 'Saved Search', 'Saved Searches', $bulk_messages, $bulk_counts);
+	public function saved_search_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'saved_search', 'Saved Search', 'Saved Searches', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -263,9 +246,8 @@ class Rise_Types
 	 * @param  string $post_type
 	 * @return void
 	 */
-	public function saved_search_disable_block_editor($current_status, $post_type)
-	{
-		if ('saved_search' === $post_type) {
+	public function saved_search_disable_block_editor( $current_status, $post_type ) {
+		if ( 'saved_search' === $post_type ) {
 			return false;
 		}
 
@@ -278,9 +260,8 @@ class Rise_Types
 	 * @param  boolean $default
 	 * @return boolean True to enable the editor, false to disable.
 	 */
-	public function saved_search_remove_visual_editor($default)
-	{
-		if (get_post_type() === 'saved_search') {
+	public function saved_search_remove_visual_editor( $default ) {
+		if ( get_post_type() === 'saved_search' ) {
 			return false;
 		}
 
@@ -293,8 +274,7 @@ class Rise_Types
 	 * @access    private
 	 * @since     0.1.0
 	 */
-	public function conflict_range_init()
-	{
+	public function conflict_range_init() {
 		Rise_Taxonomies::register_post_type(
 			'conflict_range',
 			'conflict_ranges',
@@ -317,9 +297,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `conflict_range` post type.
 	 */
-	public function conflict_range_updated_messages($messages)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('conflict_range', 'conflict_range', $messages);
+	public function conflict_range_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'conflict_range', 'conflict_range', $messages );
 	}
 
 	/**
@@ -331,9 +310,8 @@ class Rise_Types
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `conflict_range` post type.
 	 */
-	public function conflict_range_bulk_updated_messages($bulk_messages, $bulk_counts)
-	{
-		return Rise_Taxonomies::post_type_bulk_updated_messages('conflict_range', 'Conflict Date Range', 'Conflict Date Ranges', $bulk_messages, $bulk_counts);
+	public function conflict_range_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'conflict_range', 'Conflict Date Range', 'Conflict Date Ranges', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -343,9 +321,8 @@ class Rise_Types
 	 * @param  string $post_type
 	 * @return void
 	 */
-	public function conflict_range_disable_block_editor($current_status, $post_type)
-	{
-		if ('conflict_range' === $post_type) {
+	public function conflict_range_disable_block_editor( $current_status, $post_type ) {
+		if ( 'conflict_range' === $post_type ) {
 			return false;
 		}
 
@@ -358,9 +335,8 @@ class Rise_Types
 	 * @param  boolean $default
 	 * @return boolean True to enable the editor, false to disable.
 	 */
-	public function conflict_range_remove_visual_editor($default)
-	{
-		if (get_post_type() === 'conflict_range') {
+	public function conflict_range_remove_visual_editor( $default ) {
+		if ( get_post_type() === 'conflict_range' ) {
 			return false;
 		}
 
@@ -373,8 +349,7 @@ class Rise_Types
 	 * @access    private
 	 * @since     0.1.0
 	 */
-	public function job_init()
-	{
+	public function job_init() {
 		Rise_Taxonomies::register_post_type(
 			'job',
 			'jobs',
@@ -397,9 +372,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `job` post type.
 	 */
-	public function job_updated_messages($messages)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('job', 'Job Post', $messages);
+	public function job_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'job', 'Job Post', $messages );
 	}
 
 	/**
@@ -409,9 +383,8 @@ class Rise_Types
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `job` post type.
 	 */
-	public function job_bulk_updated_messages($bulk_messages, $bulk_counts)
-	{
-		return Rise_Taxonomies::post_type_bulk_updated_messages('job', 'Job Post', 'Job Posts', $bulk_messages, $bulk_counts);
+	public function job_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'job', 'Job Post', 'Job Posts', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -420,8 +393,7 @@ class Rise_Types
 	 * @access    private
 	 * @since     0.1.0
 	 */
-	public function network_partner_init()
-	{
+	public function network_partner_init() {
 		Rise_Taxonomies::register_post_type(
 			'network_partner',
 			'network_partners',
@@ -429,14 +401,14 @@ class Rise_Types
 			'Network Partners',
 			'dashicons-buddicons-friends',
 			[
-				'supports'            => ['title', 'editor', 'thumbnail', 'excerpt'],
-				'public'              => true,
-				'publicly_queryable'  => true,
-				'has_archive'         => true,
-				'show_ui'             => true,
-				'show_in_menu'        => true,
-				'show_in_rest'        => true,
-				'capability_type'     => 'post',
+				'supports'           => ['title', 'editor', 'thumbnail', 'excerpt'],
+				'public'             => true,
+				'publicly_queryable' => true,
+				'has_archive'        => true,
+				'show_ui'            => true,
+				'show_in_menu'       => true,
+				'show_in_rest'       => true,
+				'capability_type'    => 'post',
 				'taxonomies'         => ['network_partner_tag'],
 			]
 		);
@@ -448,9 +420,8 @@ class Rise_Types
 	 * @param  array $messages Post updated messages.
 	 * @return array Messages for the `network_partner` post type.
 	 */
-	public function network_partner_updated_messages($messages)
-	{
-		return Rise_Taxonomies::post_type_updated_messages('network_partner', 'network_partner', $messages);
+	public function network_partner_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'network_partner', 'network_partner', $messages );
 	}
 
 	/**
@@ -460,9 +431,8 @@ class Rise_Types
 	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
 	 * @return array Bulk messages for the `network_partner` post type.
 	 */
-	public function network_partner_bulk_updated_messages($bulk_messages, $bulk_counts)
-	{
-		return Rise_Taxonomies::post_type_bulk_updated_messages('network_partner', 'Network Partner', 'Network Partners', $bulk_messages, $bulk_counts);
+	public function network_partner_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'network_partner', 'Network Partner', 'Network Partners', $bulk_messages, $bulk_counts );
 	}
 
 	/**
@@ -472,9 +442,8 @@ class Rise_Types
 	 * @param  string    $post_type
 	 * @return boolean
 	 */
-	public function network_partner_disable_block_editor($current_status, $post_type)
-	{
-		if ('network_partner' === $post_type) {
+	public function network_partner_disable_block_editor( $current_status, $post_type ) {
+		if ( 'network_partner' === $post_type ) {
 			return false;
 		}
 		return $current_status;
@@ -484,8 +453,7 @@ class Rise_Types
 	 * Registers the `network_partner_tag` taxonomy,
 	 * for use with 'network_partner'.
 	 */
-	public function network_partner_tag_init()
-	{
+	public function network_partner_tag_init() {
 		Rise_Taxonomies::register_taxonomy(
 			['network_partner'],
 			'network_partner_tag',
@@ -502,8 +470,7 @@ class Rise_Types
 	 * @param  array $messages Term updated messages.
 	 * @return array Messages for the `network_partner_tag` taxonomy.
 	 */
-	public function network_partner_tag_updated_messages($messages)
-	{
+	public function network_partner_tag_updated_messages( $messages ) {
 		return Rise_Taxonomies::taxonomy_updated_messages(
 			'network_partner_tag',
 			'Network Partner Tag',
