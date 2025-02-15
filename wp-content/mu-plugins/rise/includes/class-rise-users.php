@@ -95,6 +95,15 @@ class Rise_Users {
 	}
 
 	/**
+	 * Adds custom image sizes.
+	 *
+	 * @return void
+	 */
+	function add_image_sizes() {
+		add_image_size( 'cover', 2400, 0, false );
+	}
+
+	/**
 	 * Registers the `gender_identity` taxonomy,
 	 * for use with 'user'.
 	 */
