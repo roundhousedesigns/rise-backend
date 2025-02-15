@@ -88,7 +88,6 @@ class Rise {
 		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-		$this->define_shortcodes();
 	}
 
 	/**
@@ -179,11 +178,6 @@ class Rise {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-rise-admin.php';
-
-		/**
-		 * The class responsible for defining all shortcodes.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-shortcodes.php';
 
 		/**
 		 * The class responsible for defining cron jobs.
@@ -487,18 +481,6 @@ class Rise {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
 		$this->loader->add_filter( 'retrieve_password_message', $plugin_data, 'filter_retrieve_password_message', 20, 3 );
-	}
-
-	/**
-	 * Register all of the shortcodes.
-	 *
-	 * @access private
-	 * @since 0.1.0
-	 */
-	private function define_shortcodes() {
-		$plugin_data = new Rise_Shortcodes();
-
-		$this->loader->add_action( 'init', $plugin_data, 'register_shortcodes' );
 	}
 
 	/**
