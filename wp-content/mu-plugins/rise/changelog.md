@@ -6,7 +6,7 @@ with 1.1.1.
 ## \[1.2-network-partners] - Unreleased
 
 - Add: `network_partner` post type.
-- Add: `network_partner_tag` taxonomy.
+- Add: `network_partner_category` taxonomy.
 
 ## \[1.1.10] - 2024-10-14
 

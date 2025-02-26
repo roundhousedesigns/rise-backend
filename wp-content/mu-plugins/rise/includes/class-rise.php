@@ -389,10 +389,10 @@ class Rise {
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'network_partner_bulk_updated_messages', 10, 2 );
 
 		/**
-		 * Taxonomy: network_partner_tag (`network_partner`)
+		 * Taxonomy: network_partner_category (`network_partner`)
 		 */
-		$this->loader->add_action( 'init', $plugin_data, 'network_partner_tag_init' );
-		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'network_partner_tag_updated_messages' );
+		$this->loader->add_action( 'init', $plugin_data, 'network_partner_category_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'network_partner_category_updated_messages' );
 	}
 
 	/**
@@ -428,6 +428,10 @@ class Rise {
 
 		// TODO `remove_graphql_extensions_response_data` doesn't seem to be working. `extensions` still in responses. THIS IS ALSO BREAKING USER REG AND PASSWORD RESET.
 		// $this->loader->add_action( 'graphql_request_results', $plugin_data_queries, 'remove_graphql_extensions_response_data', 10, 1 );
+
+		// Add these new filters
+		$this->loader->add_filter( 'graphql_NetworkPartnerConnectionWhereArgs_fields', $plugin_data_queries, 'add_network_partner_category_where_args' );
+		$this->loader->add_filter( 'graphql_NetworkPartner_connection_query_args', $plugin_data_queries, 'filter_network_partner_query_args', 10, 3 );
 	}
 
 	/**

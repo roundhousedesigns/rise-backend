@@ -409,7 +409,7 @@ class Rise_Types {
 				'show_in_menu'       => true,
 				'show_in_rest'       => true,
 				'capability_type'    => 'post',
-				'taxonomies'         => ['network_partner_tag'],
+				'taxonomies'         => ['network_partner_category'],
 			]
 		);
 	}
@@ -450,31 +450,31 @@ class Rise_Types {
 	}
 
 	/**
-	 * Registers the `network_partner_tag` taxonomy,
+	 * Registers the `network_partner_category` taxonomy,
 	 * for use with 'network_partner'.
 	 */
-	public function network_partner_tag_init() {
+	public function network_partner_category_init() {
 		Rise_Taxonomies::register_taxonomy(
 			['network_partner'],
-			'network_partner_tag',
-			'network_partner_tags',
-			'Network Partner Tag',
-			'Network Partner Tags',
+			'network_partner_category',
+			'network_partner_categories',
+			'Network Partner Category',
+			'Network Partner Categories',
 			true
 		);
 	}
 
 	/**
-	 * Sets the term updated messages for the `network_partner_tag` taxonomy.
+	 * Sets the term updated messages for the `network_partner_category` taxonomy.
 	 *
 	 * @param  array $messages Term updated messages.
-	 * @return array Messages for the `network_partner_tag` taxonomy.
+	 * @return array Messages for the `network_partner_category` taxonomy.
 	 */
-	public function network_partner_tag_updated_messages( $messages ) {
+	public function network_partner_category_updated_messages( $messages ) {
 		return Rise_Taxonomies::taxonomy_updated_messages(
-			'network_partner_tag',
-			'Network Partner Tag',
-			'Network Partner Tags',
+			'network_partner_category',
+			'Network Partner Category',
+			'Network Partner Categories',
 			$messages
 		);
 	}
