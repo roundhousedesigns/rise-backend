@@ -425,13 +425,10 @@ class Rise {
 
 		$this->loader->add_action( 'graphql_require_authentication_allowed_fields', $plugin_data_queries, 'require_authentication_allowed_fields', 10, 1 );
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
+		$this->loader->add_filter( 'graphql_post_object_connection_query_args', $plugin_data_queries, 'filter_network_partner_query_args', 10, 5 );
 
 		// TODO `remove_graphql_extensions_response_data` doesn't seem to be working. `extensions` still in responses. THIS IS ALSO BREAKING USER REG AND PASSWORD RESET.
 		// $this->loader->add_action( 'graphql_request_results', $plugin_data_queries, 'remove_graphql_extensions_response_data', 10, 1 );
-
-		// Add these new filters
-		$this->loader->add_filter( 'graphql_NetworkPartnerConnectionWhereArgs_fields', $plugin_data_queries, 'add_network_partner_category_where_args' );
-		$this->loader->add_filter( 'graphql_NetworkPartner_connection_query_args', $plugin_data_queries, 'filter_network_partner_query_args', 10, 3 );
 	}
 
 	/**

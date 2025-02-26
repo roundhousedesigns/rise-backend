@@ -700,6 +700,14 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
+		 * Query network partners by category slug.
+		 */
+		register_graphql_field( 'RootQueryToNetwork_partnerConnectionWhereArgs', 'networkPartnerCategories', [
+			'type'        => ['list_of' => 'String'],
+			'description' => __( 'Filter network partners by network partner category slugs', 'rhd' ),
+		] );
+
+		/**
 		 * Get RISE site settings.
 		 */
 		register_graphql_field(
@@ -721,5 +729,26 @@ class Rise_GraphQL_Queries {
 				},
 			]
 		);
+	}
+
+	/**
+	 * Filter network partner query args.
+	 *
+	 * @param  array  $query_args The query args.
+	 * @param  array  $source     The source.
+	 * @param  array  $input_args The input args.
+	 * @param  array  $context    The context.
+	 * @param  array  $info       The info.
+	 * @return void
+	 */
+	public function filter_network_partner_query_args( $query_args, $source, $input_args, $context, $info ) {
+		if ( !empty( $input_args['where']['networkPartnerCategories'] ) ) {
+			$query_args['tax_query'][] = [
+				'taxonomy' => 'network_partner_category',
+				'field'    => 'slug',
+				'terms'    => $input_args['where']['networkPartnerCategories'],
+			];
+		}
+		return $query_args;
 	}
 }
