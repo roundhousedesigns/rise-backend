@@ -29,6 +29,11 @@ class Rise_GraphQL_Types {
 		return $is_valid;
 	}
 
+	/**
+	 * Register GraphQL types.
+	 *
+	 * @return void
+	 */
 	public function register_types() {
 		$this->register_graphql_input_types();
 	}
