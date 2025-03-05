@@ -401,6 +401,7 @@ class Rise {
 	private function define_graphql_types() {
 		$plugin_data_types = new Rise_GraphQL_Types();
 
+		$this->loader->add_filter( 'graphql_is_valid_http_content_type', $plugin_data_types, 'is_valid_http_content_type', 10, 2 );
 		$this->loader->add_action( 'graphql_register_types', $plugin_data_types, 'register_types' );
 	}
 
