@@ -241,7 +241,7 @@ class Rise_Admin {
 		// remove_menu_page( 'plugins.php' );
 
 		// Appearance
-		remove_menu_page( 'themes.php' );
+		// remove_menu_page( 'themes.php' );
 	}
 
 	/**
