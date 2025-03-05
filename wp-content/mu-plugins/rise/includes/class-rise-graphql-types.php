@@ -11,6 +11,29 @@
  */
 
 class Rise_GraphQL_Types {
+	/**
+	 * Validate the HTTP content type for multipart/form-data.
+	 *
+	 * @link https://github.com/wp-graphql/wp-graphql/pull/3320
+	 *
+	 * @param  boolean   $is_valid
+	 * @param  string    $content_type
+	 * @return boolean
+	 */
+	public function is_valid_http_content_type( $is_valid, $content_type ) {
+
+		if ( 0 === stripos( $content_type, 'multipart/form-data' ) ) {
+			return true;
+		}
+
+		return $is_valid;
+	}
+
+	/**
+	 * Register GraphQL types.
+	 *
+	 * @return void
+	 */
 	public function register_types() {
 		$this->register_graphql_input_types();
 	}
