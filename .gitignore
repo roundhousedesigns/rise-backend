@@ -73,6 +73,7 @@ Thumbs.db
 
 # Plugins and Themes
 !wp-content/themes/rhd-headless-theme
+!wp-content/themes/rise
 !wp-content/mu-plugins/rise
 !wp-content/mu-plugins/rise/**/*.zip
 !wp-content/plugins/bulk-taxonomy-term-editor
