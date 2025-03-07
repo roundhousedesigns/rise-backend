@@ -3,10 +3,11 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
-## \[1.2-network-partners] - Unreleased
+## \[1.2-theme] - Unreleased
 
-- Add: `network_partner` post type.
-- Add: `network_partner_tag` taxonomy.
+- Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
+- Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP theme.
+- Remove: <Page> component and slug route. Static pages handled by WP theme.
 
 ## \[1.1.10] - 2024-10-14
 

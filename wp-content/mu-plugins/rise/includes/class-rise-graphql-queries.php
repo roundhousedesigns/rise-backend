@@ -673,33 +673,6 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
-		 * Query network partner by slug.
-		 */
-		register_graphql_field(
-			'RootQuery',
-			'networkPartnerIdBySlug',
-			[
-				'type'        => 'Int',
-				'description' => __( 'Get a network partner ID by their slug.', 'rise' ),
-				'args'        => [
-					'slug' => [
-						'description' => __( 'The slug of the network partner to return.', 'rise' ),
-						'type'        => 'String',
-					],
-				],
-				'resolve'     => function ( $root, $args ) {
-					$post = get_page_by_path( $args['slug'], OBJECT, 'network_partner' );
-
-					if ( !$post ) {
-						return null;
-					}
-
-					return $post->ID;
-				},
-			]
-		);
-
-		/**
 		 * Get RISE site settings.
 		 */
 		register_graphql_field(
