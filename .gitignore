@@ -8,7 +8,7 @@
 wp-content/*
 !wp-content/mu-plugins/
 !wp-content/plugins/
-#!wp-content/themes/
+!wp-content/themes/
 
 # ignore all plugins, and themes, unless explicitly allowlisted at the end of
 # this file. Also ignore the RHDWP hosting environment plugin.
@@ -72,7 +72,7 @@ Thumbs.db
 !composer.json
 
 # Plugins and Themes
-!wp-content/themes/rhd-headless-theme
+#!wp-content/themes/rhd-headless-theme
 !wp-content/themes/rise
 !wp-content/mu-plugins/rise
 !wp-content/mu-plugins/rise/**/*.zip
