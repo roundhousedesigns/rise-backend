@@ -1,3 +1,6 @@
 [submodule "wp-content/themes/rhd-headless-theme"]
 	path = wp-content/themes/rhd-headless-theme
 	url = git@github.com:roundhousedesigns/rhd-headless-theme
+[submodule "wp-content/reactpress/apps/rise-frontend"]
+	path = wp-content/reactpress/apps/rise-frontend
+	url = git@github.com:roundhousedesigns/rise-frontend
