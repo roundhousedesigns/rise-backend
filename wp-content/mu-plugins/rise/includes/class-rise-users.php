@@ -101,6 +101,7 @@ class Rise_Users {
 	 */
 	function add_image_sizes() {
 		add_image_size( 'cover', 2400, 0, false );
+		add_image_size( 'partner-logo', 250, 250, true );
 	}
 
 	/**

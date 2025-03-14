@@ -410,6 +410,7 @@ class Rise_Types {
 				'show_in_rest'       => true,
 				'capability_type'    => 'post',
 				'taxonomies'         => ['network_partner_tag'],
+				'rewrite'            => ['slug' => 'partner'],
 			]
 		);
 	}
