@@ -3,10 +3,10 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
-## \[1.2-theme] - Unreleased
+## \[1.2-dev] - Unreleased
 
 - Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
-- Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP theme.
+- Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
 - Remove: <Page> component and slug route. Static pages handled by WP theme.
 
 ## \[1.1.10] - 2024-10-14
