@@ -377,9 +377,9 @@ class Rise {
 		/**
 		 * Custom Post Type: job
 		 */
-		$this->loader->add_action( 'init', $plugin_data, 'job_init' );
-		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_updated_messages' );
-		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'init', $plugin_data, 'job_post_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_post_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_post_bulk_updated_messages', 10, 2 );
 
 		/**
 		 * Custom Post Type: network_partner

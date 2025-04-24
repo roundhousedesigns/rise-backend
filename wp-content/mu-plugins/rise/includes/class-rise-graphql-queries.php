@@ -429,7 +429,7 @@ class Rise_GraphQL_Queries {
 				'description' => __( 'Users with disabled profiles.', 'rise' ),
 				'resolve'     => function ( $root, $args ) {
 					$params = [
-						'where' => 'd.disable_profile = 1',
+						'where' => 'disable_profile = 1',
 						'limit' => -1,
 					];
 
@@ -496,7 +496,7 @@ class Rise_GraphQL_Queries {
 						'type'        => 'ID',
 					],
 					'exclude'            => [
-						'description' => __( 'Deprecated. A list of user ids to exclude', 'rise' ),
+						'description' => __( 'Deprecate A list of user ids to exclude', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
 				],
@@ -635,7 +635,7 @@ class Rise_GraphQL_Queries {
 						return;
 					}
 
-					// TODO Ultimately, this should return the whole profile data set, not just the ID.
+					// TODO Ultimately, this should return the whole profile data set, not just the I
 					// Right now, we're running a separate query by ID to get the full profile data.
 
 					return $user->ID;
@@ -665,8 +665,6 @@ class Rise_GraphQL_Queries {
 						return null;
 					}
 
-					error_log( print_r( $post->ID, true ) );
-
 					return $post->ID;
 				},
 			]
@@ -683,6 +681,65 @@ class Rise_GraphQL_Queries {
 				'description' => __( 'Retrieve the current WP theme\'s stylesheet directory URI.', 'rise' ),
 				'resolve'     => function ( $root, $args ) {
 					return get_stylesheet_directory_uri();
+				},
+			]
+		);
+
+		/**
+		 * Query filtered job posts.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'filteredJobPostIds',
+			[
+				'type'        => ['list_of' => 'ID'],
+				'description' => __( 'Get filtered job post IDs.', 'rise' ),
+				'args'        => [
+					'internships' => [
+						'type'        => 'Boolean',
+						'description' => __( 'Filter by internship status', 'rise' ),
+					],
+					'union'       => [
+						'type'        => 'Boolean',
+						'description' => __( 'Filter by union status', 'rise' ),
+					],
+					'paid'        => [
+						'type'        => 'Boolean',
+						'description' => __( 'Filter by paid status', 'rise' ),
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$params = [
+						'where' => 't.post_status = "publish"',
+						'limit' => -1,
+					];
+
+					// Only add where conditions for filters that are explicitly set to true
+					if ( isset( $args['internships'] ) && $args['internships'] ) {
+						$params['where'] .= ' AND is_internship.meta_value = "1"';
+					}
+
+					if ( isset( $args['union'] ) && $args['union'] ) {
+						$params['where'] .= ' AND is_union.meta_value = "1"';
+					}
+
+					if ( isset( $args['paid'] ) && $args['paid'] ) {
+						$params['where'] .= ' AND is_paid.meta_value = "1"';
+					}
+
+					$jobs = pods( 'job_post' )->find( $params );
+
+					$job_ids = [];
+
+					while ( $jobs->fetch() ) {
+						$job_ids[] = $jobs->field( 'ID' );
+					}
+
+					if ( !$job_ids ) {
+						return [];
+					}
+
+					return $job_ids;
 				},
 			]
 		);
