@@ -707,12 +707,20 @@ class Rise_GraphQL_Queries {
 						'type'        => 'Boolean',
 						'description' => __( 'Filter by paid status', 'rise' ),
 					],
+					'status'      => [
+						'type'        => ['list_of' => 'String'],
+						'description' => __( 'Filter by post status', 'rise' ),
+					],
 				],
 				'resolve'     => function ( $root, $args ) {
+					$post_status = isset( $args['status'] ) ? $args['status'] : ['publish'];
+
 					$params = [
-						'where' => 't.post_status = "publish"',
+						'where' => 't.post_status IN ("' . implode( '", "', $post_status ) . '")',
 						'limit' => -1,
 					];
+
+					error_log( print_r( $params, true ) );
 
 					// Only add where conditions for filters that are explicitly set to true
 					if ( isset( $args['internships'] ) && $args['internships'] ) {

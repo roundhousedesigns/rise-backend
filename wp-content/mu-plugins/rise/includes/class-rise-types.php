@@ -357,11 +357,12 @@ class Rise_Types {
 			'Job Posts',
 			'dashicons-businessman',
 			[
-				'supports'           => ['title', 'editor'],
+				'supports'           => ['title', 'author'],
 				'public'             => true,
 				'show_ui'            => true,
 				'publicly_queryable' => true,
 				'capability_type'    => 'post',
+				'taxonomies'         => ['position', 'skill'],
 			]
 		);
 	}

@@ -423,5 +423,177 @@ class Rise_GraphQL_Types {
 				],
 			]
 		);
+
+		/**
+		 * JobPostOutput output type.
+		 */
+		register_graphql_object_type(
+			'JobPostOutput',
+			[
+				'description' => __( 'A job post prepared for the frontend.', 'rise' ),
+				'fields'      => [
+					'databaseId'       => [
+						'type'        => 'Int',
+						'description' => __( 'The job post\'s ID.', 'rise' ),
+					],
+					'title'            => [
+						'type'        => 'String',
+						'description' => __( 'The title of the job post.', 'rise' ),
+					],
+					'author'           => [
+						'type'        => 'Int',
+						'description' => __( 'The author of the job post.', 'rise' ),
+					],
+					'companyName'      => [
+						'type'        => 'String',
+						'description' => __( 'The name of the company.', 'rise' ),
+					],
+					'companyAddress'   => [
+						'type'        => 'String',
+						'description' => __( 'The address of the company.', 'rise' ),
+					],
+					'contactName'      => [
+						'type'        => 'String',
+						'description' => __( 'The name of the contact person.', 'rise' ),
+					],
+					'contactEmail'     => [
+						'type'        => 'String',
+						'description' => __( 'The email of the contact person.', 'rise' ),
+					],
+					'contactPhone'     => [
+						'type'        => 'String',
+						'description' => __( 'The phone number of the contact person.', 'rise' ),
+					],
+					'startDate'        => [
+						'type'        => 'String',
+						'description' => __( 'The start date of the job.', 'rise' ),
+					],
+					'endDate'          => [
+						'type'        => 'String',
+						'description' => __( 'The end date of the job.', 'rise' ),
+					],
+					'instructions'     => [
+						'type'        => 'String',
+						'description' => __( 'The application instructions.', 'rise' ),
+					],
+					'compensation'     => [
+						'type'        => 'String',
+						'description' => __( 'The compensation details.', 'rise' ),
+					],
+					'applicationUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'The URL for applications.', 'rise' ),
+					],
+					'applicationPhone' => [
+						'type'        => 'String',
+						'description' => __( 'The phone number for applications.', 'rise' ),
+					],
+					'applicationEmail' => [
+						'type'        => 'String',
+						'description' => __( 'The email for applications.', 'rise' ),
+					],
+					'description'      => [
+						'type'        => 'String',
+						'description' => __( 'The job description.', 'rise' ),
+					],
+					'isPaid'           => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is a paid position.', 'rise' ),
+					],
+					'isInternship'     => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is an internship position.', 'rise' ),
+					],
+					'isUnion'          => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is a union position.', 'rise' ),
+					],
+				],
+			]
+		);
+
+		/**
+		 * JobPostInput input type.
+		 */
+		register_graphql_input_type(
+			'JobPostInput',
+			[
+				'description' => __( 'A new or updated job post.', 'rise' ),
+				'fields'      => [
+					'id'               => [
+						'type'        => 'ID',
+						'description' => __( 'The job post\'s ID.', 'rise' ),
+					],
+					'title'            => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The title of the job post.', 'rise' ),
+					],
+					'companyName'      => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The name of the company.', 'rise' ),
+					],
+					'companyAddress'   => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The address of the company.', 'rise' ),
+					],
+					'contactName'      => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The name of the contact person.', 'rise' ),
+					],
+					'contactEmail'     => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The email of the contact person.', 'rise' ),
+					],
+					'contactPhone'     => [
+						'type'        => 'String',
+						'description' => __( 'The phone number of the contact person.', 'rise' ),
+					],
+					'startDate'        => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The start date of the job.', 'rise' ),
+					],
+					'endDate'          => [
+						'type'        => 'String',
+						'description' => __( 'The end date of the job.', 'rise' ),
+					],
+					'instructions'     => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The application instructions.', 'rise' ),
+					],
+					'compensation'     => [
+						'type'        => 'String',
+						'description' => __( 'The compensation details.', 'rise' ),
+					],
+					'applicationUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'The URL for applications.', 'rise' ),
+					],
+					'applicationPhone' => [
+						'type'        => 'String',
+						'description' => __( 'The phone number for applications.', 'rise' ),
+					],
+					'applicationEmail' => [
+						'type'        => 'String',
+						'description' => __( 'The email for applications.', 'rise' ),
+					],
+					'description'      => [
+						'type'        => 'String',
+						'description' => __( 'The job description.', 'rise' ),
+					],
+					'isPaid'           => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is a paid position.', 'rise' ),
+					],
+					'isInternship'     => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is an internship position.', 'rise' ),
+					],
+					'isUnion'          => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is a union position.', 'rise' ),
+					],
+				],
+			]
+		);
 	}
 }

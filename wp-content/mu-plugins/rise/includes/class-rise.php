@@ -154,6 +154,7 @@ class Rise {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-userprofile.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-credit.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-job-post.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-types.php';
 
 		/**

@@ -41,6 +41,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateStarredProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 		$this->register_mutation__updateOrCreateConflictRange();
+		$this->register_mutation__updateOrCreateJobPost();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
 	}
 
@@ -1268,6 +1269,159 @@ class Rise_GraphQL_Mutations {
 					return [
 						'result' => true,
 					];
+				},
+			]
+		);
+	}
+
+	protected function register_mutation__updateOrCreateJobPost() {
+		register_graphql_mutation(
+			'updateOrCreateJobPost',
+			[
+				'inputFields'         => [
+					'id'               => [
+						'type'        => 'Int',
+						'description' => __( 'The ID of the job post, if it already exists.', 'rise' ),
+					],
+					'author'           => [
+						'type'        => 'Int',
+						'description' => __( 'The ID of the author of the job post, if it already exists.', 'rise' ),
+					],
+					'title'            => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The title of the job post.', 'rise' ),
+					],
+					'companyName'      => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The name of the company.', 'rise' ),
+					],
+					'companyAddress'   => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The address of the company.', 'rise' ),
+					],
+					'contactName'      => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The name of the contact person.', 'rise' ),
+					],
+					'contactEmail'     => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The email of the contact person.', 'rise' ),
+					],
+					'contactPhone'     => [
+						'type'        => 'String',
+						'description' => __( 'The phone number of the contact person.', 'rise' ),
+					],
+					'startDate'        => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The start date of the job.', 'rise' ),
+					],
+					'endDate'          => [
+						'type'        => 'String',
+						'description' => __( 'The end date of the job.', 'rise' ),
+					],
+					'instructions'     => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'The application instructions.', 'rise' ),
+					],
+					'compensation'     => [
+						'type'        => 'String',
+						'description' => __( 'The compensation details.', 'rise' ),
+					],
+					'applicationUrl'   => [
+						'type'        => 'String',
+						'description' => __( 'The URL for applications.', 'rise' ),
+					],
+					'applicationPhone' => [
+						'type'        => 'String',
+						'description' => __( 'The phone number for applications.', 'rise' ),
+					],
+					'applicationEmail' => [
+						'type'        => 'String',
+						'description' => __( 'The email for applications.', 'rise' ),
+					],
+					'description'      => [
+						'type'        => 'String',
+						'description' => __( 'The job description.', 'rise' ),
+					],
+					'isPaid'           => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is a paid position.', 'rise' ),
+					],
+					'isInternship'     => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is an internship position.', 'rise' ),
+					],
+					'isUnion'          => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether this is a union position.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'jobPost' => [
+						'type'        => 'JobPostOutput',
+						'description' => __( 'The created or updated job post.', 'rise' ),
+						'resolve'     => function ( $payload ) {
+							if ( !$payload['jobPost'] ) {
+								return null;
+							}
+
+							$post_id = $payload['jobPost'];
+
+							$job_post = new Rise_Job_Post( [
+								'id'               => $post_id,
+								'author'           => get_post_field( 'post_author', $post_id ),
+								'isNew'            => false,
+								'title'            => get_the_title( $post_id ),
+								'companyName'      => get_post_meta( $post_id, 'company_name', true ),
+								'companyAddress'   => get_post_meta( $post_id, 'company_address', true ),
+								'contactName'      => get_post_meta( $post_id, 'contact_name', true ),
+								'contactEmail'     => get_post_meta( $post_id, 'contact_email', true ),
+								'contactPhone'     => get_post_meta( $post_id, 'contact_phone', true ),
+								'startDate'        => get_post_meta( $post_id, 'start_date', true ),
+								'endDate'          => get_post_meta( $post_id, 'end_date', true ),
+								'instructions'     => get_post_meta( $post_id, 'instructions', true ),
+								'compensation'     => get_post_meta( $post_id, 'compensation', true ),
+								'applicationUrl'   => get_post_meta( $post_id, 'application_url', true ),
+								'applicationPhone' => get_post_meta( $post_id, 'application_phone', true ),
+								'applicationEmail' => get_post_meta( $post_id, 'application_email', true ),
+								'description'      => get_post_meta( $post_id, 'description', true ),
+								'isPaid'           => (bool) get_post_meta( $post_id, 'is_paid', true ),
+								'isInternship'     => (bool) get_post_meta( $post_id, 'is_internship', true ),
+								'isUnion'          => (bool) get_post_meta( $post_id, 'is_union', true ),
+							] );
+
+							return $job_post->prepare_job_post_for_graphql();
+						},
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// We obfuscate the actual success of this mutation to prevent user enumeration.
+					$payload = [
+						'jobPost' => null,
+					];
+
+					// TODO Ultimately, set new posts to 'pending' and approve them in the admin.
+					$job_post_defaults          = [];
+					$job_post_defaults['isNew'] = !isset( $input['id'] ) || !$input['id'];
+
+					if ( $job_post_defaults['isNew'] ) {
+						// Only force the status if the job post is new.
+						$job_post_defaults['status'] = 'pending';
+					}
+
+					// Create a new job post object
+					$job_post = new Rise_Job_Post( array_merge( $input, $job_post_defaults ) );
+
+					// Update the job post
+					$result = $job_post->update_job_post();
+
+					if ( is_wp_error( $result ) ) {
+						throw new UserError( esc_html( $result->get_error_message() ) );
+					}
+
+					$payload['jobPost'] = $result;
+
+					return $payload;
 				},
 			]
 		);
