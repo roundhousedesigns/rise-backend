@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
+## \[1.2-notifications] - Unmerged
+
+- Add: Notifications with count badge for displaying if a a starred profile has been updated.
+
 ## \[1.2-dev] - Unreleased
 
 - Fix: "$lastCredits" as count var in `useUserProfile`.
