@@ -1,0 +1,6 @@
+# Page templates
+page-*.php
+
+# Data files
+*.csv
+

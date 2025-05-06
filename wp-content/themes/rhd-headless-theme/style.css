@@ -1,0 +1,18 @@
+/*
+Theme Name: RHD Headless Theme
+Description: This theme supports the headless frontend.
+Author: Roundhouse Designs <nick@roundhouse-designs.com>
+Author URI: https://roundhouse-designs.com/
+Version: 0.1
+Requires at least: 5.6
+Tested up to: 6.7.2
+Requires PHP: 8.1
+Text Domain: rhd
+*/
+
+/* Style police. */
+
+:root :where(.wp-block-button__link),
+.wp-block-button__link {
+	border-radius: 6.75px;
+}
