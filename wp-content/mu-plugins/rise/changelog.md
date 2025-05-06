@@ -5,6 +5,7 @@ with 1.1.1.
 
 ## \[1.2-dev] - Unreleased
 
+- Fix: "$lastCredits" as count var in `useUserProfile`.
 - Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
 - Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
 - Remove: <Page> component and slug route. Static pages handled by WP theme.

@@ -480,4 +480,121 @@ class Rise_Types {
 			$messages
 		);
 	}
+
+	/**
+	 * Registers the `profile_notification` post type.
+	 *
+	 * @access    private
+	 * @since     0.1.0
+	 */
+	public function profile_notification_init() {
+		Rise_Taxonomies::register_post_type(
+			'profile_notification',
+			'profile_notifications',
+			'Profile Notification',
+			'Profile Notifications',
+			'dashicons-bell',
+			[
+				'supports'            => ['author'],
+				'public'              => false,
+				'exclude_from_search' => true,
+				'publicly_queryable'  => false,
+				'show_ui'             => true, // TODO: turn UI off
+				'capability_type'     => 'post',
+				'show_in_rest'        => true,
+			]
+		);
+	}
+
+	/**
+	 * Sets the post updated messages for the `profile_notification` post type.
+	 *
+	 * @param  array $messages Post updated messages.
+	 * @return array Messages for the `profile_notification` post type.
+	 */
+	public function profile_notification_updated_messages( $messages ) {
+		return Rise_Taxonomies::post_type_updated_messages( 'profile_notification', 'Profile Notification', $messages );
+	}
+
+	/**
+	 * Sets the bulk post updated messages for the `profile_notification` post type.
+	 *
+	 * @param  array $bulk_messages Arrays of messages, each keyed by the corresponding post type.
+	 * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+	 * @return array Bulk messages for the `profile_notification` post type.
+	 */
+	public function profile_notification_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+		return Rise_Taxonomies::post_type_bulk_updated_messages( 'profile_notification', 'Profile Notification', 'Profile Notifications', $bulk_messages, $bulk_counts );
+	}
+
+	/**
+	 * Create notifications for users who have starred the updated profile.
+	 *
+	 * @param  int    $user_id The user ID being updated.
+	 * @return void
+	 */
+	public function create_notification_for_profile_starred_by( $user_id ) {
+		global $wpdb;
+
+		// Get the field_id for 'starred_profiles' in the user pod
+		$pods_api = pods_api();
+		$field    = $pods_api->load_field( [
+			'pod'  => 'user',
+			'name' => 'starred_profiles',
+		] );
+
+		if ( !$field || !$field->get_id() ) {
+			return;
+		}
+
+		$field_id = $field->get_id();
+
+		// Query the podsrel table for all users who have $user_id in their starred_profiles
+		$rel_table = $wpdb->prefix . 'podsrel';
+		$sql       = $wpdb->prepare(
+			"SELECT DISTINCT t.item_id
+			 FROM $rel_table t
+			 WHERE t.field_id = %d
+			   AND t.related_item_id = %d",
+			$field_id,
+			$user_id
+		);
+
+		$user_ids = $wpdb->get_col( $sql );
+
+		if ( empty( $user_ids ) ) {
+			return;
+		}
+
+		$notification_pod = pods( 'profile_notification' );
+		if ( !$notification_pod ) {
+			return;
+		}
+
+		foreach ( $user_ids as $current_user_id ) {
+			// Don't notify the user about their own update
+			if ( $current_user_id == $user_id ) {
+				continue;
+			}
+
+			$notification_id = $notification_pod->add( [
+				'notification_type' => 'starred_profile_updated',
+				'value'             => $user_id,
+				'author'            => $current_user_id,
+			] );
+
+			if ( $notification_id ) {
+				$user = get_user_by( 'id', $user_id );
+
+				if ( $user ) {
+					$notification_title = sprintf( __( '%s updated their profile.', 'rise' ), $user->display_name );
+					wp_update_post( [
+						'ID'          => $notification_id,
+						'post_status' => 'publish',
+						'post_title'  => $notification_title,
+					] );
+				}
+			}
+		}
+	}
 }

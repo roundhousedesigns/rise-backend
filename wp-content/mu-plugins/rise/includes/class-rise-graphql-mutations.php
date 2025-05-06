@@ -43,6 +43,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__updateOrCreateJobPost();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
+		$this->register_mutation__markNotificationAsRead();
 	}
 
 	/**
@@ -975,7 +976,7 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					if ( !function_exists( 'wp_handle_sideload' ) ) {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
-					}
+						}
 
 					$field   = isset( $input['name'] ) ? camel_to_snake( $input['name'] ) : '';
 					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
@@ -1422,6 +1423,55 @@ class Rise_GraphQL_Mutations {
 					$payload['jobPost'] = $result;
 
 					return $payload;
+				},
+			]
+		);
+	}
+
+	/**
+	 * Register the markNotificationAsRead mutation.
+	 *
+	 * @return void
+	 */
+	private function register_mutation__markNotificationAsRead() {
+		register_graphql_mutation(
+			'markNotificationAsRead',
+			[
+				'inputFields'         => [
+					'notificationId' => [
+						'type'        => ['non_null' => 'ID'],
+						'description' => __( 'The ID of the notification to mark as read.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'success' => [
+						'type'        => ['non_null' => 'Boolean'],
+						'description' => __( 'Whether the notification was marked as read.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function( $input ) {
+					$notification_id = $input['notificationId'];
+					$user_id = get_current_user_id();
+
+					if ( ! $user_id ) {
+						return [
+							'success' => false,
+						];
+					}
+
+					// Verify the notification belongs to the current user
+					$notification = get_post( $notification_id );
+					if ( ! $notification || $notification->post_author != $user_id ) {
+						return [
+							'success' => false,
+						];
+					}
+
+					$success = Rise_Profile_Notification::mark_notification_as_read( $notification_id );
+
+					return [
+						'success' => $success,
+					];
 				},
 			]
 		);

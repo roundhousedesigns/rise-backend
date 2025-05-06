@@ -513,6 +513,34 @@ class Rise_GraphQL_Types {
 		);
 
 		/**
+		 * ProfileNotificationOutput output type.
+		 */
+		register_graphql_object_type(
+			'ProfileNotificationOutput',
+			[
+				'description' => __( 'A profile notification prepared for the frontend.', 'rise' ),
+				'fields'      => [
+					'id'               => [
+						'type'        => 'Int',
+						'description' => __( 'The notification\'s ID.', 'rise' ),
+					],
+					'title'            => [
+						'type'        => 'String',
+						'description' => __( 'The notification\'s title.', 'rise' ),
+					],
+					'notificationType' => [
+						'type'        => 'String',
+						'description' => __( 'The notification type.', 'rise' ),
+					],
+					'value'            => [
+						'type'        => 'String',
+						'description' => __( 'The notification value.', 'rise' ),
+					],
+				],
+			]
+		);
+
+		/**
 		 * JobPostInput input type.
 		 */
 		register_graphql_input_type(

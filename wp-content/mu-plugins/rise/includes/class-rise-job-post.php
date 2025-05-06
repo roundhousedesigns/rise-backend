@@ -10,6 +10,8 @@
  * @since      0.1.0
  */
 
+// TODO Simplify 'job_post_id' to 'id'
+
 class Rise_Job_Post {
 	/**
 	 * The job post's ID.
@@ -280,8 +282,6 @@ class Rise_Job_Post {
 			'is_internship'     => $this->is_internship,
 			'is_union'          => $this->is_union,
 		];
-
-		error_log( print_r( $update_fields, true ) );
 
 		$return = $pod->save( $update_fields );
 

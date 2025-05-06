@@ -155,6 +155,7 @@ class Rise {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-userprofile.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-credit.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-job-post.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-profile-notification.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-types.php';
 
 		/**
@@ -388,6 +389,14 @@ class Rise {
 		$this->loader->add_action( 'init', $plugin_data, 'network_partner_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'network_partner_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'network_partner_bulk_updated_messages', 10, 2 );
+
+		/**
+		 * Custom Post Type: profile_notification
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'profile_notification_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'profile_notification_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'profile_notification_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'profile_update', $plugin_data, 'create_notification_for_profile_starred_by', 10, 1 );
 
 		/**
 		 * Taxonomy: network_partner_tag (`network_partner`)

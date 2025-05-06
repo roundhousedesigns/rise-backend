@@ -720,8 +720,6 @@ class Rise_GraphQL_Queries {
 						'limit' => -1,
 					];
 
-					error_log( print_r( $params, true ) );
-
 					// Only add where conditions for filters that are explicitly set to true
 					if ( isset( $args['internships'] ) && $args['internships'] ) {
 						$params['where'] .= ' AND is_internship.meta_value = "1"';
@@ -748,6 +746,32 @@ class Rise_GraphQL_Queries {
 					}
 
 					return $job_ids;
+				},
+			]
+		);
+
+		/**
+		 * Get notifications for the current user.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'unreadProfileNotifications',
+			[
+				'type'        => ['list_of' => 'ProfileNotificationOutput'],
+				'description' => __( 'Get the notifications for the current user.', 'rise' ),
+				'args'        => [
+					'authorId' => [
+						'type'        => 'Int',
+						'description' => __( 'The ID of the user to get notifications for.', 'rise' ),
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+
+					if ( !$args['authorId'] ) {
+						return [];
+					}
+
+					return Rise_Profile_Notification::get_unread_for_graphql( $args['authorId'] );
 				},
 			]
 		);
