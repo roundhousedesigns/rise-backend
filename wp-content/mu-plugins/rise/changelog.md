@@ -3,14 +3,11 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
-## \[1.2-notifications] - Unmerged
-
-- Add: Notifications!
-	- Badge count for displaying if any starred profiles have been updated.
-	- On update, if an identical notification is found, only the newest is kept.
-
 ## \[1.2-dev] - Unreleased
 
+- Add: Notifications!
+  - Badge count for displaying if any starred profiles have been updated.
+  - On update, if an identical notification is found, only the newest is kept.
 - Fix: "$lastCredits" as count var in `useUserProfile`.
 - Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
 - Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
