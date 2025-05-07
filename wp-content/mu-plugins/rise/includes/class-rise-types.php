@@ -597,4 +597,46 @@ class Rise_Types {
 			}
 		}
 	}
+
+	/**
+	 * Delete duplicate profile notifications after a new one is created.
+	 * Only notifications with exactly matching titles will be considered duplicates.
+	 * The most recent notification will be kept.
+	 *
+	 * @param  int    $post_id The ID of the newly created post
+	 * @return void
+	 */
+	public function delete_duplicate_profile_notifications( $post_id ) {
+		// Verify this is a profile_notification post
+		if ( get_post_type( $post_id ) !== 'profile_notification' ) {
+			return;
+		}
+
+		// Get the new notification's title
+		$new_notification = get_post( $post_id );
+		if ( !$new_notification || !$new_notification->post_title ) {
+			return;
+		}
+
+		$title  = $new_notification->post_title;
+		$author = $new_notification->post_author;
+
+		// Find any other notifications with matching title for this author
+		$args = [
+			'post_type'      => 'profile_notification',
+			'post_status'    => 'publish',
+			'title'          => $title,
+			'author'         => $author,
+			'post__not_in'   => [$post_id],
+			'fields'         => 'ids',
+			'posts_per_page' => -1,
+		];
+
+		$duplicate_notifications = get_posts( $args );
+
+		// Delete any duplicates found
+		foreach ( $duplicate_notifications as $duplicate_id ) {
+			wp_delete_post( $duplicate_id, true );
+		}
+	}
 }

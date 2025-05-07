@@ -397,6 +397,7 @@ class Rise {
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'profile_notification_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'profile_notification_bulk_updated_messages', 10, 2 );
 		$this->loader->add_action( 'profile_update', $plugin_data, 'create_notification_for_profile_starred_by', 10, 1 );
+		$this->loader->add_action( 'wp_insert_post', $plugin_data, 'delete_duplicate_profile_notifications', 10, 1 );
 
 		/**
 		 * Taxonomy: network_partner_tag (`network_partner`)

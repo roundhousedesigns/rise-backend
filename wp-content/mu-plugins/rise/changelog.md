@@ -5,7 +5,9 @@ with 1.1.1.
 
 ## \[1.2-notifications] - Unmerged
 
-- Add: Notifications with count badge for displaying if a a starred profile has been updated.
+- Add: Notifications!
+	- Badge count for displaying if any starred profiles have been updated.
+	- On update, if an identical notification is found, only the newest is kept.
 
 ## \[1.2-dev] - Unreleased
 
