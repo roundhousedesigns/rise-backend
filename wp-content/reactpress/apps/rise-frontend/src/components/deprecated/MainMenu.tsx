@@ -1,0 +1,121 @@
+/*
+ * @deprecated
+ * This component is no longer used.
+ */
+
+import {
+	Flex,
+	IconButton,
+	Link,
+	Menu,
+	MenuButton,
+	MenuDivider,
+	MenuItem,
+	MenuList,
+	MenuOptionGroup,
+	useBreakpointValue,
+	useColorMode,
+} from '@chakra-ui/react';
+import DarkModeToggle from '@components/DarkModeToggle';
+import { useProfileUrl } from '@hooks/hooks';
+import useLogout from '@mutations/useLogout';
+import useViewer from '@queries/useViewer';
+import {
+	FiCompass,
+	FiFolder,
+	FiHelpCircle,
+	FiHome,
+	FiLogOut,
+	FiMenu,
+	FiSettings,
+	FiStar,
+} from 'react-icons/fi';
+import { Link as RouterLink } from 'react-router-dom';
+
+export default function MainMenu() {
+	const [{ loggedInSlug }] = useViewer();
+	const { logoutMutation } = useLogout();
+
+	const isLargerThanMd = useBreakpointValue(
+		{
+			base: false,
+			md: true,
+		},
+		{ ssr: false } // TODO: Do we need this?
+	);
+	const { colorMode } = useColorMode();
+
+	/**
+	 * Logs out the user by performing a mutation and redirecting to the login page.
+	 */
+	const logout = (): void => {
+		logoutMutation().then(() => {
+			// TODO Fix logout redirect
+			window.location.href = '/login';
+		});
+	};
+
+	return (
+		<Menu>
+			<MenuButton
+				aria-label='Menu'
+				as={IconButton}
+				borderRadius='full'
+				colorScheme='yellow'
+				icon={<FiMenu />}
+				size='sm'
+			/>
+			<MenuList zIndex='100' color={colorMode === 'dark' ? 'text.light' : 'text.dark'}>
+				{!isLargerThanMd ? (
+					<MenuOptionGroup>
+						<MenuItem as={RouterLink} to={useProfileUrl(loggedInSlug)} icon={<FiHome />}>
+							My Profile
+						</MenuItem>
+						<MenuDivider />
+					</MenuOptionGroup>
+				) : (
+					false
+				)}
+				<MenuItem as={RouterLink} to={'/'} icon={<FiCompass />}>
+					Dashboard
+				</MenuItem>
+				<MenuItem as={RouterLink} to={'/starred'} icon={<FiStar />}>
+					Starred Profiles
+				</MenuItem>
+				<MenuItem as={RouterLink} to={'/searches'} icon={<FiFolder />}>
+					Your Searches
+				</MenuItem>
+				<MenuItem as={RouterLink} to={'/settings'} icon={<FiSettings />}>
+					Settings
+				</MenuItem>
+				<MenuDivider />
+				<MenuItem
+					as={Link}
+					my={0}
+					href={'https://risetheatre.org'}
+					icon={<FiHome />}
+					isExternal
+					_hover={{
+						textDecoration: 'none',
+					}}
+				>
+					RISE Home
+				</MenuItem>
+				<MenuItem as={RouterLink} to={'/help'} icon={<FiHelpCircle />}>
+					Help
+				</MenuItem>
+				<MenuDivider />
+				<Flex mx={2} justifyContent={'space-between'} alignItems='center'>
+					<DarkModeToggle showLabel={false} showHelperText={false} />
+					<IconButton
+						aria-label='Logout'
+						icon={<FiLogOut />}
+						boxSize={8}
+						onClick={logout}
+						variant='ghost'
+					/>
+				</Flex>
+			</MenuList>
+		</Menu>
+	);
+}

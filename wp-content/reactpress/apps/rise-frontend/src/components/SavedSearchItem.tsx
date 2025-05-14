@@ -1,0 +1,344 @@
+import {
+	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	CardProps,
+	Flex,
+	Skeleton,
+	Stack,
+	Text,
+	useDisclosure,
+	useToast,
+} from '@chakra-ui/react';
+import ConfirmActionDialog from '@common/ConfirmActionDialog';
+import LinkWithIcon from '@common/LinkWithIcon';
+import SearchParamTags from '@common/SearchParamTags';
+import TooltipIconButton from '@common/inputs/TooltipIconButton';
+import EditSavedSearchModal from '@components/EditSavedSearchModal';
+import { SearchContext } from '@context/SearchContext';
+import SearchDrawerContext from '@context/SearchDrawerContext';
+import { useSavedSearchFiltersChanged } from '@hooks/hooks';
+import { SearchFilterSet, WPItem } from '@lib/classes';
+import { WPItemParams } from '@lib/types';
+import { extractSearchTermIds } from '@lib/utils';
+import useDeleteOwnSavedSearch from '@mutations/useDeleteOwnSavedSearch';
+import useSaveSearch from '@mutations/useSaveSearch';
+import useCandidateSearch from '@queries/useCandidateSearch';
+import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
+import useViewer from '@queries/useViewer';
+import { MotionProps } from 'framer-motion';
+import { isEqual } from 'lodash';
+import { useContext, useEffect, useState } from 'react';
+import { FiDelete, FiEdit2, FiPlusCircle, FiSave, FiSearch } from 'react-icons/fi';
+
+interface Props {
+	id: number;
+	title?: string;
+	searchTerms: SearchFilterSet;
+	showControls?: boolean;
+	showSaveButton?: boolean;
+}
+
+export default function SavedSearchItem({
+	id,
+	title,
+	searchTerms,
+	showControls = true,
+	showSaveButton = false,
+	...props
+}: Props & MotionProps & Omit<CardProps, 'id'>): JSX.Element | null {
+	const [{ loggedInId }] = useViewer();
+	const [_ignored, { data: { filteredCandidates } = [] }] = useCandidateSearch();
+	const {
+		search: { results },
+		searchDispatch,
+	} = useContext(SearchContext);
+
+	const { openDrawer, drawerIsOpen } = useContext(SearchDrawerContext);
+
+	const { isOpen: editIsOpen, onOpen: editOnOpen, onClose: editOnClose } = useDisclosure();
+	const { isOpen: deleteIsOpen, onOpen: deleteOnOpen, onClose: deleteOnClose } = useDisclosure();
+	const { deleteOwnSavedSearchMutation } = useDeleteOwnSavedSearch();
+
+	const [saveNewSearch, setSaveNewSearch] = useState<boolean>(false);
+	const [searchFilterSet, setSearchFilterSet] = useState<SearchFilterSet | null>(null);
+	const [terms, setTerms] = useState<WPItem[]>([]);
+
+	const savedSearchFiltersChanged = useSavedSearchFiltersChanged();
+
+	const [whichButtonClicked, setWhichButtonClicked] = useState<string>('');
+
+	const {
+		saveSearchMutation,
+		results: { loading: saveLoading },
+	} = useSaveSearch();
+
+	// Get all the term IDs from the params object.
+	const termIds = extractSearchTermIds(searchTerms);
+	const [getTerms] = useLazyTaxonomyTerms();
+
+	useEffect(() => {
+		if (!termIds.length) return;
+
+		getTerms({
+			variables: {
+				include: termIds,
+			},
+		}).then((res) => {
+			const {
+				data: {
+					terms: { nodes },
+				},
+			} = res;
+			if (!nodes) return;
+
+			setTerms(nodes.map((term: WPItemParams) => new WPItem(term)));
+		});
+	}, [termIds.length]);
+
+	useEffect(() => {
+		if (!searchTerms || !terms) return;
+
+		const newSearchFilterSet = new SearchFilterSet(searchTerms, terms);
+		if (!isEqual(searchFilterSet, newSearchFilterSet)) {
+			setSearchFilterSet(newSearchFilterSet);
+		}
+	}, [searchTerms, terms]);
+
+	const toast = useToast();
+
+	// Update SearchContext with the new results whenever the query returns.
+	useEffect(() => {
+		if (isEqual(filteredCandidates, results) || !filteredCandidates) return;
+
+		searchDispatch({
+			type: 'SET_RESULTS',
+			payload: {
+				results: filteredCandidates,
+			},
+		});
+	}, [filteredCandidates]);
+
+	const handleSearchClick = () => {
+		if (!searchFilterSet) return;
+
+		setWhichButtonClicked('search');
+
+		searchDispatch({
+			type: 'RESTORE_SAVED_SEARCH',
+			payload: {
+				savedSearchId: id,
+				filterSet: searchFilterSet,
+			},
+		});
+
+		const filterDepartment = document.getElementById('filterDepartment');
+		if (filterDepartment) {
+			filterDepartment.scrollIntoView({ behavior: 'smooth' });
+		}
+
+		if (!drawerIsOpen) openDrawer();
+	};
+
+	const handleEditTitleClick = () => {
+		editOnOpen();
+	};
+
+	const handleSaveNewSearchClick = () => {
+		setWhichButtonClicked('new');
+
+		setSaveNewSearch(true);
+		editOnOpen();
+	};
+
+	const handleUpdateClick = () => {
+		if (!searchFilterSet || !title) return;
+
+		setWhichButtonClicked('update');
+
+		saveSearchMutation({
+			userId: loggedInId,
+			title,
+			filterSet: searchFilterSet.toQueryableFilterSet(),
+			id: saveNewSearch ? 0 : id,
+		})
+			.then((results) => {
+				const {
+					data: {
+						updateOrCreateSavedSearch: { id },
+					},
+				} = results;
+
+				searchDispatch({
+					type: 'SET_SAVED_SEARCH_FILTERS',
+					payload: {
+						filterSet: searchFilterSet,
+						savedSearchId: id,
+					},
+				});
+			})
+			.then(() => {
+				editOnClose();
+
+				setSaveNewSearch(false);
+
+				toast({
+					title: 'Saved!',
+					description: 'This search has been saved for later.',
+					position: 'bottom',
+					status: 'success',
+					duration: 3000,
+					isClosable: true,
+				});
+
+				setWhichButtonClicked('');
+			});
+	};
+
+	const handleDelete = () => {
+		setWhichButtonClicked('delete');
+
+		if (!id) return;
+
+		deleteOwnSavedSearchMutation(id, loggedInId).then(() => {
+			deleteOnClose();
+
+			toast({
+				title: 'Deleted!',
+				description: 'This saved search has been deleted.',
+				position: 'bottom',
+				status: 'success',
+				duration: 3000,
+				isClosable: true,
+			});
+		});
+	};
+
+	const handleEditClose = () => {
+		setWhichButtonClicked('');
+
+		editOnClose();
+	};
+
+	return terms && terms.length > 0 ? (
+		<Card p={0} my={0} {...props}>
+			<Flex justifyContent={'space-between'}>
+				<Stack w='auto' alignItems={'space-between'} pt={0} pr={2} pb={3} pl={2}>
+					<Flex alignItems={'center'}>
+						<LinkWithIcon
+							onClick={handleEditTitleClick}
+							icon={FiEdit2}
+							fontSize='lg'
+							mt={0.5}
+							flex={1}
+							iconSide='left'
+							color='inherit'
+							borderBottomWidth='2px'
+							borderBottomStyle='dotted'
+							textDecoration={'none !important'}
+							transition={'border 150ms ease'}
+							_hover={{ borderBottomStyle: 'dotted', borderBottomWidth: '2px' }}
+							_light={{
+								borderBottomColor: 'gray.300',
+								_hover: { borderBottomColor: 'gray.500' },
+							}}
+							_dark={{
+								borderBottomColor: 'gray.600',
+								_hover: { borderBottomColor: 'gray.500' },
+							}}
+							iconProps={{ boxSize: 4, mb: '2px', ml: 1, position: 'relative', top: '2px' }}
+						>
+							{title ? (
+								title
+							) : (
+								<Text as='span' opacity={'0.5'} lineHeight='normal'>
+									Save this search
+								</Text>
+							)}
+						</LinkWithIcon>
+						{id ? (
+							<Box py={2} pr={0} pl={2}>
+								{showControls ? (
+									<ButtonGroup size='xs' spacing={1} px={0}>
+										<TooltipIconButton
+											icon={<FiSearch />}
+											aria-label={'Start a search with these filters'}
+											label={'Start a search with these filters'}
+											colorScheme='green'
+											onClick={handleSearchClick}
+										>
+											Search
+										</TooltipIconButton>
+										<TooltipIconButton
+											icon={<FiDelete />}
+											aria-label={'Delete this search'}
+											label={'Delete this search'}
+											colorScheme='red'
+											onClick={deleteOnOpen}
+										>
+											Delete
+										</TooltipIconButton>
+									</ButtonGroup>
+								) : savedSearchFiltersChanged ? (
+									<Stack textAlign='center'>
+										<Button
+											colorScheme='yellow'
+											leftIcon={<FiSave />}
+											aria-label={'Update saved filters'}
+											title={'Update saved filters'}
+											onClick={handleUpdateClick}
+											size='sm'
+											isLoading={saveLoading && whichButtonClicked === 'update'}
+											isDisabled={saveLoading}
+										>
+											Update
+										</Button>
+										<Button
+											colorScheme='blue'
+											leftIcon={<FiPlusCircle />}
+											aria-label={'Update saved filters'}
+											title={'Update saved filters'}
+											onClick={handleSaveNewSearchClick}
+											size='sm'
+											isLoading={saveLoading && whichButtonClicked === 'new'}
+											isDisabled={saveLoading}
+										>
+											Save New
+										</Button>
+									</Stack>
+								) : (
+									false
+								)}
+							</Box>
+						) : (
+							false
+						)}
+					</Flex>
+					<Flex w='full' justifyContent={'space-between'} flexWrap='wrap' gap={6}>
+						<Skeleton isLoaded={!!terms.length}>
+							<SearchParamTags termIds={termIds} termItems={terms} flex='1' />
+						</Skeleton>
+					</Flex>
+				</Stack>
+			</Flex>
+
+			<EditSavedSearchModal
+				id={id && !saveNewSearch ? id : 0}
+				title={title ? title : ''}
+				isOpen={editIsOpen}
+				onClose={handleEditClose}
+				searchTerms={searchFilterSet ? searchFilterSet : new SearchFilterSet()}
+			/>
+
+			<ConfirmActionDialog
+				confirmAction={handleDelete}
+				isOpen={deleteIsOpen}
+				onClose={deleteOnClose}
+				headerText={'Delete this search'}
+			>
+				Are you sure you want to delete this saved search?
+			</ConfirmActionDialog>
+		</Card>
+	) : null;
+}

@@ -1,0 +1,53 @@
+/**
+ * useUnreadProfileNotifications hook. Query to retrieve profile notifications.
+ */
+
+import { gql, useQuery } from '@apollo/client';
+import { ProfileNotification } from '@lib/classes';
+import { ProfileNotificationParams } from '@lib/types';
+import { omit } from 'lodash';
+
+// TODO update Job class props to match the query
+
+export const QUERY_UNREAD_PROFILE_NOTIFICATIONS = gql`
+	query UnreadProfNotificationsQuery($authorId: Int = 10) {
+		unreadProfileNotifications(authorId: $authorId) {
+			id
+			title
+			notificationType
+			value
+		}
+	}
+`;
+
+const useUnreadProfileNotifications = (authorId: number): [ProfileNotification[], any] => {
+	const result = useQuery(QUERY_UNREAD_PROFILE_NOTIFICATIONS, {
+		variables: {
+			authorId,
+		},
+		fetchPolicy: 'cache-and-network',
+		pollInterval: 20000,
+	});
+
+	if (!result?.data?.unreadProfileNotifications) {
+		return [[], null];
+	}
+
+	const profileNotifications: ProfileNotification[] =
+		result?.data?.unreadProfileNotifications?.map((node: ProfileNotificationParams) => {
+			const { id, title, notificationType, value } = node;
+
+			const profileNotification = new ProfileNotification({
+				id,
+				title,
+				notificationType,
+				value,
+			});
+
+			return profileNotification;
+		}) ?? [];
+
+	return [profileNotifications, omit(result, ['data'])];
+};
+
+export default useUnreadProfileNotifications;

@@ -1,0 +1,18 @@
+{
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": [
+        "@babel/preset-react"
+      ]
+    }
+  },
+  "extends": [
+    "plugin:react/jsx-runtime"
+  ],
+  "rules": {
+    "no-console": "off"
+  }
+}
