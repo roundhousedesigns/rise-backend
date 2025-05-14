@@ -86,7 +86,6 @@ export default function StarToggleIcon({ id, ...props }: Props) {
 				buttonsText={{ confirm: 'Yes', cancel: 'No' }}
 			>
 				Are you sure you want to unstar this profile? You can always star it again later.
-				BALLSBALLSBALLS
 			</ConfirmActionDialog>
 		</>
 	);
