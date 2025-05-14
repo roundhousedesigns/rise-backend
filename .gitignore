@@ -78,3 +78,4 @@ Thumbs.db
 !wp-content/mu-plugins/rise
 !wp-content/mu-plugins/rise/**/*.zip
 !wp-content/plugins/bulk-taxonomy-term-editor
+!wp-content/reactpress/apps/
