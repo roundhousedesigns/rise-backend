@@ -1,12 +1,12 @@
 import {
-	Box,
-	Center,
-	ContainerProps,
-	Flex,
-	Heading,
-	HeadingProps,
-	Spinner,
-	Text,
+    Box,
+    Center,
+    ContainerProps,
+    Flex,
+    Heading,
+    HeadingProps,
+    Spinner,
+    Text,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
@@ -36,8 +36,8 @@ export default function Shell({
 		<Box pt={4} pr={0} pb={8} pl={0} mt={0} mb={0} {...props}>
 			{!!title || !!actions ? (
 				<Flex
-					justifyContent={'space-between'}
-					alignItems={'flex-end'}
+					justifyContent='space-between'
+					alignItems='flex-end'
 					gap={2}
 					flexWrap='wrap'
 					m={0}
@@ -60,7 +60,7 @@ export default function Shell({
 					) : null}
 
 					{actions ? (
-						<Flex flexWrap='wrap' gap={2} justifyContent={'flex-end'}>
+						<Flex flexWrap='wrap' gap={2} justifyContent='flex-end'>
 							{actions}
 						</Flex>
 					) : null}

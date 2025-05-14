@@ -1,17 +1,17 @@
-import { useContext } from 'react';
-import { FormControl, FormLabel, FormHelperText, Heading, Box } from '@chakra-ui/react';
+import { Box, FormControl, FormHelperText, FormLabel, Heading } from '@chakra-ui/react';
 import {
-	AutoComplete,
-	AutoCompleteInput,
-	AutoCompleteList,
-	AutoCompleteGroup,
-	AutoCompleteGroupTitle,
-	AutoCompleteItem,
-	Item,
+    AutoComplete,
+    AutoCompleteGroup,
+    AutoCompleteGroupTitle,
+    AutoCompleteInput,
+    AutoCompleteItem,
+    AutoCompleteList,
+    Item,
 } from '@choc-ui/chakra-autocomplete';
-import { WPItem } from '@lib/classes';
 import { SearchContext } from '@context/SearchContext';
+import { WPItem } from '@lib/classes';
 import usePositions from '@queries/usePositions';
+import { useContext } from 'react';
 
 export default function DepartmentsAutocomplete() {
 	const { searchDispatch } = useContext(SearchContext);
@@ -52,9 +52,9 @@ export default function DepartmentsAutocomplete() {
 				<Heading as={FormLabel} variant='searchFilterTitle' mb={4}>
 					Type a job title to begin.
 				</Heading>
-				<Box flex={'1 0 400px'}>
+				<Box flex='1 0 400px'>
 					<AutoComplete onSelectOption={handleAutocompleteSelect} openOnFocus>
-						<AutoCompleteInput variant='filled' placeholder={'Start typing'} />
+						<AutoCompleteInput variant='filled' placeholder='Start typing' />
 						<AutoCompleteList>
 							{Object.entries(allPositions).map(([departmentId, positions]) => {
 								const department = allDepartments.find(
@@ -82,7 +82,7 @@ export default function DepartmentsAutocomplete() {
 						</AutoCompleteList>
 					</AutoComplete>
 				</Box>
-				<FormHelperText fontSize='xs' maxW={'75%'}>
+				<FormHelperText fontSize='xs' maxW='75%'>
 					Your starting filters will be selected automatically, and you can adjust them as you like.
 				</FormHelperText>
 			</FormControl>

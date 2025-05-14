@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
 import { Box, BoxProps, Flex, FlexProps, Heading } from '@chakra-ui/react';
 import type { As } from '@chakra-ui/system';
+import { ReactNode } from 'react';
 
 interface Props {
 	lineColor: string;
@@ -20,12 +20,12 @@ export default function HeadingCenterline({
 		<Flex
 			alignItems='center'
 			w='full'
-			h={'max-content'}
+			h='max-content'
 			pos='relative'
 			textAlign='left'
 			{...props}
 		>
-			<Box h='6px' top={'38%'} bgColor={lineColor} pos='absolute' w='full' zIndex='1'></Box>
+			<Box h='6px' top='38%' bgColor={lineColor} pos='absolute' w='full' zIndex='1'></Box>
 			<Heading as={headingAs ? headingAs : 'h3'} variant='centerline' {...headingProps}>
 				{children}
 			</Heading>

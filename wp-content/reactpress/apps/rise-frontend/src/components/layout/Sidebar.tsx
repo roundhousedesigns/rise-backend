@@ -6,19 +6,14 @@ import {
 	IconButton,
 	IconProps,
 	List,
-	Menu,
-	MenuButton,
-	MenuList,
 	Spacer,
 	Text,
 } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
-import ProfileNotificationsIcon from '@common/ProfileNotificationsIcon';
 import DarkModeToggle from '@components/DarkModeToggle';
-import ProfileNotificationMenuItem from '@components/ProfileNotificationMenuItem';
 import { SearchContext } from '@context/SearchContext';
 import { useLocalStorage } from '@hooks/hooks';
-import useUnreadProfileNotifications from '@queries/useProfileNotifications';
+import useProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { ReactNode, useContext } from 'react';
@@ -48,7 +43,7 @@ export default function Sidebar() {
 	const [{ loggedInId, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
 
-	const [unreadProfileNotifications] = useUnreadProfileNotifications(loggedInId);
+	const [profileNotifications] = useProfileNotifications(loggedInId);
 
 	const {
 		search: { results },
@@ -60,7 +55,7 @@ export default function Sidebar() {
 
 	{
 		results.length ? (
-			<SidebarMenuItem icon={<Icon as={FiList} />} target={'/results'}>
+			<SidebarMenuItem icon={<Icon as={FiList} />} target='/results'>
 				<Text py={2}>
 					Search results{' '}
 					<Badge py={1} px={2} borderRadius='full' variant='subtle' colorScheme='orange'>
@@ -101,8 +96,8 @@ export default function Sidebar() {
 		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' },
 		{
 			icon: <Icon as={FiStar} />,
-			target: '/stars',
-			label: 'Starred',
+			target: '/following',
+			label: 'Following',
 			iconProps: {
 				fill: starredProfiles && starredProfiles.length > 0 ? 'brand.orange' : 'transparent',
 			},
@@ -167,30 +162,15 @@ export default function Sidebar() {
 						);
 					})}
 
-					<SidebarMenuItem icon={<Icon as={FiSettings} />} target={'/settings'} my={0}>
+					<SidebarMenuItem
+						icon={<Icon as={FiSettings} />}
+						target='/settings'
+						my={0}
+						isExpanded={sidebarExpanded}
+					>
 						Settings
 					</SidebarMenuItem>
 				</List>
-
-				<Menu>
-					<MenuButton
-						as={IconButton}
-						cursor='pointer'
-						icon={<ProfileNotificationsIcon number={unreadProfileNotifications.length} />}
-						size={sidebarExpanded ? 'sm' : 'xs'}
-						bg={unreadProfileNotifications.length > 0 ? 'brand.orange' : 'gray'}
-						borderRadius='full'
-						pos='relative'
-						aria-label='Notifications'
-						my={1.5}
-						transition='all 200ms ease'
-					/>
-					<MenuList>
-						{unreadProfileNotifications.map((notification) => (
-							<ProfileNotificationMenuItem key={notification.id} notification={notification} />
-						))}
-					</MenuList>
-				</Menu>
 
 				<Spacer />
 

@@ -1,13 +1,13 @@
 import {
-	Avatar,
-	Box,
-	Button,
-	ButtonGroup,
-	Card,
-	CardProps,
-	Flex,
-	Heading,
-	Stack,
+    Avatar,
+    Box,
+    Button,
+    ButtonGroup,
+    Card,
+    CardProps,
+    Flex,
+    Heading,
+    Stack,
 } from '@chakra-ui/react';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import ProfilePercentComplete from '@components/ProfilePercentComplete';
@@ -76,7 +76,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 					<TooltipIconButton
 						as={RouterLink}
 						icon={<FiUser />}
-						label={'View profile'}
+						label='View profile'
 						to={profileUrl}
 						colorScheme='blue'
 						my={0}
@@ -86,8 +86,8 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 					<TooltipIconButton
 						as={RouterLink}
 						icon={<FiEdit3 />}
-						label={'Edit profile'}
-						to={'/profile/edit'}
+						label='Edit profile'
+						to='/profile/edit'
 						colorScheme='green'
 						my={0}
 					>
@@ -119,7 +119,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 					<Button
 						as={RouterLink}
 						leftIcon={<FiEdit3 />}
-						to={'/profile/edit'}
+						to='/profile/edit'
 						colorScheme='orange'
 						my={2}
 					>

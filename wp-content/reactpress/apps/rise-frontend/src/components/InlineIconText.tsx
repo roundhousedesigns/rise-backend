@@ -1,5 +1,5 @@
+import { IconButton, IconButtonProps, Text, TextProps } from '@chakra-ui/react';
 import { Fragment, ReactElement } from 'react';
-import { Text, IconButton, TextProps, IconButtonProps } from '@chakra-ui/react';
 
 interface Props {
 	text: string;
@@ -30,7 +30,7 @@ const InlineIconText = ({
 				position='relative'
 				bottom='2px'
 				aria-label={`${description} icon`}
-				bgColor={'blackAlpha.300'}
+				bgColor='blackAlpha.300'
 				isDisabled
 				{...iconProps}
 			/>

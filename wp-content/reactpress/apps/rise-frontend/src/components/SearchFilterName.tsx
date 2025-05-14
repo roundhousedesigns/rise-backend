@@ -1,14 +1,14 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
 import { Box, BoxProps, Flex, Icon, Stack, chakra } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import { isEqual } from 'lodash';
-import { FiSearch, FiXCircle } from 'react-icons/fi';
-import { convertUnscoredToScored } from '@lib/utils';
-import { SearchContext } from '@context/SearchContext';
-import SearchDrawerContext from '@context/SearchDrawerContext';
-import useSearchByName from '@queries/useSearchByName';
 import TextInput from '@common/inputs/TextInput';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
+import { SearchContext } from '@context/SearchContext';
+import SearchDrawerContext from '@context/SearchDrawerContext';
+import { convertUnscoredToScored } from '@lib/utils';
+import useSearchByName from '@queries/useSearchByName';
+import { isEqual } from 'lodash';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { FiSearch, FiXCircle } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchFilterName({ ...props }: BoxProps) {
 	const {
@@ -86,30 +86,30 @@ export default function SearchFilterName({ ...props }: BoxProps) {
 
 	return (
 		<Box {...props}>
-			<chakra.form id={'search-by-name'} onSubmit={handleSubmit}>
-				<Flex gap={2} justifyContent={'space-between'} maxW='lg'>
+			<chakra.form id='search-by-name' onSubmit={handleSubmit}>
+				<Flex gap={2} justifyContent='space-between' maxW='lg'>
 					<TextInput
 						placeholder='Name'
 						leftElement={<Icon as={FiSearch} />}
 						name='name'
-						label={'Search by name'}
+						label='Search by name'
 						labelHidden
 						value={name}
 						sizeToken='sm'
 						onChange={handleInputChange}
-						flex={'1 0 60%'}
+						flex='1 0 60%'
 					/>
 
 					<Stack
 						direction='row'
 						w={name ? 'auto' : 0}
 						overflow='hidden'
-						transition={'width 250ms ease, opacity 250ms ease'}
+						transition='width 250ms ease, opacity 250ms ease'
 					>
 						<TooltipIconButton
 							icon={<FiXCircle />}
 							onClick={handleClear}
-							label={'Clear name'}
+							label='Clear name'
 							colorScheme='orange'
 							size='sm'
 							isDisabled={!name || loading}
@@ -118,7 +118,7 @@ export default function SearchFilterName({ ...props }: BoxProps) {
 							label='Search'
 							colorScheme='green'
 							type='submit'
-							form={'search-by-name'}
+							form='search-by-name'
 							size='sm'
 							isDisabled={!name}
 							isLoading={loading}

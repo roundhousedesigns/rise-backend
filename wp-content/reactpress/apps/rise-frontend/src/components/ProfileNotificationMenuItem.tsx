@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton, LinkBox, LinkOverlay, MenuItem } from '@chakra-ui/react';
+import { Flex, IconButton, Link } from '@chakra-ui/react';
 import { useProfileUrl } from '@hooks/hooks';
 import { Candidate, ProfileNotification } from '@lib/classes';
 import useCandidates from '@queries/useCandidates';
@@ -6,7 +6,6 @@ import { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
-
 interface Props {
 	notification: ProfileNotification;
 }
@@ -44,28 +43,17 @@ export default function ProfileNotificationMenuItem({ notification }: Props) {
 			: '';
 
 	return (
-		<MenuItem as={Box} _hover={{ bg: 'whiteAlpha.50' }} w='full'>
-			<LinkBox w='full'>
-				<Flex
-					fontSize='xs'
-					w='full'
-					m={0}
-					alignItems='center'
-					justifyContent='space-between'
-					gap={2}
-				>
-					<LinkOverlay as={RouterLink} to={link} textDecoration='none'>
-						{title}
-					</LinkOverlay>
-					<IconButton
-						icon={<FiX />}
-						aria-label='Dismiss'
-						size='2xs'
-						colorScheme='red'
-						onClick={handleDismiss}
-					/>
-				</Flex>
-			</LinkBox>
-		</MenuItem>
+		<Flex fontSize='xs' w='full' m={0} alignItems='center' justifyContent='space-between' gap={2}>
+			<Link as={RouterLink} to={link} m={0}>
+				{title}
+			</Link>
+			<IconButton
+				icon={<FiX />}
+				aria-label='Dismiss'
+				size='2xs'
+				colorScheme='red'
+				onClick={handleDismiss}
+			/>
+		</Flex>
 	);
 }

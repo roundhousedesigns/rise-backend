@@ -1,30 +1,30 @@
 import {
-	Box,
-	Card,
-	Flex,
-	Heading,
-	Link,
-	Stack,
-	Tag,
-	Text,
-	Wrap,
-	Button,
-	ButtonGroup,
+    Box,
+    Button,
+    ButtonGroup,
+    Card,
+    Flex,
+    Heading,
+    Link,
+    Stack,
+    Tag,
+    Text,
+    Wrap,
 } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
-import parse from 'html-react-parser';
-import { JobPost } from '@lib/classes';
 import HeadingCenterline from '@common/HeadingCenterline';
 import WrapWithIcon from '@common/WrapWithIcon';
+import { JobPost } from '@lib/classes';
+import parse from 'html-react-parser';
 import {
-	FiCalendar,
-	FiDollarSign,
-	FiMail,
-	FiMap,
-	FiPhone,
-	FiUser,
-	FiExternalLink,
+    FiCalendar,
+    FiDollarSign,
+    FiExternalLink,
+    FiMail,
+    FiMap,
+    FiPhone,
+    FiUser,
 } from 'react-icons/fi';
+import { Link as RouterLink } from 'react-router-dom';
 interface Props {
 	job: JobPost;
 }
@@ -90,7 +90,7 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 						{parsedCompanyAddress ? (
 							<Stack gap={2}>
 								<WrapWithIcon icon={FiMap} my={0}>
-									<Text whiteSpace={'pre-wrap'} my={0} lineHeight='short'>
+									<Text whiteSpace='pre-wrap' my={0} lineHeight='short'>
 										{parsedCompanyAddress}
 									</Text>
 								</WrapWithIcon>
@@ -126,7 +126,7 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 
 							{parsedCompensation && (
 								<WrapWithIcon icon={FiDollarSign} my={0}>
-									<Text whiteSpace={'pre-wrap'} my={0}>
+									<Text whiteSpace='pre-wrap' my={0}>
 										{parsedCompensation}
 									</Text>
 								</WrapWithIcon>

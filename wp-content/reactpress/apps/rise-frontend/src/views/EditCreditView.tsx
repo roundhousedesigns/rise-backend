@@ -1,30 +1,30 @@
-import { ChangeEvent, memo, useContext, useEffect, useReducer, useState } from 'react';
 import {
+	Box,
+	ButtonGroup,
 	Divider,
 	Flex,
 	Heading,
-	Text,
 	Spinner,
 	Stack,
+	Text,
 	useToast,
-	ButtonGroup,
-	Box,
 } from '@chakra-ui/react';
-import { CreditParams } from '@lib/types';
-import { Credit, WPItem } from '@lib/classes';
-import { sortWPItemsByName } from '@lib/utils';
-import { FiCheck, FiX } from 'react-icons/fi';
+import ProfileCheckboxGroup from '@common/inputs/ProfileCheckboxGroup';
+import ProfileRadioGroup from '@common/inputs/ProfileRadioGroup';
+import TextInput from '@common/inputs/TextInput';
+import TooltipIconButton from '@common/inputs/TooltipIconButton';
+import RequiredAsterisk from '@common/RequiredAsterisk';
 import { EditProfileContext } from '@context/EditProfileContext';
-import usePositions from '@queries/usePositions';
+import { Credit, WPItem } from '@lib/classes';
+import { CreditParams } from '@lib/types';
+import { sortWPItemsByName } from '@lib/utils';
+import useUpdateCredit from '@mutations/useUpdateCredit';
 import useLazyPositions from '@queries/useLazyPositions';
 import useLazyRelatedSkills from '@queries/useLazyRelatedSkills';
+import usePositions from '@queries/usePositions';
 import useViewer from '@queries/useViewer';
-import useUpdateCredit from '@mutations/useUpdateCredit';
-import ProfileCheckboxGroup from '@common/inputs/ProfileCheckboxGroup';
-import RequiredAsterisk from '@common/RequiredAsterisk';
-import TextInput from '@common/inputs/TextInput';
-import ProfileRadioGroup from '@common/inputs/ProfileRadioGroup';
-import TooltipIconButton from '@common/inputs/TooltipIconButton';
+import { ChangeEvent, memo, useContext, useEffect, useReducer, useState } from 'react';
+import { FiCheck, FiX } from 'react-icons/fi';
 
 function editCreditReducer(state: CreditParams, action: { type: string; payload: any }) {
 	switch (action.type) {
@@ -310,7 +310,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 				/>
 				<TooltipIconButton
 					icon={<FiX />}
-					label={'Cancel changes'}
+					label='Cancel changes'
 					colorScheme='red'
 					onClick={handleCancel}
 					isDisabled={updateCreditLoading}
@@ -321,7 +321,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 	return (
 		<>
-			<Flex flex='1' justifyContent={'space-between'} py={2} mb={2}>
+			<Flex flex='1' justifyContent='space-between' py={2} mb={2}>
 				<Heading as='h3' size='lg' lineHeight='base'>
 					Edit Credit
 				</Heading>
@@ -331,7 +331,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 			<Flex gap={4}>
 				<TextInput
 					name='title'
-					label={'Company/Production Name'}
+					label='Company/Production Name'
 					value={title}
 					isRequired
 					onChange={handleInputChange}
@@ -340,7 +340,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 				<TextInput
 					name='jobTitle'
-					label={'Job/Position Title'}
+					label='Job/Position Title'
 					isRequired
 					value={jobTitle}
 					onChange={handleInputChange}
@@ -348,10 +348,10 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 				/>
 			</Flex>
 
-			<Flex justifyContent={'space-between'} w='full' gap={4} flexWrap='wrap' mt={1}>
+			<Flex justifyContent='space-between' w='full' gap={4} flexWrap='wrap' mt={1}>
 				<TextInput
 					name='workStart'
-					label={'Start year'}
+					label='Start year'
 					isRequired
 					value={workStart}
 					onChange={handleInputChange}
@@ -361,7 +361,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 				<TextInput
 					name='workEnd'
-					label={'End year'}
+					label='End year'
 					value={!workCurrent ? workEnd : ''}
 					isDisabled={workCurrent}
 					onChange={handleInputChange}
@@ -372,7 +372,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 				<ProfileRadioGroup
 					defaultValue={workCurrent ? 'true' : 'false'}
 					name='workCurrent'
-					label={'Currently working here'}
+					label='Currently working here'
 					items={[
 						{ label: 'Yes', value: 'true' },
 						{ label: 'No', value: 'false' },
@@ -381,7 +381,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 				/>
 			</Flex>
 
-			<Flex justifyContent={'space-between'} w='full' gap={4} flexWrap='wrap' mt={1}>
+			<Flex justifyContent='space-between' w='full' gap={4} flexWrap='wrap' mt={1}>
 				<TextInput
 					name='venue'
 					label='Venue'
@@ -394,7 +394,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 				<TextInput
 					name='jobLocation'
-					label={'Job Location'}
+					label='Job Location'
 					value={jobLocation}
 					isRequired
 					onChange={handleInputChange}
@@ -403,7 +403,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 				/>
 			</Flex>
 
-			<Flex justifyContent={'flex-start'} w='full' gap={4} flexWrap='wrap' mt={1}>
+			<Flex justifyContent='flex-start' w='full' gap={4} flexWrap='wrap' mt={1}>
 				<ProfileRadioGroup
 					defaultValue={intern ? 'true' : 'false'}
 					name='intern'
@@ -492,7 +492,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 				) : null}
 			</Stack>
 
-			<Flex justifyContent={'flex-end'} mt={4} mb={0}>
+			<Flex justifyContent='flex-end' mt={4} mb={0}>
 				<EditCreditButtons />
 			</Flex>
 		</>

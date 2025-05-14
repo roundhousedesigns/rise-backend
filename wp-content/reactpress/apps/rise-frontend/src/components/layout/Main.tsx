@@ -74,8 +74,16 @@ export default function Main() {
 			),
 		},
 		{
+			path: '/following',
+			element: (
+				<LoggedIn>
+					<StarredProfiles />
+				</LoggedIn>
+			),
+		},
+		{
 			path: '/stars',
-			element: <Navigate to={'/starred'} replace />,
+			element: <Navigate to='/starred' replace />,
 		},
 		{
 			path: '/search',
@@ -152,7 +160,7 @@ export default function Main() {
 	]);
 
 	return (
-		<Box w='full' h='auto' minH='100%' background='none' flex={'1 1 auto'}>
+		<Box w='full' h='auto' minH='100%' background='none' flex='1 1 auto'>
 			<ProfileNotices />
 
 			<Box px={2}>{routes}</Box>

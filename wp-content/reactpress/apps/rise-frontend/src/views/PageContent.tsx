@@ -1,6 +1,6 @@
-import usePageById from '@queries/usePageById';
-import { ContainerProps, Container, Heading, HeadingProps } from '@chakra-ui/react';
+import { Container, ContainerProps, Heading, HeadingProps } from '@chakra-ui/react';
 import { WPPost } from '@lib/classes';
+import usePageById from '@queries/usePageById';
 import parse from 'html-react-parser';
 
 interface Props {
@@ -22,7 +22,7 @@ export default function PageContent({
 	const content = page?.content ? parse(page.content) : null;
 
 	return (
-		<Container variant='pageContent' className={'wp-post-content'} {...props}>
+		<Container variant='pageContent' className='wp-post-content' {...props}>
 			<Heading as='h1' {...titleProps}>
 				{page?.title}
 			</Heading>

@@ -81,13 +81,15 @@ class Rise_Profile_Notification {
 	 * Get unread notification count for a user.
 	 *
 	 * @param  int   $user_id The user ID to get unread notifications for.
+	 * @param  bool  $is_read Whether to get read or unread notifications.
+	 * @param  int   $limit   The number of notifications to return.
 	 * @return array Array of unread notifications.
 	 */
-	public static function get_unread_for_graphql( $user_id ) {
+	public static function get_profile_notices_for_graphql( $user_id, $is_read = false, $limit = -1 ) {
 		$params = [
-			'where'   => ['d.is_read' => false],
+			'where'   => ['d.is_read' => $is_read],
 			'author'  => $user_id,
-			'limit'   => -1,
+			'limit'   => $is_read ? $limit : -1,
 			'orderby' => 'date',
 			'order'   => 'DESC',
 		];

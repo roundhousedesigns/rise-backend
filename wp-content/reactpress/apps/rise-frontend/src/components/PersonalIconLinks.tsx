@@ -1,10 +1,10 @@
 import { Flex, FlexProps } from '@chakra-ui/react';
-import { FiFacebook, FiInstagram, FiLinkedin } from 'react-icons/fi';
-import { PersonalLinks } from '@lib/classes';
-import { useProfileUrl } from '@hooks/hooks';
-import SocialIcon from '@common/SocialIcon';
 import ShareButton from '@common/ShareButton';
+import SocialIcon from '@common/SocialIcon';
 import XIcon from '@common/icons/X';
+import { useProfileUrl } from '@hooks/hooks';
+import { PersonalLinks } from '@lib/classes';
+import { FiFacebook, FiInstagram, FiLinkedin } from 'react-icons/fi';
 
 interface Props {
 	socials: PersonalLinks;
@@ -46,7 +46,7 @@ export default function PersonalIconLinks({
 
 			{twitter && (
 				<SocialIcon
-					label={'X/Twitter'}
+					label='X/Twitter'
 					name='twitter'
 					value={twitter}
 					icon={<XIcon />}

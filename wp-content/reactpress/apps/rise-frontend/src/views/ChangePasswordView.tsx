@@ -1,11 +1,11 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { chakra, Button, Text, Box, Flex, ListItem, List, Card } from '@chakra-ui/react';
-import { ChangePasswordInput } from '@lib/types';
+import { Box, Button, Card, chakra, Flex, List, ListItem, Text } from '@chakra-ui/react';
+import TextInput from '@common/inputs/TextInput';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
-import useViewer from '@queries/useViewer';
+import { ChangePasswordInput } from '@lib/types';
 import useChangeUserPassword from '@mutations/useChangeUserPassword';
 import useLogout from '@mutations/useLogout';
-import TextInput from '@common/inputs/TextInput';
+import useViewer from '@queries/useViewer';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 export default function ChangePasswordView() {
 	const [{ email: username }] = useViewer();
@@ -83,7 +83,7 @@ export default function ChangePasswordView() {
 					name='currentPassword'
 					id='currentPassword'
 					variant='filled'
-					label={'Current password'}
+					label='Current password'
 					isRequired
 					onChange={handleInputChange}
 					error={errorCode === 'incorrect_password' ? errorMessage : ''}
@@ -111,7 +111,7 @@ export default function ChangePasswordView() {
 						name='newPassword'
 						id='newPassword'
 						variant='filled'
-						label={'New password'}
+						label='New password'
 						isRequired
 						onChange={handleInputChange}
 						error={
@@ -131,7 +131,7 @@ export default function ChangePasswordView() {
 						id='confirmPassword'
 						type='password'
 						variant='filled'
-						label={'Confirm your new password'}
+						label='Confirm your new password'
 						isRequired
 						error={
 							errorCode && errorCode === 'password_mismatch' && confirmPassword ? errorMessage : ''

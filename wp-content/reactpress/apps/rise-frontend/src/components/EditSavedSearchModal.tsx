@@ -1,23 +1,23 @@
 import {
-	useToast,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalCloseButton,
-	ModalBody,
-	FormControl,
-	FormLabel,
-	Button,
-	Text,
-	chakra,
+    Button,
+    FormControl,
+    FormLabel,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalHeader,
+    ModalOverlay,
+    Text,
+    chakra,
+    useToast,
 } from '@chakra-ui/react';
-import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
-import { SearchFilterSet } from '@lib/classes';
+import TextInput from '@common/inputs/TextInput';
 import { SearchContext } from '@context/SearchContext';
+import { SearchFilterSet } from '@lib/classes';
 import useSaveSearch from '@mutations/useSaveSearch';
 import useViewer from '@queries/useViewer';
-import TextInput from '@common/inputs/TextInput';
+import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
 
 interface Props {
 	id: number;
@@ -103,7 +103,7 @@ export default function EditSavedSearchModal({ id, title, searchTerms, isOpen, o
 						Give this search a short, descriptive name to easily run it again.
 					</Text>
 
-					<chakra.form id={'rename-search'} onSubmit={handleSave}>
+					<chakra.form id='rename-search' onSubmit={handleSave}>
 						<FormControl>
 							<FormLabel
 								aria-label='Name'
@@ -115,7 +115,7 @@ export default function EditSavedSearchModal({ id, title, searchTerms, isOpen, o
 							</FormLabel>
 							<TextInput
 								name='title'
-								placeholder={'My search'}
+								placeholder='My search'
 								onChange={handleSavedSearchNameChange}
 								value={saveSearchFieldText}
 								ref={initialSaveModalRef}

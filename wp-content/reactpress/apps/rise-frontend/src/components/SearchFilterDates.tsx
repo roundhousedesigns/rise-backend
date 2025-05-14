@@ -1,13 +1,13 @@
-import { useContext, useEffect } from 'react';
 import { Flex, Text } from '@chakra-ui/react';
+import DatePickerButton from '@common/inputs/DatePickerButton';
+import TooltipIconButton from '@common/inputs/TooltipIconButton';
+import InlineIconText from '@components/InlineIconText';
+import { SearchContext } from '@context/SearchContext';
+import { DateRange } from '@lib/classes';
+import { useContext, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FiCalendar, FiXCircle } from 'react-icons/fi';
-import { DateRange } from '@lib/classes';
-import DatePickerButton from '@common/inputs/DatePickerButton';
-import TooltipIconButton from '@common/inputs/TooltipIconButton';
-import { SearchContext } from '@context/SearchContext';
-import InlineIconText from '@components/InlineIconText';
 
 export default function SearchFilterDates() {
 	const {
@@ -68,7 +68,7 @@ export default function SearchFilterDates() {
 				<DatePicker
 					closeOnScroll={(e) => e.target === document}
 					selected={startDate}
-					customInput={<DatePickerButton defaultText='Start' ariaLabel={'Start date'} />}
+					customInput={<DatePickerButton defaultText='Start' ariaLabel='Start date' />}
 					onChange={handleDateChange('startDate')}
 					minDate={new Date()}
 				/>
@@ -78,7 +78,7 @@ export default function SearchFilterDates() {
 						closeOnScroll={(e) => e.target === document}
 						selected={endDate}
 						customInput={
-							<DatePickerButton defaultText={'End (optional)'} ariaLabel={'End date (optional)'} />
+							<DatePickerButton defaultText='End (optional)' ariaLabel='End date (optional)' />
 						}
 						onChange={handleDateChange('endDate')}
 						minDate={startDate}
@@ -87,7 +87,7 @@ export default function SearchFilterDates() {
 				{startDate && (
 					<TooltipIconButton
 						icon={<FiXCircle />}
-						label={'Clear dates'}
+						label='Clear dates'
 						onClick={handleClearDates}
 						colorScheme='red'
 					/>
@@ -96,9 +96,9 @@ export default function SearchFilterDates() {
 
 			<InlineIconText
 				icon={<FiCalendar />}
-				text={'Candidates with potential scheduling conflicts will be highlighted with a badge.'}
+				text='Candidates with potential scheduling conflicts will be highlighted with a badge.'
 				query='badge'
-				description={'scheduling conflict'}
+				description='scheduling conflict'
 				fontSize='sm'
 				iconProps={{ size: 'xs', bgColor: 'red.300', color: 'text.dark' }}
 			/>

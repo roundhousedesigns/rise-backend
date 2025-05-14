@@ -91,17 +91,17 @@ export default function Search() {
 
 	return (
 		<Shell
-			title={'Search RISE'}
+			title='Search RISE'
 			description='Search the RISE Directory to find candidates that match your criteria.'
 		>
 			<SearchView>
 				<SearchWizardView onSubmit={handleSubmit} />
 				<Box mt={0} py={2}>
-					<ButtonGroup w='full' justifyContent={'flex-end'}>
+					<ButtonGroup w='full' justifyContent='flex-end'>
 						<Button
 							colorScheme='green'
 							onClick={handleSubmit}
-							form={'search-candidates'}
+							form='search-candidates'
 							isDisabled={!searchWizardActive || searchResultsLoading}
 							leftIcon={searchResultsLoading ? <Spinner /> : <FiSearch />}
 							isLoading={!!searchResultsLoading}

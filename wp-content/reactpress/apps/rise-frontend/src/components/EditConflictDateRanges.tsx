@@ -1,24 +1,24 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
 import {
-	List,
-	ListItem,
-	Flex,
-	Spacer,
-	Button,
-	Text,
-	Heading,
-	Divider,
-	Link,
-	useToast,
+    Button,
+    Divider,
+    Flex,
+    Heading,
+    Link,
+    List,
+    ListItem,
+    Spacer,
+    Text,
+    useToast,
 } from '@chakra-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { FiDelete, FiPlus } from 'react-icons/fi';
-import { DateRange } from '@lib/classes';
-import { EditProfileContext } from '@context/EditProfileContext';
-import useViewer from '@queries/useViewer';
-import useDeleteOwnConflictRange from '@mutations/useDeleteOwnConflictRange';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import EditConflictDateRangeModal from '@components/EditConflictDateRangeModal';
+import { EditProfileContext } from '@context/EditProfileContext';
+import { DateRange } from '@lib/classes';
+import useDeleteOwnConflictRange from '@mutations/useDeleteOwnConflictRange';
+import useViewer from '@queries/useViewer';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { FiDelete, FiPlus } from 'react-icons/fi';
 
 export default function EditConflictDateRanges() {
 	const [{ loggedInId }] = useViewer();
@@ -92,9 +92,9 @@ export default function EditConflictDateRanges() {
 								animate={{ opacity: 1 }} // Animate to opacity of 1 (fully visible)
 								exit={{ opacity: 0 }} // Animate to opacity of 0 (completely transparent)
 							>
-								<Flex alignItems='center' justifyContent={'flex-start'} gap={2}>
+								<Flex alignItems='center' justifyContent='flex-start' gap={2}>
 									<Link
-										href={'#'}
+										href='#'
 										variant='dotted'
 										lineHeight='normal'
 										px={0}
@@ -102,7 +102,7 @@ export default function EditConflictDateRanges() {
 										maxW='full'
 										bg='none'
 										height='auto'
-										w={'100%'}
+										w='100%'
 										borderRadius='none'
 										onClick={() => handleEditDateRange(conflictRange)}
 									>
@@ -112,7 +112,7 @@ export default function EditConflictDateRanges() {
 									<TooltipIconButton
 										icon={<FiDelete />}
 										size='sm'
-										label={'Remove date range'}
+										label='Remove date range'
 										onClick={() => handleDeleteDateRange(conflictRange)}
 										colorScheme='red'
 									/>

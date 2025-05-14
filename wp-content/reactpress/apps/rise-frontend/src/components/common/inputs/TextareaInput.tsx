@@ -1,13 +1,13 @@
-import { ChangeEvent, ReactNode, useCallback, useState, useEffect, useRef } from 'react';
-import { debounce } from 'lodash';
 import {
-	FormControl,
-	FormControlProps,
-	FormHelperText,
-	FormLabel,
-	Textarea,
-	TextareaProps,
+    FormControl,
+    FormControlProps,
+    FormHelperText,
+    FormLabel,
+    Textarea,
+    TextareaProps,
 } from '@chakra-ui/react';
+import { debounce } from 'lodash';
+import { ChangeEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props {
 	name: string;
@@ -95,7 +95,7 @@ export default function TextareaInput({
 			<Textarea
 				variant='filled'
 				placeholder={placeholder}
-				focusBorderColor={'blue.200'}
+				focusBorderColor='blue.200'
 				value={localValue ? localValue : ''}
 				name={name}
 				resize='vertical'

@@ -1,29 +1,29 @@
-import { FormEvent, useContext } from 'react';
+import useSavedSearches from '@/hooks/queries/useSavedSearches';
 import {
-	Accordion,
-	Box,
-	Fade,
-	Icon,
-	Text,
-	Stack,
-	Flex,
-	Spacer,
-	useToken,
-	chakra,
+    Accordion,
+    Box,
+    chakra,
+    Fade,
+    Flex,
+    Icon,
+    Spacer,
+    Stack,
+    Text,
+    useToken,
 } from '@chakra-ui/react';
-import { SearchContext } from '@context/SearchContext';
 import SearchFilterAccordionItem from '@common/SearchFilterAccordionItem';
 import SearchFilterSection from '@common/SearchFilterSection';
-import SearchFilterDepartment from '@components/SearchFilterDepartment';
-import SearchFilterJobs from '@components/SearchFilterJobs';
-import SearchFilterSkills from '@components/SearchFilterSkills';
-import SearchFilterName from '@components/SearchFilterName';
 import AdditionalSearchFilters from '@components/AdditionalSearchFilters';
+import DepartmentsAutocomplete from '@components/DepartmentsAutocomplete';
 import SavedSearchItemList from '@components/SavedSearchItemList';
 import SearchFilterDates from '@components/SearchFilterDates';
-import DepartmentsAutocomplete from '@components/DepartmentsAutocomplete';
+import SearchFilterDepartment from '@components/SearchFilterDepartment';
+import SearchFilterJobs from '@components/SearchFilterJobs';
+import SearchFilterName from '@components/SearchFilterName';
+import SearchFilterSkills from '@components/SearchFilterSkills';
+import { SearchContext } from '@context/SearchContext';
+import { FormEvent, useContext } from 'react';
 import { FiFolder, FiUser } from 'react-icons/fi';
-import useSavedSearches from '@/hooks/queries/useSavedSearches';
 
 interface Props {
 	onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -50,10 +50,10 @@ export default function SearchWizardView({ onSubmit }: Props) {
 	return (
 		<Stack
 			direction='column'
-			justifyContent={'space-between'}
+			justifyContent='space-between'
 			height='full'
 			pt={searchWizardActive ? 4 : 0}
-			transition={'padding 250ms ease'}
+			transition='padding 250ms ease'
 		>
 			{searchWizardActive ? null : (
 				<Accordion allowToggle mb={4} defaultIndex={name ? 0 : undefined}>
@@ -77,9 +77,9 @@ export default function SearchWizardView({ onSubmit }: Props) {
 			<Box
 				opacity={name ? 0.2 : 1}
 				pointerEvents={name ? 'none' : 'auto'}
-				transition={'opacity 250ms ease'}
+				transition='opacity 250ms ease'
 			>
-				<chakra.form id={'search-candidates'} onSubmit={onSubmit}>
+				<chakra.form id='search-candidates' onSubmit={onSubmit}>
 					<Stack gap={6} mt={searchWizardActive ? 0 : 2} mb={4}>
 						<Fade in={!savedSearchId} unmountOnExit>
 							<Box>
@@ -98,7 +98,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 								<Fade in={!!departments.length} unmountOnExit>
 									<SearchFilterSection
 										id='filterJobs'
-										heading={'What job(s) are you looking to fill?'}
+										heading='What job(s) are you looking to fill?'
 									>
 										<SearchFilterJobs />
 									</SearchFilterSection>
@@ -106,7 +106,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 								<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
 									<SearchFilterSection
 										id='filterSkills'
-										heading={'What skills are you looking for?'}
+										heading='What skills are you looking for?'
 									>
 										<SearchFilterSkills />
 									</SearchFilterSection>
@@ -114,7 +114,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 								<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
 									<SearchFilterSection
 										id='filterDates'
-										heading={'Are you hiring for a particular date?'}
+										heading='Are you hiring for a particular date?'
 									>
 										<SearchFilterDates />
 									</SearchFilterSection>
@@ -122,7 +122,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 								<Fade in={searchWizardActive && jobs && !!jobs.length} unmountOnExit>
 									<SearchFilterSection
 										id='filterAdditional'
-										heading={'And some additional filters to refine your search:'}
+										heading='And some additional filters to refine your search:'
 									>
 										<AdditionalSearchFilters />
 									</SearchFilterSection>

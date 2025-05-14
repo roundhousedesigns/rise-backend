@@ -43,7 +43,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__updateOrCreateJobPost();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
-		$this->register_mutation__markNotificationAsRead();
+		$this->register_mutation__markProfileNotificationAsRead();
 	}
 
 	/**
@@ -976,7 +976,7 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					if ( !function_exists( 'wp_handle_sideload' ) ) {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
-						}
+					}
 
 					$field   = isset( $input['name'] ) ? camel_to_snake( $input['name'] ) : '';
 					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
@@ -1429,13 +1429,13 @@ class Rise_GraphQL_Mutations {
 	}
 
 	/**
-	 * Register the markNotificationAsRead mutation.
+	 * Register the markProfileNotificationAsRead mutation.
 	 *
 	 * @return void
 	 */
-	private function register_mutation__markNotificationAsRead() {
+	private function register_mutation__markProfileNotificationAsRead() {
 		register_graphql_mutation(
-			'markNotificationAsRead',
+			'markProfileNotificationAsRead',
 			[
 				'inputFields'         => [
 					'notificationId' => [
@@ -1449,11 +1449,11 @@ class Rise_GraphQL_Mutations {
 						'description' => __( 'Whether the notification was marked as read.', 'rise' ),
 					],
 				],
-				'mutateAndGetPayload' => function( $input ) {
+				'mutateAndGetPayload' => function ( $input ) {
 					$notification_id = $input['notificationId'];
-					$user_id = get_current_user_id();
+					$user_id         = get_current_user_id();
 
-					if ( ! $user_id ) {
+					if ( !$user_id ) {
 						return [
 							'success' => false,
 						];
@@ -1461,7 +1461,7 @@ class Rise_GraphQL_Mutations {
 
 					// Verify the notification belongs to the current user
 					$notification = get_post( $notification_id );
-					if ( ! $notification || $notification->post_author != $user_id ) {
+					if ( !$notification || $notification->post_author != $user_id ) {
 						return [
 							'success' => false,
 						];

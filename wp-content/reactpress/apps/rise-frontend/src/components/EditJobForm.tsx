@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
 import {
-	chakra,
-	Button,
-	FormControl,
-	FormLabel,
-	Input,
-	Textarea,
-	useToast,
-	Flex,
-	Stack,
+    Button,
+    chakra,
+    Flex,
+    FormControl,
+    FormLabel,
+    Input,
+    Stack,
+    Textarea,
+    useToast,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import CheckboxButton from '@common/inputs/CheckboxButton';
 import { JobPostOutput } from '@lib/types';
 import useUpdateJobPost from '@mutations/useUpdateJobPost';
-import CheckboxButton from '@common/inputs/CheckboxButton';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // TODO implement recaptcha
 // import { executeRecaptcha } from '@hooks/useGoogleReCaptcha';
@@ -245,7 +245,7 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 				</FormControl>
 
 				<FormRow>
-					<FormControl isRequired flex={'1'}>
+					<FormControl isRequired flex='1'>
 						<FormLabel>Job Description</FormLabel>
 						<Textarea
 							name='description'
@@ -256,7 +256,7 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 						/>
 					</FormControl>
 
-					<Stack direction='column' justifyContent='flex-start' flex={'0 1 auto'}>
+					<Stack direction='column' justifyContent='flex-start' flex='0 1 auto'>
 						<FormLabel mb={0}>Job Type</FormLabel>
 						<CheckboxButton
 							name='isPaid'
@@ -285,8 +285,8 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 					</Stack>
 				</FormRow>
 
-				<FormRow pt={4} pb={6} px={6} borderRadius={'md'} _dark={{ bg: 'whiteAlpha.50' }}>
-					<FormControl isRequired flex={'0 0 100%'}>
+				<FormRow pt={4} pb={6} px={6} borderRadius='md' _dark={{ bg: 'whiteAlpha.50' }}>
+					<FormControl isRequired flex='0 0 100%'>
 						<FormLabel>Application Instructions</FormLabel>
 						<Textarea
 							name='instructions'

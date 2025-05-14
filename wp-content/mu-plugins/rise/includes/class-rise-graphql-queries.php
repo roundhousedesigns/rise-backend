@@ -751,7 +751,7 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
-		 * Get notifications for the current user.
+		 * Get the unread notifications for the current user.
 		 */
 		register_graphql_field(
 			'RootQuery',
@@ -764,6 +764,10 @@ class Rise_GraphQL_Queries {
 						'type'        => 'Int',
 						'description' => __( 'The ID of the user to get notifications for.', 'rise' ),
 					],
+					'limit'    => [
+						'type'        => 'Int',
+						'description' => __( 'The number of notifications to return.', 'rise' ),
+					],
 				],
 				'resolve'     => function ( $root, $args ) {
 
@@ -771,7 +775,37 @@ class Rise_GraphQL_Queries {
 						return [];
 					}
 
-					return Rise_Profile_Notification::get_unread_for_graphql( $args['authorId'] );
+					return Rise_Profile_Notification::get_profile_notices_for_graphql( $args['authorId'], false );
+				},
+			]
+		);
+
+		/**
+		 * Get the read notifications for the current user.
+		 */
+		register_graphql_field(
+			'RootQuery',
+			'readProfileNotifications',
+			[
+				'type'        => ['list_of' => 'ProfileNotificationOutput'],
+				'description' => __( 'Get the latest read notifications for the current user.', 'rise' ),
+				'args'        => [
+					'authorId' => [
+						'type'        => 'Int',
+						'description' => __( 'The ID of the user to get notifications for.', 'rise' ),
+					],
+					'limit'    => [
+						'type'        => 'Int',
+						'description' => __( 'The number of notifications to return.', 'rise' ),
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+
+					if ( !$args['authorId'] ) {
+						return [];
+					}
+
+					return Rise_Profile_Notification::get_profile_notices_for_graphql( $args['authorId'], true, $args['limit'] );
 				},
 			]
 		);

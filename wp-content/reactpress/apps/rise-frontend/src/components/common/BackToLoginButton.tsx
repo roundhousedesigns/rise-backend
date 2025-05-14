@@ -1,4 +1,4 @@
-import { Flex, FlexProps, Heading, Button } from '@chakra-ui/react';
+import { Button, Flex, FlexProps, Heading } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function LoginLink({ ...props }: FlexProps): JSX.Element {
@@ -8,7 +8,7 @@ export default function LoginLink({ ...props }: FlexProps): JSX.Element {
 				Already have <br />
 				an account?
 			</Heading>
-			<Button as={RouterLink} to={'/login'} colorScheme='blue' tabIndex={9}>
+			<Button as={RouterLink} to='/login' colorScheme='blue' tabIndex={9}>
 				Back To Login
 			</Button>
 		</Flex>

@@ -50,7 +50,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 				<Card variant='listItem'>
 					<Flex
 						direction='row'
-						justifyContent={'flex-start'}
+						justifyContent='flex-start'
 						alignItems='center'
 						flexWrap={{ base: 'wrap', md: 'nowrap' }}
 						gap={{ base: 'initial', md: 0 }}
@@ -58,7 +58,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 						<Avatar
 							size='md'
 							name={candidate.fullName()}
-							flex={'0 0 auto'}
+							flex='0 0 auto'
 							mr={2}
 							src={image}
 							ignoreFallback={image ? true : false}
@@ -90,7 +90,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 								noOfLines={2}
 								flex={{ base: '0 0 100%', md: '1' }} // '1'}
 								style={{ hyphens: 'auto' }}
-								wordBreak={'break-word'}
+								wordBreak='break-word'
 							>
 								{selfTitle}
 							</Text>

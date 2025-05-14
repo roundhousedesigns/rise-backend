@@ -1,27 +1,27 @@
 import {
-	ChangeEvent,
-	forwardRef,
-	ReactNode,
-	useCallback,
-	useState,
-	useEffect,
-	useRef,
-} from 'react';
+    Flex,
+    FormControl,
+    FormControlProps,
+    FormErrorMessage,
+    FormHelperText,
+    FormLabel,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    InputProps,
+    Text,
+    Wrap,
+} from '@chakra-ui/react';
 import { debounce } from 'lodash';
 import {
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	FormHelperText,
-	FormLabel,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Text,
-	Wrap,
-	InputProps,
-	FormControlProps,
-} from '@chakra-ui/react';
+    ChangeEvent,
+    forwardRef,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
 	name: string;
@@ -133,7 +133,7 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 					)}
 					<Input
 						variant={inputVariant}
-						focusBorderColor={'brand.blue'}
+						focusBorderColor='brand.blue'
 						placeholder={placeholder}
 						isDisabled={isDisabled}
 						px={3}
@@ -150,14 +150,14 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 						{...inputProps}
 					/>
 					{maxLength ? (
-						<Flex position='absolute' right={1} top={0} height='full' alignItems={'flex-end'}>
+						<Flex position='absolute' right={1} top={0} height='full' alignItems='flex-end'>
 							<Text m={0} variant='helperText' _dark={{ color: 'text.dark', opacity: 0.8 }}>
 								{`${localValue ? localValue.length : 0}/${maxLength}`}
 							</Text>
 						</Flex>
 					) : null}
 				</InputGroup>
-				<Flex direction='row' pt={1} my={0} alignItems='top' justifyContent={'space-between'}>
+				<Flex direction='row' pt={1} my={0} alignItems='top' justifyContent='space-between'>
 					{label ? (
 						<FormLabel
 							ml={2}
@@ -177,12 +177,12 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 						</FormLabel>
 					) : null}
 				</Flex>
-				<Wrap w='full' alignItems={'flex-start'} opacity={0.9} fontStyle='italic'>
+				<Wrap w='full' alignItems='flex-start' opacity={0.9} fontStyle='italic'>
 					<FormHelperText my={0} ml={2} flex='1' w='full'>
 						{/* TODO: Validate on the fly */}
 						<Flex
 							w='full'
-							justifyContent={'space-between'}
+							justifyContent='space-between'
 							alignItems='center'
 							lineHeight='normal'
 						>

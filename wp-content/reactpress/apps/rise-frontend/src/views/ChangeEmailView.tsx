@@ -1,10 +1,10 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { chakra, Button, Flex, Box, Text, Link, Divider, useToast } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Button, chakra, Divider, Flex, Link, Text, useToast } from '@chakra-ui/react';
+import TextInput from '@common/inputs/TextInput';
 import { obscureEmail } from '@lib/utils';
 import useChangeUserEmail from '@mutations/useChangeUserEmail';
-import TextInput from '@common/inputs/TextInput';
 import useViewer from '@queries/useViewer';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function ChangeEmailView({ onSubmitCallback }: { onSubmitCallback?: () => void }) {
 	const [{ username, email: userEmail }] = useViewer();
@@ -93,7 +93,7 @@ export default function ChangeEmailView({ onSubmitCallback }: { onSubmitCallback
 			<Text mb={4} fontSize='md' lineHeight='normal'>
 				Your account email is <em>not</em> your profile's contact email. You can use a different
 				email address to show on your Profile page without changing your account email.{' '}
-				<Link as={RouterLink} to={'/profile/edit'} color={'brand.blue'}>
+				<Link as={RouterLink} to='/profile/edit' color='brand.blue'>
 					Edit your profile{' '}
 				</Link>{' '}
 				to set a new contact email.
@@ -106,7 +106,7 @@ export default function ChangeEmailView({ onSubmitCallback }: { onSubmitCallback
 						name='newEmail'
 						id='newEmail'
 						variant='filled'
-						label={'New email address'}
+						label='New email address'
 						placeholder={obscureEmail(userEmail)}
 						isRequired
 						flex='1'
@@ -122,7 +122,7 @@ export default function ChangeEmailView({ onSubmitCallback }: { onSubmitCallback
 						name='password'
 						id='password'
 						variant='filled'
-						label={'Your password'}
+						label='Your password'
 						isRequired
 						flex='1'
 						onChange={handlePasswordInputChange}

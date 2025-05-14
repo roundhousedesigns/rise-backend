@@ -1,19 +1,19 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import {
-	Button,
-	Box,
-	Flex,
-	Text,
-	useClipboard,
-	useToast,
-	Heading,
-	chakra,
+    Box,
+    Button,
+    Flex,
+    Heading,
+    Text,
+    chakra,
+    useClipboard,
+    useToast,
 } from '@chakra-ui/react';
-import { FiCheck, FiCopy } from 'react-icons/fi';
-import { useErrorMessage, useProfileUrl, useValidateProfileSlug } from '@hooks/hooks';
-import useViewer from '@queries/useViewer';
-import useChangeProfileSlug from '@mutations/useChangeProfileSlug';
 import TextInput from '@common/inputs/TextInput';
+import { useErrorMessage, useProfileUrl, useValidateProfileSlug } from '@hooks/hooks';
+import useChangeProfileSlug from '@mutations/useChangeProfileSlug';
+import useViewer from '@queries/useViewer';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FiCheck, FiCopy } from 'react-icons/fi';
 
 export default function ChangeProfileUrlView() {
 	const [{ loggedInId: userId, loggedInSlug }] = useViewer();
@@ -96,7 +96,7 @@ export default function ChangeProfileUrlView() {
 				gap={{ base: 0, md: 4 }}
 				alignItems='center'
 				flexWrap='wrap'
-				justifyContent={'space-between'}
+				justifyContent='space-between'
 			>
 				<Box>
 					<chakra.form onSubmit={handleSubmit}>
@@ -104,16 +104,16 @@ export default function ChangeProfileUrlView() {
 						<Text fontSize='sm' lineHeight='shorter'>
 							Give yourself a memorable handle to make sharing your profile easy.
 						</Text>
-						<Flex gap={2} flexWrap='wrap' w='100%' alignItems={'flex-start'}>
+						<Flex gap={2} flexWrap='wrap' w='100%' alignItems='flex-start'>
 							<TextInput
 								value={slug}
 								name='slug'
 								id='slug'
 								maxW='300px'
 								mt={0}
-								label={'New profile tag'}
+								label='New profile tag'
 								labelHidden
-								helperText={'Letters, numbers, dashes, and underscores.'}
+								helperText='Letters, numbers, dashes, and underscores.'
 								error={errorMessage}
 								isRequired
 								maxLength={20}
@@ -143,7 +143,7 @@ export default function ChangeProfileUrlView() {
 							size='sm'
 							aria-label='Copy profile URL'
 							isDisabled={!!hasEditedSlug}
-							maxW={'100%'}
+							maxW='100%'
 							overflow='hidden'
 							colorScheme='yellow'
 						>

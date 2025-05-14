@@ -2,21 +2,21 @@ import {
 	Alert,
 	AlertDescription,
 	AlertIcon,
+	AlertProps,
 	AlertTitle,
 	Button,
 	CloseButton,
-	Container,
-	Link,
 	Collapse,
+	Container,
+	Flex,
+	LightMode,
+	Link,
 	Spacer,
 	useDisclosure,
-	LightMode,
-	Flex,
-	AlertProps,
 } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
 import { ProfileNoticeAlert } from '@lib/types';
 import { getCookie, setCookie } from '@lib/utils';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface Props {
 	code: string;
@@ -75,7 +75,7 @@ export default function ProfileNotice({
 					borderRadius={0}
 					py={0}
 					my={0}
-					justifyContent={'space-between'}
+					justifyContent='space-between'
 					{...props}
 				>
 					<Container maxW='90vw'>
@@ -106,10 +106,10 @@ const profileNoticeAlerts: { [code: string]: ProfileNoticeAlert } = {
 			<>
 				<Link
 					as={RouterLink}
-					to={'/profile/edit'}
+					to='/profile/edit'
 					variant='dotted'
 					color='text.dark'
-					borderBottomColor={'blackAlpha.800'}
+					borderBottomColor='blackAlpha.800'
 				>
 					Add some credits
 				</Link>{' '}
@@ -121,7 +121,7 @@ const profileNoticeAlerts: { [code: string]: ProfileNoticeAlert } = {
 		title: 'Your profile is currently hidden.',
 		description: (
 			<>
-				<Link as={RouterLink} to={'/settings'} color={'text.dark'} textDecorationColor='initial'>
+				<Link as={RouterLink} to='/settings' color='text.dark' textDecorationColor='initial'>
 					Go public
 				</Link>
 				{'.'}

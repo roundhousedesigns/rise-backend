@@ -48,10 +48,10 @@ export default function SavedSearchItemList({ ...props }: BoxProps) {
 								<SavedSearchItem
 									as={motion.div}
 									key={id}
-									initial={{ opacity: 1 }} // Initial opacity of 1 (fully visible)
+								initial={{ opacity: 1 }} // Initial opacity of 1 (fully visible)
 									animate={{ opacity: 1 }} // Animate to opacity of 1 (fully visible)
 									exit={{ opacity: 0 }} // Animate to opacity of 0 (completely transparent)
-									flex={'0 1 450px'}
+									flex='0 1 450px'
 									searchTerms={filters}
 									title={title}
 									id={id}

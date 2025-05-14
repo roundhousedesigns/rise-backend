@@ -1,5 +1,5 @@
-import { ReactNode, MouseEventHandler } from 'react';
-import { Icon, Flex, Link, Text, Spacer, LinkProps, IconProps } from '@chakra-ui/react';
+import { Flex, Icon, IconProps, Link, LinkProps, Spacer, Text } from '@chakra-ui/react';
+import { MouseEventHandler, ReactNode } from 'react';
 
 interface Props {
 	href?: string;
@@ -26,7 +26,7 @@ export default function LinkWithIcon({
 			href={href ? href : undefined}
 			onClick={onClick ? onClick : undefined}
 			fontWeight='medium'
-			display={'inline-block'}
+			display='inline-block'
 			variant='dotted'
 			isExternal={!!isExternal}
 			my={0}
@@ -35,7 +35,7 @@ export default function LinkWithIcon({
 			<Flex
 				alignItems='center'
 				flexDirection={iconSide === 'left' ? 'row' : 'row-reverse'}
-				justifyContent={'flex-start'}
+				justifyContent='flex-start'
 				gap={0}
 				w='auto'
 			>

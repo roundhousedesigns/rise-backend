@@ -1,12 +1,12 @@
-import { Button, Text, useDisclosure, Container, Flex, Box, ButtonGroup } from '@chakra-ui/react';
-import ChangeProfileSlugView from '@views/ChangeProfileSlugView';
-import ChangePasswordView from '@views/ChangePasswordView';
-import ChangeEmailView from '@views/ChangeEmailView';
-import DeleteAccountView from '@views/DeleteAccountView';
-import SettingsSection from '@components/SettingsSection';
-import DisableProfileToggle from '@components/DisableProfileToggle';
+import { Box, Button, ButtonGroup, Container, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import DarkModeToggle from '@components/DarkModeToggle';
+import DisableProfileToggle from '@components/DisableProfileToggle';
 import { SettingsModal } from '@components/SettingsModal';
+import SettingsSection from '@components/SettingsSection';
+import ChangeEmailView from '@views/ChangeEmailView';
+import ChangePasswordView from '@views/ChangePasswordView';
+import ChangeProfileSlugView from '@views/ChangeProfileSlugView';
+import DeleteAccountView from '@views/DeleteAccountView';
 
 export default function SettingsView() {
 	const {
@@ -44,7 +44,7 @@ export default function SettingsView() {
 							Change your email address
 						</Button>
 						<SettingsModal
-							title={'Change your account email'}
+							title='Change your account email'
 							isOpen={isOpenEmail}
 							onClose={handleEmailClose}
 						>
@@ -57,7 +57,7 @@ export default function SettingsView() {
 							Change your password
 						</Button>
 						<SettingsModal
-							title={'Change your password'}
+							title='Change your password'
 							isOpen={isOpenPassword}
 							onClose={onClosePassword}
 						>
@@ -76,7 +76,7 @@ export default function SettingsView() {
 				<DarkModeToggle showHelperText={true} size='lg' />
 			</SettingsSection>
 
-			<SettingsSection title={'Close your account'}>
+			<SettingsSection title='Close your account'>
 				<Text m={0}>
 					If you'd like to remove your account entirely and delete your data, please use the button
 					below. You can re-register at any time.
@@ -87,7 +87,7 @@ export default function SettingsView() {
 					</Button>
 				</ButtonGroup>
 				<SettingsModal
-					title={'Delete your account'}
+					title='Delete your account'
 					isOpen={isOpenDeleteAccount}
 					onClose={onCloseDeleteAccount}
 				>

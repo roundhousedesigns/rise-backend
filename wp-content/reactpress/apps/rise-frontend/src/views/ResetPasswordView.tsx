@@ -1,19 +1,19 @@
-import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-	Button,
-	FormErrorMessage,
-	Box,
-	Stack,
-	Container,
-	Heading,
-	useToast,
-	chakra,
+    Box,
+    Button,
+    chakra,
+    Container,
+    FormErrorMessage,
+    Heading,
+    Stack,
+    useToast,
 } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
 import { ChangePasswordInput } from '@lib/types';
 import useResetUserPassword from '@mutations/useResetUserPassword';
+import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
 	token: string;
@@ -89,7 +89,7 @@ export default function ResetPasswordView({ token, login }: Props) {
 	};
 
 	return (
-		<Container bg={'whiteAlpha.500'} borderRadius='lg' w='full'>
+		<Container bg='whiteAlpha.500' borderRadius='lg' w='full'>
 			<Heading as='h3' size='lg'>
 				Choose your new password.
 			</Heading>
@@ -117,7 +117,7 @@ export default function ResetPasswordView({ token, login }: Props) {
 							id='confirmPassword'
 							type='password'
 							variant='filled'
-							label={'Confirm your password'}
+							label='Confirm your password'
 							isRequired
 							onChange={handleInputChange}
 							inputProps={{

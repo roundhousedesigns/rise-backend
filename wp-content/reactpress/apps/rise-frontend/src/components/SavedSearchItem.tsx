@@ -1,15 +1,15 @@
 import {
-	Box,
-	Button,
-	ButtonGroup,
-	Card,
-	CardProps,
-	Flex,
-	Skeleton,
-	Stack,
-	Text,
-	useDisclosure,
-	useToast,
+    Box,
+    Button,
+    ButtonGroup,
+    Card,
+    CardProps,
+    Flex,
+    Skeleton,
+    Stack,
+    Text,
+    useDisclosure,
+    useToast,
 } from '@chakra-ui/react';
 import ConfirmActionDialog from '@common/ConfirmActionDialog';
 import LinkWithIcon from '@common/LinkWithIcon';
@@ -223,9 +223,9 @@ export default function SavedSearchItem({
 
 	return terms && terms.length > 0 ? (
 		<Card p={0} my={0} {...props}>
-			<Flex justifyContent={'space-between'}>
-				<Stack w='auto' alignItems={'space-between'} pt={0} pr={2} pb={3} pl={2}>
-					<Flex alignItems={'center'}>
+			<Flex justifyContent='space-between'>
+				<Stack w='auto' alignItems='space-between' pt={0} pr={2} pb={3} pl={2}>
+					<Flex alignItems='center'>
 						<LinkWithIcon
 							onClick={handleEditTitleClick}
 							icon={FiEdit2}
@@ -236,8 +236,8 @@ export default function SavedSearchItem({
 							color='inherit'
 							borderBottomWidth='2px'
 							borderBottomStyle='dotted'
-							textDecoration={'none !important'}
-							transition={'border 150ms ease'}
+							textDecoration='none !important'
+							transition='border 150ms ease'
 							_hover={{ borderBottomStyle: 'dotted', borderBottomWidth: '2px' }}
 							_light={{
 								borderBottomColor: 'gray.300',
@@ -252,7 +252,7 @@ export default function SavedSearchItem({
 							{title ? (
 								title
 							) : (
-								<Text as='span' opacity={'0.5'} lineHeight='normal'>
+								<Text as='span' opacity='0.5' lineHeight='normal'>
 									Save this search
 								</Text>
 							)}
@@ -263,8 +263,8 @@ export default function SavedSearchItem({
 									<ButtonGroup size='xs' spacing={1} px={0}>
 										<TooltipIconButton
 											icon={<FiSearch />}
-											aria-label={'Start a search with these filters'}
-											label={'Start a search with these filters'}
+											aria-label='Start a search with these filters'
+											label='Start a search with these filters'
 											colorScheme='green'
 											onClick={handleSearchClick}
 										>
@@ -272,8 +272,8 @@ export default function SavedSearchItem({
 										</TooltipIconButton>
 										<TooltipIconButton
 											icon={<FiDelete />}
-											aria-label={'Delete this search'}
-											label={'Delete this search'}
+											aria-label='Delete this search'
+											label='Delete this search'
 											colorScheme='red'
 											onClick={deleteOnOpen}
 										>
@@ -285,8 +285,8 @@ export default function SavedSearchItem({
 										<Button
 											colorScheme='yellow'
 											leftIcon={<FiSave />}
-											aria-label={'Update saved filters'}
-											title={'Update saved filters'}
+											aria-label='Update saved filters'
+											title='Update saved filters'
 											onClick={handleUpdateClick}
 											size='sm'
 											isLoading={saveLoading && whichButtonClicked === 'update'}
@@ -297,8 +297,8 @@ export default function SavedSearchItem({
 										<Button
 											colorScheme='blue'
 											leftIcon={<FiPlusCircle />}
-											aria-label={'Update saved filters'}
-											title={'Update saved filters'}
+											aria-label='Update saved filters'
+											title='Update saved filters'
 											onClick={handleSaveNewSearchClick}
 											size='sm'
 											isLoading={saveLoading && whichButtonClicked === 'new'}
@@ -315,7 +315,7 @@ export default function SavedSearchItem({
 							false
 						)}
 					</Flex>
-					<Flex w='full' justifyContent={'space-between'} flexWrap='wrap' gap={6}>
+					<Flex w='full' justifyContent='space-between' flexWrap='wrap' gap={6}>
 						<Skeleton isLoaded={!!terms.length}>
 							<SearchParamTags termIds={termIds} termItems={terms} flex='1' />
 						</Skeleton>
@@ -335,7 +335,7 @@ export default function SavedSearchItem({
 				confirmAction={handleDelete}
 				isOpen={deleteIsOpen}
 				onClose={deleteOnClose}
-				headerText={'Delete this search'}
+				headerText='Delete this search'
 			>
 				Are you sure you want to delete this saved search?
 			</ConfirmActionDialog>

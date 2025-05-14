@@ -1,12 +1,12 @@
-import { forwardRef, useRef } from 'react';
 import { Button, Spinner } from '@chakra-ui/react';
-import { FiArrowDown } from 'react-icons/fi';
-import { EditProfileContextProvider } from '@context/EditProfileContext';
-import useViewer from '@queries/useViewer';
-import useUserProfile from '@queries/useUserProfile';
-import EditProfileView from '@views/EditProfileView';
-import Shell from '@layout/Shell';
 import ErrorAlert from '@common/ErrorAlert';
+import { EditProfileContextProvider } from '@context/EditProfileContext';
+import Shell from '@layout/Shell';
+import useUserProfile from '@queries/useUserProfile';
+import useViewer from '@queries/useViewer';
+import EditProfileView from '@views/EditProfileView';
+import { forwardRef, useRef } from 'react';
+import { FiArrowDown } from 'react-icons/fi';
 
 const JumpToCreditsButton = forwardRef<HTMLButtonElement, {}>((props, ref) => {
 	const handleClick = () => {
@@ -21,7 +21,7 @@ const JumpToCreditsButton = forwardRef<HTMLButtonElement, {}>((props, ref) => {
 			onClick={handleClick}
 			leftIcon={<FiArrowDown />}
 			ref={ref}
-			title={'Scroll to Credits'}
+			title='Scroll to Credits'
 			textDecoration='none'
 			colorScheme='blue'
 		>
@@ -38,7 +38,7 @@ export default function EditProfile() {
 	const PageActions = () => <JumpToCreditsButton ref={ref} />;
 
 	return (
-		<Shell title={'Update Profile'} actions={<PageActions />}>
+		<Shell title='Update Profile' actions={<PageActions />}>
 			<EditProfileContextProvider initialState={profile}>
 				{profile && !loading && !error ? (
 					<EditProfileView profile={profile} />

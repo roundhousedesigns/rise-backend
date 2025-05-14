@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Box, BoxProps, Divider } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface Props {
 	children: ReactNode;
@@ -11,8 +11,8 @@ export default function TextCenterline({ children, ...props }: Props & BoxProps)
 			<Divider />
 			<Box
 				position='absolute'
-				top={'50%'}
-				transform={'translateY(-50%)'}
+				top='50%'
+				transform='translateY(-50%)'
 				left={12}
 				_dark={{ bgColor: 'gray.900' }}
 				_light={{ bgColor: 'gray.50' }}

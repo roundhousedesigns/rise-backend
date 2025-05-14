@@ -1,35 +1,35 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
-	Button,
-	Flex,
-	Heading,
-	Link,
-	Text,
-	Divider,
 	Alert,
 	Box,
+	Button,
+	Divider,
 	Drawer,
 	DrawerBody,
 	DrawerContent,
-	DrawerOverlay,
-	useDisclosure,
-	IconButton,
-	Icon,
-	Highlight,
-	Stack,
-	useMediaQuery,
 	DrawerHeader,
+	DrawerOverlay,
+	Flex,
+	Heading,
+	Highlight,
+	Icon,
+	IconButton,
+	Link,
+	Stack,
+	Text,
 	chakra,
+	useDisclosure,
+	useMediaQuery,
 } from '@chakra-ui/react';
-import { FiExternalLink, FiX } from 'react-icons/fi';
-import { decodeString, handleReCaptchaVerify } from '@lib/utils';
-import { LoginInput } from '@lib/types';
-import PageContent from '@views/PageContent';
-import { useErrorMessage } from '@hooks/hooks';
-import useLogin from '@mutations/useLogin';
 import TextInput from '@common/inputs/TextInput';
+import { useErrorMessage } from '@hooks/hooks';
+import { LoginInput } from '@lib/types';
+import { decodeString } from '@lib/utils';
+import useLogin from '@mutations/useLogin';
+import PageContent from '@views/PageContent';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { FiExternalLink, FiX } from 'react-icons/fi';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface Props {
 	alert?: string;
@@ -106,7 +106,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 							You'll need an account to create a profile or to search for candidates.
 						</Text>
 						<Divider my={4} />
-						<Box flex={'1 1 auto'}>
+						<Box flex='1 1 auto'>
 							{alert ? <Alert status={sanitizedAlertStatus}>{alert}</Alert> : false}
 							<chakra.form onSubmit={handleLoginSubmit}>
 								<TextInput
@@ -142,18 +142,18 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 								<Flex
 									gap={4}
 									alignItems='center'
-									justifyContent={'space-between'}
+									justifyContent='space-between'
 									mt={4}
 									flexWrap='wrap'
 								>
 									<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
 										Sign In
 									</Button>
-									<Link as={RouterLink} to={'/lost-password'} fontSize='sm'>
+									<Link as={RouterLink} to='/lost-password' fontSize='sm'>
 										Lost your password?
 									</Link>
 								</Flex>
-								<Box id={'recaptcha-badge'} />
+								<Box id='recaptcha-badge' />
 								<Divider />
 								<Box textAlign='center' flex='1'>
 									<Heading variant='pageSubtitle' fontSize='xl'>
@@ -161,10 +161,10 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 									</Heading>
 									<Button
 										as={RouterLink}
-										to={'/register'}
+										to='/register'
 										borderRadius={{ base: 'md', md: 'lg' }}
 										colorScheme='green'
-										color={'text.dark'}
+										color='text.dark'
 										size='lg'
 									>
 										Join Now
@@ -203,7 +203,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 				isFullHeight={false}
 			>
 				<DrawerOverlay />
-				<DrawerContent display='flex' flexDirection='column' height={'100%'}>
+				<DrawerContent display='flex' flexDirection='column' height='100%'>
 					<DrawerHeader pt={2} pb={1} px={2} textAlign='right'>
 						<IconButton
 							onClick={onClose}
@@ -218,7 +218,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 							<PageContent postId='12238' mt={0} pt={0} />
 							<Button
 								as={Link}
-								href={'https://risetheatre.org'}
+								href='https://risetheatre.org'
 								isExternal
 								colorScheme='yellow'
 								size='lg'
@@ -226,12 +226,12 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 								mb={24}
 							>
 								Learn about RISE Theatre{' '}
-								<Icon as={FiExternalLink} aria-label={'external link'} pl={1} />
+								<Icon as={FiExternalLink} aria-label='external link' pl={1} />
 							</Button>
 						</Box>
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-		</>
+	</>
 	);
 }

@@ -1,9 +1,9 @@
-import { useContext, useMemo } from 'react';
-import { Box, Heading, Wrap, Spinner, RadioGroup } from '@chakra-ui/react';
+import { Box, Heading, RadioGroup, Spinner, Wrap } from '@chakra-ui/react';
+import RadioButton from '@common/inputs/RadioButton';
+import { SearchContext } from '@context/SearchContext';
 import { WPItem } from '@lib/classes';
 import usePositions from '@queries/usePositions';
-import { SearchContext } from '@context/SearchContext';
-import RadioButton from '@common/inputs/RadioButton';
+import { useContext, useMemo } from 'react';
 
 export default function SearchFilterDepartment() {
 	const [data, { loading, error }] = usePositions();
@@ -49,7 +49,7 @@ export default function SearchFilterDepartment() {
 						return (
 							<RadioButton
 								key={term.id}
-								name={'search-departments'}
+								name='search-departments'
 								value={term.id.toString()}
 							>
 								{term.name}

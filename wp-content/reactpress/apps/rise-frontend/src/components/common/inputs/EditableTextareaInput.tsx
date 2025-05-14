@@ -1,15 +1,14 @@
-import { useEffect, useRef } from 'react';
 import {
 	BoxProps,
 	Editable,
-	EditableTextarea,
 	EditablePreview,
+	EditableTextarea,
 	FormControl,
 	FormLabel,
 	VisuallyHidden,
-	// Tooltip,
 } from '@chakra-ui/react';
 import autosize from 'autosize';
+import { useEffect, useRef } from 'react';
 
 interface Props extends BoxProps {
 	defaultValue: string;
@@ -53,7 +52,7 @@ export default function EditableTextareaInput({
 				{...styles}
 				{...inputProps}
 			>
-				<EditablePreview minHeight={28} w='full' whiteSpace={'pre-wrap'} />
+				<EditablePreview minHeight={28} w='full' whiteSpace='pre-wrap' />
 				<EditableTextarea minHeight={28} rows={20} ref={ref} p={2} />
 			</Editable>
 		</FormControl>

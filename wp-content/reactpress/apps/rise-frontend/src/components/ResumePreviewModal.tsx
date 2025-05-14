@@ -1,23 +1,23 @@
 import {
-	useDisclosure,
-	Box,
-	Flex,
-	Image,
-	Icon,
-	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
-	ModalCloseButton,
-	ModalBody,
-	ModalFooter,
-	Button,
-	Link,
-	Text,
-	useColorMode,
-	BoxProps,
+    Box,
+    BoxProps,
+    Button,
+    Flex,
+    Icon,
+    Image,
+    Link,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Text,
+    useColorMode,
+    useDisclosure,
 } from '@chakra-ui/react';
-import { FiZoomIn, FiDownload } from 'react-icons/fi';
+import { FiDownload, FiZoomIn } from 'react-icons/fi';
 
 interface ModalProps {
 	resumePreviewSrc?: string;
@@ -39,7 +39,7 @@ export default function ResumePreviewModal({
 			<Box pos='relative' {...props}>
 				{previewIcon ? (
 					<Flex
-						bg={'blackAlpha.300'}
+						bg='blackAlpha.300'
 						pos='absolute'
 						w='full'
 						h='full'
@@ -47,8 +47,8 @@ export default function ResumePreviewModal({
 						justifyContent='center'
 						onClick={onOpen}
 						cursor='pointer'
-						transition={'all 200ms ease'}
-						color={'whiteAlpha.800'}
+						transition='all 200ms ease'
+						color='whiteAlpha.800'
 						_hover={{
 							bg: 'blackAlpha.50',
 							color: 'blackAlpha.800',
@@ -62,7 +62,7 @@ export default function ResumePreviewModal({
 				<Image
 					src={resumePreviewSrc}
 					sizes='100vw'
-					alt={'Resume preview'}
+					alt='Resume preview'
 					w='full'
 					h='auto'
 					loading='eager'

@@ -1,29 +1,29 @@
-import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
 import {
-	Button,
-	Box,
-	Stack,
-	Spinner,
-	Checkbox,
-	Link,
-	FormControl,
-	Divider,
-	Heading,
-	useToast,
-	Flex,
-	useMediaQuery,
-	chakra,
+    Box,
+    Button,
+    chakra,
+    Checkbox,
+    Divider,
+    Flex,
+    FormControl,
+    Heading,
+    Link,
+    Spinner,
+    Stack,
+    useMediaQuery,
+    useToast,
 } from '@chakra-ui/react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { handleReCaptchaVerify } from '@lib/utils';
-import TextInput from '@common/inputs/TextInput';
-import useRegisterUser from '@mutations/useRegisterUser';
-import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
-import usePageById from '@queries/usePageById';
-import { RegisterUserInput } from '@lib/types';
 import BackToLoginButton from '@common/BackToLoginButton';
+import TextInput from '@common/inputs/TextInput';
 import RequiredAsterisk from '@common/RequiredAsterisk';
+import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
+import { RegisterUserInput } from '@lib/types';
+import { handleReCaptchaVerify } from '@lib/utils';
+import useRegisterUser from '@mutations/useRegisterUser';
+import usePageById from '@queries/usePageById';
+import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 export default function RegisterView() {
 	const [userFields, setUserFields] = useState<RegisterUserInput>({
@@ -155,7 +155,7 @@ export default function RegisterView() {
 						isRequired
 						onChange={handleInputChange}
 						flex='1'
-						label={'First name'}
+						label='First name'
 						inputProps={{
 							size: 'xl',
 							autoComplete: 'given-name',
@@ -168,7 +168,7 @@ export default function RegisterView() {
 						isRequired
 						onChange={handleInputChange}
 						flex='1'
-						label={'Last name'}
+						label='Last name'
 						inputProps={{
 							size: 'xl',
 							autoComplete: 'family-name',
@@ -182,7 +182,7 @@ export default function RegisterView() {
 					id='email'
 					type='email'
 					variant='filled'
-					label={'Email address'}
+					label='Email address'
 					error={
 						errorCode !== 'password_too_weak' && errorCode !== 'password_mismatch' && errorCode
 							? errorMessage
@@ -222,7 +222,7 @@ export default function RegisterView() {
 						id='confirmPassword'
 						type='password'
 						variant='filled'
-						label={'Confirm your password'}
+						label='Confirm your password'
 						flex={1}
 						isRequired
 						error={errorCode && errorCode === 'password_mismatch' ? errorMessage : ''}
@@ -237,10 +237,10 @@ export default function RegisterView() {
 				</Stack>
 
 				<Flex
-					justifyContent={'space-between'}
-					alignItems={'flex-end'}
+					justifyContent='space-between'
+					alignItems='flex-end'
 					mt={2}
-					flex={'0 0 auto'}
+					flex='0 0 auto'
 					flexWrap='wrap'
 					gap={8}
 				>
@@ -266,11 +266,11 @@ export default function RegisterView() {
 								tabIndex={7}
 							>
 								I have read and accept the RISE Theatre Directory{' '}
-								<Link as={RouterLink} to={'http://risetheatre.org/terms-conditions'} isExternal>
+								<Link as={RouterLink} to='http://risetheatre.org/terms-conditions' isExternal>
 									Terms and Conditions
 								</Link>{' '}
 								and{' '}
-								<Link as={RouterLink} to={'http://risetheatre.org/privacy-policy'} isExternal>
+								<Link as={RouterLink} to='http://risetheatre.org/privacy-policy' isExternal>
 									Privacy Policy
 								</Link>
 								.
@@ -288,7 +288,7 @@ export default function RegisterView() {
 							Create account
 						</Button>
 					</Box>
-					{!isLargerThanMd && <BackToLoginButton width='full' justifyContent={'flex-end'} />}
+					{!isLargerThanMd && <BackToLoginButton width='full' justifyContent='flex-end' />}
 				</Flex>
 			</chakra.form>
 		</>

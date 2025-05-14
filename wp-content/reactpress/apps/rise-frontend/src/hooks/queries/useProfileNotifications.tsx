@@ -1,17 +1,23 @@
 /**
- * useUnreadProfileNotifications hook. Query to retrieve profile notifications.
+ * useProfileNotifications hook. Query to retrieve profile notifications.
  */
 
 import { gql, useQuery } from '@apollo/client';
 import { ProfileNotification } from '@lib/classes';
 import { ProfileNotificationParams } from '@lib/types';
-import { omit } from 'lodash';
+import { isEmpty, omit } from 'lodash';
 
 // TODO update Job class props to match the query
 
-export const QUERY_UNREAD_PROFILE_NOTIFICATIONS = gql`
-	query UnreadProfNotificationsQuery($authorId: Int = 10) {
-		unreadProfileNotifications(authorId: $authorId) {
+export const QUERY_PROFILE_NOTIFICATIONS = gql`
+	query ProfileNotificationsQuery($authorId: Int = 10, $limit: Int = -1) {
+		unreadProfileNotifications(authorId: $authorId, limit: $limit) {
+			id
+			title
+			notificationType
+			value
+		}
+		readProfileNotifications(authorId: $authorId, limit: $limit) {
 			id
 			title
 			notificationType
@@ -20,20 +26,38 @@ export const QUERY_UNREAD_PROFILE_NOTIFICATIONS = gql`
 	}
 `;
 
-const useUnreadProfileNotifications = (authorId: number): [ProfileNotification[], any] => {
-	const result = useQuery(QUERY_UNREAD_PROFILE_NOTIFICATIONS, {
+const useProfileNotifications = (
+	authorId: number
+): [{ unread: ProfileNotification[]; read: ProfileNotification[] }, any] => {
+	const result = useQuery(QUERY_PROFILE_NOTIFICATIONS, {
 		variables: {
 			authorId,
+			limit: 10,
 		},
 		fetchPolicy: 'cache-and-network',
 		pollInterval: 20000,
 	});
 
+	console.log(result);
+
+	const allProfileNotifications = { unread: [], read: [] };
+
 	if (!result?.data?.unreadProfileNotifications) {
-		return [[], null];
+		allProfileNotifications.unread = [];
 	}
 
-	const profileNotifications: ProfileNotification[] =
+	if (!result?.data?.readProfileNotifications) {
+		allProfileNotifications.read = [];
+	}
+
+	if (
+		isEmpty(result?.data?.unreadProfileNotifications) &&
+		isEmpty(result?.data?.readProfileNotifications)
+	) {
+		return [allProfileNotifications, null];
+	}
+
+	allProfileNotifications.unread =
 		result?.data?.unreadProfileNotifications?.map((node: ProfileNotificationParams) => {
 			const { id, title, notificationType, value } = node;
 
@@ -47,7 +71,16 @@ const useUnreadProfileNotifications = (authorId: number): [ProfileNotification[]
 			return profileNotification;
 		}) ?? [];
 
-	return [profileNotifications, omit(result, ['data'])];
+	allProfileNotifications.read =
+		result?.data?.readProfileNotifications?.map((node: ProfileNotificationParams) => {
+			const { id, title, notificationType, value } = node;
+
+			return new ProfileNotification({ id, title, notificationType, value });
+		}) ?? [];
+
+	console.log(allProfileNotifications);
+
+	return [allProfileNotifications, omit(result, ['data'])];
 };
 
-export default useUnreadProfileNotifications;
+export default useProfileNotifications;

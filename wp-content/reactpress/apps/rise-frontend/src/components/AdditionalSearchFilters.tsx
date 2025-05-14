@@ -1,11 +1,11 @@
-import { Key, useContext, useEffect } from 'react';
 import { Accordion } from '@chakra-ui/react';
-import { isEmpty } from 'lodash';
-import { additionalFilterKeys } from '@lib/utils';
-import { SearchContext } from '@context/SearchContext';
-import useUserTaxonomies from '@queries/useUserTaxonomies';
 import SearchFilterAccordionItem from '@common/SearchFilterAccordionItem';
 import ProfileCheckboxGroup from '@common/inputs/ProfileCheckboxGroup';
+import { SearchContext } from '@context/SearchContext';
+import { additionalFilterKeys } from '@lib/utils';
+import useUserTaxonomies from '@queries/useUserTaxonomies';
+import { isEmpty } from 'lodash';
+import { Key, useContext, useEffect } from 'react';
 
 export default function AdditionalSearchFilters() {
 	const {
@@ -97,7 +97,7 @@ export default function AdditionalSearchFilters() {
 					handleChange={handleInputChange}
 				/>
 			</SearchFilterAccordionItem>
-			<SearchFilterAccordionItem heading={'Experience Levels'}>
+			<SearchFilterAccordionItem heading='Experience Levels'>
 				<ProfileCheckboxGroup
 					name='experienceLevels'
 					items={experienceLevelTerms}
@@ -105,7 +105,7 @@ export default function AdditionalSearchFilters() {
 					handleChange={handleInputChange}
 				/>
 			</SearchFilterAccordionItem>
-			<SearchFilterAccordionItem heading={'Gender Identity'}>
+			<SearchFilterAccordionItem heading='Gender Identity'>
 				<ProfileCheckboxGroup
 					name='genderIdentities'
 					items={genderIdentityTerms}
@@ -113,7 +113,7 @@ export default function AdditionalSearchFilters() {
 					handleChange={handleInputChange}
 				/>
 			</SearchFilterAccordionItem>
-			<SearchFilterAccordionItem heading={'Personal Identity'}>
+			<SearchFilterAccordionItem heading='Personal Identity'>
 				<ProfileCheckboxGroup
 					name='personalIdentities'
 					items={personalIdentityTerms}
@@ -121,7 +121,7 @@ export default function AdditionalSearchFilters() {
 					handleChange={handleInputChange}
 				/>
 			</SearchFilterAccordionItem>
-			<SearchFilterAccordionItem heading={'Racial Identity'}>
+			<SearchFilterAccordionItem heading='Racial Identity'>
 				<ProfileCheckboxGroup
 					name='racialIdentities'
 					items={racialIdentityTerms}

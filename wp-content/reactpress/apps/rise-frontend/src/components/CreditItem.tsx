@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState, KeyboardEvent } from 'react';
-import { Card, Heading, Text, Wrap, Box, Stack, Flex, Skeleton, Badge, BoxProps } from '@chakra-ui/react';
+import { Badge, Box, BoxProps, Card, Flex, Heading, Skeleton, Stack, Text, Wrap } from '@chakra-ui/react';
+import WPItemBadgeList from '@common/WPItemBadgeList';
+import WrapWithIcon from '@common/WrapWithIcon';
 import { Credit, WPItem } from '@lib/classes';
 import { decodeString, sortAndCompareArrays } from '@lib/utils';
 import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
 import useTaxonomyTerms from '@queries/useTaxonomyTerms';
-import WrapWithIcon from '@common/WrapWithIcon';
-import { FiStar, FiMapPin, FiBriefcase } from 'react-icons/fi';
-import WPItemBadgeList from '@common/WPItemBadgeList';
+import { KeyboardEvent, useEffect, useMemo, useState } from 'react';
+import { FiBriefcase, FiMapPin, FiStar } from 'react-icons/fi';
 
 interface Props {
 	id?: string;
@@ -111,13 +111,13 @@ export default function CreditItem({
 				onKeyDown={handleCreditKeyDown}
 				borderWidth={isEditable ? '3px' : '0'}
 				borderStyle='dashed'
-				borderColor={'gray.300'}
+				borderColor='gray.300'
 				_hover={isEditable ? { borderColor: 'gray.500' } : {}}
 			>
 				<Skeleton isLoaded={!termsLoading}>
 					<Flex
-						alignItems={'flex-start'}
-						justifyContent={'space-between'}
+						alignItems='flex-start'
+						justifyContent='space-between'
 						flexWrap={{ base: 'wrap', md: 'nowrap' }}
 					>
 						<Box flex='1'>
@@ -126,7 +126,7 @@ export default function CreditItem({
 									{title}
 								</Heading>
 								<Badge
-									flex={'0 0 auto'}
+									flex='0 0 auto'
 									fontSize='md'
 									fontWeight='bold'
 									textTransform='none'
@@ -154,10 +154,10 @@ export default function CreditItem({
 								<Flex my={0} alignItems='center' flexWrap='wrap' gap={2}>
 									{jobTitle && <WrapWithIcon icon={FiBriefcase}>{jobTitle}</WrapWithIcon>}
 									{intern || fellow ? (
-										<Flex color={'brand.yellow'} gap={1} ml={2}>
+										<Flex color='brand.yellow' gap={1} ml={2}>
 											{intern ? (
 												<Text
-													flex={'0 0 auto'}
+													flex='0 0 auto'
 													fontSize='sm'
 													fontWeight='bold'
 													textTransform='none'
@@ -179,7 +179,7 @@ export default function CreditItem({
 
 											{fellow ? (
 												<Text
-													flex={'0 0 auto'}
+													flex='0 0 auto'
 													fontSize='sm'
 													fontWeight='bold'
 													textTransform='none'
