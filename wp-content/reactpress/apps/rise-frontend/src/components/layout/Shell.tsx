@@ -1,15 +1,14 @@
-import { ReactNode } from 'react';
 import {
 	Box,
-	Heading,
-	Text,
-	Flex,
-	Spinner,
 	Center,
 	ContainerProps,
-	Container,
+	Flex,
+	Heading,
 	HeadingProps,
+	Spinner,
+	Text,
 } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface Props {
 	title?: string;
@@ -69,7 +68,7 @@ export default function Shell({
 			) : null}
 
 			{description ? (
-				<Text as={Box} ml={1} fontSize='sm'>
+				<Text as={Box} fontSize='sm' px={4} mt={0}>
 					{description}
 				</Text>
 			) : null}

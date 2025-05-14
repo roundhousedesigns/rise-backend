@@ -3,22 +3,19 @@ import { FiBell } from 'react-icons/fi';
 
 interface Props {
 	number: number;
-	iconColor?: string;
 }
 
-export default function ProfileNotificationsIcon({
-	number,
-	iconColor = 'text.dark',
-}: Props) {
+export default function ProfileNotificationsIcon({ number }: Props) {
 	return (
 		<Circle position='relative'>
-			<Icon as={FiBell} color={iconColor} />
+			<Icon as={FiBell} color='text.light' />
 			<Flex
 				borderRadius='full'
 				position='absolute'
 				bottom={-5}
 				right={-3}
-				bg='text.dark'
+				_light={{ bg: 'gray.600' }}
+				_dark={{ bg: 'text.dark' }}
 				justifyContent='center'
 				alignItems='center'
 				textAlign='center'

@@ -1,13 +1,13 @@
-import { Flex, IconProps, ListIcon, ListItem, ListItemProps, Text } from '@chakra-ui/react';
+import { Flex, IconProps, ListItem, ListItemProps, Text } from '@chakra-ui/react';
 import { ReactNode } from 'react';
-import { IconType } from 'react-icons/lib';
 import { Link as RouterLink } from 'react-router-dom';
 
 interface Props {
-	icon: IconType;
+	icon?: ReactNode;
 	target: string | (() => void);
 	isActive?: boolean;
 	iconProps?: IconProps;
+	isExpanded?: boolean;
 	children: ReactNode;
 }
 
@@ -16,6 +16,7 @@ export default function SidebarMenuItem({
 	target,
 	isActive,
 	iconProps,
+	isExpanded,
 	children,
 	...props
 }: Props & ListItemProps) {
@@ -24,7 +25,7 @@ export default function SidebarMenuItem({
 			w='full'
 			borderBottomWidth='1px'
 			borderBottomColor='gray.700'
-			_last={{ borderBottomWidth: '0px' }}
+			_first={{ borderTopWidth: '1px' }}
 			{...props}
 		>
 			<Flex
@@ -32,11 +33,11 @@ export default function SidebarMenuItem({
 				to={typeof target === 'string' ? target : undefined}
 				onClick={typeof target === 'function' ? target : undefined}
 				alignItems='center'
-				justifyContent='flex-start'
-				gap={1}
+				justifyContent={isExpanded ? 'center' : 'flex-start'}
+				gap={2}
 				px={4}
 				textDecoration='none'
-				w='full'
+				w='100%'
 				transition='background-color 200ms ease'
 				_light={{
 					bg: isActive ? 'gray.500' : 'transparent',
@@ -53,8 +54,10 @@ export default function SidebarMenuItem({
 					},
 				}}
 			>
-				<ListIcon as={icon} {...iconProps} />
-				<Text my={0}>{children}</Text>
+				{icon}
+				<Text visibility={isExpanded ? 'visible' : 'hidden'} flex={isExpanded ? 1 : 0}>
+					{children}
+				</Text>
 			</Flex>
 		</ListItem>
 	);

@@ -1,29 +1,33 @@
-import { Navigate, useRoutes } from 'react-router-dom';
 import { Box, Text, chakra } from '@chakra-ui/react';
-import Dashboard from '@routes/Dashboard';
-import Login from '@routes/Login';
-import LostPassword from '@routes/LostPassword';
-import ResetPassword from '@routes/ResetPassword';
-import Register from '@routes/Register';
-import Profile from '@routes/Profile';
-import EditProfile from '@routes/EditProfile';
-import Results from '@routes/Results';
-import StarredProfiles from '@routes/StarredProfiles';
-import Settings from '@routes/Settings';
-import NotFound from '@routes/NotFound';
-import SavedSearches from '@routes/SavedSearches';
-import JobPosts from '@routes/JobPosts';
-import JobPost from '@routes/JobPost';
-import ManageJobPosts from '@routes/ManageJobPosts';
-import EditJobPost from '@routes/EditJobPost';
 import ProfileNotices from '@common/ProfileNotices';
 import LoggedIn from '@components/LoggedIn';
 import DevMode from '@dev/DevMode';
+import Dashboard from '@routes/Dashboard';
+import EditJobPost from '@routes/EditJobPost';
+import EditProfile from '@routes/EditProfile';
+import JobPost from '@routes/JobPost';
+import JobPosts from '@routes/JobPosts';
+import Login from '@routes/Login';
+import LostPassword from '@routes/LostPassword';
+import ManageJobPosts from '@routes/ManageJobPosts';
+import NotFound from '@routes/NotFound';
+import Profile from '@routes/Profile';
+import Register from '@routes/Register';
+import ResetPassword from '@routes/ResetPassword';
+import Results from '@routes/Results';
+import SavedSearches from '@routes/SavedSearches';
+import Settings from '@routes/Settings';
+import StarredProfiles from '@routes/StarredProfiles';
+import { Navigate, useRoutes } from 'react-router-dom';
 
 import pkgJSON from '@@/package.json';
+import Search from '@@/src/routes/Search';
 const __APP_VERSION__ = `v${pkgJSON.version}`;
 
 export default function Main() {
+	/**
+	 * Routes for the main application.
+	 */
 	const routes = useRoutes([
 		{
 			path: '/',
@@ -72,6 +76,10 @@ export default function Main() {
 		{
 			path: '/stars',
 			element: <Navigate to={'/starred'} replace />,
+		},
+		{
+			path: '/search',
+			element: <Search />,
 		},
 		{
 			path: '/searches',
@@ -151,11 +159,12 @@ export default function Main() {
 
 			<DevMode>
 				<Box
-					w='100%'
 					textAlign='center'
 					m={0}
 					px={0}
-					bgColor='brand.blue'
+					bgColor='whiteAlpha.500'
+					color='text.light'
+					opacity={0.3}
 					lineHeight='shorter'
 					fontSize='2xs'
 					position='fixed'

@@ -2,6 +2,7 @@ import {
 	Badge,
 	Box,
 	Flex,
+	Icon,
 	IconButton,
 	IconProps,
 	List,
@@ -12,17 +13,18 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
+import ProfileNotificationsIcon from '@common/ProfileNotificationsIcon';
 import DarkModeToggle from '@components/DarkModeToggle';
+import ProfileNotificationMenuItem from '@components/ProfileNotificationMenuItem';
 import { SearchContext } from '@context/SearchContext';
-import SearchDrawerContext from '@context/SearchDrawerContext';
-import SearchDrawer from '@layout/SearchDrawer';
+import { useLocalStorage } from '@hooks/hooks';
 import useUnreadProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
-import { useContext } from 'react';
-import { IconType } from 'react-icons';
+import { ReactNode, useContext } from 'react';
 import {
 	FiBriefcase,
+	FiChevronsLeft,
 	FiFolder,
 	FiHome,
 	FiList,
@@ -31,15 +33,15 @@ import {
 	FiStar,
 } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
-import ProfileNotificationsIcon from '../common/ProfileNotificationsIcon';
-import ProfileNotificationMenuItem from '../ProfileNotificationMenuItem';
 
 interface SidebarMenuItemProps {
-	icon: IconType;
+	icon?: ReactNode;
 	target: string | (() => void);
-	label: string;
+	label: string | ReactNode;
 	isActive?: boolean;
+	isDisabled?: boolean;
 	iconProps?: IconProps;
+	isExpanded?: boolean;
 }
 
 export default function Sidebar() {
@@ -48,24 +50,57 @@ export default function Sidebar() {
 
 	const [unreadProfileNotifications] = useUnreadProfileNotifications(loggedInId);
 
-	const { drawerIsOpen, openDrawer, closeDrawer } = useContext(SearchDrawerContext);
-
 	const {
 		search: { results },
 	} = useContext(SearchContext);
 
-	const handleDrawerOpen = () => {
-		openDrawer();
-	};
-
 	const location = useLocation();
 
+	const [sidebarExpanded, setSidebarExpanded] = useLocalStorage('sidebarExpanded', false);
+
+	{
+		results.length ? (
+			<SidebarMenuItem icon={<Icon as={FiList} />} target={'/results'}>
+				<Text py={2}>
+					Search results{' '}
+					<Badge py={1} px={2} borderRadius='full' variant='subtle' colorScheme='orange'>
+						{results.length}
+					</Badge>
+				</Text>
+			</SidebarMenuItem>
+		) : null;
+	}
+
 	const menuItems: SidebarMenuItemProps[] = [
-		{ icon: FiHome, target: `/`, label: 'Dashboard' },
-		{ icon: FiSearch, target: handleDrawerOpen, label: 'Search' },
-		{ icon: FiBriefcase, target: '/jobs', label: 'Jobs' },
+		{ icon: <Icon as={FiHome} />, target: `/`, label: 'Dashboard' },
+		{ icon: <Icon as={FiSearch} />, target: '/search', label: 'Search' },
 		{
-			icon: FiStar,
+			icon: sidebarExpanded ? (
+				<Icon as={FiList} />
+			) : (
+				<Badge
+					py={1}
+					px={3}
+					borderRadius='full'
+					variant='subtle'
+					fontSize='xs'
+					colorScheme='orange'
+					pos='relative'
+				>
+					{results.length}
+				</Badge>
+			),
+			target: '/results',
+			label: (
+				<Text as='span' m={0} display='block' overflow='hidden' w='200px'>
+					{`${results.length} Results`}
+				</Text>
+			),
+			isDisabled: results.length === 0,
+		},
+		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' },
+		{
+			icon: <Icon as={FiStar} />,
 			target: '/stars',
 			label: 'Starred',
 			iconProps: {
@@ -73,7 +108,7 @@ export default function Sidebar() {
 			},
 		},
 		{
-			icon: FiFolder,
+			icon: <Icon as={FiFolder} />,
 			target: '/searches',
 			label: 'Searches',
 			iconProps: { fill: savedSearches?.length > 0 ? 'brand.orange' : 'transparent' },
@@ -81,34 +116,74 @@ export default function Sidebar() {
 	];
 
 	return loggedInId ? (
-		<Box id='sidebar' w='auto' py={2} bg='blackAlpha.700' color='text.light'>
+		<Box
+			id='sidebar'
+			w={sidebarExpanded ? '180px' : '52px'}
+			py={2}
+			_light={{ bg: 'blackAlpha.700', color: 'text.light' }}
+			_dark={{ bg: 'blackAlpha.300', color: 'text.light' }}
+			overflow='hidden'
+			transition='all 200ms ease'
+			aria-expanded={sidebarExpanded}
+		>
 			<Flex
 				h='full'
-				color={'text.light'}
 				mt={2}
 				mx={0}
 				pb={4}
-				gap={2}
 				flexDirection='column'
 				alignItems='center'
 				justifyContent='space-between'
+				fontSize='sm'
 			>
+				<IconButton
+					aria-label='Expand sidebar'
+					aria-expanded={sidebarExpanded}
+					icon={<FiChevronsLeft />}
+					size='xs'
+					onClick={() => setSidebarExpanded(!sidebarExpanded)}
+					transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
+					transition='all 200ms ease'
+					alignSelf='flex-start'
+					ml='12px'
+				/>
+
+				<List spacing={0} w='full' px={0} mt={3} mb={2}>
+					{menuItems.map((item, index) => {
+						if (item.isDisabled) return null;
+
+						return (
+							<SidebarMenuItem
+								key={index}
+								icon={item.icon}
+								my={0}
+								target={item.target}
+								isActive={location.pathname === item.target}
+								iconProps={item.iconProps}
+								isExpanded={sidebarExpanded}
+							>
+								{item.label}
+							</SidebarMenuItem>
+						);
+					})}
+
+					<SidebarMenuItem icon={<Icon as={FiSettings} />} target={'/settings'} my={0}>
+						Settings
+					</SidebarMenuItem>
+				</List>
+
 				<Menu>
 					<MenuButton
 						as={IconButton}
 						cursor='pointer'
-						icon={
-							<ProfileNotificationsIcon
-								number={unreadProfileNotifications.length}
-								iconColor='gray.700'
-							/>
-						}
-						size='sm'
-						colorScheme={unreadProfileNotifications.length > 0 ? 'orange' : 'gray'}
+						icon={<ProfileNotificationsIcon number={unreadProfileNotifications.length} />}
+						size={sidebarExpanded ? 'sm' : 'xs'}
+						bg={unreadProfileNotifications.length > 0 ? 'brand.orange' : 'gray'}
 						borderRadius='full'
 						pos='relative'
 						aria-label='Notifications'
-						mb={1.5}
+						my={1.5}
+						transition='all 200ms ease'
 					/>
 					<MenuList>
 						{unreadProfileNotifications.map((notification) => (
@@ -117,41 +192,10 @@ export default function Sidebar() {
 					</MenuList>
 				</Menu>
 
-				<List spacing={0} w='full' px={0} mt={3}>
-					{menuItems.map((item, index) => (
-						<SidebarMenuItem
-							key={index}
-							icon={item.icon}
-							my={0}
-							target={item.target}
-							isActive={location.pathname === item.target}
-							iconProps={item.iconProps}
-						>
-							<Text>{item.label}</Text>
-						</SidebarMenuItem>
-					))}
-
-					{results.length ? (
-						<SidebarMenuItem icon={FiList} target={'/results'}>
-							<Text py={2}>
-								Search results{' '}
-								<Badge py={1} px={2} borderRadius='full' variant='subtle' colorScheme='orange'>
-									{results.length}
-								</Badge>
-							</Text>
-						</SidebarMenuItem>
-					) : null}
-					<SidebarMenuItem icon={FiSettings} target={'/settings'}>
-						<Text>Settings</Text>
-					</SidebarMenuItem>
-				</List>
-
 				<Spacer />
 
 				<DarkModeToggle showLabel={false} showHelperText={false} justifyContent='center' />
 			</Flex>
-
-			<SearchDrawer isOpen={drawerIsOpen} onClose={closeDrawer} />
 		</Box>
 	) : null;
 }
