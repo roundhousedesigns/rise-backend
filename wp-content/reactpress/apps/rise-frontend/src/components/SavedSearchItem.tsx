@@ -17,7 +17,6 @@ import SearchParamTags from '@common/SearchParamTags';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import EditSavedSearchModal from '@components/EditSavedSearchModal';
 import { SearchContext } from '@context/SearchContext';
-import SearchDrawerContext from '@context/SearchDrawerContext';
 import { useSavedSearchFiltersChanged } from '@hooks/hooks';
 import { SearchFilterSet, WPItem } from '@lib/classes';
 import { WPItemParams } from '@lib/types';
@@ -55,8 +54,6 @@ export default function SavedSearchItem({
 		search: { results },
 		searchDispatch,
 	} = useContext(SearchContext);
-
-	const { openDrawer, drawerIsOpen } = useContext(SearchDrawerContext);
 
 	const navigate = useNavigate();
 

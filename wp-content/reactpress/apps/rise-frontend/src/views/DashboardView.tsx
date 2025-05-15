@@ -1,6 +1,5 @@
-import { Card, Grid, GridItem, Heading, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
+import { Card, Grid, GridItem, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
-import HeadingCenterline from '@common/HeadingCenterline';
 import Widget from '@common/Widget';
 import ProfileNotificationItem from '@components/ProfileNotificationItem';
 import ShortPost from '@components/ShortPost';
@@ -17,87 +16,72 @@ export default function DashboardView() {
 	const [notices] = useUserNotices();
 	const [{ unread, read }] = useProfileNotifications(loggedInId);
 
-	const [profile, { loading }] = useUserProfile(loggedInId);
+	const [profile, { loading: profileLoading }] = useUserProfile(loggedInId);
 
 	return (
 		<Grid
-			templateColumns={{ base: '1fr', md: 'minmax(300px, 1fr) auto' }}
+			templateColumns={{ base: '1fr', md: 'minmax(340px, 1fr) auto' }}
 			gap={8}
 			w='full'
 			maxW='6xl'
 		>
-			<GridItem as={Stack} spacing={6} id='dashboard-secondary' maxW='300px'>
+			<GridItem as={Stack} spacing={6} id='dashboard-secondary'>
 				<Widget>
-					{profile ? (
-						<ColorCascadeBox>
+					<ColorCascadeBox>
+						{profile ? (
 							<MiniProfileView profile={profile} borderWidth='2px' borderColor='brand.blue' />
-						</ColorCascadeBox>
-					) : loading ? (
-						<Spinner />
-					) : (
-						<></>
-					)}
+						) : profileLoading ? (
+							<Spinner />
+						) : (
+							<></>
+						)}
+					</ColorCascadeBox>
 				</Widget>
 
 				{unread.length > 0 ||
 					(read.length > 0 && (
-						<Widget>
-							<>
-								<Heading as='h2' variant='contentTitle'>
-									Notifications
-								</Heading>
-								<Card gap={2}>
-									<List spacing={1}>
-										<AnimatePresence>
-											{unread?.map((notification) => (
-												<ListItem
-													key={notification.id}
-													as={motion.div}
-													initial={{ opacity: 1 }}
-													animate={{ opacity: 1 }}
-													exit={{ opacity: 0 }}
-												>
-													<ProfileNotificationItem notification={notification} />
-												</ListItem>
-											))}
-											{read?.map((notification) => (
-												<ListItem key={notification.id}>
-													<ProfileNotificationItem notification={notification} />
-												</ListItem>
-											))}
-										</AnimatePresence>
-									</List>
-								</Card>
-							</>
+						<Widget title='Notifications' titleStyle='contentTitle'>
+							<Card gap={2}>
+								<List spacing={1}>
+									<AnimatePresence>
+										{unread?.map((notification) => (
+											<ListItem
+												key={notification.id}
+												as={motion.div}
+												initial={{ opacity: 1 }}
+												animate={{ opacity: 1 }}
+												exit={{ opacity: 0 }}
+											>
+												<ProfileNotificationItem notification={notification} />
+											</ListItem>
+										))}
+										{read?.map((notification) => (
+											<ListItem key={notification.id}>
+												<ProfileNotificationItem notification={notification} />
+											</ListItem>
+										))}
+									</AnimatePresence>
+								</List>
+							</Card>
 						</Widget>
 					))}
 
 				{starredProfiles?.length && (
-					<Widget>
-						<>
-							<HeadingCenterline lineColor='brand.orange' headingProps={{ fontSize: '2xl' }}>
-								Following
-							</HeadingCenterline>
-							<StarredProfileList showToggle={false} mini />
-						</>
+					<Widget title='Following' titleStyle='centerline' centerLineColor='brand.orange'>
+						<StarredProfileList showToggle={false} mini />
 					</Widget>
 				)}
 			</GridItem>
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
 				{notices.length > 0 ? (
-					<Widget>
-						<>
-							<HeadingCenterline lineColor='brand.orange' headingProps={{ fontSize: '2xl' }}>
-								News
-							</HeadingCenterline>
-							<List spacing={4}>
-								{notices.map((notice: any) => (
-									<ListItem key={notice.id} mt={0}>
-										<ShortPost post={notice} mb={4} as={Card} />
-									</ListItem>
-								))}
-							</List>
-						</>
+					<Widget title='News' titleStyle='centerline' centerLineColor='brand.orange'>
+						<List spacing={4}>
+							{notices.map((notice: any) => (
+								<ListItem key={notice.id} mt={0}>
+									<ShortPost post={notice} mb={4} as={Card} />
+								</ListItem>
+							))}
+						</List>
 					</Widget>
 				) : null}
 			</GridItem>

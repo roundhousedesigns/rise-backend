@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, Icon, IconButton, List, Spacer, Text } from '@chakra-ui/react';
+import { Box, Flex, Icon, IconButton, List, Spacer, Text } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
@@ -11,7 +11,6 @@ import {
 	FiChevronsLeft,
 	FiFolder,
 	FiHome,
-	FiList,
 	FiSearch,
 	FiSettings,
 	FiStar,
@@ -39,42 +38,44 @@ export default function Sidebar() {
 
 	const [sidebarExpanded, setSidebarExpanded] = useLocalStorage('sidebarExpanded', false);
 
-	{
-		results.length ? (
-			<SidebarMenuItem icon={<Icon as={FiList} />} target='/results'>
-				<Text py={2}>
-					Search results{' '}
-					<Badge py={1} px={2} borderRadius='full' variant='subtle' colorScheme='orange'>
-						{results.length}
-					</Badge>
-				</Text>
-			</SidebarMenuItem>
-		) : null;
-	}
-
 	const menuItems: SidebarMenuItemProps[] = [
 		{ icon: <Icon as={FiHome} />, target: `/`, label: 'Dashboard' },
 		{ icon: <Icon as={FiSearch} />, target: '/search', label: 'Search' },
 		{
-			icon: sidebarExpanded ? (
-				<Icon as={FiList} />
-			) : (
-				<Badge
-					py={1}
-					px={3}
-					borderRadius='full'
-					variant='subtle'
-					fontSize='xs'
-					colorScheme='orange'
-					pos='relative'
+			icon: (
+				<Box
+					w='full'
+					display='flex'
+					justifyContent='center'
+					alignItems='center'
+					textAlign='center'
+					flex='0'
 				>
-					{results.length}
-				</Badge>
+					<Box
+						my={2.5}
+						mx={0}
+						borderRadius='full'
+						fontSize='xs'
+						bg='brand.orange'
+						minW={5}
+						h='auto'
+						px={1}
+						py={0.25}
+					>
+						{results.length}
+					</Box>
+				</Box>
 			),
 			target: '/results',
 			label: (
-				<Text as='span' m={0} display='block' overflow='hidden' w='200px'>
-					{`${results.length} Results`}
+				<Text
+					as='span'
+					overflow='hidden'
+					w='200px'
+					visibility={sidebarExpanded ? 'visible' : 'hidden'}
+					pos={sidebarExpanded ? 'relative' : 'absolute'}
+				>
+					{results.length === 1 ? 'Result' : 'Results'}
 				</Text>
 			),
 			isDisabled: results.length === 0,
@@ -114,7 +115,7 @@ export default function Sidebar() {
 				h='full'
 				mt={0}
 				mx={0}
-				pt={2}
+				pt={3}
 				pb={4}
 				flexDirection='column'
 				alignItems='center'

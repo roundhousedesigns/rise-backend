@@ -5,6 +5,7 @@ with 1.1.1.
 
 ## \[1.2-dev] - Unreleased
 
+- Change: Move Search Drawer to a dedicated route `/search`
 - Improve: Profile layout shifts
 - Add: Notifications!
   - Badge count for displaying if any starred profiles have been updated.

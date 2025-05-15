@@ -1,11 +1,35 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps, Heading } from '@chakra-ui/react';
+import HeadingCenterline from './HeadingCenterline';
 
 interface Props {
+	title?: string;
+	titleStyle?: 'centerline' | 'contentTitle';
+	centerLineColor?: string;
 	children: JSX.Element;
 }
 
-const Widget = ({ children, ...props }: Props & BoxProps) => (
+const Widget = ({
+	children,
+	title,
+	titleStyle,
+	centerLineColor = 'brand.orange',
+	...props
+}: Props & BoxProps) => (
 	<Box m={0} {...props}>
+		{title && (
+			<>
+				{titleStyle === 'centerline' && (
+					<HeadingCenterline lineColor={centerLineColor} headingProps={{ fontSize: '2xl' }}>
+						{title}
+					</HeadingCenterline>
+				)}
+				{titleStyle === 'contentTitle' && (
+					<Heading as='h2' variant='contentTitle'>
+						{title}
+					</Heading>
+				)}
+			</>
+		)}
 		{children}
 	</Box>
 );

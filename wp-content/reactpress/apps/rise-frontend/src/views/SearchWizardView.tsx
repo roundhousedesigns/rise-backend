@@ -1,21 +1,9 @@
 import useSavedSearches from '@/hooks/queries/useSavedSearches';
-import {
-    Accordion,
-    Box,
-    chakra,
-    Fade,
-    Flex,
-    Icon,
-    Spacer,
-    Stack,
-    Text,
-    useToken,
-} from '@chakra-ui/react';
+import { Accordion, Box, chakra, Fade, Flex, Icon, Stack, Text, useToken } from '@chakra-ui/react';
 import SearchFilterAccordionItem from '@common/SearchFilterAccordionItem';
 import SearchFilterSection from '@common/SearchFilterSection';
 import AdditionalSearchFilters from '@components/AdditionalSearchFilters';
 import DepartmentsAutocomplete from '@components/DepartmentsAutocomplete';
-import SavedSearchItemList from '@components/SavedSearchItemList';
 import SearchFilterDates from '@components/SearchFilterDates';
 import SearchFilterDepartment from '@components/SearchFilterDepartment';
 import SearchFilterJobs from '@components/SearchFilterJobs';
@@ -24,6 +12,7 @@ import SearchFilterSkills from '@components/SearchFilterSkills';
 import { SearchContext } from '@context/SearchContext';
 import { FormEvent, useContext } from 'react';
 import { FiFolder, FiUser } from 'react-icons/fi';
+import SavedSearchItemList from '../components/SavedSearchItemList';
 
 interface Props {
 	onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -55,8 +44,29 @@ export default function SearchWizardView({ onSubmit }: Props) {
 			pt={searchWizardActive ? 4 : 0}
 			transition='padding 250ms ease'
 		>
-			{searchWizardActive ? null : (
-				<Accordion allowToggle mb={4} defaultIndex={name ? 0 : undefined}>
+			<Flex gap={0} flexWrap='wrap'>
+				<Accordion flex='1 0 300px' allowToggle defaultIndex={savedSearchId ? 0 : undefined}>
+					<SearchFilterAccordionItem
+						heading={
+							<Flex alignItems='center'>
+								<Icon
+									as={FiFolder}
+									fill={savedSearches?.length > 0 ? orange : 'transparent'}
+									mr={2}
+								/>
+								<Text as='span' my={0}>
+									Saved Searches
+								</Text>
+							</Flex>
+						}
+						isDisabled={!savedSearches || !savedSearches.length}
+						headingProps={{ fontSize: 'md' }}
+						panelProps={{ mb: 0, px: 3, pb: 4 }}
+					>
+						<SavedSearchItemList />
+					</SearchFilterAccordionItem>
+				</Accordion>
+				<Accordion flex='1 0 300px' allowToggle defaultIndex={name ? 0 : undefined}>
 					<SearchFilterAccordionItem
 						heading={
 							<Flex alignItems='center'>
@@ -72,7 +82,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 						<SearchFilterName />
 					</SearchFilterAccordionItem>
 				</Accordion>
-			)}
+			</Flex>
 
 			<Box
 				opacity={name ? 0.2 : 1}
@@ -104,10 +114,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 									</SearchFilterSection>
 								</Fade>
 								<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
-									<SearchFilterSection
-										id='filterSkills'
-										heading='What skills are you looking for?'
-									>
+									<SearchFilterSection id='filterSkills' heading='What skills are you looking for?'>
 										<SearchFilterSkills />
 									</SearchFilterSection>
 								</Fade>
@@ -132,36 +139,6 @@ export default function SearchWizardView({ onSubmit }: Props) {
 					</Stack>
 				</chakra.form>
 			</Box>
-
-			<Spacer />
-
-			<Accordion
-				allowToggle
-				mb={4}
-				defaultIndex={savedSearchId ? 0 : undefined}
-				_dark={{ bgColor: 'blackAlpha.300' }}
-				_light={{ bgColor: 'gray.100' }}
-			>
-				<SearchFilterAccordionItem
-					heading={
-						<Flex alignItems='center'>
-							<Icon
-								as={FiFolder}
-								fill={savedSearches?.length > 0 ? orange : 'transparent'}
-								mr={2}
-							/>
-							<Text as='span' my={0}>
-								Saved Searches
-							</Text>
-						</Flex>
-					}
-					isDisabled={!savedSearches || !savedSearches.length}
-					headingProps={{ fontSize: 'md' }}
-					panelProps={{ mb: 0, px: 3, pb: 4 }}
-				>
-					<SavedSearchItemList />
-				</SearchFilterAccordionItem>
-			</Accordion>
 		</Stack>
 	);
 }

@@ -2,7 +2,6 @@ import { Box, BoxProps, Flex, Icon, Stack, chakra } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import { SearchContext } from '@context/SearchContext';
-import SearchDrawerContext from '@context/SearchDrawerContext';
 import { convertUnscoredToScored } from '@lib/utils';
 import useSearchByName from '@queries/useSearchByName';
 import { isEqual } from 'lodash';
@@ -18,8 +17,6 @@ export default function SearchFilterName({ ...props }: BoxProps) {
 		},
 		searchDispatch,
 	} = useContext(SearchContext);
-
-	const { closeDrawer } = useContext(SearchDrawerContext);
 
 	const [getSearchResults, { data: { usersByName } = [], loading }] = useSearchByName();
 	const navigate = useNavigate();
@@ -77,7 +74,6 @@ export default function SearchFilterName({ ...props }: BoxProps) {
 		})
 			.then(() => {
 				navigate('/results');
-				closeDrawer();
 			})
 			.catch((err) => {
 				console.error(err);
