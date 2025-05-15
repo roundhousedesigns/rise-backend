@@ -1,14 +1,20 @@
-import { List, ListItem, Spinner } from '@chakra-ui/react';
-import useCandidates from '@queries/useCandidates';
+import CandidateListItem from '@@/src/components/CandidateListItem';
+import { List, ListProps, Spinner } from '@chakra-ui/react';
 import ErrorAlert from '@common/ErrorAlert';
-import CandidateItem from '@components/CandidateItem';
+import useCandidates from '@queries/useCandidates';
 
 interface Props {
 	userIds: number[];
 	inOrder?: boolean;
+	mini?: boolean;
 }
 
-export default function CandidateList({ userIds, inOrder }: Props): JSX.Element {
+export default function CandidateList({
+	userIds,
+	inOrder,
+	mini,
+	...props
+}: Props & ListProps): JSX.Element {
 	const [preparedCandidates, { loading, error }] = useCandidates(userIds);
 
 	return (
@@ -18,20 +24,16 @@ export default function CandidateList({ userIds, inOrder }: Props): JSX.Element 
 			) : error ? (
 				<ErrorAlert message={error.message} />
 			) : (
-				<List alignItems='left' h='auto' w='full' spacing={4}>
+				<List alignItems='left' h='auto' w='full' spacing={4} {...props}>
 					{inOrder
 						? userIds.map((id) => {
 								const candidate = preparedCandidates.find((candidate) => candidate.id === id);
 								return candidate ? (
-									<ListItem key={id}>
-										<CandidateItem candidate={candidate} />
-									</ListItem>
+									<CandidateListItem key={id} candidate={candidate} mini={mini} />
 								) : null;
 						  })
 						: preparedCandidates.map((candidate) => (
-								<ListItem key={candidate.id}>
-									<CandidateItem candidate={candidate} />
-								</ListItem>
+								<CandidateListItem key={candidate.id} candidate={candidate} mini={mini} />
 						  ))}
 				</List>
 			)}

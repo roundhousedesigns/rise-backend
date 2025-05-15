@@ -1,13 +1,13 @@
 import {
-    Avatar,
-    Box,
-    Button,
-    ButtonGroup,
-    Card,
-    CardProps,
-    Flex,
-    Heading,
-    Stack,
+	Avatar,
+	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	CardProps,
+	Flex,
+	Heading,
+	Stack,
 } from '@chakra-ui/react';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import ProfilePercentComplete from '@components/ProfilePercentComplete';

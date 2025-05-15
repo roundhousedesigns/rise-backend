@@ -37,35 +37,31 @@ export default function SearchWizardView({ onSubmit }: Props) {
 	const [orange] = useToken('colors', ['orange.300']);
 
 	return (
-		<Stack
-			direction='column'
-			justifyContent='space-between'
-			height='full'
-			pt={searchWizardActive ? 4 : 0}
-			transition='padding 250ms ease'
-		>
+		<>
 			<Flex gap={0} flexWrap='wrap'>
-				<Accordion flex='1 0 300px' allowToggle defaultIndex={savedSearchId ? 0 : undefined}>
-					<SearchFilterAccordionItem
-						heading={
-							<Flex alignItems='center'>
-								<Icon
-									as={FiFolder}
-									fill={savedSearches?.length > 0 ? orange : 'transparent'}
-									mr={2}
-								/>
-								<Text as='span' my={0}>
-									Saved Searches
-								</Text>
-							</Flex>
-						}
-						isDisabled={!savedSearches || !savedSearches.length}
-						headingProps={{ fontSize: 'md' }}
-						panelProps={{ mb: 0, px: 3, pb: 4 }}
-					>
-						<SavedSearchItemList />
-					</SearchFilterAccordionItem>
-				</Accordion>
+				{savedSearches.length > 0 && (
+					<Accordion flex='1 0 300px' allowToggle defaultIndex={savedSearchId ? 0 : undefined}>
+						<SearchFilterAccordionItem
+							heading={
+								<Flex alignItems='center'>
+									<Icon
+										as={FiFolder}
+										fill={savedSearches?.length > 0 ? orange : 'transparent'}
+										mr={2}
+									/>
+									<Text as='span' my={0}>
+										Saved Searches
+									</Text>
+								</Flex>
+							}
+							isDisabled={!savedSearches || !savedSearches.length}
+							headingProps={{ fontSize: 'md' }}
+							panelProps={{ mb: 0, px: 3, pb: 4 }}
+						>
+							<SavedSearchItemList />
+						</SearchFilterAccordionItem>
+					</Accordion>
+				)}
 				<Accordion flex='1 0 300px' allowToggle defaultIndex={name ? 0 : undefined}>
 					<SearchFilterAccordionItem
 						heading={
@@ -83,62 +79,72 @@ export default function SearchWizardView({ onSubmit }: Props) {
 					</SearchFilterAccordionItem>
 				</Accordion>
 			</Flex>
-
-			<Box
-				opacity={name ? 0.2 : 1}
-				pointerEvents={name ? 'none' : 'auto'}
-				transition='opacity 250ms ease'
+			<Stack
+				direction='column'
+				justifyContent='space-between'
+				height='full'
+				pt={searchWizardActive ? 4 : 0}
+				transition='padding 250ms ease'
 			>
-				<chakra.form id='search-candidates' onSubmit={onSubmit}>
-					<Stack gap={6} mt={searchWizardActive ? 0 : 2} mb={4}>
-						<Fade in={!savedSearchId} unmountOnExit>
-							<Box>
-								<Box maxW='lg'>
-									<DepartmentsAutocomplete />
-								</Box>
-							</Box>
-						</Fade>
-						<Box>
-							<Stack gap={8}>
+				<Box
+					opacity={name ? 0.2 : 1}
+					pointerEvents={name ? 'none' : 'auto'}
+					transition='opacity 250ms ease'
+				>
+					<chakra.form id='search-candidates' onSubmit={onSubmit}>
+						<Stack gap={6} mt={searchWizardActive ? 0 : 2} mb={4}>
+							<Fade in={!savedSearchId} unmountOnExit>
 								<Box>
-									<SearchFilterSection id='filterDepartment'>
-										<SearchFilterDepartment />
-									</SearchFilterSection>
+									<Box maxW='lg'>
+										<DepartmentsAutocomplete />
+									</Box>
 								</Box>
-								<Fade in={!!departments.length} unmountOnExit>
-									<SearchFilterSection
-										id='filterJobs'
-										heading='What job(s) are you looking to fill?'
-									>
-										<SearchFilterJobs />
-									</SearchFilterSection>
-								</Fade>
-								<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
-									<SearchFilterSection id='filterSkills' heading='What skills are you looking for?'>
-										<SearchFilterSkills />
-									</SearchFilterSection>
-								</Fade>
-								<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
-									<SearchFilterSection
-										id='filterDates'
-										heading='Are you hiring for a particular date?'
-									>
-										<SearchFilterDates />
-									</SearchFilterSection>
-								</Fade>
-								<Fade in={searchWizardActive && jobs && !!jobs.length} unmountOnExit>
-									<SearchFilterSection
-										id='filterAdditional'
-										heading='And some additional filters to refine your search:'
-									>
-										<AdditionalSearchFilters />
-									</SearchFilterSection>
-								</Fade>
-							</Stack>
-						</Box>
-					</Stack>
-				</chakra.form>
-			</Box>
-		</Stack>
+							</Fade>
+							<Box>
+								<Stack gap={8}>
+									<Box>
+										<SearchFilterSection id='filterDepartment'>
+											<SearchFilterDepartment />
+										</SearchFilterSection>
+									</Box>
+									<Fade in={!!departments.length} unmountOnExit>
+										<SearchFilterSection
+											id='filterJobs'
+											heading='What job(s) are you looking to fill?'
+										>
+											<SearchFilterJobs />
+										</SearchFilterSection>
+									</Fade>
+									<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
+										<SearchFilterSection
+											id='filterSkills'
+											heading='What skills are you looking for?'
+										>
+											<SearchFilterSkills />
+										</SearchFilterSection>
+									</Fade>
+									<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
+										<SearchFilterSection
+											id='filterDates'
+											heading='Are you hiring for a particular date?'
+										>
+											<SearchFilterDates />
+										</SearchFilterSection>
+									</Fade>
+									<Fade in={searchWizardActive && jobs && !!jobs.length} unmountOnExit>
+										<SearchFilterSection
+											id='filterAdditional'
+											heading='And some additional filters to refine your search:'
+										>
+											<AdditionalSearchFilters />
+										</SearchFilterSection>
+									</Fade>
+								</Stack>
+							</Box>
+						</Stack>
+					</chakra.form>
+				</Box>
+			</Stack>
+		</>
 	);
 }

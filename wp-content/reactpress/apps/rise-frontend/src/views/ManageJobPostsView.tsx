@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
 import { Box, Heading, Link, ListItem, Stack, Text, UnorderedList } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
 import { JobPost } from '@lib/classes';
 import useViewer from '@queries/useViewer';
+import { useMemo } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface ManageJobPostsViewProps {
 	jobs: JobPost[];
@@ -44,7 +44,9 @@ export default function ManageJobPostsView({ jobs }: ManageJobPostsViewProps) {
 					<UnorderedList spacing={2}>
 						{pendingJobs?.map((job) => (
 							<ListItem key={job.id} fontSize='md'>
-								{job.title}
+								<Link as={RouterLink} to={`/job/${job.id}`} fontSize='sm'>
+									{job.title}
+								</Link>
 								<Separator />
 								<Text as='span' fontSize='sm' color='gray.500'>
 									{job.companyName}
@@ -52,7 +54,7 @@ export default function ManageJobPostsView({ jobs }: ManageJobPostsViewProps) {
 								{loggedInId === job.author && job.status === 'pending' && (
 									<>
 										<Separator />
-										<Link as={RouterLink} to={`/jobs/edit/${job.id}`} fontSize='sm'>
+										<Link as={RouterLink} to={`/job/edit/${job.id}`} fontSize='sm'>
 											Edit
 										</Link>
 									</>
@@ -67,7 +69,9 @@ export default function ManageJobPostsView({ jobs }: ManageJobPostsViewProps) {
 					<UnorderedList spacing={2}>
 						{publishedJobs?.map((job: JobPost) => (
 							<ListItem key={job.id} fontSize='md'>
-								{job.title}
+								<Link as={RouterLink} to={`/job/${job.id}`} fontSize='sm'>
+									{job.title}
+								</Link>
 								<Separator />
 								<Text as='span' fontSize='sm' color='gray.500'>
 									{job.companyName}

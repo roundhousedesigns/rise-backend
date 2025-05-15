@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	ButtonGroup,
 	Card,
 	CardProps,
@@ -280,35 +279,32 @@ export default function SavedSearchItem({
 											Delete
 										</TooltipIconButton>
 									</ButtonGroup>
-								) : savedSearchFiltersChanged ? (
-									<Stack textAlign='center'>
-										<Button
+								) : (
+									<ButtonGroup
+										textAlign='center'
+										size='xs'
+										spacing={1}
+										px={0}
+										opacity={savedSearchFiltersChanged ? 0.5 : 1}
+										isDisabled={savedSearchFiltersChanged}
+									>
+										<TooltipIconButton
 											colorScheme='yellow'
-											leftIcon={<FiSave />}
-											aria-label='Update saved filters'
-											title='Update saved filters'
+											icon={<FiSave />}
+											label='Update saved filters'
 											onClick={handleUpdateClick}
-											size='sm'
 											isLoading={saveLoading && whichButtonClicked === 'update'}
 											isDisabled={saveLoading}
-										>
-											Update
-										</Button>
-										<Button
+										/>
+										<TooltipIconButton
 											colorScheme='blue'
-											leftIcon={<FiPlusCircle />}
-											aria-label='Update saved filters'
-											title='Update saved filters'
+											icon={<FiPlusCircle />}
+											label='Save new search'
 											onClick={handleSaveNewSearchClick}
-											size='sm'
 											isLoading={saveLoading && whichButtonClicked === 'new'}
 											isDisabled={saveLoading}
-										>
-											Save New
-										</Button>
-									</Stack>
-								) : (
-									false
+										/>
+									</ButtonGroup>
 								)}
 							</Box>
 						) : (

@@ -142,11 +142,11 @@ export default function Main() {
 			),
 		},
 		{
-			path: '/jobs/new',
+			path: '/job/new',
 			element: <EditJobPost />,
 		},
 		{
-			path: '/jobs/edit/:id',
+			path: '/job/edit/:id',
 			element: (
 				<LoggedIn>
 					<EditJobPost />

@@ -55,6 +55,24 @@ const variants = {
 			},
 		},
 	}),
+	listItemMini: definePartsStyle({
+		container: {
+			px: 2,
+			py: 1,
+			my: 0,
+			mr: 4,
+			_dark: {
+				_hover: {
+					bg: 'gray.700',
+				},
+			},
+			_light: {
+				_hover: {
+					bg: 'gray.200',
+				},
+			},
+		},
+	}),
 	dashed: definePartsStyle({
 		container: {
 			borderWidth: '2px',

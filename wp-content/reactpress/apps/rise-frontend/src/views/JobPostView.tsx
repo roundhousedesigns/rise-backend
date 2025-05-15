@@ -1,30 +1,35 @@
 import {
-    Box,
-    Button,
-    ButtonGroup,
-    Card,
-    Flex,
-    Heading,
-    Link,
-    Stack,
-    Tag,
-    Text,
-    Wrap,
+	Badge,
+	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	Flex,
+	Heading,
+	Link,
+	Spacer,
+	Stack,
+	Tag,
+	Text,
+	Wrap,
 } from '@chakra-ui/react';
 import HeadingCenterline from '@common/HeadingCenterline';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { JobPost } from '@lib/classes';
 import parse from 'html-react-parser';
 import {
-    FiCalendar,
-    FiDollarSign,
-    FiExternalLink,
-    FiMail,
-    FiMap,
-    FiPhone,
-    FiUser,
+	FiCalendar,
+	FiDollarSign,
+	FiEdit2,
+	FiExternalLink,
+	FiMail,
+	FiMap,
+	FiPhone,
+	FiTrash,
+	FiUser,
 } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
+import useViewer from '../hooks/queries/useViewer';
 interface Props {
 	job: JobPost;
 }
@@ -34,8 +39,12 @@ interface Props {
  * @returns {JSX.Element} The Props component.
  */
 export default function JobPostView({ job }: Props): JSX.Element | null {
+	const [{ loggedInId }] = useViewer();
+
 	const {
+		author,
 		title,
+		status,
 		companyName,
 		contactEmail,
 		contactName,
@@ -53,6 +62,8 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 		applicationEmail,
 	} = job || {};
 
+	const isAuthor = loggedInId === author;
+
 	const parsedCompanyAddress = companyAddress ? parse(companyAddress) : '';
 
 	const parsedDescription = description ? parse(description) : '';
@@ -62,7 +73,49 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 	const parsedInstructions = instructions ? parse(instructions) : '';
 
 	return (
-		<>
+		<Box>
+			{isAuthor && (
+				<Flex alignItems='center' gap={0} mb={4}>
+					<Flex gap={2} alignItems='center'>
+						<Badge colorScheme={status === 'pending' ? 'yellow' : 'green'} fontSize='md'>
+							{status === 'pending' ? 'Pending review' : 'Published'}
+						</Badge>
+						<Text textAlign='left' fontSize='2xs' color='gray.500' my={0} lineHeight='shorter'>
+							{status === 'pending' ? (
+								'You may still edit this posting.'
+							) : (
+								<>
+									<Link href='/contact' color='brand.blue'>
+										Contact support
+									</Link>{' '}
+									to edit this posting.
+								</>
+							)}
+						</Text>
+					</Flex>
+					<Spacer />
+
+					<ButtonGroup size='sm' w='full' justifyContent='flex-end'>
+						<Button
+							as={RouterLink}
+							to={`/job/edit/${job.id}`}
+							leftIcon={<FiEdit2 />}
+							colorScheme='blue'
+							isDisabled={status === 'publish'}
+						>
+							{status === 'pending' ? 'Edit' : 'Published'}
+						</Button>
+						<Button
+							as={RouterLink}
+							to={`/job/delete/${job.id}`}
+							leftIcon={<FiTrash />}
+							colorScheme='red'
+						>
+							Delete
+						</Button>
+					</ButtonGroup>
+				</Flex>
+			)}
 			<HeadingCenterline lineColor='brand.blue' mt={2}>
 				{title}
 			</HeadingCenterline>
@@ -84,9 +137,9 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 				</Flex>
 			</Wrap>
 
-			<Box w='full'>
+			<Stack w='full' spacing={8} mb={0}>
 				<Flex gap={4} flexWrap='wrap' w='100%'>
-					<Card gap={0} flex='0 0 250px'>
+					<Card gap={0} flex='0 0 250px' mb={0}>
 						{parsedCompanyAddress ? (
 							<Stack gap={2}>
 								<WrapWithIcon icon={FiMap} my={0}>
@@ -104,7 +157,7 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 							</Stack>
 						) : null}
 					</Card>
-					<Card flex='1'>
+					<Card flex='1' mb={0}>
 						<Stack gap={2}>
 							<WrapWithIcon icon={FiUser} my={0}>
 								{contactName}
@@ -145,7 +198,7 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 
 					{parsedInstructions ? <Text>{parsedInstructions}</Text> : null}
 
-					<ButtonGroup colorScheme='blue'>
+					<ButtonGroup colorScheme='blue' mt={4}>
 						{applicationUrl ? (
 							<Button
 								as='a'
@@ -172,7 +225,7 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 						) : null}
 					</ButtonGroup>
 				</Box>
-			</Box>
-		</>
+			</Stack>
+		</Box>
 	);
 }

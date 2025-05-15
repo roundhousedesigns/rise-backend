@@ -43,27 +43,21 @@ export default function Sidebar() {
 		{ icon: <Icon as={FiSearch} />, target: '/search', label: 'Search' },
 		{
 			icon: (
-				<Box
-					w='full'
-					display='flex'
-					justifyContent='center'
-					alignItems='center'
-					textAlign='center'
-					flex='0'
-				>
-					<Box
+				<Box w='full' textAlign='center' flex='0' pos='relative' right={0.5} mr={-1}>
+					<Flex
 						my={2.5}
 						mx={0}
 						borderRadius='full'
-						fontSize='xs'
+						fontSize='2xs'
 						bg='brand.orange'
-						minW={5}
-						h='auto'
-						px={1}
+						w='20px'
+						h='20px'
 						py={0.25}
+						justifyContent='center'
+						alignItems='center'
 					>
 						{results.length}
-					</Box>
+					</Flex>
 				</Box>
 			),
 			target: '/results',
@@ -122,6 +116,7 @@ export default function Sidebar() {
 				justifyContent='space-between'
 				fontSize='sm'
 				borderRight='1px solid'
+				transition='all 200ms ease'
 				_light={{ borderColor: 'text.dark' }}
 				_dark={{ borderColor: 'gray.800' }}
 			>

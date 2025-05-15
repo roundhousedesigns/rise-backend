@@ -1,10 +1,10 @@
-import { Link as RouterLink } from 'react-router-dom';
 import { Button, ButtonGroup } from '@chakra-ui/react';
-import useViewer from '@queries/useViewer';
-import useJobPosts from '@queries/useJobPosts';
-import useFilteredJobPostIds from '@queries/useFilteredJobPostIds';
-import JobPostsView from '@views/JobPostsView';
 import Shell from '@layout/Shell';
+import useFilteredJobPostIds from '@queries/useFilteredJobPostIds';
+import useJobPosts from '@queries/useJobPosts';
+import useViewer from '@queries/useViewer';
+import JobPostsView from '@views/JobPostsView';
+import { Link as RouterLink } from 'react-router-dom';
 
 const JobPostButton = () => {
 	const [{ loggedInId }] = useViewer();
@@ -15,7 +15,7 @@ const JobPostButton = () => {
 
 	return (
 		<ButtonGroup>
-			<Button as={RouterLink} to='/jobs/new'>
+			<Button as={RouterLink} to='/job/new'>
 				Post a Job
 			</Button>
 			{postedJobs.length > 0 && (

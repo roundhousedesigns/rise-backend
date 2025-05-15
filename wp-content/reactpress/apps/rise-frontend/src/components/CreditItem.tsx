@@ -1,4 +1,15 @@
-import { Badge, Box, BoxProps, Card, Flex, Heading, Skeleton, Stack, Text, Wrap } from '@chakra-ui/react';
+import {
+	Badge,
+	Box,
+	BoxProps,
+	Card,
+	Flex,
+	Heading,
+	Skeleton,
+	Stack,
+	Text,
+	Wrap,
+} from '@chakra-ui/react';
 import WPItemBadgeList from '@common/WPItemBadgeList';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { Credit, WPItem } from '@lib/classes';
@@ -128,13 +139,8 @@ export default function CreditItem({
 								<Badge
 									flex='0 0 auto'
 									fontSize='md'
-									fontWeight='bold'
 									textTransform='none'
-									px={2}
-									py={1}
-								>
-									{` ${yearString()}`}
-								</Badge>
+								>{` ${yearString()}`}</Badge>
 							</Flex>
 							<Flex my={0} alignItems='center' flexWrap='wrap' gap={2}>
 								{venue ? (

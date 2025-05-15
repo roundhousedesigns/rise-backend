@@ -24,7 +24,7 @@ interface Props {
 	mini?: boolean;
 }
 
-const CandidateItem = ({
+const CandidateListItem = ({
 	candidate,
 	showToggle = true,
 	mini = false,
@@ -50,10 +50,17 @@ const CandidateItem = ({
 
 	return id ? (
 		<Flex alignItems='center'>
-			{showToggle ? <StarToggleIcon id={id} isDisabled={loggedInId === id} /> : null}
+			{showToggle ? (
+				<StarToggleIcon
+					id={id}
+					isDisabled={loggedInId === id}
+					size={mini ? 'sm' : 'md'}
+					ml={mini ? 0 : 2}
+				/>
+			) : null}
 
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
-				<Card variant='listItem' w='full'>
+				<Card variant={mini ? 'listItemMini' : 'listItem'} w='full'>
 					<Flex
 						direction='row'
 						justifyContent='flex-start'
@@ -76,7 +83,7 @@ const CandidateItem = ({
 							<Heading
 								as='h3'
 								id={`candidate-${id}`}
-								fontSize={mini ? 'sm' : 'lg'}
+								fontSize={mini ? 'md' : 'lg'}
 								fontWeight='normal'
 								textAlign='left'
 								flex={{ base: '0 0 100%', md: '1' }}
@@ -87,19 +94,21 @@ const CandidateItem = ({
 									{candidate.fullName() ? candidate.fullName() : 'No name'}
 								</LinkOverlay>
 							</Heading>
-							<Text
-								textAlign={{ base: 'left', md: 'right' }}
-								ml={{ base: '0 !important', lg: 'initial' }}
-								my={0}
-								lineHeight={{ base: 'normal' }}
-								fontSize={mini ? '2xs' : 'sm'}
-								noOfLines={2}
-								flex={{ base: '0 0 100%', md: '1' }} // '1'}
-								style={{ hyphens: 'auto' }}
-								wordBreak='break-word'
-							>
-								{selfTitle}
-							</Text>
+							{!mini && (
+								<Text
+									textAlign={{ base: 'left', md: 'right' }}
+									ml={{ base: '0 !important', lg: 'initial' }}
+									my={0}
+									lineHeight={{ base: 'normal' }}
+									fontSize='sm'
+									noOfLines={2}
+									flex={{ base: '0 0 100%', md: '1' }} // '1'}
+									style={{ hyphens: 'auto' }}
+									wordBreak='break-word'
+								>
+									{selfTitle}
+								</Text>
+							)}
 						</Flex>
 					</Flex>
 				</Card>
@@ -110,4 +119,4 @@ const CandidateItem = ({
 	);
 };
 
-export default CandidateItem;
+export default CandidateListItem;
