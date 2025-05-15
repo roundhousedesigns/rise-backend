@@ -5,12 +5,14 @@ with 1.1.1.
 
 ## \[1.2-dev] - Unreleased
 
+- Improve: Profile layout shifts
 - Add: Notifications!
   - Badge count for displaying if any starred profiles have been updated.
   - On update, if an identical notification is found, only the newest is kept.
-- Fix: "$lastCredits" as count var in `useUserProfile`.
+- Improve: New Dashboard!
 - Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
 - Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
+- Fix: "$lastCredits" as count var in `useUserProfile`.
 - Remove: <Page> component and slug route. Static pages handled by WP theme.
 
 ## \[1.1.10] - 2024-10-14

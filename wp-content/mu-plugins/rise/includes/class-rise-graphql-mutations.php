@@ -44,6 +44,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateOrCreateJobPost();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
 		$this->register_mutation__markProfileNotificationAsRead();
+		$this->register_mutation__dismissProfileNotification();
 	}
 
 	/**
@@ -1438,7 +1439,7 @@ class Rise_GraphQL_Mutations {
 			'markProfileNotificationAsRead',
 			[
 				'inputFields'         => [
-					'notificationId' => [
+					'id' => [
 						'type'        => ['non_null' => 'ID'],
 						'description' => __( 'The ID of the notification to mark as read.', 'rise' ),
 					],
@@ -1450,7 +1451,7 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					$notification_id = $input['notificationId'];
+					$notification_id = $input['id'];
 					$user_id         = get_current_user_id();
 
 					if ( !$user_id ) {
@@ -1460,14 +1461,55 @@ class Rise_GraphQL_Mutations {
 					}
 
 					// Verify the notification belongs to the current user
-					$notification = get_post( $notification_id );
-					if ( !$notification || $notification->post_author != $user_id ) {
-						return [
-							'success' => false,
-						];
+					$notification_author_id = absint( get_post_field( 'post_author', $notification_id ) );
+
+					if ( !$notification_author_id || $notification_author_id !== $user_id ) {
+						throw new UserError( 'You are not authorized to mark this notification as read.' );
 					}
 
 					$success = Rise_Profile_Notification::mark_notification_as_read( $notification_id );
+
+					return [
+						'success' => $success,
+					];
+				},
+			]
+		);
+	}
+
+	/**
+	 * Register the dismissProfileNotification mutation.
+	 *
+	 * @return void
+	 */
+	private function register_mutation__dismissProfileNotification() {
+		register_graphql_mutation(
+			'dismissProfileNotification',
+			[
+				'inputFields'         => [
+					'id' => [
+						'type'        => ['non_null' => 'ID'],
+						'description' => __( 'The ID of the notification to dismiss.', 'rise' ),
+					],
+				],
+				'outputFields'        => [
+					'success' => [
+						'type'        => ['non_null' => 'Boolean'],
+						'description' => __( 'Whether the notification was dismissed.', 'rise' ),
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					$notification_id = $input['id'];
+					$user_id         = get_current_user_id();
+					$author_id       = absint( get_post_field( 'post_author', $notification_id ) );
+
+					if ( !$user_id || $author_id !== $user_id ) {
+						error_log( 'User ID: ' . $user_id );
+						error_log( 'Author ID: ' . $author_id );
+						throw new UserError( 'You are not authorized to dismiss this notification.' );
+					}
+
+					$success = Rise_Profile_Notification::dismiss_notification( $notification_id );
 
 					return [
 						'success' => $success,

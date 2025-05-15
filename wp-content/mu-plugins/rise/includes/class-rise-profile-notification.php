@@ -53,6 +53,22 @@ class Rise_Profile_Notification {
 	private $value;
 
 	/**
+	 * The Profile Notification's read status.
+	 *
+	 * @var bool $is_read The Profile Notification's read status.
+	 * @since 1.2.0
+	 */
+	private $is_read;
+
+	/**
+	 * The Profile Notification's date and time.
+	 *
+	 * @var string $date_time The Profile Notification's date and time.
+	 * @since 1.2.0
+	 */
+	private $date_time;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since 0.1.0
@@ -62,6 +78,8 @@ class Rise_Profile_Notification {
 		$this->title             = sanitize_text_field( $data['title'] );
 		$this->notification_type = esc_attr( $data['notification_type'] );
 		$this->value             = sanitize_text_field( $data['value'] );
+		$this->date_time         = sanitize_text_field( $data['date_time'] );
+		$this->is_read           = $data['is_read'] ?? false;
 	}
 
 	/**
@@ -71,10 +89,24 @@ class Rise_Profile_Notification {
 	 * @return bool Whether the notification was marked as read.
 	 */
 	public static function mark_notification_as_read( $notification_id ) {
-		$pod = pods( 'profile_notification', $notification_id );
-		$pod->save( [
+		$pod    = pods( 'profile_notification', $notification_id );
+		$result = $pod->save( [
 			'is_read' => true,
 		] );
+
+		return !!$result;
+	}
+
+	/**
+	 * Dismiss a notification.
+	 *
+	 * @param  int  $notification_id The notification post ID.
+	 * @return bool Whether the notification was dismissed.
+	 */
+	public static function dismiss_notification( $notification_id ) {
+		$result = wp_delete_post( $notification_id, true );
+
+		return !!$result;
 	}
 
 	/**
@@ -104,6 +136,8 @@ class Rise_Profile_Notification {
 				'title'             => $notification_pods->field( 'post_title' ),
 				'notification_type' => $notification_pods->field( 'notification_type' ),
 				'value'             => $notification_pods->field( 'value' ),
+				'is_read'           => $notification_pods->field( 'is_read' ),
+				'date_time'         => get_the_date( 'Y-m-d H:i:s', $notification_pods->field( 'ID' ) ),
 			] );
 
 			$notifications[] = [
@@ -111,6 +145,8 @@ class Rise_Profile_Notification {
 				'title'            => $notification->title,
 				'notificationType' => $notification->notification_type,
 				'value'            => $notification->value,
+				'isRead'           => $notification->is_read,
+				'dateTime'         => $notification->date_time,
 			];
 		}
 

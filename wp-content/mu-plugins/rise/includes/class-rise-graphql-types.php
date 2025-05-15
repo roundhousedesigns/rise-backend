@@ -536,6 +536,14 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The notification value.', 'rise' ),
 					],
+					'isRead'           => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the notification has been read.', 'rise' ),
+					],
+					'dateTime'         => [
+						'type'        => 'String',
+						'description' => __( 'The date and time of the notification.', 'rise' ),
+					],
 				],
 			]
 		);
