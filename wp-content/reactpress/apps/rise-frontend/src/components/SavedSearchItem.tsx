@@ -1,15 +1,15 @@
 import {
-    Box,
-    Button,
-    ButtonGroup,
-    Card,
-    CardProps,
-    Flex,
-    Skeleton,
-    Stack,
-    Text,
-    useDisclosure,
-    useToast,
+	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	CardProps,
+	Flex,
+	Skeleton,
+	Stack,
+	Text,
+	useDisclosure,
+	useToast,
 } from '@chakra-ui/react';
 import ConfirmActionDialog from '@common/ConfirmActionDialog';
 import LinkWithIcon from '@common/LinkWithIcon';
@@ -31,6 +31,7 @@ import { MotionProps } from 'framer-motion';
 import { isEqual } from 'lodash';
 import { useContext, useEffect, useState } from 'react';
 import { FiDelete, FiEdit2, FiPlusCircle, FiSave, FiSearch } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
 	id: number;
@@ -56,6 +57,8 @@ export default function SavedSearchItem({
 	} = useContext(SearchContext);
 
 	const { openDrawer, drawerIsOpen } = useContext(SearchDrawerContext);
+
+	const navigate = useNavigate();
 
 	const { isOpen: editIsOpen, onOpen: editOnOpen, onClose: editOnClose } = useDisclosure();
 	const { isOpen: deleteIsOpen, onOpen: deleteOnOpen, onClose: deleteOnClose } = useDisclosure();
@@ -138,7 +141,7 @@ export default function SavedSearchItem({
 			filterDepartment.scrollIntoView({ behavior: 'smooth' });
 		}
 
-		if (!drawerIsOpen) openDrawer();
+		navigate('/search');
 	};
 
 	const handleEditTitleClick = () => {

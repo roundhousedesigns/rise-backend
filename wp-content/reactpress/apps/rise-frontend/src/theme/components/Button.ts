@@ -58,10 +58,6 @@ const sizes = {
 		fontSize: '2xl',
 		p: 4,
 	}),
-	xxxl: defineStyle({
-		fontSize: '3xl',
-		p: 4,
-	}),
 };
 
 export default defineStyleConfig({

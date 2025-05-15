@@ -10,10 +10,12 @@ import { useEffect, useMemo, useRef } from 'react';
 
 interface Props {
 	showToggle?: boolean;
+	mini?: boolean;
 }
 
 export default function StarredProfileList({
 	showToggle,
+	mini = false,
 	...props
 }: Props & BoxProps): JSX.Element {
 	const [{ starredProfiles }] = useViewer();
@@ -41,7 +43,7 @@ export default function StarredProfileList({
 					animate={{ opacity: 1 }} // Animation state
 					exit={{ opacity: 0 }} // Exit state
 				>
-					<CandidateItem candidate={profile} showToggle={showToggle} />
+					<CandidateItem candidate={profile} showToggle={showToggle} mini={mini} />
 				</ListItem>
 			);
 		});

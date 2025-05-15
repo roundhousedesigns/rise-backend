@@ -356,4 +356,6 @@ export interface ProfileNotificationParams {
 	title: string;
 	notificationType: NotificationType;
 	value: string;
+	isRead: boolean;
+	dateTime: string | Date;
 }

@@ -645,11 +645,16 @@ export class ProfileNotification implements ProfileNotificationParams {
 	title: string;
 	notificationType: NotificationType;
 	value: string;
+	isRead: boolean;
+	dateTime: string | Date;
 
 	constructor(params: ProfileNotificationParams) {
 		this.id = params.id;
 		this.title = params.title;
 		this.notificationType = params.notificationType;
 		this.value = params.value;
+		this.isRead = params.isRead || false;
+		this.dateTime =
+			typeof params.dateTime === 'string' ? new Date(params.dateTime) : params.dateTime;
 	}
 }

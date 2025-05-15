@@ -55,6 +55,13 @@ const variants = {
 			},
 		},
 	}),
+	dashed: definePartsStyle({
+		container: {
+			borderWidth: '2px',
+			borderColor: 'gray.300',
+			borderStyle: 'dashed',
+		},
+	}),
 };
 
 export default defineMultiStyleConfig({ baseStyle, variants });

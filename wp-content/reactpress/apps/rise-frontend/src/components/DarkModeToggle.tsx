@@ -23,6 +23,7 @@ export default function DarkModeToggle({
 			checked={colorMode === 'dark'}
 			callback={toggleColorMode}
 			label='Dark/Light Theme'
+			title={colorMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
 			iconLeft={FiSun}
 			iconRight={FiMoon}
 			size={size}

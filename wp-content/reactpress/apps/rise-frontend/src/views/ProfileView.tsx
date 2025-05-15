@@ -18,6 +18,7 @@ import {
 	useBreakpointValue,
 	Wrap,
 } from '@chakra-ui/react';
+import ColorCascadeBox from '@common/ColorCascadeBox';
 import LinkWithIcon from '@common/LinkWithIcon';
 import ProfileStackItem from '@common/ProfileStackItem';
 import StarToggleIcon from '@common/StarToggleIcon';
@@ -45,7 +46,6 @@ import {
 } from 'react-icons/fi';
 import ReactPlayer from 'react-player/lazy';
 import { useParams } from 'react-router-dom';
-import ColorCascadeBox from '../components/common/ColorCascadeBox';
 
 interface Props {
 	profile: UserProfile;
@@ -269,19 +269,6 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 								</ProfileStackItem>
 							) : null}
 
-							{resume && attachment?.sourceUrl ? (
-								<ProfileStackItem title='Resume'>
-									<Flex gap={2}>
-										<ResumePreviewModal
-											resumePreviewSrc={attachment.sourceUrl}
-											resumeLink={resume}
-											previewIcon={false}
-											maxW='250px'
-										/>
-									</Flex>
-								</ProfileStackItem>
-							) : null}
-
 							{conflictRanges.length ? (
 								<Card pb={0} _dark={{ bg: 'gray.600' }} _light={{ bg: 'gray.200' }}>
 									<Box>
@@ -395,6 +382,19 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 								<WrapWithIcon icon={FiGlobe} m={0}>
 									<Text m={0}>{languages}</Text>
 								</WrapWithIcon>
+							</ProfileStackItem>
+						) : null}
+
+						{resume && attachment?.sourceUrl ? (
+							<ProfileStackItem title='Resume'>
+								<Flex gap={2}>
+									<ResumePreviewModal
+										resumePreviewSrc={attachment.sourceUrl}
+										resumeLink={resume}
+										previewIcon={false}
+										maxW='250px'
+									/>
+								</Flex>
 							</ProfileStackItem>
 						) : null}
 					</Stack>

@@ -1,27 +1,16 @@
-import {
-	Card,
-	Divider,
-	Grid,
-	GridItem,
-	Heading,
-	List,
-	ListItem,
-	Spinner,
-	Stack,
-	VisuallyHidden,
-} from '@chakra-ui/react';
+import { Card, Grid, GridItem, Heading, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import HeadingCenterline from '@common/HeadingCenterline';
 import Widget from '@common/Widget';
-import ProfileNotificationMenuItem from '@components/ProfileNotificationMenuItem';
-import SavedSearchItemList from '@components/SavedSearchItemList';
+import ProfileNotificationItem from '@components/ProfileNotificationItem';
 import ShortPost from '@components/ShortPost';
 import useProfileNotifications from '@queries/useProfileNotifications';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import MiniProfileView from '@views/MiniProfileView';
-import StarredProfileList from '@views/StarredProfileList';
+import { AnimatePresence, motion } from 'framer-motion';
+import StarredProfileList from './StarredProfileList';
 
 export default function DashboardView() {
 	const [{ loggedInId, starredProfiles }] = useViewer();
@@ -50,57 +39,49 @@ export default function DashboardView() {
 					)}
 				</Widget>
 
-				<Widget>
-					<>
-						<Heading as='h2' variant='contentTitle'>
-							Notifications
-						</Heading>
-						{unread.length > 0 && (
-							<Card gap={2} colorScheme='gray'>
-								<VisuallyHidden>
-									<Heading as='h3' variant='contentSubtitle' mb={0} lineHeight='shortest'>
-										Unread
-									</Heading>
-								</VisuallyHidden>
-								<List spacing={1}>
-									{unread.map((notification) => (
-										<ListItem key={notification.id}>
-											<ProfileNotificationMenuItem notification={notification} />
-										</ListItem>
-									))}
-								</List>
-							</Card>
-						)}
+				{unread.length > 0 ||
+					(read.length > 0 && (
+						<Widget>
+							<>
+								<Heading as='h2' variant='contentTitle'>
+									Notifications
+								</Heading>
+								<Card gap={2}>
+									<List spacing={1}>
+										<AnimatePresence>
+											{unread?.map((notification) => (
+												<ListItem
+													key={notification.id}
+													as={motion.div}
+													initial={{ opacity: 1 }}
+													animate={{ opacity: 1 }}
+													exit={{ opacity: 0 }}
+												>
+													<ProfileNotificationItem notification={notification} />
+												</ListItem>
+											))}
+											{read?.map((notification) => (
+												<ListItem key={notification.id}>
+													<ProfileNotificationItem notification={notification} />
+												</ListItem>
+											))}
+										</AnimatePresence>
+									</List>
+								</Card>
+							</>
+						</Widget>
+					))}
 
-						{unread.length > 0 && read.length > 0 && <Divider />}
-
-						{read.length > 0 && (
-							<Card gap={2}>
-								<VisuallyHidden>
-									<Heading as='h3' variant='contentSubtitle' mb={0} lineHeight='shortest'>
-										Read
-									</Heading>
-								</VisuallyHidden>
-								<List spacing={1}>
-									{read.map((notification) => (
-										<ListItem key={notification.id}>
-											<ProfileNotificationMenuItem notification={notification} />
-										</ListItem>
-									))}
-								</List>
-							</Card>
-						)}
-					</>
-				</Widget>
-
-				<Widget>
-					<>
-						<Heading as='h2' variant='contentTitle'>
-							Saved Searches
-						</Heading>
-						<SavedSearchItemList />
-					</>
-				</Widget>
+				{starredProfiles?.length && (
+					<Widget>
+						<>
+							<HeadingCenterline lineColor='brand.orange' headingProps={{ fontSize: '2xl' }}>
+								Following
+							</HeadingCenterline>
+							<StarredProfileList showToggle={false} mini />
+						</>
+					</Widget>
+				)}
 			</GridItem>
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
 				{notices.length > 0 ? (
@@ -116,17 +97,6 @@ export default function DashboardView() {
 									</ListItem>
 								))}
 							</List>
-						</>
-					</Widget>
-				) : null}
-
-				{starredProfiles?.length ? (
-					<Widget>
-						<>
-							<HeadingCenterline lineColor='brand.orange' headingProps={{ fontSize: '2xl' }}>
-								Following
-							</HeadingCenterline>
-							<StarredProfileList showToggle={false} />
 						</>
 					</Widget>
 				) : null}

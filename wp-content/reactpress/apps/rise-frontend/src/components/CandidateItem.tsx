@@ -21,9 +21,15 @@ import { Link as RouterLink } from 'react-router-dom';
 interface Props {
 	candidate: Candidate;
 	showToggle?: boolean;
+	mini?: boolean;
 }
 
-const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkBoxProps) => {
+const CandidateItem = ({
+	candidate,
+	showToggle = true,
+	mini = false,
+	...props
+}: Props & LinkBoxProps) => {
 	const { id, image, slug, selfTitle } = candidate || {};
 
 	const [profile] = useUserProfile(id ? id : 0);
@@ -47,7 +53,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 			{showToggle ? <StarToggleIcon id={id} isDisabled={loggedInId === id} /> : null}
 
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
-				<Card variant='listItem'>
+				<Card variant='listItem' w='full'>
 					<Flex
 						direction='row'
 						justifyContent='flex-start'
@@ -56,7 +62,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 						gap={{ base: 'initial', md: 0 }}
 					>
 						<Avatar
-							size='md'
+							size={mini ? 'sm' : 'md'}
 							name={candidate.fullName()}
 							flex='0 0 auto'
 							mr={2}
@@ -70,7 +76,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 							<Heading
 								as='h3'
 								id={`candidate-${id}`}
-								fontSize='lg'
+								fontSize={mini ? 'sm' : 'lg'}
 								fontWeight='normal'
 								textAlign='left'
 								flex={{ base: '0 0 100%', md: '1' }}
@@ -86,7 +92,7 @@ const CandidateItem = ({ candidate, showToggle = true, ...props }: Props & LinkB
 								ml={{ base: '0 !important', lg: 'initial' }}
 								my={0}
 								lineHeight={{ base: 'normal' }}
-								fontSize='sm'
+								fontSize={mini ? '2xs' : 'sm'}
 								noOfLines={2}
 								flex={{ base: '0 0 100%', md: '1' }} // '1'}
 								style={{ hyphens: 'auto' }}

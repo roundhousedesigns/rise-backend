@@ -7,38 +7,37 @@ import { ProfileNotification } from '@lib/classes';
 import { ProfileNotificationParams } from '@lib/types';
 import { isEmpty, omit } from 'lodash';
 
-// TODO update Job class props to match the query
-
 export const QUERY_PROFILE_NOTIFICATIONS = gql`
-	query ProfileNotificationsQuery($authorId: Int = 10, $limit: Int = -1) {
+	query ProfileNotificationsQuery($authorId: Int!, $limit: Int = -1) {
 		unreadProfileNotifications(authorId: $authorId, limit: $limit) {
 			id
 			title
 			notificationType
 			value
+			isRead
+			dateTime
 		}
 		readProfileNotifications(authorId: $authorId, limit: $limit) {
 			id
 			title
 			notificationType
 			value
+			isRead
+			dateTime
 		}
 	}
 `;
 
 const useProfileNotifications = (
-	authorId: number
+	authorId: number,
+	limit: number = -1
 ): [{ unread: ProfileNotification[]; read: ProfileNotification[] }, any] => {
 	const result = useQuery(QUERY_PROFILE_NOTIFICATIONS, {
 		variables: {
 			authorId,
-			limit: 10,
+			limit,
 		},
-		fetchPolicy: 'cache-and-network',
-		pollInterval: 20000,
 	});
-
-	console.log(result);
 
 	const allProfileNotifications = { unread: [], read: [] };
 
@@ -59,13 +58,15 @@ const useProfileNotifications = (
 
 	allProfileNotifications.unread =
 		result?.data?.unreadProfileNotifications?.map((node: ProfileNotificationParams) => {
-			const { id, title, notificationType, value } = node;
+			const { id, title, notificationType, value, isRead, dateTime } = node;
 
 			const profileNotification = new ProfileNotification({
 				id,
 				title,
 				notificationType,
 				value,
+				isRead,
+				dateTime,
 			});
 
 			return profileNotification;
@@ -73,12 +74,10 @@ const useProfileNotifications = (
 
 	allProfileNotifications.read =
 		result?.data?.readProfileNotifications?.map((node: ProfileNotificationParams) => {
-			const { id, title, notificationType, value } = node;
+			const { id, title, notificationType, value, isRead, dateTime } = node;
 
-			return new ProfileNotification({ id, title, notificationType, value });
+			return new ProfileNotification({ id, title, notificationType, value, isRead, dateTime });
 		}) ?? [];
-
-	console.log(allProfileNotifications);
 
 	return [allProfileNotifications, omit(result, ['data'])];
 };

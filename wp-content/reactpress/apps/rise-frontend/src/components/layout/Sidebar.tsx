@@ -1,19 +1,8 @@
-import {
-	Badge,
-	Box,
-	Flex,
-	Icon,
-	IconButton,
-	IconProps,
-	List,
-	Spacer,
-	Text,
-} from '@chakra-ui/react';
+import { Badge, Box, Flex, Icon, IconButton, List, Spacer, Text } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
 import { useLocalStorage } from '@hooks/hooks';
-import useProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { ReactNode, useContext } from 'react';
@@ -35,15 +24,12 @@ interface SidebarMenuItemProps {
 	label: string | ReactNode;
 	isActive?: boolean;
 	isDisabled?: boolean;
-	iconProps?: IconProps;
 	isExpanded?: boolean;
 }
 
 export default function Sidebar() {
 	const [{ loggedInId, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
-
-	const [profileNotifications] = useProfileNotifications(loggedInId);
 
 	const {
 		search: { results },
@@ -95,18 +81,21 @@ export default function Sidebar() {
 		},
 		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' },
 		{
-			icon: <Icon as={FiStar} />,
+			icon: (
+				<Icon
+					as={FiStar}
+					fill={starredProfiles && starredProfiles.length > 0 ? 'brand.orange' : 'transparent'}
+				/>
+			),
 			target: '/following',
 			label: 'Following',
-			iconProps: {
-				fill: starredProfiles && starredProfiles.length > 0 ? 'brand.orange' : 'transparent',
-			},
 		},
 		{
-			icon: <Icon as={FiFolder} />,
+			icon: (
+				<Icon as={FiFolder} fill={savedSearches?.length > 0 ? 'brand.orange' : 'transparent'} />
+			),
 			target: '/searches',
 			label: 'Searches',
-			iconProps: { fill: savedSearches?.length > 0 ? 'brand.orange' : 'transparent' },
 		},
 	];
 
@@ -114,7 +103,7 @@ export default function Sidebar() {
 		<Box
 			id='sidebar'
 			w={sidebarExpanded ? '180px' : '52px'}
-			py={2}
+			py={0}
 			_light={{ bg: 'blackAlpha.700', color: 'text.light' }}
 			_dark={{ bg: 'blackAlpha.300', color: 'text.light' }}
 			overflow='hidden'
@@ -123,16 +112,20 @@ export default function Sidebar() {
 		>
 			<Flex
 				h='full'
-				mt={2}
+				mt={0}
 				mx={0}
+				pt={2}
 				pb={4}
 				flexDirection='column'
 				alignItems='center'
 				justifyContent='space-between'
 				fontSize='sm'
+				borderRight='1px solid'
+				_light={{ borderColor: 'text.dark' }}
+				_dark={{ borderColor: 'gray.800' }}
 			>
 				<IconButton
-					aria-label='Expand sidebar'
+					aria-label='Toggle wide sidebar'
 					aria-expanded={sidebarExpanded}
 					icon={<FiChevronsLeft />}
 					size='xs'
@@ -154,7 +147,6 @@ export default function Sidebar() {
 								my={0}
 								target={item.target}
 								isActive={location.pathname === item.target}
-								iconProps={item.iconProps}
 								isExpanded={sidebarExpanded}
 							>
 								{item.label}

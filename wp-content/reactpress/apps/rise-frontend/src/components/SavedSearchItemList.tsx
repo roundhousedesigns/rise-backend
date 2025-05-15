@@ -48,7 +48,7 @@ export default function SavedSearchItemList({ ...props }: BoxProps) {
 								<SavedSearchItem
 									as={motion.div}
 									key={id}
-								initial={{ opacity: 1 }} // Initial opacity of 1 (fully visible)
+									initial={{ opacity: 1 }} // Initial opacity of 1 (fully visible)
 									animate={{ opacity: 1 }} // Animate to opacity of 1 (fully visible)
 									exit={{ opacity: 0 }} // Animate to opacity of 0 (completely transparent)
 									flex='0 1 450px'
@@ -64,8 +64,8 @@ export default function SavedSearchItemList({ ...props }: BoxProps) {
 					</AnimatePresence>
 				</Flex>
 			) : (
-				<Card variant='outline' p={4} borderStyle='dashed' borderWidth={2}>
-					<Text fontSize='xs'>You haven't saved saved any searches...yet!</Text>
+				<Card variant='dashed' p={4}>
+					<Text fontSize='sm'>You haven't saved saved any searches...yet!</Text>
 				</Card>
 			)}
 		</Box>
