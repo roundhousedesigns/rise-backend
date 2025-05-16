@@ -27,7 +27,7 @@ import { decodeString } from '@lib/utils';
 import useLogin from '@mutations/useLogin';
 import PageContent from '@views/PageContent';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+// import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FiExternalLink, FiX } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -51,7 +51,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 		loginMutation,
 		results: { loading: submitLoading },
 	} = useLogin();
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	// const { executeRecaptcha } = useGoogleReCaptcha();
 
 	const errorMessage = useErrorMessage(errorCode);
 
@@ -232,6 +232,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-	</>
+		</>
 	);
 }

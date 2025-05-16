@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { Button, Text, useToast, ButtonGroup, Card } from '@chakra-ui/react';
-import useViewer from '@queries/useViewer';
+import { Button, ButtonGroup, Card, Text, useToast } from '@chakra-ui/react';
 import useDeleteOwnAccount from '@mutations/useDeleteOwnAccount';
 import useLogout from '@mutations/useLogout';
+import useViewer from '@queries/useViewer';
+import { useEffect } from 'react';
 
 export default function DeleteAccountView({ onClose }: { onClose: () => void }) {
 	const [{ loggedInId }] = useViewer();
@@ -28,7 +28,7 @@ export default function DeleteAccountView({ onClose }: { onClose: () => void }) 
 
 			setTimeout(() => {
 				logoutMutation().then(() => {
-					window.location.href = '/';
+					window.location.href = '/#/';
 				});
 			}, 2000);
 		}

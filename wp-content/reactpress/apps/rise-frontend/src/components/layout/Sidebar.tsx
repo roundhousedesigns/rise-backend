@@ -3,6 +3,7 @@ import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
 import { useLocalStorage } from '@hooks/hooks';
+import useLogout from '@mutations/useLogout';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { ReactNode, useContext } from 'react';
@@ -11,6 +12,7 @@ import {
 	FiChevronsLeft,
 	FiFolder,
 	FiHome,
+	FiLogOut,
 	FiSearch,
 	FiSettings,
 	FiStar,
@@ -35,6 +37,13 @@ export default function Sidebar() {
 	} = useContext(SearchContext);
 
 	const location = useLocation();
+	const { logoutMutation } = useLogout();
+
+	const handleLogout = () => {
+		logoutMutation().then(() => {
+			window.location.href = '/#/login?alert=You have logged out.';
+		});
+	};
 
 	const [sidebarExpanded, setSidebarExpanded] = useLocalStorage('sidebarExpanded', false);
 
@@ -91,6 +100,16 @@ export default function Sidebar() {
 			),
 			target: '/searches',
 			label: 'Searches',
+		},
+		{
+			icon: <Icon as={FiSettings} />,
+			target: '/settings',
+			label: 'Settings',
+		},
+		{
+			icon: <Icon as={FiLogOut} />,
+			target: () => handleLogout(),
+			label: 'Logout',
 		},
 	];
 
@@ -149,15 +168,6 @@ export default function Sidebar() {
 							</SidebarMenuItem>
 						);
 					})}
-
-					<SidebarMenuItem
-						icon={<Icon as={FiSettings} />}
-						target='/settings'
-						my={0}
-						isExpanded={sidebarExpanded}
-					>
-						Settings
-					</SidebarMenuItem>
 				</List>
 
 				<Spacer />

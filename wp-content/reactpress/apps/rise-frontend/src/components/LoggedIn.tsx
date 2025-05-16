@@ -1,8 +1,8 @@
+import { Container, Spinner } from '@chakra-ui/react';
+import useViewer from '@queries/useViewer';
+import LoginView from '@views/LoginView';
 import { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Spinner } from '@chakra-ui/react';
-import LoginView from '@views/LoginView';
-import useViewer from '@queries/useViewer';
 
 interface Props {
 	hideOnly?: boolean;

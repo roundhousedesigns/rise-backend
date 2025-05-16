@@ -69,7 +69,7 @@ export default function ChangePasswordView() {
 
 				logoutMutation().then(() => {
 					window.location.href =
-						'/login?alert=Success! Please log in with your new password.&alertStatus=success';
+						'/#/login?alert=Success! Please log in with your new password.&alertStatus=success';
 				});
 			})
 			.catch((errors: { message: string }) => setErrorCode(errors.message));
