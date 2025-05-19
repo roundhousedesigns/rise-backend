@@ -15,7 +15,7 @@ const Widget = ({
 	centerLineColor = 'brand.orange',
 	...props
 }: Props & BoxProps) => (
-	<Box m={0} {...props}>
+	<Box {...props}>
 		{title && (
 			<>
 				{titleStyle === 'centerline' && (

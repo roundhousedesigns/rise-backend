@@ -5,12 +5,16 @@ with 1.1.1.
 
 ## \[1.2-dev] - Unreleased
 
-- Change: Move Search Drawer to a dedicated route `/search`
-- Improve: Profile layout shifts
 - Add: Profile Notifications!
   - Badge count for displaying if any starred profiles have been updated.
   - On update, if an identical notification is found, only the newest is kept.
-- Improve: New Dashboard!
+- Add: Jobs Board!
+  - Post management
+  - Payment via WooCommerce
+  - Auto expiration 30 days after `pending` -> `publish`
+- Change: Move Search Drawer to a dedicated route `/search`
+- Change: New Dashboard!
+- Improve: Profile layout shifts
 - Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
 - Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
 - Fix: "$lastCredits" as count var in `useUserProfile`.

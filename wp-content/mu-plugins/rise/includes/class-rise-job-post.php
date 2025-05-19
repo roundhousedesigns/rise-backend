@@ -166,6 +166,14 @@ class Rise_Job_Post {
 	private $is_union;
 
 	/**
+	 * The job post's expiration date.
+	 *
+	 * @var string $expires_on The job post's expiration date.
+	 * @since 0.1.0
+	 */
+	private $expires_on;
+
+	/**
 	 * The constructor.
 	 *
 	 * @since  0.1.0
@@ -318,5 +326,20 @@ class Rise_Job_Post {
 			'isInternship'     => $this->is_internship,
 			'isUnion'          => $this->is_union,
 		];
+	}
+
+	/**
+	 * Set the job post's expiration date on publication.
+	 *
+	 * @param  string $new_status The new status of the job post.
+	 * @param  string $old_status The old status of the job post.
+	 * @param  object $post       The job post object.
+	 * @return void
+	 */
+	public static function set_job_post_expiration_on_publication( $new_status, $old_status, $post ) {
+		if ( 'pending' === $old_status && 'publish' === $new_status ) {
+			$pod = pods( 'job_post', $post->ID );
+			$pod->save( ['_expires_on' => date( 'Y-m-d', strtotime( '+30 days' ) )] );
+		}
 	}
 }

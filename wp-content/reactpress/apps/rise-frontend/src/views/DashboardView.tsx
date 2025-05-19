@@ -1,4 +1,4 @@
-import { Box, Card, Grid, GridItem, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
+import { Card, Grid, GridItem, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import ProfileNotificationItem from '@components/ProfileNotificationItem';
@@ -38,41 +38,45 @@ export default function DashboardView() {
 					</ColorCascadeBox>
 				</Widget>
 
-				<Box pl={2}>
-					{unread.length > 0 ||
-						(read.length > 0 && (
-							<Widget title='Notifications' titleStyle='contentTitle'>
-								<Card gap={2}>
-									<List spacing={1}>
-										<AnimatePresence>
-											{unread?.map((notification) => (
-												<ListItem
-													key={notification.id}
-													as={motion.div}
-													initial={{ opacity: 1 }}
-													animate={{ opacity: 1 }}
-													exit={{ opacity: 0 }}
-												>
-													<ProfileNotificationItem notification={notification} />
-												</ListItem>
-											))}
-											{read?.map((notification) => (
-												<ListItem key={notification.id}>
-													<ProfileNotificationItem notification={notification} />
-												</ListItem>
-											))}
-										</AnimatePresence>
-									</List>
-								</Card>
-							</Widget>
-						))}
-
-					{starredProfiles?.length && (
-						<Widget title='Following' titleStyle='centerline' centerLineColor='brand.orange' mt={1}>
-							<StarredProfileList mini showToggle={false} mt={1} />
+				{unread.length > 0 ||
+					(read.length > 0 && (
+						<Widget
+							title='Notifications'
+							titleStyle='contentTitle'
+							id='profile-notifications'
+							pl={2}
+							bg='blue'
+						>
+							<Card gap={2}>
+								<List spacing={1}>
+									<AnimatePresence>
+										{unread?.map((notification) => (
+											<ListItem
+												key={notification.id}
+												as={motion.div}
+												initial={{ opacity: 1 }}
+												animate={{ opacity: 1 }}
+												exit={{ opacity: 0 }}
+											>
+												<ProfileNotificationItem notification={notification} />
+											</ListItem>
+										))}
+										{read?.map((notification) => (
+											<ListItem key={notification.id}>
+												<ProfileNotificationItem notification={notification} />
+											</ListItem>
+										))}
+									</AnimatePresence>
+								</List>
+							</Card>
 						</Widget>
-					)}
-				</Box>
+					))}
+
+				{starredProfiles?.length && (
+					<Widget title='Following' titleStyle='centerline' centerLineColor='brand.orange' mt={1}>
+						<StarredProfileList mini showToggle={false} mt={1} />
+					</Widget>
+				)}
 			</GridItem>
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
 				{notices.length > 0 ? (
