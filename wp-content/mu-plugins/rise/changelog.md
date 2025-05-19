@@ -7,7 +7,7 @@ with 1.1.1.
 
 - Change: Move Search Drawer to a dedicated route `/search`
 - Improve: Profile layout shifts
-- Add: Notifications!
+- Add: Profile Notifications!
   - Badge count for displaying if any starred profiles have been updated.
   - On update, if an identical notification is found, only the newest is kept.
 - Improve: New Dashboard!
