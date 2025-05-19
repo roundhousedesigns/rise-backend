@@ -2,15 +2,15 @@ import { Card, Grid, GridItem, List, ListItem, Spinner, Stack } from '@chakra-ui
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import ProfileNotificationItem from '@components/ProfileNotificationItem';
+import RSSFeed from '@components/RSSFeed';
 import ShortPost from '@components/ShortPost';
 import useProfileNotifications from '@queries/useProfileNotifications';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import MiniProfileView from '@views/MiniProfileView';
+import StarredProfileList from '@views/StarredProfileList';
 import { AnimatePresence, motion } from 'framer-motion';
-import RSSFeed from '../components/RSSFeed';
-import StarredProfileList from './StarredProfileList';
 
 export default function DashboardView() {
 	const [{ loggedInId, starredProfiles }] = useViewer();
@@ -74,14 +74,14 @@ export default function DashboardView() {
 					))}
 
 				{starredProfiles?.length && (
-					<Widget title='Following' titleStyle='centerline' centerLineColor='brand.orange' mt={1}>
+					<Widget title='Following' titleStyle='centerline' mt={1}>
 						<StarredProfileList mini showToggle={false} mt={1} />
 					</Widget>
 				)}
 			</GridItem>
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
 				{notices.length > 0 ? (
-					<Widget title='News' titleStyle='centerline' centerLineColor='brand.orange'>
+					<Widget title='News' titleStyle='centerline'>
 						<List>
 							{notices.map((notice: any) => (
 								<ListItem key={notice.id} my={0}>
@@ -92,12 +92,15 @@ export default function DashboardView() {
 					</Widget>
 				) : null}
 
-				<Widget
-					title='Playbill.com Latest News'
-					titleStyle='centerline'
-					centerLineColor='brand.yellow'
-				>
-					<RSSFeed feedUrl='https://playbill.com/rss/news' limit={3} />
+				<Widget title='Playbill.com' titleStyle='centerline'>
+					<RSSFeed
+						feedUrl='https://playbill.com/rss/news'
+						limit={3}
+						fieldMap={{ date: 'dc:date' }}
+					/>
+				</Widget>
+				<Widget title='Variety: Theater' titleStyle='centerline'>
+					<RSSFeed feedUrl='https://variety.com/v/theater/feed/' limit={3} />
 				</Widget>
 			</GridItem>
 		</Grid>

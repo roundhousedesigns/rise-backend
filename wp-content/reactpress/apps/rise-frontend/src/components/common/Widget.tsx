@@ -1,4 +1,4 @@
-import { Box, BoxProps, Heading } from '@chakra-ui/react';
+import { Box, BoxProps, Heading, useColorMode } from '@chakra-ui/react';
 import HeadingCenterline from './HeadingCenterline';
 
 interface Props {
@@ -12,26 +12,32 @@ const Widget = ({
 	children,
 	title,
 	titleStyle,
-	centerLineColor = 'brand.orange',
+	centerLineColor = '',
 	...props
-}: Props & BoxProps) => (
-	<Box {...props}>
-		{title && (
-			<>
-				{titleStyle === 'centerline' && (
-					<HeadingCenterline lineColor={centerLineColor} headingProps={{ fontSize: '2xl' }} mb={2}>
-						{title}
-					</HeadingCenterline>
-				)}
-				{titleStyle === 'contentTitle' && (
-					<Heading as='h2' variant='contentTitle'>
-						{title}
-					</Heading>
-				)}
-			</>
-		)}
-		{children}
-	</Box>
-);
+}: Props & BoxProps) => {
+	const { colorMode } = useColorMode();
+
+	centerLineColor = centerLineColor || (colorMode === 'dark' ? 'text.light' : 'text.dark');
+
+	return (
+		<Box {...props}>
+			{title && (
+				<>
+					{titleStyle === 'centerline' && (
+						<HeadingCenterline
+							lineColor={centerLineColor}
+							headingProps={{ fontSize: '2xl' }}
+							mb={2}
+						>
+							{title}
+						</HeadingCenterline>
+					)}
+					{titleStyle === 'contentTitle' && <Heading variant='contentTitle'>{title}</Heading>}
+				</>
+			)}
+			{children}
+		</Box>
+	);
+};
 
 export default Widget;

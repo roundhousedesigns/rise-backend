@@ -1,51 +1,63 @@
 import { Box, Button, List, ListItem, ListProps, Spinner, Text } from '@chakra-ui/react';
-import ShortPost from '@components/ShortPost';
-import { useLocalStorage } from '@hooks/hooks';
-import { WPPost } from '@lib/classes';
+import RSSPostItem from '@components/RSSPostItem';
+import { RSSPost } from '@lib/classes';
+import { RSSPostFieldMap } from '@lib/types';
+import { generateRandomString } from '@lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 interface Props {
 	feedUrl: string;
 	limit?: number;
+	fieldMap?: RSSPostFieldMap;
 }
 
 interface FeedState {
-	posts: WPPost[];
+	posts: RSSPost[];
 	loading: boolean;
 	error: string | null;
 }
 
 const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-const STORAGE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 const BATCH_SIZE = 5;
 
-const parseRSSItems = (xmlDoc: Document): WPPost[] => {
+const parseRSSItems = (xmlDoc: Document, fieldMap?: RSSPostFieldMap): RSSPost[] => {
 	const items = xmlDoc.getElementsByTagName('item');
-	return Array.from(items).map((item, index) => {
-		const title = item.getElementsByTagName('title')[0]?.textContent || '';
-		const content = item.getElementsByTagName('description')[0]?.textContent || '';
-		const link = item.getElementsByTagName('link')[0]?.textContent || '';
-		const enclosure = item.getElementsByTagName('media:thumbnail')[0];
-		const thumbnail = enclosure?.getAttribute('url') || '';
 
-		return new WPPost({
-			id: index + 1,
+	return Array.from(items).map((item) => {
+		const getElementContent = (field: keyof RSSPostFieldMap, defaultTag: string) => {
+			const tagName = fieldMap?.[field] || defaultTag;
+			return item.getElementsByTagName(tagName)[0]?.textContent || '';
+		};
+
+		const getElementAttribute = (
+			field: keyof RSSPostFieldMap,
+			defaultTag: string,
+			attribute: string
+		) => {
+			const tagName = fieldMap?.[field] || defaultTag;
+			return item.getElementsByTagName(tagName)[0]?.getAttribute(attribute) || '';
+		};
+
+		// Map all fields using the fieldMap if provided
+		const title = getElementContent('title', 'title');
+		const content = getElementContent('content', 'description');
+		const link = getElementContent('link', 'link');
+		const date = getElementContent('date', 'pubDate');
+		const thumbnail = getElementAttribute('thumbnail', 'media:thumbnail', 'url');
+
+		return new RSSPost({
+			id: generateRandomString(5),
 			title,
 			content,
 			uri: link,
-			postType: 'rss',
-			featuredImage: thumbnail
-				? {
-						id: 0,
-						sourceUrl: thumbnail,
-				  }
-				: undefined,
+			date,
+			thumbnail,
 		});
 	});
 };
 
-const useRSSFeed = (feedUrl: string): FeedState => {
+const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): FeedState => {
 	const [state, setState] = useState<FeedState>({
 		posts: [],
 		loading: true,
@@ -61,7 +73,7 @@ const useRSSFeed = (feedUrl: string): FeedState => {
 				const xmlText = await response.text();
 				const parser = new DOMParser();
 				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				const parsedPosts = parseRSSItems(xmlDoc);
+				const parsedPosts = parseRSSItems(xmlDoc, fieldMap);
 
 				setState({
 					posts: parsedPosts,
@@ -79,7 +91,7 @@ const useRSSFeed = (feedUrl: string): FeedState => {
 		};
 
 		fetchFeed();
-	}, [feedUrl]);
+	}, [feedUrl, fieldMap]);
 
 	return state;
 };
@@ -99,26 +111,23 @@ const ErrorState = ({ message }: { message: string }) => (
 export default function RSSFeed({
 	feedUrl,
 	limit = BATCH_SIZE,
+	fieldMap,
 	...props
 }: Props & ListProps): JSX.Element {
-	const storageKey = `rss-feed-${feedUrl}-visible-count`;
-	const [storedVisibleCount, setStoredVisibleCount] = useLocalStorage(storageKey, limit, {
-		expiresIn: STORAGE_EXPIRY,
-	});
-
-	const { posts: allPosts, loading, error } = useRSSFeed(feedUrl);
-	const [visiblePosts, setVisiblePosts] = useState<WPPost[]>([]);
+	const [visibleCount, setVisibleCount] = useState(limit);
+	const { posts: allPosts, loading, error } = useRSSFeed(feedUrl, fieldMap);
+	const [visiblePosts, setVisiblePosts] = useState<RSSPost[]>([]);
 
 	useEffect(() => {
-		setVisiblePosts(allPosts.slice(0, storedVisibleCount));
-	}, [allPosts, storedVisibleCount]);
+		setVisiblePosts(allPosts.slice(0, visibleCount));
+	}, [allPosts, visibleCount]);
 
 	const handleLoadMore = () => {
 		const currentLength = visiblePosts.length;
 		const nextBatch = allPosts.slice(currentLength, currentLength + BATCH_SIZE);
 		const newVisibleCount = currentLength + nextBatch.length;
 		setVisiblePosts([...visiblePosts, ...nextBatch]);
-		setStoredVisibleCount(newVisibleCount);
+		setVisibleCount(newVisibleCount);
 	};
 
 	const hasMorePosts = visiblePosts.length < allPosts.length;
@@ -138,7 +147,7 @@ export default function RSSFeed({
 							animate={{ opacity: 1 }}
 							exit={{ opacity: 0 }}
 						>
-							<ShortPost post={post} />
+							<RSSPostItem post={post} fieldMap={fieldMap} />
 						</ListItem>
 					))}
 					{hasMorePosts && (

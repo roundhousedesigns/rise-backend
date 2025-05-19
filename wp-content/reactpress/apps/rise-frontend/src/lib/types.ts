@@ -359,3 +359,26 @@ export interface ProfileNotificationParams {
 	isRead: boolean;
 	dateTime: string | Date;
 }
+
+/**
+ * The data shape for a RSS Post.
+ */
+export interface RSSPostParams {
+	id?: number | string;
+	title: string;
+	content: string;
+	uri: string;
+	date: string;
+	thumbnail: string;
+}
+
+/**
+ * The data shape for a RSS Post Field Map.
+ */
+export interface RSSPostFieldMap {
+	title?: string;
+	content?: string;
+	link?: string;
+	thumbnail?: string;
+	date?: string;
+}

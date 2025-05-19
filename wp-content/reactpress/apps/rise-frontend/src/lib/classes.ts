@@ -7,6 +7,7 @@ import {
 	NotificationType,
 	PersonalLinksParams,
 	ProfileNotificationParams,
+	RSSPostParams,
 	SearchFilterSetParams,
 	UserParams,
 	UserProfileParams,
@@ -656,5 +657,26 @@ export class ProfileNotification implements ProfileNotificationParams {
 		this.isRead = params.isRead || false;
 		this.dateTime =
 			typeof params.dateTime === 'string' ? new Date(params.dateTime) : params.dateTime;
+	}
+}
+
+/**
+ * An RSS Post.
+ */
+export class RSSPost implements RSSPostParams {
+	id?: number | string;
+	title: string;
+	content: string;
+	uri: string;
+	date: string;
+	thumbnail: string;
+
+	constructor(params: RSSPostParams) {
+		this.id = params.id ? params.id : undefined;
+		this.title = params.title;
+		this.content = params.content;
+		this.uri = params.uri;
+		this.date = params.date;
+		this.thumbnail = params.thumbnail;
 	}
 }
