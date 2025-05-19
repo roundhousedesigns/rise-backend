@@ -1,0 +1,83 @@
+<?php
+/**
+ * Registers GraphQL mutations.
+ *
+ * @package    Rise
+ * @subpackage Rise/includes
+ *
+ * @author     Roundhouse Designs <nick@roundhouse-designs.com>
+ *
+ * @since      0.1.0
+ */
+
+class Rise_WooCommerce {
+	/**
+	 * Add job post data to order.
+	 *
+	 * @param  WC_Order $order
+	 * @param  array    $data
+	 * @return void
+	 */
+	public function add_job_post_data_to_order( $order ) {
+		$job_data = WC()->session->get( 'new_job_post_awaiting_payment' );
+
+		if ( $job_data ) {
+			$order->add_meta_data( 'new_job_post_awaiting_payment', $job_data );
+		}
+
+		// Clean up the session data.
+		WC()->session->__unset( 'new_job_post_awaiting_payment' );
+	}
+
+	/**
+	 * Create a job post from an order after payment is complete.
+	 *
+	 * @param  int    $order_id
+	 * @return void
+	 */
+	public function create_job_post_from_order_after_payment_complete( $order_id ) {
+		$order = wc_get_order( $order_id );
+		if ( !$order ) {
+			return;
+		}
+
+		$job_post = $order->get_meta( 'new_job_post_awaiting_payment' );
+
+		if ( !$job_post ) {
+			return;
+		}
+
+		$job_post_id = $job_post->update_job_post();
+
+		if ( is_wp_error( $job_post_id ) ) {
+			error_log( $job_post_id->get_error_message() );
+		}
+
+		// Add the job post ID to the order.
+		$order->update_meta_data( 'job_post_id', $job_post_id );
+
+		// Clean up the order.
+		$order->delete_meta_data( 'new_job_post_awaiting_payment' );
+		$order->delete_meta_data( 'job_post_id' );
+
+		// Save the order data.
+		$order->save();
+	}
+
+	public function redirect_to_manage_jobs_after_payment_complete( $order_id ) {
+		$order = wc_get_order( $order_id );
+		if ( !$order || $order->get_status() !== 'completed' ) {
+			return;
+		}
+
+		$job_post_id = $order->get_meta( 'job_post_id' );
+
+		if ( !$job_post_id ) {
+			return;
+		}
+
+		// TODO make this a constant (or just more graceful)
+		wp_safe_redirect( home_url( '/directory/#/jobs/manage/' ) );
+		exit;
+	}
+}

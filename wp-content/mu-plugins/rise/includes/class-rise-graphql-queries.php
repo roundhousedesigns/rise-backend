@@ -810,4 +810,5 @@ class Rise_GraphQL_Queries {
 			]
 		);
 	}
+
 }

@@ -1,13 +1,13 @@
 import {
-    Button,
-    chakra,
-    Flex,
-    FormControl,
-    FormLabel,
-    Input,
-    Stack,
-    Textarea,
-    useToast,
+	Button,
+	chakra,
+	Flex,
+	FormControl,
+	FormLabel,
+	Input,
+	Stack,
+	Textarea,
+	useToast,
 } from '@chakra-ui/react';
 import CheckboxButton from '@common/inputs/CheckboxButton';
 import { JobPostOutput } from '@lib/types';
@@ -27,7 +27,6 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const toast = useToast();
 	const { updateJobPostMutation } = useUpdateJobPost();
-
 	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState<JobPostOutput>({
@@ -116,7 +115,8 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 
 		updateJobPostMutation(cleanData)
 			.then((response) => {
-				if (response.data?.updateOrCreateJobPost?.jobPost) {
+				console.log(response);
+				if (response.data?.updateOrCreateJobPost?.success) {
 					toast({
 						title: 'Success',
 						description: initialData ? 'Job updated successfully' : 'Job created successfully',
@@ -125,8 +125,23 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 						isClosable: true,
 					});
 
-					// Navigate to the job management page
-					navigate('/jobs/manage');
+					if (response.data?.updateOrCreateJobPost?.awaitingPayment) {
+						if (response.data?.updateOrCreateJobPost?.wcCheckoutEndpoint) {
+							// Hard redirect to the checkout page.
+							window.location.href = response.data?.updateOrCreateJobPost?.wcCheckoutEndpoint;
+						} else {
+							toast({
+								title: 'Error',
+								description: 'No cart endpoint found. Please contact support.',
+								status: 'error',
+								duration: 3000,
+								isClosable: true,
+							});
+						}
+					} else {
+						// Navigate to the job management page
+						navigate('/jobs/manage');
+					}
 				} else {
 					throw new Error('Failed to save job post');
 				}

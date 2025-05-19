@@ -54,6 +54,14 @@ class Rise_Init {
 				'force_activation' => true,
 				'external_url'     => 'https://github.com/funkhaus/wp-graphql-cors',
 			],
+			[
+				'name'               => 'WooCommerce',
+				'slug'               => 'woocommerce',
+				'required'           => true,
+				'version'            => '9.8.5',
+				'force_activation'   => true,
+				'force_deactivation' => false,
+			],
 		];
 
 		/**

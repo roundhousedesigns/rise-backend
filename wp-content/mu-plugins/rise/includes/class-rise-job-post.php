@@ -291,6 +291,9 @@ class Rise_Job_Post {
 	/**
 	 * Get the job post's data for GraphQL.
 	 *
+	 * @deprecated 1.2
+	 * @since 1.2
+	 *
 	 * @return array The job post's data.
 	 */
 	public function prepare_job_post_for_graphql() {

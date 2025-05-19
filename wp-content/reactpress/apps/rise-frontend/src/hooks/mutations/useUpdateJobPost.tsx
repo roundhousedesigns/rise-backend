@@ -8,27 +8,9 @@ import { JobPostOutput } from '@lib/types';
 const MUTATE_UPDATE_JOB_POST = gql`
 	mutation UpdateOrCreateJobPost($input: UpdateOrCreateJobPostInput!) {
 		updateOrCreateJobPost(input: $input) {
-			jobPost {
-				databaseId
-				author
-				title
-				companyName
-				companyAddress
-				contactName
-				contactEmail
-				contactPhone
-				startDate
-				endDate
-				instructions
-				compensation
-				applicationUrl
-				applicationPhone
-				applicationEmail
-				description
-				isPaid
-				isInternship
-				isUnion
-			}
+			success
+			awaitingPayment
+			wcCheckoutEndpoint
 		}
 	}
 `;

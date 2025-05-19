@@ -88,6 +88,7 @@ class Rise {
 		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_woocommerce_hooks();
 	}
 
 	/**
@@ -185,6 +186,11 @@ class Rise {
 		 * The class responsible for defining cron jobs.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-cron.php';
+
+		/**
+		 * The class responsible for WooCommerce functionality.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-rise-woocommerce.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -440,6 +446,19 @@ class Rise {
 
 		// TODO `remove_graphql_extensions_response_data` doesn't seem to be working. `extensions` still in responses. THIS IS ALSO BREAKING USER REG AND PASSWORD RESET.
 		// $this->loader->add_action( 'graphql_request_results', $plugin_data_queries, 'remove_graphql_extensions_response_data', 10, 1 );
+	}
+
+	/**
+	 * Define the WooCommerce hooks.
+	 *
+	 * @access   private
+	 * @since    1.2
+	 */
+	private function define_woocommerce_hooks() {
+		$woocommerce_data = new Rise_WooCommerce( $this->loader );
+
+		$this->loader->add_action( 'woocommerce_store_api_checkout_order_processed', $woocommerce_data, 'add_job_post_data_to_order', 10, 2 );
+		$this->loader->add_action( 'woocommerce_order_status_completed', $woocommerce_data, 'create_job_post_from_order_after_payment_complete', 10, 1 );
 	}
 
 	/**

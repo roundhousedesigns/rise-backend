@@ -2,8 +2,8 @@
  * useWp hook. Query to retrieve WordPress global stylesheet.
  */
 
-import { gql, useQuery, QueryResult } from '@apollo/client';
-import { omit, String } from 'lodash';
+import { gql, QueryResult, useQuery } from '@apollo/client';
+import { omit } from 'lodash';
 
 // TODO: Figure out why this is needed
 import '@assets/css/wordpress.css';
@@ -28,7 +28,7 @@ interface WpCoreQueryResult {
 const useWp = (): [WpCoreQueryResult, Omit<QueryResult<WpCoreQueryResult>, 'data'>] => {
 	const result = useQuery<WpCoreQueryResult>(QUERY_WP_CORE);
 
-	const { globalStylesheet = undefined, stylesheetDirectoryUri = undefined } = result.data || {};
+	const { globalStylesheet, stylesheetDirectoryUri } = result.data || {};
 
 	const wp = {
 		globalStylesheet,

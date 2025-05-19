@@ -1359,50 +1359,34 @@ class Rise_GraphQL_Mutations {
 					],
 				],
 				'outputFields'        => [
-					'jobPost' => [
-						'type'        => 'JobPostOutput',
-						'description' => __( 'The created or updated job post.', 'rise' ),
-						'resolve'     => function ( $payload ) {
-							if ( !$payload['jobPost'] ) {
-								return null;
-							}
-
-							$post_id = $payload['jobPost'];
-
-							$job_post = new Rise_Job_Post( [
-								'id'               => $post_id,
-								'author'           => get_post_field( 'post_author', $post_id ),
-								'isNew'            => false,
-								'title'            => get_the_title( $post_id ),
-								'companyName'      => get_post_meta( $post_id, 'company_name', true ),
-								'companyAddress'   => get_post_meta( $post_id, 'company_address', true ),
-								'contactName'      => get_post_meta( $post_id, 'contact_name', true ),
-								'contactEmail'     => get_post_meta( $post_id, 'contact_email', true ),
-								'contactPhone'     => get_post_meta( $post_id, 'contact_phone', true ),
-								'startDate'        => get_post_meta( $post_id, 'start_date', true ),
-								'endDate'          => get_post_meta( $post_id, 'end_date', true ),
-								'instructions'     => get_post_meta( $post_id, 'instructions', true ),
-								'compensation'     => get_post_meta( $post_id, 'compensation', true ),
-								'applicationUrl'   => get_post_meta( $post_id, 'application_url', true ),
-								'applicationPhone' => get_post_meta( $post_id, 'application_phone', true ),
-								'applicationEmail' => get_post_meta( $post_id, 'application_email', true ),
-								'description'      => get_post_meta( $post_id, 'description', true ),
-								'isPaid'           => (bool) get_post_meta( $post_id, 'is_paid', true ),
-								'isInternship'     => (bool) get_post_meta( $post_id, 'is_internship', true ),
-								'isUnion'          => (bool) get_post_meta( $post_id, 'is_union', true ),
-							] );
-
-							return $job_post->prepare_job_post_for_graphql();
-						},
+					'success'            => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the job post was created or updated.', 'rise' ),
+					],
+					'awaitingPayment'    => [
+						'type'        => 'Boolean',
+						'description' => __( 'Whether the job post is awaiting payment.', 'rise' ),
+					],
+					'wcCheckoutEndpoint' => [
+						'type'        => 'String',
+						'description' => __( 'The WooCommerce cart endpoint.', 'rise' ),
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
 					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
-						'jobPost' => null,
+						'success'            => false,
+						'awaitingPayment'    => false,
+						'wcCheckoutEndpoint' => esc_url_raw( wc_get_checkout_url() ),
 					];
 
-					// TODO Ultimately, set new posts to 'pending' and approve them in the admin.
+					$job_post_product_id = 15695;
+
+					// Exit early if WooCommerce is not active.
+					if ( !class_exists( 'WC_Session' ) ) {
+						throw new Error( 'WooCommerce is not active.' );
+					}
+
 					$job_post_defaults          = [];
 					$job_post_defaults['isNew'] = !isset( $input['id'] ) || !$input['id'];
 
@@ -1414,14 +1398,27 @@ class Rise_GraphQL_Mutations {
 					// Create a new job post object
 					$job_post = new Rise_Job_Post( array_merge( $input, $job_post_defaults ) );
 
-					// Update the job post
-					$result = $job_post->update_job_post();
+					// Store the job post in session so we can post it after payment is complete.
+					if ( $job_post_defaults['isNew'] ) {
+						WC()->session->set( 'new_job_post_awaiting_payment', $job_post );
 
-					if ( is_wp_error( $result ) ) {
-						throw new UserError( esc_html( $result->get_error_message() ) );
+						$payload['success']         = true;
+						$payload['awaitingPayment'] = true;
+
+						// Empty the cart and add the job post product to it.
+						WC()->cart->empty_cart();
+						WC()->cart->add_to_cart( $job_post_product_id );
+					} else {
+						// Update the job post if it already exists.
+						$result = $job_post->update_job_post();
+
+						if ( is_wp_error( $result ) ) {
+							throw new UserError( esc_html( $result->get_error_message() ) );
+						}
+
+						$payload['success']         = true;
+						$payload['awaitingPayment'] = false;
 					}
-
-					$payload['jobPost'] = $result;
 
 					return $payload;
 				},
@@ -1504,8 +1501,6 @@ class Rise_GraphQL_Mutations {
 					$author_id       = absint( get_post_field( 'post_author', $notification_id ) );
 
 					if ( !$user_id || $author_id !== $user_id ) {
-						error_log( 'User ID: ' . $user_id );
-						error_log( 'Author ID: ' . $author_id );
 						throw new UserError( 'You are not authorized to dismiss this notification.' );
 					}
 
