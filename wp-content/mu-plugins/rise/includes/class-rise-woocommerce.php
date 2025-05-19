@@ -64,7 +64,7 @@ class Rise_WooCommerce {
 		$order->save();
 	}
 
-	public function redirect_to_manage_jobs_after_payment_complete( $order_id ) {
+	public function add_go_to_manage_jobs_button_to_thank_you_page( $order_id ) {
 		$order = wc_get_order( $order_id );
 		if ( !$order || $order->get_status() !== 'completed' ) {
 			return;
@@ -76,8 +76,37 @@ class Rise_WooCommerce {
 			return;
 		}
 
-		// TODO make this a constant (or just more graceful)
-		wp_safe_redirect( home_url( '/directory/#/jobs/manage/' ) );
-		exit;
+		$job_post = get_post( $job_post_id );
+
+		if ( !$job_post ) {
+			return;
+		}
+
+		// Add a button to the thank you page that says "Go to Manage Jobs".
+		echo '<a href="' . home_url( '/directory/#/jobs/manage/' ) . '">Go to Manage Jobs</a>';
 	}
+
+	/**
+	 * Redirect to the manage jobs page after payment is complete.
+	 *
+	 * @
+	 * @param  int    $order_id
+	 * @return void
+	 */
+	// public function redirect_to_manage_jobs_after_payment_complete( $order_id ) {
+	// 	$order = wc_get_order( $order_id );
+	// 	if ( !$order || $order->get_status() !== 'completed' ) {
+	// 		return;
+	// 	}
+
+	// 	$job_post_id = $order->get_meta( 'job_post_id' );
+
+	// 	if ( !$job_post_id ) {
+	// 		return;
+	// 	}
+
+	// 	// TODO make this a constant (or just more graceful)
+	// 	wp_safe_redirect( home_url( '/directory/#/jobs/manage/' ) );
+	// 	exit;
+	// }
 }
