@@ -9,6 +9,7 @@ import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import MiniProfileView from '@views/MiniProfileView';
 import { AnimatePresence, motion } from 'framer-motion';
+import RSSFeed from '../components/RSSFeed';
 import StarredProfileList from './StarredProfileList';
 
 export default function DashboardView() {
@@ -81,15 +82,23 @@ export default function DashboardView() {
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
 				{notices.length > 0 ? (
 					<Widget title='News' titleStyle='centerline' centerLineColor='brand.orange'>
-						<List spacing={4}>
+						<List>
 							{notices.map((notice: any) => (
-								<ListItem key={notice.id} mt={0}>
+								<ListItem key={notice.id} my={0}>
 									<ShortPost post={notice} mb={4} as={Card} />
 								</ListItem>
 							))}
 						</List>
 					</Widget>
 				) : null}
+
+				<Widget
+					title='Playbill.com Latest News'
+					titleStyle='centerline'
+					centerLineColor='brand.yellow'
+				>
+					<RSSFeed feedUrl='https://playbill.com/rss/news' limit={3} />
+				</Widget>
 			</GridItem>
 		</Grid>
 	);

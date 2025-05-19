@@ -19,7 +19,7 @@ const Widget = ({
 		{title && (
 			<>
 				{titleStyle === 'centerline' && (
-					<HeadingCenterline lineColor={centerLineColor} headingProps={{ fontSize: '2xl' }}>
+					<HeadingCenterline lineColor={centerLineColor} headingProps={{ fontSize: '2xl' }} mb={2}>
 						{title}
 					</HeadingCenterline>
 				)}

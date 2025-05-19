@@ -29,15 +29,27 @@ export const useLocalStorage = (
 	{
 		serialize = JSON.stringify,
 		deserialize = JSON.parse,
+		expiresIn = 0, // Time in milliseconds, 0 means no expiration
 	}: {
 		serialize?: (val: any) => string;
 		deserialize?: (val: string) => any;
+		expiresIn?: number;
 	} = {}
 ) => {
 	const [state, setState] = useState<any>(() => {
 		const valueInLocalStorage = window.localStorage.getItem(key);
 		if (valueInLocalStorage) {
-			return deserialize(valueInLocalStorage);
+			try {
+				const { value, timestamp } = deserialize(valueInLocalStorage);
+				if (expiresIn && Date.now() - timestamp > expiresIn) {
+					window.localStorage.removeItem(key);
+					return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
+				}
+				return value;
+			} catch (e) {
+				// If deserialization fails, return default value
+				return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
+			}
 		}
 		return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
 	});
@@ -50,7 +62,11 @@ export const useLocalStorage = (
 			window.localStorage.removeItem(prevKey);
 		}
 		prevKeyRef.current = key;
-		window.localStorage.setItem(key, serialize(state));
+		const serializedValue = serialize({
+			value: state,
+			timestamp: Date.now(),
+		});
+		window.localStorage.setItem(key, serializedValue);
 	}, [key, state, serialize]);
 
 	return [state, setState];
