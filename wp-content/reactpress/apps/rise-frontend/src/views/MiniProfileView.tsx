@@ -15,8 +15,8 @@ import { useProfileCompletion, useProfileUrl } from '@hooks/hooks';
 import { UserProfile } from '@lib/classes';
 import useViewer from '@queries/useViewer';
 import { useState } from 'react';
-import { FiEdit3, FiUser } from 'react-icons/fi';
-import { Link as RouterLink } from 'react-router-dom';
+import { FiEdit3, FiEyeOff, FiUser } from 'react-icons/fi';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 interface Props {
 	profile: UserProfile;
@@ -28,6 +28,7 @@ interface Props {
  */
 export default function MiniProfileView({ profile, ...props }: Props & CardProps): JSX.Element {
 	const [{ loggedInSlug, loggedInId, disableProfile }] = useViewer();
+	const navigate = useNavigate();
 
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -54,6 +55,47 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 			onMouseLeave={handleMouseLeave}
 			{...props}
 		>
+			{disableProfile && (
+				<Box
+					position='absolute'
+					top={0}
+					right={0}
+					width='70px'
+					height='70px'
+					zIndex={1000}
+					_before={{
+						content: '""',
+						position: 'absolute',
+						top: 0,
+						right: 0,
+						width: 0,
+						height: 0,
+						borderStyle: 'solid',
+						borderWidth: '0 70px 70px 0',
+						borderColor: 'transparent var(--chakra-colors-brand-blue) transparent transparent',
+					}}
+				>
+					<TooltipIconButton
+						as={RouterLink}
+						to='/settings'
+						icon={<FiEyeOff />}
+						label='Your profile is set to private.'
+						colorScheme='transparent'
+						size='sm'
+						color='text.light'
+						bg='brand.red'
+						borderRadius='full'
+						position='absolute'
+						top='2px'
+						right='1px'
+						boxSize={8}
+						p={2}
+						m={0}
+						opacity={0.8}
+						_hover={{ opacity: 1 }}
+					/>
+				</Box>
+			)}
 			<Flex
 				as={Flex}
 				mt={2}
@@ -64,7 +106,6 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 				top={0}
 				right={0}
 				px={2}
-				zIndex={1000}
 				width='full'
 			>
 				<ButtonGroup
@@ -96,11 +137,14 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 				</ButtonGroup>
 			</Flex>
 			<Stack direction='column' lineHeight={1} w='full'>
-				{image ? (
-					<Box textAlign='center'>
-						<Avatar size='superLg' src={image} name={profile.fullName()} />
-					</Box>
-				) : null}
+				<Box textAlign='center'>
+					<Avatar
+						size='superLg'
+						src={image || ''}
+						name={image ? profile.fullName() : ''}
+						colorScheme='gray'
+					/>
+				</Box>
 				<Box
 					flexWrap='wrap'
 					justifyContent={{ base: 'center', md: 'flex-start' }}

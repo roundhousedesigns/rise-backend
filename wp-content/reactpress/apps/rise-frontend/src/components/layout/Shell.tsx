@@ -1,12 +1,12 @@
 import {
-    Box,
-    Center,
-    ContainerProps,
-    Flex,
-    Heading,
-    HeadingProps,
-    Spinner,
-    Text,
+	Box,
+	BoxProps,
+	Center,
+	Flex,
+	Heading,
+	HeadingProps,
+	Spinner,
+	Text,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
@@ -27,13 +27,13 @@ export default function Shell({
 	children,
 	titleProps,
 	...props
-}: Props & ContainerProps): JSX.Element {
+}: Props & BoxProps): JSX.Element {
 	return loading ? (
 		<Center>
 			<Spinner position='relative' top={12} />
 		</Center>
 	) : (
-		<Box pt={4} pr={0} pb={8} pl={0} mt={0} mb={0} {...props}>
+		<Box pt={4} pr={4} pb={8} pl={0} mt={0} mb={0} {...props}>
 			{!!title || !!actions ? (
 				<Flex
 					justifyContent='space-between'
@@ -59,11 +59,11 @@ export default function Shell({
 						</Heading>
 					) : null}
 
-					{actions ? (
+					{actions && (
 						<Flex flexWrap='wrap' gap={2} justifyContent='flex-end'>
 							{actions}
 						</Flex>
-					) : null}
+					)}
 				</Flex>
 			) : null}
 

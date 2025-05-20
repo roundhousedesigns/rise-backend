@@ -9,7 +9,7 @@ import Sidebar from '@layout/Sidebar';
 
 export default function App() {
 	return (
-		<Flex
+		<Box
 			id='app-root'
 			_dark={{
 				bg: 'bg.dark',
@@ -20,7 +20,7 @@ export default function App() {
 				color: 'text.dark',
 			}}
 			minH='100%'
-			w='full'
+			w='100vw'
 		>
 			<SearchContextProvider>
 				<Box minH='100%' w='full'>
@@ -30,6 +30,6 @@ export default function App() {
 					</Flex>
 				</Box>
 			</SearchContextProvider>
-		</Flex>
+		</Box>
 	);
 }

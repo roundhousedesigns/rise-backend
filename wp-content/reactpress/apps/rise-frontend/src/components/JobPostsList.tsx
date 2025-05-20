@@ -1,6 +1,6 @@
 import { List, ListProps, Text } from '@chakra-ui/react';
-import { JobPost } from '@lib/classes';
 import JobPostListItem from '@common/JobPostListItem';
+import { JobPost } from '@lib/classes';
 
 interface Props {
 	jobs: JobPost[];

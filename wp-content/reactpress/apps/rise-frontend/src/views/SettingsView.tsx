@@ -67,13 +67,13 @@ export default function SettingsView() {
 				</Flex>
 			</SettingsSection>
 
-			<SettingsSection title='Profile'>
-				<ChangeProfileSlugView />
-			</SettingsSection>
-
 			<SettingsSection title='Options'>
 				<DisableProfileToggle showHelperText={true} size='lg' />
 				<DarkModeToggle showHelperText={true} size='lg' />
+			</SettingsSection>
+
+			<SettingsSection title='Profile'>
+				<ChangeProfileSlugView />
 			</SettingsSection>
 
 			<SettingsSection title='Close your account'>

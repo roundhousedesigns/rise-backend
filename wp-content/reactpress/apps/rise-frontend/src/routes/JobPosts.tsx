@@ -29,7 +29,7 @@ const JobPostButton = () => {
 
 export default function JobPosts() {
 	return (
-		<Shell title='Jobs Board' actions={<JobPostButton />}>
+		<Shell title='Jobs Board' actions={<JobPostButton />} w='full'>
 			<JobPostsView />
 		</Shell>
 	);

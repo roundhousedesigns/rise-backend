@@ -1,4 +1,13 @@
-import { Box, Heading, Link, ListItem, Stack, Text, UnorderedList } from '@chakra-ui/react';
+import {
+	Box,
+	BoxProps,
+	Heading,
+	Link,
+	ListItem,
+	Stack,
+	Text,
+	UnorderedList,
+} from '@chakra-ui/react';
 import { JobPost } from '@lib/classes';
 import useViewer from '@queries/useViewer';
 import { useMemo } from 'react';
@@ -14,7 +23,7 @@ const Separator = () => (
 	</Text>
 );
 
-export default function ManageJobPostsView({ jobs }: ManageJobPostsViewProps) {
+export default function ManageJobPostsView({ jobs, ...props }: ManageJobPostsViewProps & BoxProps) {
 	const [{ loggedInId }] = useViewer();
 
 	const { pendingJobs, publishedJobs } = useMemo(() => {
@@ -32,7 +41,7 @@ export default function ManageJobPostsView({ jobs }: ManageJobPostsViewProps) {
 	}, [jobs]);
 
 	return (
-		<Box>
+		<Box {...props}>
 			<Text fontSize='md'>
 				You may edit any of your job posts that are still pending. Once your post is approved, you
 				will no longer be able to edit it.

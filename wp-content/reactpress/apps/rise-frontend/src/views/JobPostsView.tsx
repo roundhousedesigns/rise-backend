@@ -1,20 +1,21 @@
-import { useState } from 'react';
 import {
-	Flex,
-	Stack,
-	Spinner,
 	Alert,
+	AlertDescription,
 	AlertIcon,
 	AlertTitle,
-	AlertDescription,
+	BoxProps,
 	Divider,
+	Flex,
+	Spinner,
+	Stack,
 } from '@chakra-ui/react';
-import useFilteredJobPostIds from '@queries/useFilteredJobPostIds';
-import useJobPosts from '@queries/useJobPosts';
 import JobPostFilters from '@components/JobPostFilters';
 import JobPostsList from '@components/JobPostsList';
+import useFilteredJobPostIds from '@queries/useFilteredJobPostIds';
+import useJobPosts from '@queries/useJobPosts';
+import { useState } from 'react';
 
-export default function JobPostsView() {
+export default function JobPostsView({ ...props }: BoxProps) {
 	const [filters, setFilters] = useState({
 		internships: false,
 		union: false,
@@ -25,7 +26,7 @@ export default function JobPostsView() {
 	const [jobs, { loading, error }] = useJobPosts(jobPostIds);
 
 	return (
-		<Stack spacing={4}>
+		<Stack spacing={4} {...props} w='full'>
 			<JobPostFilters onFilterChange={setFilters} mt={4} />
 
 			<Divider my={1} />
