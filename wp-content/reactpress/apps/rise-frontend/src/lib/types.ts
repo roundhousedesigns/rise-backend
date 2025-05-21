@@ -1,4 +1,4 @@
-import { DateRange, SearchFilterSet, WPItem } from '@lib/classes';
+import { DateRange, RSSPost, SearchFilterSet, WPItem } from '@lib/classes';
 
 /**
  * The data shape for generic WordPress item input.
@@ -308,6 +308,9 @@ export interface JobPostParams {
 	isInternship?: boolean;
 	isUnion?: boolean;
 	isPaid?: boolean;
+	departments?: number[];
+	jobs?: number[];
+	skills?: number[];
 }
 
 /**
@@ -338,9 +341,12 @@ export interface JobPostOutput {
 	applicationPhone?: string;
 	applicationEmail?: string;
 	description?: string;
-	isPaid?: boolean;
 	isInternship?: boolean;
 	isUnion?: boolean;
+	isPaid?: boolean;
+	departments?: number[];
+	jobs?: number[];
+	skills?: number[];
 }
 
 /**
@@ -369,7 +375,6 @@ export interface RSSPostParams {
 	content: string;
 	uri: string;
 	date: string;
-	thumbnail: string;
 }
 
 /**
@@ -379,6 +384,14 @@ export interface RSSPostFieldMap {
 	title?: string;
 	content?: string;
 	link?: string;
-	thumbnail?: string;
 	date?: string;
+}
+
+/**
+ * The data shape for a RSS Feed's load state.
+ */
+export interface RSSFeedState {
+	posts: RSSPost[];
+	loading: boolean;
+	error: string | null;
 }

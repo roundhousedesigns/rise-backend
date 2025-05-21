@@ -2,19 +2,24 @@
  * Utilities.
  */
 
-import { isEqual, omit } from 'lodash';
 import {
 	Credit,
-	PersonalLinks,
 	DateRange,
+	PersonalLinks,
+	RSSPost,
+	SearchFilterSet,
 	UserProfile,
 	WPItem,
-	SearchFilterSet,
-	ProfileNotification,
 } from '@lib/classes';
-import { DateRangeParams, SearchFilterSetParams, SearchResultCandidate } from '@lib/types';
-import Cookies from 'js-cookie';
+import {
+	DateRangeParams,
+	RSSPostFieldMap,
+	SearchFilterSetParams,
+	SearchResultCandidate,
+} from '@lib/types';
 import { passwordStrength } from 'check-password-strength';
+import Cookies from 'js-cookie';
+import { isEqual, omit } from 'lodash';
 
 /**
  * Additional filter keys. Affects display order.
@@ -524,4 +529,36 @@ export function cloneInstance(instance: object): any {
 
 	// Copy all properties from the instance to the new object
 	return Object.assign(newInstance, instance);
+}
+
+/**
+ * Parse RSS items from an XML document.
+ *
+ * @param {Document} xmlDoc - The XML document to parse.
+ * @param {RSSPostFieldMap} fieldMap - The field map to use for parsing.
+ * @returns {RSSPost[]} The parsed RSS posts.
+ */
+export function parseRSSItems(xmlDoc: Document, fieldMap?: RSSPostFieldMap): RSSPost[] {
+	const items = xmlDoc.getElementsByTagName('item');
+
+	return Array.from(items).map((item) => {
+		const getElementContent = (field: keyof RSSPostFieldMap, defaultTag: string) => {
+			const tagName = fieldMap?.[field] || defaultTag;
+			return item.getElementsByTagName(tagName)[0]?.textContent || '';
+		};
+
+		// Map all fields using the fieldMap if provided
+		const title = getElementContent('title', 'title');
+		const content = getElementContent('content', 'description');
+		const link = getElementContent('link', 'link');
+		const date = getElementContent('date', 'pubDate');
+
+		return new RSSPost({
+			id: generateRandomString(5),
+			title,
+			content,
+			uri: link,
+			date,
+		});
+	});
 }

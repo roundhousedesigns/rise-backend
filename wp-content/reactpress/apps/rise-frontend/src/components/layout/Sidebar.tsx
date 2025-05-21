@@ -148,7 +148,7 @@ export default function Sidebar() {
 					transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
 					transition='all 200ms ease'
 					alignSelf='flex-start'
-					ml='12px'
+					ml='12.5px'
 				/>
 
 				<List spacing={0} w='full' px={0} mt={3} mb={2}>

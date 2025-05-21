@@ -1,8 +1,8 @@
 import { Card, Grid, GridItem, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
+import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
 import ProfileNotificationItem from '@components/ProfileNotificationItem';
-import RSSFeed from '@components/RSSFeed';
 import ShortPost from '@components/ShortPost';
 import useProfileNotifications from '@queries/useProfileNotifications';
 import useUserNotices from '@queries/useUserNotices';
@@ -92,15 +92,8 @@ export default function DashboardView() {
 					</Widget>
 				) : null}
 
-				<Widget title='Playbill.com' titleStyle='centerline'>
-					<RSSFeed
-						feedUrl='https://playbill.com/rss/news'
-						limit={3}
-						fieldMap={{ date: 'dc:date' }}
-					/>
-				</Widget>
-				<Widget title='Variety: Theater' titleStyle='centerline'>
-					<RSSFeed feedUrl='https://variety.com/v/theater/feed/' limit={3} />
+				<Widget title='Top News' titleStyle='centerline'>
+					<DashboardRSSFeeds />
 				</Widget>
 			</GridItem>
 		</Grid>

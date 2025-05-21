@@ -1,29 +1,20 @@
-import {
-	Avatar,
-	Box,
-	Card,
-	CardHeader,
-	CardProps,
-	Flex,
-	Heading,
-	LinkBox,
-	LinkOverlay,
-	Text,
-	useColorMode,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Heading, Link, Text, chakra } from '@chakra-ui/react';
 import { RSSPost } from '@lib/classes';
 import { RSSPostFieldMap } from '@lib/types';
-import parse from 'html-react-parser';
 
 interface Props {
 	post: RSSPost;
 	fieldMap?: RSSPostFieldMap;
+	feedTitle?: string;
 }
 
-export default function RSSPostItem({ post, fieldMap, ...props }: Props & CardProps): JSX.Element {
-	const { id, title, content, uri, date, thumbnail } = post;
-
-	const { colorMode } = useColorMode();
+export default function RSSPostItem({
+	post,
+	fieldMap,
+	feedTitle,
+	...props
+}: Props & BoxProps): JSX.Element {
+	const { title, uri, date } = post;
 
 	const formattedDate = date
 		? new Date(date).toLocaleDateString(undefined, {
@@ -33,42 +24,27 @@ export default function RSSPostItem({ post, fieldMap, ...props }: Props & CardPr
 		  })
 		: '';
 
-	// Get the display title, falling back to empty string if not available
-	const displayTitle = title?.trim() || ' ';
+	const dateDisplay = [feedTitle, formattedDate].filter(Boolean).join(' | ');
 
 	return (
-		<LinkBox aria-labelledby={`rss-post-${id}`}>
-			<Card
-				pt={0}
-				px={0}
-				my={0}
-				gap={2}
-				opacity={0.9}
-				transition='opacity 200ms ease'
-				_hover={{ opacity: uri ? 1 : 0.9 }}
-				{...props}
-			>
-				<CardHeader px={3} py={2} bg={colorMode === 'dark' ? 'blackAlpha.300' : 'blackAlpha.100'}>
-					<Flex gap={2} alignItems='flex-start' justifyContent='space-between' flex='1'>
-						<Heading variant='contentSubtitle' my={0} id={`rss-post-${id}`} lineHeight='short'>
-							<LinkOverlay href={uri} isExternal textDecoration='none' color='initial'>
-								{displayTitle}
-							</LinkOverlay>
-						</Heading>
-						{formattedDate && (
-							<Text fontSize='xs' color='gray.500' m={0} textAlign='right' flex='1 0 auto'>
-								{formattedDate}
-							</Text>
-						)}
-					</Flex>
-				</CardHeader>
-				{content && (
-					<Flex my={0} px={3} gap={2}>
-						{thumbnail && <Avatar src={thumbnail} name={displayTitle} size='lg' />}
-						<Box>{parse(content)}</Box>
-					</Flex>
-				)}
-			</Card>
-		</LinkBox>
+		<Box {...props}>
+			<Heading variant='contentSubtitle' my={0} lineHeight='shorter' fontSize='md'>
+				<Link href={uri} isExternal>
+					<chakra.span mr={1}>{title}</chakra.span>
+				</Link>
+			</Heading>
+			{dateDisplay && (
+				<Text
+					as='span'
+					fontSize='xs'
+					_dark={{ color: 'gray.400' }}
+					_light={{ color: 'gray.600' }}
+					fontWeight='normal'
+					my={0}
+				>
+					{dateDisplay}
+				</Text>
+			)}
+		</Box>
 	);
 }

@@ -669,7 +669,6 @@ export class RSSPost implements RSSPostParams {
 	content: string;
 	uri: string;
 	date: string;
-	thumbnail: string;
 
 	constructor(params: RSSPostParams) {
 		this.id = params.id ? params.id : undefined;
@@ -677,6 +676,5 @@ export class RSSPost implements RSSPostParams {
 		this.content = params.content;
 		this.uri = params.uri;
 		this.date = params.date;
-		this.thumbnail = params.thumbnail;
 	}
 }

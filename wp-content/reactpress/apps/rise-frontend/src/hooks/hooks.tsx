@@ -1,5 +1,7 @@
 import { SearchContext } from '@context/SearchContext';
+import { RSSFeedState, RSSPostFieldMap } from '@lib/types';
 import {
+	parseRSSItems,
 	searchFilterSetsAreEqual,
 	validateEmail,
 	validatePassword,
@@ -261,4 +263,52 @@ export const useProfileCompletion = (profileId: number | null): number => {
 
 	// Divide the score by the total weight, multiplied by 100, to get the profile completion percentage as a decimal. Round to the nearest integer.
 	return Math.round((profileCompletion / totalWeight) * 100);
+};
+
+/**
+ * Use RSS Feed Hook.
+ *
+ * @param {string} feedUrl - The URL of the RSS feed.
+ * @param {RSSPostFieldMap} fieldMap - The field map to use for parsing.
+ */
+export const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): RSSFeedState => {
+	const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+	const [state, setState] = useState<RSSFeedState>({
+		posts: [],
+		loading: true,
+		error: null,
+	});
+
+	useEffect(() => {
+		const fetchFeed = async () => {
+			try {
+				setState((prev) => ({ ...prev, loading: true, error: null }));
+
+				const response = await fetch(CORS_PROXY + encodeURIComponent(feedUrl));
+				const xmlText = await response.text();
+				const parser = new DOMParser();
+				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+				const parsedPosts = parseRSSItems(xmlDoc, fieldMap);
+
+				setState({
+					posts: parsedPosts,
+					loading: false,
+					error: null,
+				});
+			} catch (err) {
+				setState({
+					posts: [],
+					loading: false,
+					error: 'Failed to load RSS feed',
+				});
+
+				console.error('Error fetching RSS feed:', err);
+			}
+		};
+
+		fetchFeed();
+	}, [feedUrl, fieldMap]);
+
+	return state;
 };

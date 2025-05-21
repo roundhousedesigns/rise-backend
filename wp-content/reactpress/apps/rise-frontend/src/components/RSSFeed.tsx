@@ -1,100 +1,28 @@
-import { Box, Button, List, ListItem, ListProps, Spinner, Text } from '@chakra-ui/react';
+import {
+	Box,
+	Button,
+	List,
+	ListItem,
+	ListProps,
+	SimpleGrid,
+	Spinner,
+	Text,
+} from '@chakra-ui/react';
 import RSSPostItem from '@components/RSSPostItem';
-import { RSSPost } from '@lib/classes';
+import { useRSSFeed } from '@hooks/hooks';
 import { RSSPostFieldMap } from '@lib/types';
-import { generateRandomString } from '@lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface Props {
-	feedUrl: string;
+	feeds: {
+		title: string;
+		feedUrl: string;
+		fieldMap?: RSSPostFieldMap;
+	}[];
 	limit?: number;
-	fieldMap?: RSSPostFieldMap;
+	columns?: number;
 }
-
-interface FeedState {
-	posts: RSSPost[];
-	loading: boolean;
-	error: string | null;
-}
-
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-const BATCH_SIZE = 5;
-
-const parseRSSItems = (xmlDoc: Document, fieldMap?: RSSPostFieldMap): RSSPost[] => {
-	const items = xmlDoc.getElementsByTagName('item');
-
-	return Array.from(items).map((item) => {
-		const getElementContent = (field: keyof RSSPostFieldMap, defaultTag: string) => {
-			const tagName = fieldMap?.[field] || defaultTag;
-			return item.getElementsByTagName(tagName)[0]?.textContent || '';
-		};
-
-		const getElementAttribute = (
-			field: keyof RSSPostFieldMap,
-			defaultTag: string,
-			attribute: string
-		) => {
-			const tagName = fieldMap?.[field] || defaultTag;
-			return item.getElementsByTagName(tagName)[0]?.getAttribute(attribute) || '';
-		};
-
-		// Map all fields using the fieldMap if provided
-		const title = getElementContent('title', 'title');
-		const content = getElementContent('content', 'description');
-		const link = getElementContent('link', 'link');
-		const date = getElementContent('date', 'pubDate');
-		const thumbnail = getElementAttribute('thumbnail', 'media:thumbnail', 'url');
-
-		return new RSSPost({
-			id: generateRandomString(5),
-			title,
-			content,
-			uri: link,
-			date,
-			thumbnail,
-		});
-	});
-};
-
-const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): FeedState => {
-	const [state, setState] = useState<FeedState>({
-		posts: [],
-		loading: true,
-		error: null,
-	});
-
-	useEffect(() => {
-		const fetchFeed = async () => {
-			try {
-				setState((prev) => ({ ...prev, loading: true, error: null }));
-
-				const response = await fetch(CORS_PROXY + encodeURIComponent(feedUrl));
-				const xmlText = await response.text();
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				const parsedPosts = parseRSSItems(xmlDoc, fieldMap);
-
-				setState({
-					posts: parsedPosts,
-					loading: false,
-					error: null,
-				});
-			} catch (err) {
-				setState({
-					posts: [],
-					loading: false,
-					error: 'Failed to load RSS feed',
-				});
-				console.error('Error fetching RSS feed:', err);
-			}
-		};
-
-		fetchFeed();
-	}, [feedUrl, fieldMap]);
-
-	return state;
-};
 
 const LoadingState = () => (
 	<Box textAlign='center' py={4}>
@@ -109,56 +37,73 @@ const ErrorState = ({ message }: { message: string }) => (
 );
 
 export default function RSSFeed({
-	feedUrl,
-	limit = BATCH_SIZE,
-	fieldMap,
+	feeds,
+	limit = 3,
+	columns = 2,
 	...props
 }: Props & ListProps): JSX.Element {
 	const [visibleCount, setVisibleCount] = useState(limit);
-	const { posts: allPosts, loading, error } = useRSSFeed(feedUrl, fieldMap);
-	const [visiblePosts, setVisiblePosts] = useState<RSSPost[]>([]);
 
-	useEffect(() => {
-		setVisiblePosts(allPosts.slice(0, visibleCount));
-	}, [allPosts, visibleCount]);
+	// Fetch posts from all feeds
+	const feedResults = feeds.map((feed) => useRSSFeed(feed.feedUrl, feed.fieldMap));
+
+	// Combine all posts and sort by date - memoized to prevent recalculation
+	const allPosts = useMemo(
+		() =>
+			feedResults
+				.flatMap((result, index) =>
+					result.posts.map((post) => ({
+						post,
+						fieldMap: feeds[index].fieldMap,
+						feedTitle: feeds[index].title,
+					}))
+				)
+				.sort((a, b) => new Date(b.post.date).getTime() - new Date(a.post.date).getTime()),
+		[feedResults, feeds]
+	);
+
+	// Check if any feed is loading
+	const loading = feedResults.some((result) => result.loading);
+
+	// Get the first error if any feed has an error
+	const error = feedResults.find((result) => result.error)?.error;
 
 	const handleLoadMore = () => {
-		const currentLength = visiblePosts.length;
-		const nextBatch = allPosts.slice(currentLength, currentLength + BATCH_SIZE);
-		const newVisibleCount = currentLength + nextBatch.length;
-		setVisiblePosts([...visiblePosts, ...nextBatch]);
-		setVisibleCount(newVisibleCount);
+		setVisibleCount((prev) => prev + limit);
 	};
 
+	const visiblePosts = allPosts.slice(0, visibleCount);
 	const hasMorePosts = visiblePosts.length < allPosts.length;
 
 	if (loading) return <LoadingState />;
 	if (error) return <ErrorState message={error} />;
 
 	return (
-		<List spacing={4} align='stretch' {...props}>
-			{visiblePosts.length > 0 && (
-				<AnimatePresence>
-					{visiblePosts.map((post) => (
-						<ListItem
-							key={post.id}
-							as={motion.div}
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-						>
-							<RSSPostItem post={post} fieldMap={fieldMap} />
-						</ListItem>
-					))}
-					{hasMorePosts && (
-						<Box textAlign='center' py={2}>
-							<Button onClick={handleLoadMore} colorScheme='blue' variant='outline'>
-								Load More
-							</Button>
-						</Box>
-					)}
-				</AnimatePresence>
+		<>
+			<List as={SimpleGrid} columns={{ base: 1, md: columns }} gap={6} {...props}>
+				{visiblePosts.length > 0 && (
+					<AnimatePresence>
+						{visiblePosts.map(({ post, fieldMap, feedTitle }) => (
+							<ListItem
+								key={post.id}
+								as={motion.div}
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+							>
+								<RSSPostItem post={post} fieldMap={fieldMap} feedTitle={feedTitle} />
+							</ListItem>
+						))}
+					</AnimatePresence>
+				)}
+			</List>
+			{hasMorePosts && (
+				<Box textAlign='center' py={2}>
+					<Button onClick={handleLoadMore} colorScheme='blue' variant='outline'>
+						Load More
+					</Button>
+				</Box>
 			)}
-		</List>
+		</>
 	);
 }
