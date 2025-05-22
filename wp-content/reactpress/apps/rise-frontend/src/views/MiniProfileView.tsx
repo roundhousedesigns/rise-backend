@@ -137,12 +137,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 			</Flex>
 			<Stack direction='column' lineHeight={1} w='full'>
 				<Box textAlign='center'>
-					<Avatar
-						size='superLg'
-						src={image || ''}
-						name={image ? profile.fullName() : ''}
-						colorScheme='gray'
-					/>
+					<Avatar size='superLg' src={image || ''} name={image ? profile.fullName() : ''} />
 				</Box>
 				<Box
 					flexWrap='wrap'

@@ -16,6 +16,7 @@ import {
 	FiSearch,
 	FiSettings,
 	FiStar,
+	FiUser,
 } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
 
@@ -29,7 +30,7 @@ interface SidebarMenuItemProps {
 }
 
 export default function Sidebar({ ...props }: BoxProps) {
-	const [{ loggedInId, starredProfiles }] = useViewer();
+	const [{ loggedInId, loggedInSlug, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
 
 	const {
@@ -49,6 +50,7 @@ export default function Sidebar({ ...props }: BoxProps) {
 
 	const menuItems: SidebarMenuItemProps[] = [
 		{ icon: <Icon as={FiHome} />, target: `/`, label: 'Dashboard' },
+		{ icon: <Icon as={FiUser} />, target: `/profile/${loggedInSlug}`, label: 'Profile' },
 		{ icon: <Icon as={FiSearch} />, target: '/search', label: 'Search' },
 		{
 			icon: (

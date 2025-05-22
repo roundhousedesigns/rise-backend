@@ -187,7 +187,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 							</Highlight>
 						</Heading>
 						<Box>
-							<Button onClick={onOpen} size='xxl' colorScheme='yellow'>
+							<Button onClick={onOpen} size='2xl' colorScheme='yellow'>
 								{`What is RISE? ${decodeString('&raquo;')}`}
 							</Button>
 						</Box>

@@ -29,7 +29,7 @@ export default function App() {
 				<Box h='100%' w='full'>
 					<Flex w='full' h='100%' justifyContent='stretch' alignItems='stretch' position='relative'>
 						<Sidebar position={isLargerThanMd ? 'relative' : 'absolute'} />
-						<Main ml={isLargerThanMd ? '' : '50px'} />
+						<Main pl={isLargerThanMd ? '' : '50px'} />
 					</Flex>
 				</Box>
 			</SearchContextProvider>

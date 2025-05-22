@@ -54,7 +54,7 @@ const sizes = {
 		fontSize: 'xl',
 		p: 4,
 	}),
-	xxl: defineStyle({
+	'2xl': defineStyle({
 		fontSize: '2xl',
 		p: 4,
 	}),

@@ -1,4 +1,4 @@
-import { Card, Grid, GridItem, List, ListItem, Spinner, Stack } from '@chakra-ui/react';
+import { Card, Grid, GridItem, List, ListItem, Skeleton, Spinner, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
@@ -32,7 +32,7 @@ export default function DashboardView() {
 						{profile ? (
 							<MiniProfileView profile={profile} borderWidth='2px' borderColor='brand.blue' />
 						) : profileLoading ? (
-							<Spinner />
+							<Skeleton height='200px' />
 						) : (
 							<></>
 						)}

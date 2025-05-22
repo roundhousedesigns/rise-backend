@@ -15,7 +15,9 @@ import {
 	Stack,
 	Tag,
 	Text,
+	Tooltip,
 	useBreakpointValue,
+	useColorMode,
 	Wrap,
 } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
@@ -33,6 +35,7 @@ import { getWPItemsFromIds } from '@lib/utils';
 import useResumePreview from '@queries/useResumePreview';
 import useUserTaxonomies from '@queries/useUserTaxonomies';
 import { Key } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
 	FiExternalLink,
 	FiGlobe,
@@ -99,6 +102,8 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 		conflictRanges,
 		credits,
 	} = profile || {};
+
+	const { colorMode } = useColorMode();
 
 	// Ensure media videos are unique
 	const mediaVideos = Array.from(new Set([mediaVideo1, mediaVideo2].filter(Boolean)));
@@ -213,8 +218,8 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 				>
 					{isLargerThanMd ? (
 						<Stack direction='column' w='40%' minW='160px' maxW='400px' textAlign='center' gap={4}>
-							{image ? (
-								<ColorCascadeBox>
+							<ColorCascadeBox>
+								{image ? (
 									<Image
 										src={image}
 										alt={`${profile.fullName()}'s picture`}
@@ -227,10 +232,20 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 										w='full'
 										transform='translate(0, 0)'
 									/>
-								</ColorCascadeBox>
-							) : (
-								<Avatar size='2xl' name={profile.fullName()} mx={2} />
-							)}
+								) : (
+									<Link as={RouterLink} to='/profile/edit' opacity={0.8} _hover={{ opacity: 1 }}>
+										<Tooltip
+											role='presentation'
+											label='Add a profile image'
+											placement='bottom'
+											bg={colorMode === 'dark' ? 'gray.700' : 'text.light'}
+											hasArrow
+										>
+											<Avatar size='superLg' src={''} name={''} mt={7} mb={5} mx={4} />
+										</Tooltip>
+									</Link>
+								)}
+							</ColorCascadeBox>
 
 							{!socials.isEmpty() ? (
 								<PersonalIconLinks

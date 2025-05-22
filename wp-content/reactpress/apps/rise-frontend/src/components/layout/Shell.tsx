@@ -33,7 +33,7 @@ export default function Shell({
 			<Spinner position='relative' top={12} />
 		</Center>
 	) : (
-		<Box pt={4} pr={2} pb={8} pl={0} mt={0} mb={0} {...props}>
+		<Box pt={4} px={0} pb={8} mt={0} mb={0} mx={0} {...props}>
 			{!!title || !!actions ? (
 				<Flex
 					justifyContent='space-between'
@@ -42,7 +42,8 @@ export default function Shell({
 					flexWrap='wrap'
 					m={0}
 					py={0}
-					px={4}
+					pr={4}
+					pl={{ base: 2, md: 4 }}
 				>
 					{title ? (
 						<Heading
@@ -68,12 +69,12 @@ export default function Shell({
 			) : null}
 
 			{description ? (
-				<Text as={Box} fontSize='sm' px={4} mt={0}>
+				<Text as={Box} fontSize='sm' pr={4} pl={{ base: 2, md: 4 }} mt={0}>
 					{description}
 				</Text>
 			) : null}
 
-			<Box px={4} mx='auto'>
+			<Box pr={4} pl={{ base: 2, md: 4 }} mx='auto'>
 				{children}
 			</Box>
 		</Box>
