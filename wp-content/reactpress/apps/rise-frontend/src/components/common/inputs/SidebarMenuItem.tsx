@@ -1,4 +1,4 @@
-import { Flex, IconProps, ListItem, ListItemProps, Text, useMediaQuery } from '@chakra-ui/react';
+import { Flex, IconProps, ListItem, ListItemProps, Text } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -20,8 +20,6 @@ export default function SidebarMenuItem({
 	children,
 	...props
 }: Props & ListItemProps) {
-	const [isLargerThanMd] = useMediaQuery('(min-width: 36rem)');
-
 	return (
 		<ListItem
 			w='full'

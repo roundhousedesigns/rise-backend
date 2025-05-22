@@ -39,7 +39,7 @@ const Subtext = ({ colorMode }: { colorMode: string }) => {
 	const text = colorMode === 'dark' ? 'Dark mode' : 'Light mode';
 
 	return (
-		<Text as='span'>
+		<Text as='span' fontSize='xs'>
 			<Highlight query={[colorMode]} styles={{ bg: 'brand.yellow', px: 1 }}>
 				{text}
 			</Highlight>

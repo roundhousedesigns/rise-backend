@@ -38,7 +38,7 @@ export default function SettingsView() {
 	return (
 		<Container maxW='4xl' pl={0} mx={0}>
 			<SettingsSection title='Account'>
-				<Flex gap={2}>
+				<Flex gap={2} flexWrap='wrap'>
 					<Box>
 						<Button onClick={handleEmailClick} colorScheme='gray'>
 							Change your email address

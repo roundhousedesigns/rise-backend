@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
 import { FormControlProps, Highlight, Text, useToast } from '@chakra-ui/react';
-import { FiEyeOff, FiEye } from 'react-icons/fi';
-import { deleteCookie, setCookie } from '@lib/utils';
-import useViewer from '@queries/useViewer';
-import useToggleDisableProfile from '@mutations/useToggleDisableProfile';
 import ToggleOptionSwitch from '@common/ToggleOptionSwitch';
+import { deleteCookie, setCookie } from '@lib/utils';
+import useToggleDisableProfile from '@mutations/useToggleDisableProfile';
+import useViewer from '@queries/useViewer';
+import { useEffect } from 'react';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 interface Props {
 	size?: string;
@@ -69,17 +69,17 @@ export default function DisableProfileToggle({
 }
 
 const Description = ({ disableProfile }: { disableProfile: boolean }) => {
-	return disableProfile ? (
-		<Text as='span' lineHeight='shorter'>
-			<Highlight query={['private', 'hidden']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
-				Your profile is private and you won't appear in searches.
-			</Highlight>
-		</Text>
-	) : (
-		<Text as='span' lineHeight='shorter'>
-			<Highlight query={['public']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
-				Your profile is public and you'll appear in searches.
-			</Highlight>
+	return (
+		<Text as='span' lineHeight='shorter' fontSize='xs'>
+			{disableProfile ? (
+				<Highlight query={['private', 'hidden']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
+					Your profile is private and you won't appear in searches.
+				</Highlight>
+			) : (
+				<Highlight query={['public']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
+					Your profile is public and you'll appear in searches.
+				</Highlight>
+			)}
 		</Text>
 	);
 };

@@ -1,4 +1,4 @@
-import { Box, Flex, Icon, IconButton, List, Spacer, Text } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Icon, IconButton, List, Spacer, Text } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
@@ -28,7 +28,7 @@ interface SidebarMenuItemProps {
 	isExpanded?: boolean;
 }
 
-export default function Sidebar() {
+export default function Sidebar({ ...props }: BoxProps) {
 	const [{ loggedInId, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
 
@@ -116,13 +116,16 @@ export default function Sidebar() {
 	return loggedInId ? (
 		<Box
 			id='sidebar'
+			minH='100%'
 			py={0}
 			_light={{ bg: 'blackAlpha.700', color: 'text.light' }}
-			_dark={{ bg: 'blackAlpha.300', color: 'text.light' }}
+			_dark={{ bg: 'gray.800', color: 'text.light' }}
 			overflow='hidden'
 			transition='all 200ms ease'
-			w={sidebarExpanded ? { base: '136px', md: '160px' } : '50px'}
+			w={sidebarExpanded ? '160px' : '50px'}
 			aria-expanded={sidebarExpanded}
+			zIndex={1000}
+			{...props}
 		>
 			<Flex
 				h='full'
@@ -133,7 +136,6 @@ export default function Sidebar() {
 				flexDirection='column'
 				alignItems='center'
 				justifyContent='space-between'
-				fontSize={{ sm: 'xs', lg: 'sm' }}
 				borderRight='1px solid'
 				transition='all 200ms ease'
 				_light={{ borderColor: 'text.dark' }}
@@ -151,7 +153,7 @@ export default function Sidebar() {
 					ml={sidebarExpanded ? '13px' : '10.5px'}
 				/>
 
-				<List spacing={0} w='full' px={0} mt={3} mb={2}>
+				<List spacing={0} w='full' px={0} mt={3} mb={2} fontSize={{ base: 'xs', lg: 'sm' }}>
 					{menuItems.map((item, index) => {
 						if (item.isDisabled) return null;
 

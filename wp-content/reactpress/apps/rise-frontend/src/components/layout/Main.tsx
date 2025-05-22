@@ -1,4 +1,4 @@
-import { Box, Text, chakra } from '@chakra-ui/react';
+import { Box, BoxProps, Text, chakra } from '@chakra-ui/react';
 import ProfileNotices from '@common/ProfileNotices';
 import LoggedIn from '@components/LoggedIn';
 import DevMode from '@dev/DevMode';
@@ -21,10 +21,11 @@ import StarredProfiles from '@routes/StarredProfiles';
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import pkgJSON from '@@/package.json';
-import Search from '@@/src/routes/Search';
+import Search from '@routes/Search';
+
 const __APP_VERSION__ = `v${pkgJSON.version}`;
 
-export default function Main() {
+export default function Main({ ...props }: BoxProps) {
 	/**
 	 * Routes for the main application.
 	 */
@@ -160,7 +161,7 @@ export default function Main() {
 	]);
 
 	return (
-		<Box w='full' h='auto' minH='100%' background='none' flex='1 1 auto'>
+		<Box w='full' h='auto' minH='100%' background='none' flex='1 1 auto' {...props}>
 			<ProfileNotices />
 
 			<Box px={2}>{routes}</Box>

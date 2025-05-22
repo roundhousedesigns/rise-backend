@@ -2,12 +2,14 @@
  * Copyright (c) 2024 Maestra Music and Roundhouse Designs. All rights reserved.
  */
 
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
 import { SearchContextProvider } from '@context/SearchContext';
 import Main from '@layout/Main';
 import Sidebar from '@layout/Sidebar';
 
 export default function App() {
+	const [isLargerThanMd] = useMediaQuery('(min-width: 36rem)');
+
 	return (
 		<Box
 			id='app-root'
@@ -19,14 +21,15 @@ export default function App() {
 				bg: 'bg.light',
 				color: 'text.dark',
 			}}
-			minH='100%'
 			w='100vw'
+			h='full'
+			overflow='auto'
 		>
 			<SearchContextProvider>
-				<Box minH='100%' w='full'>
-					<Flex w='full' minH='100%' justifyContent='stretch' alignItems='stretch'>
-						<Sidebar />
-						<Main />
+				<Box h='100%' w='full'>
+					<Flex w='full' h='100%' justifyContent='stretch' alignItems='stretch' position='relative'>
+						<Sidebar position={isLargerThanMd ? 'relative' : 'absolute'} />
+						<Main ml={isLargerThanMd ? '' : '50px'} />
 					</Flex>
 				</Box>
 			</SearchContextProvider>
