@@ -1,5 +1,5 @@
 import { Box, BoxProps, Heading, useColorMode } from '@chakra-ui/react';
-import HeadingCenterline from './HeadingCenterline';
+import HeadingCenterline from '@common/HeadingCenterline';
 
 interface Props {
 	title?: string;

@@ -1,17 +1,28 @@
 import {
+	Box,
 	Button,
 	chakra,
 	Flex,
 	FormControl,
 	FormLabel,
+	Heading,
 	Input,
+	Spinner,
 	Stack,
+	Text,
 	Textarea,
 	useToast,
 } from '@chakra-ui/react';
 import CheckboxButton from '@common/inputs/CheckboxButton';
+import ProfileCheckboxGroup from '@common/inputs/ProfileCheckboxGroup';
+import RequiredAsterisk from '@common/RequiredAsterisk';
+import { WPItem } from '@lib/classes';
 import { JobPostOutput } from '@lib/types';
+import { sortWPItemsByName } from '@lib/utils';
 import useUpdateJobPost from '@mutations/useUpdateJobPost';
+import useLazyPositions from '@queries/useLazyPositions';
+import useLazyRelatedSkills from '@queries/useLazyRelatedSkills';
+import usePositions from '@queries/usePositions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,13 +58,39 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 		isPaid: false,
 		isInternship: false,
 		isUnion: false,
+		departments: [],
+		jobs: [],
+		skills: [],
 	});
+
+	// Add state for departments, jobs, and skills
+	const [allDepartments] = usePositions();
+	const [getJobs, { loading: jobsLoading }] = useLazyPositions();
+	const [jobs, setJobs] = useState<WPItem[]>([]);
+	const [getRelatedSkills, { loading: relatedSkillsLoading }] = useLazyRelatedSkills();
+	const [skills, setSkills] = useState<WPItem[]>([]);
+
+	// Add effect to load initial data
+	useEffect(() => {
+		// If we have initial data, load the jobs and skills based on that
+		if (initialData) {
+			// Access departments directly from initialData
+			const departments = initialData.departments || [];
+			refetchAndSetJobs(departments).then((jobIds) => {
+				if (jobIds.length > 0) {
+					refetchAndSetSkills(jobIds);
+				}
+			});
+		}
+	}, [initialData]);
 
 	useEffect(() => {
 		if (initialData) {
 			// Format dates to YYYY-MM-DD for date inputs
 			const formattedData = {
 				...initialData,
+				departments: initialData.departments || [],
+				jobs: initialData.jobs || [],
 				startDate: initialData.startDate
 					? new Date(initialData.startDate).toISOString().split('T')[0]
 					: '',
@@ -64,6 +101,130 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 			setFormData(formattedData);
 		}
 	}, [initialData]);
+
+	// Add functions to handle department, job, and skill changes
+	const refetchAndSetJobs = async (departmentIds: number[]) => {
+		if (departmentIds.length === 0) {
+			setJobs([]);
+			return [];
+		}
+
+		// Ensure we're passing an array of numbers
+		const numericIds = departmentIds
+			.map((id) => {
+				const numId = Number(id);
+				return numId;
+			})
+			.filter((id) => !isNaN(id));
+
+		if (numericIds.length === 0) {
+			setJobs([]);
+			return [];
+		}
+
+		const jobData = await getJobs({
+			variables: { departments: numericIds },
+		});
+
+		const jobsByDept = jobData?.data?.jobsByDepartments;
+
+		if (jobsByDept) {
+			const sortedJobs = jobsByDept.map((item: WPItem) => new WPItem(item)).sort(sortWPItemsByName);
+			setJobs(sortedJobs);
+			return jobsByDept.map((j: WPItem) => Number(j.id));
+		} else {
+			setJobs([]);
+			return [];
+		}
+	};
+
+	const refetchAndSetSkills = async (jobIds: number[]) => {
+		if (jobIds.length === 0) {
+			setSkills([]);
+			return [];
+		}
+
+		const skillData = await getRelatedSkills({
+			variables: { jobs: jobIds },
+		});
+		const relatedSkills = skillData?.data?.jobSkills;
+
+		if (relatedSkills) {
+			const sortedSkills = relatedSkills
+				.map((item: WPItem) => new WPItem(item))
+				.sort(sortWPItemsByName);
+			setSkills(sortedSkills);
+			return relatedSkills.map((s: WPItem) => Number(s.id));
+		} else {
+			setSkills([]);
+			return [];
+		}
+	};
+
+	const handleDepartmentsChange = (name: string) => (value: string[]) => {
+		const termsAsNums = value.map((i) => Number(i));
+		setFormData((prev) => ({
+			...prev,
+			departments: termsAsNums,
+		}));
+
+		// Update jobs to align with selected depts
+		refetchAndSetJobs(termsAsNums).then((visibleJobs) => {
+			setFormData((prev) => {
+				const currentJobs = Array.isArray(prev.jobs) ? prev.jobs : [];
+				const filteredSelectedJobIds = currentJobs.filter((id: number) => visibleJobs.includes(id));
+
+				// Update skills to align with selected jobs
+				refetchAndSetSkills(filteredSelectedJobIds).then((visibleSkills) => {
+					setFormData((prev) => {
+						const currentSkills = Array.isArray(prev.skills) ? prev.skills : [];
+						const filteredSelectedSkillIds = currentSkills.filter((id: number) =>
+							visibleSkills.includes(id)
+						);
+						return {
+							...prev,
+							skills: filteredSelectedSkillIds,
+						};
+					});
+				});
+
+				return {
+					...prev,
+					jobs: filteredSelectedJobIds,
+				};
+			});
+		});
+	};
+
+	const handleJobsChange = (name: string) => (value: string[]) => {
+		const termsAsNums = value.map((i) => Number(i));
+		setFormData((prev) => ({
+			...prev,
+			jobs: termsAsNums,
+		}));
+
+		// Update skills to align with selected jobs
+		refetchAndSetSkills(termsAsNums).then((visibleSkills) => {
+			setFormData((prev) => {
+				const currentSkills = Array.isArray(prev.skills) ? prev.skills : [];
+				const filteredSelectedSkillIds = currentSkills.filter((id: number) =>
+					visibleSkills.includes(id)
+				);
+				return {
+					...prev,
+					skills: filteredSelectedSkillIds,
+				};
+			});
+		});
+	};
+
+	const handleSkillsChange = (name: string) => (value: string[]) => {
+		const termsAsNums = value.map((i) => Number(i));
+		setFormData((prev) => ({
+			...prev,
+			skills: termsAsNums,
+		}));
+	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value, type } = e.target;
@@ -90,10 +251,10 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 		e.preventDefault();
 		setIsSubmitting(true);
 
+		// TODO: Move this to a class method or util function
 		// Clean up the data before sending to mutation
 		const cleanData = {
 			id: formData.id,
-			author: formData.author,
 			title: formData.title,
 			companyName: formData.companyName,
 			companyAddress: formData.companyAddress,
@@ -111,12 +272,14 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 			isPaid: formData.isPaid,
 			isInternship: formData.isInternship,
 			isUnion: formData.isUnion,
+			departments: formData.departments,
+			jobs: formData.jobs,
+			skills: formData.skills,
 		};
 
 		updateJobPostMutation(cleanData)
 			.then((response) => {
-				console.log(response);
-				if (response.data?.updateOrCreateJobPost?.success) {
+				if (response.data?.updateOrCreateJobPost?.updatedJobPost) {
 					toast({
 						title: 'Success',
 						description: initialData ? 'Job updated successfully' : 'Job created successfully',
@@ -343,6 +506,57 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 						/>
 					</FormControl>
 				</FormRow>
+
+				<Stack direction='column' spacing={6} fontSize='md'>
+					<Box>
+						<Heading as='h4' variant='contentTitle'>
+							Department
+							<RequiredAsterisk fontSize='md' position='relative' top={-1} />
+						</Heading>
+						<Text>Select all department(s) for this position.</Text>
+						<ProfileCheckboxGroup
+							name='departments'
+							items={allDepartments}
+							checked={formData.departments?.map((item: number) => item.toString()) || []}
+							handleChange={handleDepartmentsChange}
+						/>
+					</Box>
+
+					{formData.departments?.length && !jobsLoading ? (
+						<Box>
+							<Heading as='h4' variant='contentTitle'>
+								Position
+								<RequiredAsterisk fontSize='md' position='relative' top={-1} />
+							</Heading>
+							<Text>Select all positions for this job posting.</Text>
+							<ProfileCheckboxGroup
+								name='jobs'
+								items={jobs}
+								checked={formData.jobs?.map((item: number) => item.toString()) || []}
+								handleChange={handleJobsChange}
+							/>
+						</Box>
+					) : jobsLoading ? (
+						<Spinner />
+					) : null}
+
+					{formData.jobs?.length && !relatedSkillsLoading ? (
+						<Box>
+							<Heading as='h4' variant='contentTitle'>
+								Skills
+							</Heading>
+							<Text>Select any skills required for this position.</Text>
+							<ProfileCheckboxGroup
+								name='skills'
+								items={skills}
+								checked={formData.skills?.map((item: number) => item.toString()) || []}
+								handleChange={handleSkillsChange}
+							/>
+						</Box>
+					) : relatedSkillsLoading ? (
+						<Spinner />
+					) : null}
+				</Stack>
 			</Stack>
 
 			<Button

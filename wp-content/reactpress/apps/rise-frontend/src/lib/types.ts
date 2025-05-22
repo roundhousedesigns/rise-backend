@@ -284,11 +284,6 @@ export interface ViewerData {
  */
 export interface JobPostParams {
 	id: number;
-	authorNode?: {
-		node: {
-			databaseId: number;
-		};
-	};
 	author?: number;
 	status?: string;
 	title: string;
@@ -310,6 +305,10 @@ export interface JobPostParams {
 	isPaid?: boolean;
 	departments?: number[];
 	jobs?: number[];
+	positions: {
+		departments: number[];
+		jobs: number[];
+	};
 	skills?: number[];
 }
 

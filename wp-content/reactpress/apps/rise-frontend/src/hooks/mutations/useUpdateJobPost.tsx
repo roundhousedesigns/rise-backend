@@ -6,9 +6,11 @@ import { gql, useMutation } from '@apollo/client';
 import { JobPostOutput } from '@lib/types';
 
 const MUTATE_UPDATE_JOB_POST = gql`
-	mutation UpdateOrCreateJobPost($input: UpdateOrCreateJobPostInput!) {
+	mutation UpdateOrCreateJobPost($input: UpdateOrCreateJobPostInput = {}) {
 		updateOrCreateJobPost(input: $input) {
-			success
+			updatedJobPost {
+				id: databaseId
+			}
 			awaitingPayment
 			wcCheckoutEndpoint
 		}
@@ -21,7 +23,9 @@ const useUpdateJobPost = () => {
 	const updateJobPostMutation = (jobPost: JobPostOutput) => {
 		return mutation({
 			variables: {
-				input: jobPost,
+				input: {
+					jobPost,
+				},
 			},
 		});
 	};

@@ -622,6 +622,11 @@ export class JobPost extends WPPost {
 	isInternship?: boolean;
 	isPaid?: boolean;
 	isUnion?: boolean;
+	positions: {
+		departments: number[];
+		jobs: number[];
+	} = { departments: [], jobs: [] };
+	skills: number[];
 
 	constructor(params: JobPostParams) {
 		super(params);
@@ -633,8 +638,36 @@ export class JobPost extends WPPost {
 		this.contactName = params.contactName;
 		this.startDate = params.startDate;
 		this.instructions = params.instructions;
+		this.positions = this.getPositions(params) || { departments: [], jobs: [] };
+		this.skills = params.skills ? params.skills : [];
 
 		Object.assign(this, params);
+	}
+
+	/**
+	 * Get the positions of the Job Post.
+	 *
+	 * @param {JobPostParams} params - Job Post parameters
+	 * @returns {Object} An object containing departments and jobs
+	 */
+	private getPositions(params: JobPostParams): { departments: number[]; jobs: number[] } {
+		if (params.positions) {
+			return params.positions;
+		}
+
+		if (
+			params.departments &&
+			params.departments.length > 0 &&
+			params.jobs &&
+			params.jobs.length > 0
+		) {
+			return {
+				departments: params.departments.map((departments) => Number(departments)),
+				jobs: params.jobs.map((job) => Number(job)),
+			};
+		}
+
+		return this.positions;
 	}
 }
 

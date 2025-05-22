@@ -115,7 +115,7 @@ class Rise_Types {
 	 * for use with 'credit'.
 	 */
 	public function position_init() {
-		Rise_Taxonomies::register_taxonomy( ['credit'], 'position', 'positions', 'Production Position', 'Production Positions', true );
+		Rise_Taxonomies::register_taxonomy( ['credit', 'job_post'], 'position', 'positions', 'Production Position', 'Production Positions', true );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Rise_Types {
 	 * for use with 'credit'.
 	 */
 	public function skill_init() {
-		return Rise_Taxonomies::register_taxonomy( ['credit'], 'skill', 'skills', 'Skill', 'Skills', false );
+		return Rise_Taxonomies::register_taxonomy( ['credit', 'job_post'], 'skill', 'skills', 'Skill', 'Skills', false );
 	}
 
 	/**

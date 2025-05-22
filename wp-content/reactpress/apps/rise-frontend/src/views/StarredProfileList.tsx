@@ -1,6 +1,6 @@
 import { ListProps } from '@chakra-ui/react';
+import CandidateList from '@components/CandidateList';
 import useViewer from '@queries/useViewer';
-import CandidateList from '../components/CandidateList';
 
 interface Props {
 	showToggle?: boolean;

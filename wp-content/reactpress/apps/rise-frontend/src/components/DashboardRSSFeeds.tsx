@@ -19,6 +19,10 @@ export default function DashboardRSSFeeds() {
 						title: 'Variety: Theater',
 						feedUrl: 'https://variety.com/v/theater/feed/',
 					},
+					{
+						title: 'Broadway World',
+						feedUrl: 'https://www.broadwayworld.com/rss/news.xml',
+					},
 				]}
 				limit={6}
 			/>

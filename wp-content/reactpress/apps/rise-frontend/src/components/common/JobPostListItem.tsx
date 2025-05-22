@@ -33,6 +33,8 @@ export default function JobPostListItem({
 		compensation,
 		startDate,
 		endDate,
+		positions: { departments: departmentIds, jobs: jobIds } = { departments: [], jobs: [] },
+		skills: skillIds,
 	} = job;
 
 	const datesString = endDate ? `${startDate} - ${endDate}` : `Starts ${startDate}`;

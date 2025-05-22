@@ -98,8 +98,13 @@ export default function RSSFeed({
 				)}
 			</List>
 			{hasMorePosts && (
-				<Box textAlign='center' py={2}>
-					<Button onClick={handleLoadMore} colorScheme='blue' variant='outline'>
+				<Box textAlign='center' py={2} mt={4}>
+					<Button
+						onClick={handleLoadMore}
+						colorScheme='blue'
+						variant='outline'
+						aria-label='Load more news headlines'
+					>
 						Load More
 					</Button>
 				</Box>

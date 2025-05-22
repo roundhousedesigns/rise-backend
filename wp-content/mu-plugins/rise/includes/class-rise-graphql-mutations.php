@@ -1281,87 +1281,18 @@ class Rise_GraphQL_Mutations {
 			'updateOrCreateJobPost',
 			[
 				'inputFields'         => [
-					'id'               => [
-						'type'        => 'Int',
-						'description' => __( 'The ID of the job post, if it already exists.', 'rise' ),
-					],
-					'author'           => [
-						'type'        => 'Int',
-						'description' => __( 'The ID of the author of the job post, if it already exists.', 'rise' ),
-					],
-					'title'            => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The title of the job post.', 'rise' ),
-					],
-					'companyName'      => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The name of the company.', 'rise' ),
-					],
-					'companyAddress'   => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The address of the company.', 'rise' ),
-					],
-					'contactName'      => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The name of the contact person.', 'rise' ),
-					],
-					'contactEmail'     => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The email of the contact person.', 'rise' ),
-					],
-					'contactPhone'     => [
-						'type'        => 'String',
-						'description' => __( 'The phone number of the contact person.', 'rise' ),
-					],
-					'startDate'        => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The start date of the job.', 'rise' ),
-					],
-					'endDate'          => [
-						'type'        => 'String',
-						'description' => __( 'The end date of the job.', 'rise' ),
-					],
-					'instructions'     => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'The application instructions.', 'rise' ),
-					],
-					'compensation'     => [
-						'type'        => 'String',
-						'description' => __( 'The compensation details.', 'rise' ),
-					],
-					'applicationUrl'   => [
-						'type'        => 'String',
-						'description' => __( 'The URL for applications.', 'rise' ),
-					],
-					'applicationPhone' => [
-						'type'        => 'String',
-						'description' => __( 'The phone number for applications.', 'rise' ),
-					],
-					'applicationEmail' => [
-						'type'        => 'String',
-						'description' => __( 'The email for applications.', 'rise' ),
-					],
-					'description'      => [
-						'type'        => 'String',
-						'description' => __( 'The job description.', 'rise' ),
-					],
-					'isPaid'           => [
-						'type'        => 'Boolean',
-						'description' => __( 'Whether this is a paid position.', 'rise' ),
-					],
-					'isInternship'     => [
-						'type'        => 'Boolean',
-						'description' => __( 'Whether this is an internship position.', 'rise' ),
-					],
-					'isUnion'          => [
-						'type'        => 'Boolean',
-						'description' => __( 'Whether this is a union position.', 'rise' ),
+					'jobPost' => [
+						'type'        => 'JobPostInput',
+						'description' => __( 'The job post data to insert.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
-					'success'            => [
-						'type'        => 'Boolean',
-						'description' => __( 'Whether the job post was created or updated.', 'rise' ),
+					'updatedJobPost'     => [
+						'type'        => 'JobPostOutput',
+						'description' => __( 'The updated job post data.', 'rise' ),
+						'resolve'     => function ( $payload ) {
+							return $payload['updatedJobPost'];
+						},
 					],
 					'awaitingPayment'    => [
 						'type'        => 'Boolean',
@@ -1375,10 +1306,18 @@ class Rise_GraphQL_Mutations {
 				'mutateAndGetPayload' => function ( $input ) {
 					// We obfuscate the actual success of this mutation to prevent user enumeration.
 					$payload = [
-						'success'            => false,
+						'updatedJobPost'     => null,
 						'awaitingPayment'    => false,
-						'wcCheckoutEndpoint' => esc_url_raw( wc_get_checkout_url() ),
+						'wcCheckoutEndpoint' => '',
 					];
+
+					if ( !isset( $input['jobPost'] ) ) {
+						return [
+							'updatedJobPost' => new \WP_Error( 'no_job_post_data', __( 'No job post data provided.', 'rise' ) ),
+						];
+					}
+
+					$job_input_data = $input['jobPost'];
 
 					$job_post_product_id = 15695;
 
@@ -1388,7 +1327,7 @@ class Rise_GraphQL_Mutations {
 					}
 
 					$job_post_defaults          = [];
-					$job_post_defaults['isNew'] = !isset( $input['id'] ) || !$input['id'];
+					$job_post_defaults['isNew'] = !isset( $job_input_data['id'] ) || !$job_input_data['id'];
 
 					if ( $job_post_defaults['isNew'] ) {
 						// Only force the status if the job post is new.
@@ -1396,13 +1335,13 @@ class Rise_GraphQL_Mutations {
 					}
 
 					// Create a new job post object
-					$job_post = new Rise_Job_Post( array_merge( $input, $job_post_defaults ) );
+					$job_post = new Rise_Job_Post( array_merge( $job_input_data, $job_post_defaults ) );
 
 					// Store the job post in session so we can post it after payment is complete.
 					if ( $job_post_defaults['isNew'] ) {
 						WC()->session->set( 'new_job_post_awaiting_payment', $job_post );
 
-						$payload['success']         = true;
+						$payload['updatedJobPost']  = $job_post->prepare_job_post_for_graphql();
 						$payload['awaitingPayment'] = true;
 
 						// Empty the cart and add the job post product to it.
@@ -1416,7 +1355,7 @@ class Rise_GraphQL_Mutations {
 							throw new UserError( esc_html( $result->get_error_message() ) );
 						}
 
-						$payload['success']         = true;
+						$payload['updatedJobPost']  = $job_post->prepare_job_post_for_graphql();
 						$payload['awaitingPayment'] = false;
 					}
 

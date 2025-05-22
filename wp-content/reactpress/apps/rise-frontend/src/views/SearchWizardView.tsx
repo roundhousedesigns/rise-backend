@@ -4,6 +4,7 @@ import SearchFilterAccordionItem from '@common/SearchFilterAccordionItem';
 import SearchFilterSection from '@common/SearchFilterSection';
 import AdditionalSearchFilters from '@components/AdditionalSearchFilters';
 import DepartmentsAutocomplete from '@components/DepartmentsAutocomplete';
+import SavedSearchItemList from '@components/SavedSearchItemList';
 import SearchFilterDates from '@components/SearchFilterDates';
 import SearchFilterDepartment from '@components/SearchFilterDepartment';
 import SearchFilterJobs from '@components/SearchFilterJobs';
@@ -12,7 +13,6 @@ import SearchFilterSkills from '@components/SearchFilterSkills';
 import { SearchContext } from '@context/SearchContext';
 import { FormEvent, useContext } from 'react';
 import { FiFolder, FiUser } from 'react-icons/fi';
-import SavedSearchItemList from '../components/SavedSearchItemList';
 
 interface Props {
 	onSubmit: (e: FormEvent<HTMLFormElement>) => void;

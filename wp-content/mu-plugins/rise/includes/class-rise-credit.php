@@ -117,7 +117,7 @@ class Rise_Credit {
 	/**
 	 * The credit's `skill` taxonomy terms.
 	 *
-	 * @var int[] $credits The credit's credit IDs.
+	 * @var int[] $skills The credit's skill IDs.
 	 * @since 0.1.0
 	 */
 	private $skills;

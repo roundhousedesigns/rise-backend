@@ -440,10 +440,10 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The title of the job post.', 'rise' ),
 					],
-					'author'           => [
-						'type'        => 'Int',
-						'description' => __( 'The author of the job post.', 'rise' ),
-					],
+					// 'author'           => [
+					// 	'type'        => 'Int',
+					// 	'description' => __( 'The author of the job post.', 'rise' ),
+					// ],
 					'companyName'      => [
 						'type'        => 'String',
 						'description' => __( 'The name of the company.', 'rise' ),
@@ -507,6 +507,18 @@ class Rise_GraphQL_Types {
 					'isUnion'          => [
 						'type'        => 'Boolean',
 						'description' => __( 'Whether this is a union position.', 'rise' ),
+					],
+					'departments'      => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The job post\'s department term IDs.', 'rise' ),
+					],
+					'jobs'             => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The job post\'s job term IDs.', 'rise' ),
+					],
+					'skills'           => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The job post\'s skill term IDs.', 'rise' ),
 					],
 				],
 			]
@@ -627,6 +639,18 @@ class Rise_GraphQL_Types {
 					'isUnion'          => [
 						'type'        => 'Boolean',
 						'description' => __( 'Whether this is a union position.', 'rise' ),
+					],
+					'departments'      => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The job post\'s department term IDs.', 'rise' ),
+					],
+					'jobs'             => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The job post\'s job term IDs.', 'rise' ),
+					],
+					'skills'           => [
+						'type'        => ['list_of' => 'Int'],
+						'description' => __( 'The job post\'s skill term IDs.', 'rise' ),
 					],
 				],
 			]

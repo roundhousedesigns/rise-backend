@@ -166,12 +166,28 @@ class Rise_Job_Post {
 	private $is_union;
 
 	/**
-	 * The job post's expiration date.
+	 * The job_post's 2nd-level `position` taxonomy terms.
 	 *
-	 * @var string $expires_on The job post's expiration date.
-	 * @since 0.1.0
+	 * @var int[] $departments The job_post's `position` IDs.
+	 * @since 1.2
 	 */
-	private $expires_on;
+	private $departments;
+
+	/**
+	 * The job_post's 2nd-level `position` taxonomy terms.
+	 *
+	 * @var int[] $jobs The job_post's `position` IDs.
+	 * @since 1.2
+	 */
+	private $jobs;
+
+	/**
+	 * The job post's `skill` taxonomy terms.
+	 *
+	 * @var int[] $skills The job post's skill IDs.
+	 * @since 1.2
+	 */
+	private $skills;
 
 	/**
 	 * The constructor.
@@ -201,6 +217,9 @@ class Rise_Job_Post {
 		$this->is_paid           = $data['isPaid'];
 		$this->is_internship     = $data['isInternship'];
 		$this->is_union          = $data['isUnion'];
+		$this->departments       = $data['departments'];
+		$this->jobs              = $data['jobs'];
+		$this->skills            = $data['skills'];
 	}
 
 	/**
@@ -227,10 +246,16 @@ class Rise_Job_Post {
 
 		$this->set_id( $job_post_id );
 
-		$meta = $this->update_meta();
+		$meta   = $this->update_meta();
+		$jobs   = $this->update_positions();
+		$skills = $this->update_skills();
 
 		if ( 0 === $meta ) {
 			return new WP_Error( 'no_meta', 'No meta was updated.' );
+		} elseif ( is_wp_error( $jobs ) ) {
+			return $jobs->get_error_message();
+		} elseif ( is_wp_error( $skills ) ) {
+			return $skills->get_error_message();
 		}
 
 		return $job_post_id;
@@ -297,9 +322,27 @@ class Rise_Job_Post {
 	}
 
 	/**
+	 * Set the job post's 2nd-level `position` terms.
+	 *
+	 * @return int[]|WP_Error The term IDs on success. WP_Error on failure.
+	 */
+	protected function update_positions() {
+		$positions = array_merge( $this->departments, $this->jobs );
+		return wp_set_object_terms( $this->job_post_id, array_map( 'intval', $positions ), 'position', false );
+	}
+
+	/**
+	 * Set the job post's `skill` terms.
+	 *
+	 * @return int[]|WP_Error The term IDs on success. WP_Error on failure.
+	 */
+	protected function update_skills() {
+		return wp_set_object_terms( $this->job_post_id, array_map( 'intval', $this->skills ), 'skill', false );
+	}
+
+	/**
 	 * Get the job post's data for GraphQL.
 	 *
-	 * @deprecated 1.2
 	 * @since 1.2
 	 *
 	 * @return array The job post's data.
@@ -325,6 +368,9 @@ class Rise_Job_Post {
 			'isPaid'           => $this->is_paid,
 			'isInternship'     => $this->is_internship,
 			'isUnion'          => $this->is_union,
+			'jobs'             => $this->jobs,
+			'departments'      => $this->departments,
+			'skills'           => $this->skills,
 		];
 	}
 

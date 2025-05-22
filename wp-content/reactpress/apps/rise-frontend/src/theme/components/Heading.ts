@@ -7,14 +7,14 @@ const baseStyle = defineStyle({
 
 const variants = {
 	pageTitle: defineStyle({
-		fontSize: '4xl',
+		fontSize: { base: '3xl', md: '4xl' },
 	}),
 	pageSubtitle: defineStyle({
-		fontSize: '3xl',
+		fontSize: { base: '2xl', md: '3xl' },
 		fontWeight: 'bold',
 	}),
 	contentTitle: defineStyle({
-		fontSize: '2xl',
+		fontSize: { base: '2xl', md: '3xl' },
 		fontWeight: 'bold',
 		pb: 0,
 	}),

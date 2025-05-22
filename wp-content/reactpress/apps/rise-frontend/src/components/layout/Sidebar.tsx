@@ -116,12 +116,12 @@ export default function Sidebar() {
 	return loggedInId ? (
 		<Box
 			id='sidebar'
-			w={sidebarExpanded ? '180px' : '52px'}
 			py={0}
 			_light={{ bg: 'blackAlpha.700', color: 'text.light' }}
 			_dark={{ bg: 'blackAlpha.300', color: 'text.light' }}
 			overflow='hidden'
 			transition='all 200ms ease'
+			w={sidebarExpanded ? { base: '136px', md: '160px' } : '50px'}
 			aria-expanded={sidebarExpanded}
 		>
 			<Flex
@@ -133,7 +133,7 @@ export default function Sidebar() {
 				flexDirection='column'
 				alignItems='center'
 				justifyContent='space-between'
-				fontSize='sm'
+				fontSize={{ sm: 'xs', lg: 'sm' }}
 				borderRight='1px solid'
 				transition='all 200ms ease'
 				_light={{ borderColor: 'text.dark' }}
@@ -148,7 +148,7 @@ export default function Sidebar() {
 					transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
 					transition='all 200ms ease'
 					alignSelf='flex-start'
-					ml='12.5px'
+					ml={sidebarExpanded ? '13px' : '10.5px'}
 				/>
 
 				<List spacing={0} w='full' px={0} mt={3} mb={2}>

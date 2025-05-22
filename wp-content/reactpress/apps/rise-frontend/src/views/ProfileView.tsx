@@ -25,8 +25,8 @@ import StarToggleIcon from '@common/StarToggleIcon';
 import WrapWithIcon from '@common/WrapWithIcon';
 import ConflictDateRanges from '@components/ConflictDateRanges';
 import CreditItem from '@components/CreditItem';
-import CreditsTagLegend from '@components/CreditsTagLegend';
 import PersonalIconLinks from '@components/PersonalIconLinks';
+import PositionsTagLegend from '@components/PositionsTagLegend';
 import ResumePreviewModal from '@components/ResumePreviewModal';
 import { Credit, UserProfile, WPItem } from '@lib/classes';
 import { getWPItemsFromIds } from '@lib/utils';
@@ -405,7 +405,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 				<ProfileStackItem centerlineColor='brand.blue' title='Credits'>
 					<>
 						<Flex justifyContent='flex-end'>
-							<CreditsTagLegend mr={4} />
+							<PositionsTagLegend mr={4} />
 						</Flex>
 						<List m={0}>
 							{creditsSorted.map((credit: Credit) => (

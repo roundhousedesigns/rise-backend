@@ -1,4 +1,4 @@
-import { Flex, IconProps, ListItem, ListItemProps, Text } from '@chakra-ui/react';
+import { Flex, IconProps, ListItem, ListItemProps, Text, useMediaQuery } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -20,6 +20,8 @@ export default function SidebarMenuItem({
 	children,
 	...props
 }: Props & ListItemProps) {
+	const [isLargerThanMd] = useMediaQuery('(min-width: 36rem)');
+
 	return (
 		<ListItem
 			w='full'
@@ -33,12 +35,14 @@ export default function SidebarMenuItem({
 				to={typeof target === 'string' ? target : undefined}
 				onClick={typeof target === 'function' ? target : undefined}
 				alignItems='center'
-				justifyContent={isExpanded ? 'center' : 'flex-start'}
+				justifyContent='flex-start'
+				flexWrap='nowrap'
+				pr={isExpanded ? 8 : 0}
+				pl={isExpanded ? 4 : 3.5}
 				gap={2}
-				px={4}
-				textDecoration='none'
 				w='100%'
-				transition='background-color 200ms ease'
+				textDecoration='none'
+				transition='all 200ms ease-in-out'
 				_light={{
 					bg: isActive ? 'gray.500' : 'transparent',
 				}}
@@ -55,7 +59,15 @@ export default function SidebarMenuItem({
 				}}
 			>
 				{icon}
-				<Text visibility={isExpanded ? 'visible' : 'hidden'} flex={isExpanded ? 1 : 0}>
+				<Text
+					flex='1'
+					display='block'
+					pr={isExpanded ? 2 : 0}
+					pos='relative'
+					left={isExpanded ? 0 : 3}
+					opacity={isExpanded ? 1 : 0}
+					transition='all 200ms ease-in-out'
+				>
 					{children}
 				</Text>
 			</Flex>

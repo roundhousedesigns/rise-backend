@@ -2,12 +2,9 @@
  * useJobPosts hook. Query to retrieve job posts.
  */
 
-import { omit } from 'lodash';
 import { gql, useQuery } from '@apollo/client';
-import { JobPost } from '@lib/classes';
-import { JobPostParams } from '@lib/types';
-
-// TODO update Job class props to match the query
+import { JobPost, WPItem } from '@lib/classes';
+import { omit } from 'lodash';
 
 export const QUERY_JOB_POSTS = gql`
 	query JobPostsQuery($ids: [ID] = [], $stati: [PostStatusEnum] = [PENDING, PUBLISH]) {
@@ -37,6 +34,17 @@ export const QUERY_JOB_POSTS = gql`
 						databaseId
 					}
 				}
+				positions(first: 50) {
+					nodes {
+						id: databaseId
+						parentId: parentDatabaseId
+					}
+				}
+				skills(first: 50) {
+					nodes {
+						id: databaseId
+					}
+				}
 			}
 		}
 	}
@@ -57,7 +65,7 @@ const useJobPosts = (ids: number[] = []): [JobPost[], any] => {
 	}
 
 	const jobPosts: JobPost[] =
-		result?.data?.jobPosts?.nodes?.map((node: JobPostParams) => {
+		result?.data?.jobPosts?.nodes?.map((node: any) => {
 			const {
 				id,
 				status,
@@ -81,6 +89,15 @@ const useJobPosts = (ids: number[] = []): [JobPost[], any] => {
 
 			const author = node?.authorNode?.node?.databaseId;
 
+			const jobs = node.positions.nodes.filter(
+				(position: { __typename: string; id: number; parentId: number }) =>
+					position.parentId !== null
+			);
+			const departments = node.positions.nodes.filter(
+				(position: { __typename: string; id: number; parentId: number }) =>
+					position.parentId === null
+			);
+
 			const job = new JobPost({
 				id,
 				author,
@@ -101,9 +118,12 @@ const useJobPosts = (ids: number[] = []): [JobPost[], any] => {
 				applicationUrl,
 				applicationPhone,
 				applicationEmail,
+				positions: {
+					departments: departments?.map((department: WPItem) => department.id),
+					jobs: jobs?.map((job: WPItem) => job.id),
+				},
+				skills: node.skills.nodes.map((skill: { id: number }) => skill.id),
 			});
-
-			Object.assign(job, node);
 
 			return job;
 		}) ?? [];

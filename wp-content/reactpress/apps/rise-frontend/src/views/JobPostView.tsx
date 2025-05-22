@@ -14,8 +14,11 @@ import {
 	Wrap,
 } from '@chakra-ui/react';
 import HeadingCenterline from '@common/HeadingCenterline';
+import WPItemBadgeList from '@common/WPItemBadgeList';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { JobPost } from '@lib/classes';
+import useTaxonomyTerms from '@queries/useTaxonomyTerms';
+import useViewer from '@queries/useViewer';
 import parse from 'html-react-parser';
 import {
 	FiCalendar,
@@ -29,7 +32,7 @@ import {
 	FiUser,
 } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
-import useViewer from '../hooks/queries/useViewer';
+
 interface Props {
 	job: JobPost;
 }
@@ -60,6 +63,8 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 		applicationUrl,
 		applicationPhone,
 		applicationEmail,
+		positions: { departments: departmentIds, jobs: jobIds } = { departments: [], jobs: [] },
+		skills: skillIds,
 	} = job || {};
 
 	const isAuthor = loggedInId === author;
@@ -71,6 +76,10 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 	const parsedCompensation = compensation ? parse(compensation) : '';
 
 	const parsedInstructions = instructions ? parse(instructions) : '';
+
+	const [departments] = useTaxonomyTerms(departmentIds ? departmentIds : []);
+	const [jobs] = useTaxonomyTerms(jobIds ? jobIds : []);
+	const [skills] = useTaxonomyTerms(skillIds ? skillIds : []);
 
 	return (
 		<Box>
@@ -190,6 +199,13 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 
 				<Box>
 					<HeadingCenterline lineColor='brand.orange'>Job Description</HeadingCenterline>
+					{departmentIds?.length || jobs?.length || skills?.length ? (
+						<Stack direction='column'>
+							<WPItemBadgeList items={departments} colorScheme='orange' />
+							<WPItemBadgeList items={jobs} colorScheme='blue' />
+							<WPItemBadgeList items={skills} colorScheme='green' />
+						</Stack>
+					) : null}
 					<Box className='wp-post-content'>{parsedDescription}</Box>
 				</Box>
 

@@ -1,6 +1,7 @@
 import {
 	Box,
 	BoxProps,
+	Divider,
 	Heading,
 	Link,
 	ListItem,
@@ -46,6 +47,8 @@ export default function ManageJobPostsView({ jobs, ...props }: ManageJobPostsVie
 				You may edit any of your job posts that are still pending. Once your post is approved, you
 				will no longer be able to edit it.
 			</Text>
+
+			<Divider />
 
 			<Stack direction='column' spacing={4}>
 				<Box>

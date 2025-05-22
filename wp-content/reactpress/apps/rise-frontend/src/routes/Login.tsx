@@ -12,8 +12,6 @@ export default function Login() {
 
 	const [{ loggedInId }] = useViewer();
 
-	console.info('alert', alert, alertStatus, loggedInId);
-
 	// If the user is logged in, redirect them to the home page.
 	useEffect(() => {
 		if (loggedInId) {
