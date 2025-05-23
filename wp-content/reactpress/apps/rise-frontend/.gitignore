@@ -14,8 +14,9 @@
 !.yarn/versions
 
 # Production
-/dist
-/build
+# Easier to build and push than to build on the server,
+#   so we're commiting builds for now.
+# /dist
 
 # Logs
 logs
@@ -25,11 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
 
 # Editor directories and files
 .vscode/*
