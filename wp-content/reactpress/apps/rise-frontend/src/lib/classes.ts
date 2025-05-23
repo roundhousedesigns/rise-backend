@@ -606,6 +606,7 @@ export class WPAttachment extends WPItem {
  * A Job Post.
  */
 export class JobPost extends WPPost {
+	status?: string;
 	description?: string;
 	companyName: string;
 	companyAddress: string;
@@ -622,6 +623,7 @@ export class JobPost extends WPPost {
 	isInternship?: boolean;
 	isPaid?: boolean;
 	isUnion?: boolean;
+	expiresOn?: string;
 	positions: {
 		departments: number[];
 		jobs: number[];
@@ -631,17 +633,25 @@ export class JobPost extends WPPost {
 	constructor(params: JobPostParams) {
 		super(params);
 
+		this.status = params.status;
 		this.author = params.author;
 		this.companyName = params.companyName;
 		this.companyAddress = params.companyAddress;
 		this.contactEmail = params.contactEmail;
 		this.contactName = params.contactName;
 		this.startDate = params.startDate;
+		this.endDate = params.endDate;
 		this.instructions = params.instructions;
+		this.compensation = params.compensation;
+		this.applicationUrl = params.applicationUrl;
+		this.applicationPhone = params.applicationPhone;
+		this.applicationEmail = params.applicationEmail;
+		this.expiresOn = params.expiresOn;
+		this.isInternship = params.isInternship;
+		this.isPaid = params.isPaid;
+		this.isUnion = params.isUnion;
 		this.positions = this.getPositions(params) || { departments: [], jobs: [] };
 		this.skills = params.skills ? params.skills : [];
-
-		Object.assign(this, params);
 	}
 
 	/**

@@ -9,7 +9,7 @@ import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import MiniProfileView from '@views/MiniProfileView';
-import StarredProfileList from '@views/StarredProfileList';
+import FollowedProfileList from '@@/src/views/FollowedProfileList';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardView() {
@@ -75,7 +75,7 @@ export default function DashboardView() {
 
 				{starredProfiles?.length && (
 					<Widget title='Following' titleStyle='centerline' mt={1}>
-						<StarredProfileList mini showToggle={false} mt={1} />
+						<FollowedProfileList mini showToggle={false} mt={1} />
 					</Widget>
 				)}
 			</GridItem>

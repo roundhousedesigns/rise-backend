@@ -29,7 +29,8 @@ const InlineIconText = ({
 				mx={1}
 				position='relative'
 				bottom='2px'
-				aria-label={`${description} icon`}
+				aria-label={`Example ${description} icon`}
+				role='presentation'
 				bgColor='blackAlpha.300'
 				isDisabled
 				{...iconProps}

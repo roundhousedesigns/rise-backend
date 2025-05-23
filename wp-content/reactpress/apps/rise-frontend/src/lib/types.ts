@@ -305,6 +305,7 @@ export interface JobPostParams {
 	isPaid?: boolean;
 	departments?: number[];
 	jobs?: number[];
+	expiresOn?: string;
 	positions: {
 		departments: number[];
 		jobs: number[];

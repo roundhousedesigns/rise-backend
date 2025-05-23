@@ -19,7 +19,6 @@ import {
 import { JobPost, WPItem } from '@lib/classes';
 import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import WPItemBadgeList from './WPItemBadgeList';
 import PositionsDisplay from './PositionsDisplay';
 
 interface JobPostListItemProps {
@@ -44,7 +43,7 @@ export default function JobPostListItem({
 		skills: skillIds,
 	} = job;
 
-	const datesString = endDate ? `${startDate} - ${endDate}` : `Starts ${startDate}`;
+	// const datesString = endDate ? `${startDate} - ${endDate}` : `Starts ${startDate}`;
 
 	// Get jobs and skills terms from their IDs
 	const [termList, setTermList] = useState<number[]>([]);
@@ -107,36 +106,39 @@ export default function JobPostListItem({
 								{companyName}
 							</Text>
 						</Box>
-						<Box fontSize='sm'>
+
+						<Stack fontSize='xs' spacing={1}>
 							{compensation ? (
 								<Text my={0} lineHeight='short'>
-									{compensation}
+									Compensation: {` ${compensation}`}
 								</Text>
 							) : null}
 							<Text my={0} lineHeight='short'>
-								{datesString}
+								Starts: {startDate}
 							</Text>
-						</Box>
+							<Wrap>
+								{isInternship && (
+									<Tag colorScheme='yellow' size='xs'>
+										Internship
+									</Tag>
+								)}
+								{isPaid && (
+									<Tag colorScheme='green' size='xs'>
+										Paid
+									</Tag>
+								)}
+								{isUnion && (
+									<Tag colorScheme='red' size='xs'>
+										Union
+									</Tag>
+								)}
+							</Wrap>
+						</Stack>
+
 						<Spacer />
-						<Wrap>
-							{isInternship && (
-								<Tag colorScheme='yellow' size='xs'>
-									Internship
-								</Tag>
-							)}
-							{isPaid && (
-								<Tag colorScheme='green' size='xs'>
-									Paid
-								</Tag>
-							)}
-							{isUnion && (
-								<Tag colorScheme='red' size='xs'>
-									Union
-								</Tag>
-							)}
-						</Wrap>
+
 						{departmentIds?.length || jobIds?.length || skillIds?.length ? (
-							<PositionsDisplay item={job} />
+							<PositionsDisplay item={job} showDepartmentBadges={false} />
 						) : null}
 					</Flex>
 				</Card>

@@ -106,18 +106,21 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 					<Spacer />
 
 					<ButtonGroup size='sm' w='full' justifyContent='flex-end'>
+						{status === 'pending' && (
+							<Button
+								as={RouterLink}
+								to={`/job/edit/${job.id}`}
+								leftIcon={<FiEdit2 />}
+								colorScheme='blue'
+							>
+								Edit
+							</Button>
+						)}
+						{/* TODO: Add delete functionality */}
 						<Button
-							as={RouterLink}
-							to={`/job/edit/${job.id}`}
-							leftIcon={<FiEdit2 />}
-							colorScheme='blue'
-							isDisabled={status === 'publish'}
-						>
-							{status === 'pending' ? 'Edit' : 'Published'}
-						</Button>
-						<Button
-							as={RouterLink}
-							to={`/job/delete/${job.id}`}
+							onClick={() => {
+								console.info('delete', job);
+							}}
 							leftIcon={<FiTrash />}
 							colorScheme='red'
 						>

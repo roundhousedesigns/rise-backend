@@ -29,6 +29,7 @@ export const QUERY_JOB_POSTS = gql`
 				applicationPhone
 				applicationEmail
 				title
+				expiresOn(format: RAW)
 				authorNode: author {
 					node {
 						databaseId
@@ -85,6 +86,7 @@ const useJobPosts = (ids: number[] = []): [JobPost[], any] => {
 				applicationUrl,
 				applicationPhone,
 				applicationEmail,
+				expiresOn,
 			} = node;
 
 			const author = node?.authorNode?.node?.databaseId;
@@ -118,6 +120,7 @@ const useJobPosts = (ids: number[] = []): [JobPost[], any] => {
 				applicationUrl,
 				applicationPhone,
 				applicationEmail,
+				expiresOn,
 				positions: {
 					departments: departments?.map((department: WPItem) => department.id),
 					jobs: jobs?.map((job: WPItem) => job.id),

@@ -17,7 +17,7 @@ import ResetPassword from '@routes/ResetPassword';
 import Results from '@routes/Results';
 import SavedSearches from '@routes/SavedSearches';
 import Settings from '@routes/Settings';
-import StarredProfiles from '@routes/StarredProfiles';
+import FollowedProfiles from '@routes/FollowedProfiles';
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import pkgJSON from '@@/package.json';
@@ -70,7 +70,7 @@ export default function Main({ ...props }: BoxProps) {
 			path: '/starred',
 			element: (
 				<LoggedIn>
-					<StarredProfiles />
+					<FollowedProfiles />
 				</LoggedIn>
 			),
 		},
@@ -78,7 +78,7 @@ export default function Main({ ...props }: BoxProps) {
 			path: '/following',
 			element: (
 				<LoggedIn>
-					<StarredProfiles />
+					<FollowedProfiles />
 				</LoggedIn>
 			),
 		},

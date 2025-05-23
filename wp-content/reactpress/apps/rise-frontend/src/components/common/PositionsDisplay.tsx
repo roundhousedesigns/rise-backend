@@ -8,9 +8,17 @@ import { sortAndCompareArrays } from '@lib/utils';
 
 interface PositionsDisplayProps {
 	item: JobPost | Credit;
+	showDepartmentBadges?: boolean;
+	showJobBadges?: boolean;
+	showSkillBadges?: boolean;
 }
 
-export default function PositionsDisplay({ item }: PositionsDisplayProps): JSX.Element | null {
+export default function PositionsDisplay({
+	item,
+	showDepartmentBadges = true,
+	showJobBadges = true,
+	showSkillBadges = true,
+}: PositionsDisplayProps): JSX.Element | null {
 	// Extract position IDs from the item
 	const departmentIds = item.positions?.departments || [];
 	const jobIds = item.positions?.jobs || [];
@@ -69,9 +77,9 @@ export default function PositionsDisplay({ item }: PositionsDisplayProps): JSX.E
 
 	return (
 		<Stack direction='column'>
-			<WPItemBadgeList items={departments} colorScheme='orange' />
-			<WPItemBadgeList items={jobs} colorScheme='blue' />
-			<WPItemBadgeList items={skills} colorScheme='green' />
+			{showDepartmentBadges && <WPItemBadgeList items={departments} colorScheme='orange' />}
+			{showJobBadges && <WPItemBadgeList items={jobs} colorScheme='blue' />}
+			{showSkillBadges && <WPItemBadgeList items={skills} colorScheme='green' />}
 		</Stack>
 	);
 }

@@ -7,7 +7,7 @@ interface Props {
 	mini?: boolean;
 }
 
-export default function StarredProfileList({
+export default function FollowedProfileList({
 	showToggle,
 	mini = false,
 	...props

@@ -8,8 +8,6 @@ export default function JobPost() {
 	const id = params.id ? params.id : '';
 	const [job, { loading }] = useJobPosts([parseInt(id)]);
 
-	console.info('job', job);
-
 	return (
 		<Shell loading={!!loading}>
 			<JobPostView job={job[0]} />
