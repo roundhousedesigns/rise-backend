@@ -44,7 +44,7 @@ export default function JobPostsView({ ...props }: BoxProps) {
 					<AlertDescription>{error.message}</AlertDescription>
 				</Alert>
 			)}
-			{!loading && !error && <JobPostsList jobs={jobs} mt={2} />}
+			{!loading && !error && !!jobs && <JobPostsList jobs={jobs} mt={2} />}
 		</Stack>
 	);
 }

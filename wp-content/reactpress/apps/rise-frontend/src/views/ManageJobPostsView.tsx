@@ -50,57 +50,61 @@ export default function ManageJobPostsView({ jobs, ...props }: ManageJobPostsVie
 
 			<Divider />
 
-			<Stack direction='column' spacing={4}>
-				{pendingJobs?.length > 0 && (
-					<Box>
-						<Heading size='lg'>Pending Job Posts</Heading>
-						<UnorderedList spacing={2}>
-							{pendingJobs?.map((job) => (
-								<ListItem key={job.id} fontSize='md'>
-									<Link as={RouterLink} to={`/job/${job.id}`} fontSize='sm'>
-										{job.title}
-									</Link>
-									<Separator />
-									<Text as='span' fontSize='sm' color='gray.500'>
-										{job.companyName}
-									</Text>
-									{loggedInId === job.author && job.status === 'pending' && (
-										<>
-											<Separator />
-											<Link as={RouterLink} to={`/job/edit/${job.id}`} fontSize='sm'>
-												Edit
-											</Link>
-										</>
-									)}
-								</ListItem>
-							))}
-						</UnorderedList>
-					</Box>
-				)}
+			{pendingJobs?.length > 0 || publishedJobs?.length > 0 ? (
+				<Stack direction='column' spacing={4}>
+					{pendingJobs?.length > 0 && (
+						<Box>
+							<Heading size='lg'>Pending Job Posts</Heading>
+							<UnorderedList spacing={2}>
+								{pendingJobs?.map((job) => (
+									<ListItem key={job.id} fontSize='md'>
+										<Link as={RouterLink} to={`/job/${job.id}`} fontSize='sm'>
+											{job.title}
+										</Link>
+										<Separator />
+										<Text as='span' fontSize='sm' color='gray.500'>
+											{job.companyName}
+										</Text>
+										{loggedInId === job.author && job.status === 'pending' && (
+											<>
+												<Separator />
+												<Link as={RouterLink} to={`/job/edit/${job.id}`} fontSize='sm'>
+													Edit
+												</Link>
+											</>
+										)}
+									</ListItem>
+								))}
+							</UnorderedList>
+						</Box>
+					)}
 
-				{publishedJobs?.length > 0 && (
-					<Box>
-						<Heading size='lg'>Published Job Posts</Heading>
-						<UnorderedList spacing={2}>
-							{publishedJobs?.map((job: JobPost) => (
-								<ListItem key={job.id} fontSize='md'>
-									<Link as={RouterLink} to={`/job/${job.id}`} fontSize='sm'>
-										{job.title}
-									</Link>
-									<Separator />
-									<Text as='span' fontSize='sm' color='gray.500'>
-										{job.companyName}
-									</Text>
-									<Separator />
-									<Text fontSize='sm' color='gray.500' as='span'>
-										--expires in xx days--
-									</Text>
-								</ListItem>
-							))}
-						</UnorderedList>
-					</Box>
-				)}
-			</Stack>
+					{publishedJobs?.length > 0 && (
+						<Box>
+							<Heading size='lg'>Published Job Posts</Heading>
+							<UnorderedList spacing={2}>
+								{publishedJobs?.map((job: JobPost) => (
+									<ListItem key={job.id} fontSize='md'>
+										<Link as={RouterLink} to={`/job/${job.id}`} fontSize='sm'>
+											{job.title}
+										</Link>
+										<Separator />
+										<Text as='span' fontSize='sm' color='gray.500'>
+											{job.companyName}
+										</Text>
+										<Separator />
+										<Text fontSize='sm' color='gray.500' as='span'>
+											Expires on {job.expiresOn}
+										</Text>
+									</ListItem>
+								))}
+							</UnorderedList>
+						</Box>
+					)}
+				</Stack>
+			) : (
+				<Text fontSize='sm'>No active job posts found.</Text>
+			)}
 		</Box>
 	);
 }

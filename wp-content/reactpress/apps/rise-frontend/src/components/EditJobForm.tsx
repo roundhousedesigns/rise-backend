@@ -251,33 +251,7 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 		e.preventDefault();
 		setIsSubmitting(true);
 
-		// TODO: Move this to a class method or util function
-		// Clean up the data before sending to mutation
-		const cleanData = {
-			id: formData.id,
-			title: formData.title,
-			companyName: formData.companyName,
-			companyAddress: formData.companyAddress,
-			contactName: formData.contactName,
-			contactEmail: formData.contactEmail,
-			contactPhone: formData.contactPhone,
-			startDate: formData.startDate,
-			endDate: formData.endDate,
-			instructions: formData.instructions,
-			compensation: formData.compensation,
-			applicationUrl: formData.applicationUrl,
-			applicationPhone: formData.applicationPhone,
-			applicationEmail: formData.applicationEmail,
-			description: formData.description,
-			isPaid: formData.isPaid,
-			isInternship: formData.isInternship,
-			isUnion: formData.isUnion,
-			departments: formData.departments,
-			jobs: formData.jobs,
-			skills: formData.skills,
-		};
-
-		updateJobPostMutation(cleanData)
+		updateJobPostMutation(formData)
 			.then((response) => {
 				if (response.data?.updateOrCreateJobPost?.updatedJobPost) {
 					toast({
@@ -325,7 +299,13 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 	};
 
 	return (
-		<chakra.form onSubmit={handleSubmit} width='100%'>
+		<chakra.form
+			onSubmit={handleSubmit}
+			width='100%'
+			opacity={isSubmitting ? 0.6 : 1}
+			pointerEvents={isSubmitting ? 'none' : 'auto'}
+			transition='opacity 0.2s ease-in-out'
+		>
 			<Stack spacing={4} justifyContent='space-between' flexWrap='wrap'>
 				<FormControl isRequired>
 					<FormLabel>Job Title</FormLabel>
@@ -463,17 +443,7 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 					</Stack>
 				</FormRow>
 
-				<FormRow pt={4} pb={6} px={6} borderRadius='md' _dark={{ bg: 'whiteAlpha.50' }}>
-					<FormControl isRequired flex='0 0 100%'>
-						<FormLabel>Application Instructions</FormLabel>
-						<Textarea
-							name='instructions'
-							value={formData.instructions}
-							onChange={handleChange}
-							placeholder='Enter application instructions'
-						/>
-					</FormControl>
-
+				<FormRow>
 					<FormControl>
 						<FormLabel>Application URL</FormLabel>
 						<Input
@@ -505,58 +475,77 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 							placeholder='Enter application email'
 						/>
 					</FormControl>
+					<FormControl flex='0 0 100%'>
+						<FormLabel>Additional Instructions</FormLabel>
+						<Textarea
+							name='instructions'
+							value={formData.instructions}
+							onChange={handleChange}
+							placeholder='Enter application instructions'
+						/>
+					</FormControl>
 				</FormRow>
 
-				<Stack direction='column' spacing={6} fontSize='md'>
-					<Box>
-						<Heading as='h4' variant='contentTitle'>
-							Department
-							<RequiredAsterisk fontSize='md' position='relative' top={-1} />
-						</Heading>
-						<Text>Select all department(s) for this position.</Text>
-						<ProfileCheckboxGroup
-							name='departments'
-							items={allDepartments}
-							checked={formData.departments?.map((item: number) => item.toString()) || []}
-							handleChange={handleDepartmentsChange}
-						/>
-					</Box>
-
-					{formData.departments?.length && !jobsLoading ? (
+				<FormRow pt={4} pb={6} px={6} borderRadius='md' _dark={{ bg: 'whiteAlpha.50' }}>
+					<Stack direction='column' spacing={4}>
 						<Box>
-							<Heading as='h4' variant='contentTitle'>
-								Position
+							<Heading variant='searchFilterTitle' mb={0.5}>
+								Job Details
+							</Heading>
+							<Text my={0}>
+								What experience should candidates have for this job? Select all departments and jobs
+								that are relevant to this position.
+							</Text>
+						</Box>
+
+						<Box>
+							<Heading variant='contentSubtitle'>
+								Department
 								<RequiredAsterisk fontSize='md' position='relative' top={-1} />
 							</Heading>
-							<Text>Select all positions for this job posting.</Text>
+							<Text>What departments in your organization does this job belong to?</Text>
 							<ProfileCheckboxGroup
-								name='jobs'
-								items={jobs}
-								checked={formData.jobs?.map((item: number) => item.toString()) || []}
-								handleChange={handleJobsChange}
+								name='departments'
+								items={allDepartments}
+								checked={formData.departments?.map((item: number) => item.toString()) || []}
+								handleChange={handleDepartmentsChange}
 							/>
 						</Box>
-					) : jobsLoading ? (
-						<Spinner />
-					) : null}
 
-					{formData.jobs?.length && !relatedSkillsLoading ? (
-						<Box>
-							<Heading as='h4' variant='contentTitle'>
-								Skills
-							</Heading>
-							<Text>Select any skills required for this position.</Text>
-							<ProfileCheckboxGroup
-								name='skills'
-								items={skills}
-								checked={formData.skills?.map((item: number) => item.toString()) || []}
-								handleChange={handleSkillsChange}
-							/>
-						</Box>
-					) : relatedSkillsLoading ? (
-						<Spinner />
-					) : null}
-				</Stack>
+						{formData.departments?.length && !jobsLoading ? (
+							<Box>
+								<Heading variant='contentSubtitle'>
+									Job(s)
+									<RequiredAsterisk fontSize='md' position='relative' top={-1} />
+								</Heading>
+								<Text>What experience should candidates have for this job?</Text>
+								<ProfileCheckboxGroup
+									name='jobs'
+									items={jobs}
+									checked={formData.jobs?.map((item: number) => item.toString()) || []}
+									handleChange={handleJobsChange}
+								/>
+							</Box>
+						) : jobsLoading ? (
+							<Spinner />
+						) : null}
+
+						{formData.jobs?.length && !relatedSkillsLoading ? (
+							<Box>
+								<Heading variant='contentTitle'>Skills</Heading>
+								<Text>Select any skills required for this position.</Text>
+								<ProfileCheckboxGroup
+									name='skills'
+									items={skills}
+									checked={formData.skills?.map((item: number) => item.toString()) || []}
+									handleChange={handleSkillsChange}
+								/>
+							</Box>
+						) : relatedSkillsLoading ? (
+							<Spinner />
+						) : null}
+					</Stack>
+				</FormRow>
 			</Stack>
 
 			<Button
