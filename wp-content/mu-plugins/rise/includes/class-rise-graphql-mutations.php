@@ -1308,7 +1308,7 @@ class Rise_GraphQL_Mutations {
 					$payload = [
 						'updatedJobPost'     => null,
 						'awaitingPayment'    => false,
-						'wcCheckoutEndpoint' => '',
+						'wcCheckoutEndpoint' => esc_url_raw( wc_get_checkout_url() ),
 					];
 
 					if ( !isset( $input['jobPost'] ) ) {
