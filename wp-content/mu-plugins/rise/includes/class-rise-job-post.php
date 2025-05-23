@@ -30,6 +30,14 @@ class Rise_Job_Post {
 	private $title;
 
 	/**
+	 * The job post author.
+	 *
+	 * @var int $post_author The job post author.
+	 * @since 0.1.0
+	 */
+	private $post_author;
+
+	/**
 	 * The job post status.
 	 *
 	 * @var string $status The job post status.
@@ -199,6 +207,7 @@ class Rise_Job_Post {
 	 */
 	public function __construct( $data ) {
 		$this->job_post_id       = $data['isNew'] ? 0 : $data['id'];
+		$this->post_author       = $data['post_author'];
 		$this->status            = $data['status'] ?? 'pending';
 		$this->title             = $data['title'];
 		$this->company_name      = $data['companyName'];
@@ -267,14 +276,9 @@ class Rise_Job_Post {
 	 * @return int|WP_Error The post ID on success. WP_Error on failure.
 	 */
 	protected function update_base() {
-		$user_id = get_current_user_id();
-		if ( !$user_id ) {
-			return new WP_Error( 'no_user', 'No user is logged in.' );
-		}
-
 		$update_post_args = [
 			'post_title'  => $this->title,
-			'post_author' => $user_id,
+			'post_author' => $this->post_author,
 			'post_status' => $this->status,
 			'post_type'   => 'job_post',
 		];

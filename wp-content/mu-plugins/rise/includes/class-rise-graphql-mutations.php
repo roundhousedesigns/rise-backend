@@ -1326,7 +1326,9 @@ class Rise_GraphQL_Mutations {
 						throw new Error( 'WooCommerce is not active.' );
 					}
 
-					$job_post_defaults          = [];
+					$job_post_defaults = [
+						'post_author' => get_current_user_id(),
+					];
 					$job_post_defaults['isNew'] = !isset( $job_input_data['id'] ) || !$job_input_data['id'];
 
 					if ( $job_post_defaults['isNew'] ) {
