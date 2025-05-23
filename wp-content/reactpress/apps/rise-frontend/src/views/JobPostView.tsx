@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import HeadingCenterline from '@common/HeadingCenterline';
 import WPItemBadgeList from '@common/WPItemBadgeList';
+import PositionsDisplay from '@common/PositionsDisplay';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { JobPost } from '@lib/classes';
 import useTaxonomyTerms from '@queries/useTaxonomyTerms';
@@ -199,12 +200,8 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 
 				<Box>
 					<HeadingCenterline lineColor='brand.orange'>Job Description</HeadingCenterline>
-					{departmentIds?.length || jobs?.length || skills?.length ? (
-						<Stack direction='column'>
-							<WPItemBadgeList items={departments} colorScheme='orange' />
-							<WPItemBadgeList items={jobs} colorScheme='blue' />
-							<WPItemBadgeList items={skills} colorScheme='green' />
-						</Stack>
+					{departmentIds?.length || jobIds?.length || skillIds?.length ? (
+						<PositionsDisplay item={job} />
 					) : null}
 					<Box className='wp-post-content'>{parsedDescription}</Box>
 				</Box>

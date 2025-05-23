@@ -11,6 +11,7 @@ import {
 	Wrap,
 } from '@chakra-ui/react';
 import WPItemBadgeList from '@common/WPItemBadgeList';
+import PositionsDisplay from '@common/PositionsDisplay';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { Credit, WPItem } from '@lib/classes';
 import { decodeString, sortAndCompareArrays } from '@lib/utils';
@@ -49,6 +50,7 @@ export default function CreditItem({
 	const [termList, setTermList] = useState<number[]>([]);
 	const memoizedTermList = useMemo(() => termList, [termList]);
 
+	// Get departments from their IDs
 	const [departments] = useTaxonomyTerms(departmentIds ? departmentIds : []);
 
 	// The term items for each set.
@@ -207,12 +209,8 @@ export default function CreditItem({
 
 						<Box flex={{ base: '0 0 100%', md: '0 50%' }}>
 							<Stack direction='column' mt={{ base: 4, md: 0 }}>
-								{departmentIds?.length || jobs?.length || skills?.length ? (
-									<Stack direction='column'>
-										<WPItemBadgeList items={departments} colorScheme='orange' />
-										<WPItemBadgeList items={jobs} colorScheme='blue' />
-										<WPItemBadgeList items={skills} colorScheme='green' />
-									</Stack>
+								{departmentIds?.length || jobIds?.length || skillIds?.length ? (
+									<PositionsDisplay item={credit} />
 								) : isEditable ? (
 									<Wrap justify='right'>
 										<Text

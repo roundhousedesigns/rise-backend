@@ -1,4 +1,14 @@
-import { Box, BoxProps, Flex, Icon, IconButton, List, Spacer, Text } from '@chakra-ui/react';
+import {
+	Box,
+	BoxProps,
+	Flex,
+	Icon,
+	IconButton,
+	List,
+	Spacer,
+	Text,
+	useMediaQuery,
+} from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
@@ -32,6 +42,7 @@ interface SidebarMenuItemProps {
 export default function Sidebar({ ...props }: BoxProps) {
 	const [{ loggedInId, loggedInSlug, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
+	const [isLargerThanMd] = useMediaQuery('(min-width: 768px)');
 
 	const {
 		search: { results },
@@ -131,13 +142,14 @@ export default function Sidebar({ ...props }: BoxProps) {
 		>
 			<Flex
 				h='full'
+				maxH='100vh'
 				mt={0}
 				mx={0}
 				pt={3}
 				pb={4}
 				flexDirection='column'
 				alignItems='center'
-				justifyContent='space-between'
+				justifyContent='flex-start'
 				borderRight='1px solid'
 				transition='all 200ms ease'
 				_light={{ borderColor: 'text.dark' }}
@@ -155,7 +167,15 @@ export default function Sidebar({ ...props }: BoxProps) {
 					ml={sidebarExpanded ? '13px' : '10.5px'}
 				/>
 
-				<List spacing={0} w='full' px={0} mt={3} mb={2} fontSize={{ base: 'xs', lg: 'sm' }}>
+				<List
+					spacing={0}
+					w='full'
+					px={0}
+					mt={3}
+					mb={2}
+					fontSize={{ base: 'xs', lg: 'sm' }}
+					transition='all 200ms ease'
+				>
 					{menuItems.map((item, index) => {
 						if (item.isDisabled) return null;
 
@@ -174,9 +194,15 @@ export default function Sidebar({ ...props }: BoxProps) {
 					})}
 				</List>
 
-				<Spacer />
-
-				<DarkModeToggle showLabel={false} showHelperText={false} justifyContent='center' />
+				<DarkModeToggle
+					showLabel={false}
+					showHelperText={false}
+					justifyContent={sidebarExpanded ? 'flex-start' : 'center'}
+					ml={sidebarExpanded ? '12px' : '0'}
+					size='md'
+					transform='scale(0.9)'
+					transition='all 200ms ease'
+				/>
 			</Flex>
 		</Box>
 	) : null;

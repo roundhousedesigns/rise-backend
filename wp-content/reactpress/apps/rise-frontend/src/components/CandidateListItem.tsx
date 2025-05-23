@@ -60,7 +60,7 @@ const CandidateListItem = ({
 			) : null}
 
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
-				<Card variant={mini ? 'listItemMini' : 'listItem'} w='full'>
+				<Card variant={mini ? 'listItemMini' : 'listItem'} w='full' py={2}>
 					<Flex
 						direction='row'
 						justifyContent='flex-start'

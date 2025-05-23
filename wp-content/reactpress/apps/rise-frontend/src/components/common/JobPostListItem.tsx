@@ -1,3 +1,6 @@
+import useLazyTaxonomyTerms from '@@/src/hooks/queries/useLazyTaxonomyTerms';
+import useTaxonomyTerms from '@@/src/hooks/queries/useTaxonomyTerms';
+import { sortAndCompareArrays } from '@@/src/lib/utils';
 import {
 	Box,
 	Card,
@@ -8,12 +11,16 @@ import {
 	ListItem,
 	ListItemProps,
 	Spacer,
+	Stack,
 	Tag,
 	Text,
 	Wrap,
 } from '@chakra-ui/react';
-import { JobPost } from '@lib/classes';
+import { JobPost, WPItem } from '@lib/classes';
+import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import WPItemBadgeList from './WPItemBadgeList';
+import PositionsDisplay from './PositionsDisplay';
 
 interface JobPostListItemProps {
 	job: JobPost;
@@ -38,6 +45,52 @@ export default function JobPostListItem({
 	} = job;
 
 	const datesString = endDate ? `${startDate} - ${endDate}` : `Starts ${startDate}`;
+
+	// Get jobs and skills terms from their IDs
+	const [termList, setTermList] = useState<number[]>([]);
+	const memoizedTermList = useMemo(() => termList, [termList]);
+
+	// Get departments from their IDs
+	const [departments] = useTaxonomyTerms(departmentIds ? departmentIds : []);
+	// The term items for each set.
+	const [jobs, setJobs] = useState<WPItem[]>([]);
+	const [skills, setSkills] = useState<WPItem[]>([]);
+	const [getTerms, { data: termData, loading: termsLoading }] = useLazyTaxonomyTerms();
+
+	// Set the term ID list state
+	useEffect(() => {
+		if (!jobIds && !skillIds) return;
+
+		const joinedTermList = jobIds.concat(skillIds);
+
+		setTermList(joinedTermList);
+	}, [jobIds, skillIds]);
+
+	// Get jobs terms from their IDs
+	useEffect(() => {
+		if (!sortAndCompareArrays(termList, memoizedTermList) || termList.length === 0) return;
+
+		getTerms({
+			variables: {
+				include: termList,
+			},
+		});
+	}, [termList, memoizedTermList]);
+
+	// Set jobs and skills state
+	useEffect(() => {
+		if (!termData) return;
+
+		const {
+			terms: { nodes },
+		} = termData;
+
+		const jobTerms = jobIds ? nodes.filter((node: WPItem) => jobIds.includes(node.id)) : [];
+		const skillTerms = skillIds ? nodes.filter((node: WPItem) => skillIds.includes(node.id)) : [];
+
+		setJobs(jobTerms);
+		setSkills(skillTerms);
+	}, [termData, jobIds, skillIds]);
 
 	return (
 		<ListItem {...props}>
@@ -82,6 +135,9 @@ export default function JobPostListItem({
 								</Tag>
 							)}
 						</Wrap>
+						{departmentIds?.length || jobIds?.length || skillIds?.length ? (
+							<PositionsDisplay item={job} />
+						) : null}
 					</Flex>
 				</Card>
 			</LinkBox>
