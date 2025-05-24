@@ -1,0 +1,12 @@
+.wp-block-navigation__responsive-container-open svg {
+	width: 34px;
+	height: 34px;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open
+	.wp-block-navigation__responsive-container-content
+	.has-child
+	.wp-block-navigation__submenu-container {
+	padding-top: 0.667em;
+	padding-right: 1em;
+}

@@ -1,0 +1,28 @@
+/*
+Theme Name: RISE Theme
+Author: Roundhouse Designs
+Author URI: https://roundhouse-designs.com
+Description: A WordPress theme for RISE
+Requires at least: 6.7
+Tested up to: 6.7
+Requires PHP: 8.1
+Version: 1.2
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: rise
+*/
+
+/* Import reset */
+@import url("./assets/css/reset.css");
+
+/* Import base */
+@import url("./assets/css/base.css");
+
+/* Import fonts */
+@import url("./assets/css/fonts.css");
+
+/* Import site */
+@import url("./assets/css/site.css");
+
+/* Import nav */
+@import url("./assets/css/nav.css");

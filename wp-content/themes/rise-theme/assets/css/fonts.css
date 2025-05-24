@@ -1,0 +1,28 @@
+/* RISE Theme Fonts */
+
+@font-face {
+	font-family: "Victor Serif";
+	src: url("../../assets/fonts/VictorSerif-50Medium.woff2") format("woff2"),
+		url("../../assets/fonts/VictorSerif-50Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Victor Serif";
+	src: url("../../assets/fonts/VictorSerif-55MediumItalic.woff2") format("woff2"),
+		url("../../assets/fonts/VictorSerif-55MediumItalic.woff") format("woff");
+	font-weight: 500;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Stabil Grotesk";
+	src: url("../../assets/fonts/StabilGrotesk-Medium.woff2") format("woff2"),
+		url("../../assets/fonts/StabilGrotesk-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}

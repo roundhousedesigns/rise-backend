@@ -1,0 +1,51 @@
+/* Base */
+body {
+	background-color: var(--wp--preset--color--bg-dark);
+	color: var(--wp--preset--color--white);
+	margin: 0;
+	height: 100vh;
+	overflow-x: hidden;
+	font-size: var(--wp--preset--font-size--medium);
+
+	&.bg-color-light,
+	&.bg-color-yellow,
+	&.bg-color-dark-gray {
+		color: var(--wp--preset--color--black);
+	}
+
+	&.bg-color-light {
+		background-color: var(--wp--preset--color--bg-light);
+	}
+
+	&.bg-color-dark {
+		background-color: var(--wp--preset--color--bg-dark);
+	}
+
+	&.bg-color-blue {
+		background-color: var(--wp--preset--color--blue);
+	}
+
+	&.bg-color-orange {
+		background-color: var(--wp--preset--color--orange);
+	}
+
+	&.bg-color-yellow {
+		background-color: var(--wp--preset--color--yellow);
+	}
+
+	&.bg-color-green {
+		background-color: var(--wp--preset--color--green);
+	}
+
+	&.bg-color-red {
+		background-color: var(--wp--preset--color--red);
+	}
+}
+
+a {
+	color: var(--wp--preset--color--blue);
+}
+
+p {
+	margin-bottom: 1em;
+}

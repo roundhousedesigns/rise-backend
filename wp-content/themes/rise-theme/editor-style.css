@@ -1,0 +1,18 @@
+/* RISE Theme Editor Styles */
+
+@import url('./assets/fonts.css');
+
+/* Editor-specific styles */
+.editor-styles-wrapper {
+	font-family: var(--wp--custom--font-family--body);
+}
+
+.editor-post-title__input,
+.wp-block-heading h1,
+.wp-block-heading h2,
+.wp-block-heading h3,
+.wp-block-heading h4,
+.wp-block-heading h5,
+.wp-block-heading h6 {
+	font-family: var(--wp--custom--font-family--heading);
+}
