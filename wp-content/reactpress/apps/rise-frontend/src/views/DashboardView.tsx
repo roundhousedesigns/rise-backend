@@ -1,4 +1,5 @@
-import { Card, Grid, GridItem, List, ListItem, Skeleton, Spinner, Stack } from '@chakra-ui/react';
+import FollowedProfileList from '@@/src/views/FollowedProfileList';
+import { Card, Grid, GridItem, List, ListItem, Skeleton, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
@@ -9,7 +10,6 @@ import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import MiniProfileView from '@views/MiniProfileView';
-import FollowedProfileList from '@@/src/views/FollowedProfileList';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardView() {
@@ -30,7 +30,7 @@ export default function DashboardView() {
 				<Widget>
 					<ColorCascadeBox>
 						{profile ? (
-							<MiniProfileView profile={profile} borderWidth='2px' borderColor='brand.blue' />
+							<MiniProfileView profile={profile} />
 						) : profileLoading ? (
 							<Skeleton height='200px' />
 						) : (

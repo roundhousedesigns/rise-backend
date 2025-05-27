@@ -1,10 +1,18 @@
 import { Box, BoxProps } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface Props {
-	children: React.ReactNode;
+	spread?: number; // Multiplier for the spread of the cascade.
+	withBorder?: boolean;
+	children: ReactNode;
 }
 
-export default function ColorCascadeBox({ children, ...props }: Props & BoxProps) {
+export default function ColorCascadeBox({
+	spread = 1,
+	withBorder = false,
+	children,
+	...props
+}: Props & BoxProps) {
 	return (
 		<Box position='relative' m={1} {...props}>
 			<Box
@@ -12,7 +20,7 @@ export default function ColorCascadeBox({ children, ...props }: Props & BoxProps
 				borderRadius='md'
 				w='full'
 				h='full'
-				transform='translate(12px, 12px)'
+				transform={`translate(${9 * spread}px, ${9 * spread}px)`}
 				position='absolute'
 				top={0}
 				left={0}
@@ -22,7 +30,7 @@ export default function ColorCascadeBox({ children, ...props }: Props & BoxProps
 				borderRadius='md'
 				w='full'
 				h='full'
-				transform='translate(7px, 7px)'
+				transform={`translate(${6 * spread}px, ${6 * spread}px)`}
 				position='absolute'
 				top={0}
 				left={0}
@@ -32,12 +40,23 @@ export default function ColorCascadeBox({ children, ...props }: Props & BoxProps
 				borderRadius='md'
 				w='full'
 				h='full'
-				transform='translate(3px, 3px)'
+				transform={`translate(${3 * spread}px, ${3 * spread}px)`}
 				position='absolute'
 				top={0}
 				left={0}
 			/>
-			{children}
+			{withBorder ? (
+				<Box
+					borderColor='brand.blue'
+					borderWidth={`${Math.sqrt(spread) * 2}px`}
+					borderRadius='md'
+					overflow='hidden'
+				>
+					{children}
+				</Box>
+			) : (
+				children
+			)}
 		</Box>
 	);
 }

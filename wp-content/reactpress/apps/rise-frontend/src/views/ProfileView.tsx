@@ -217,15 +217,12 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 				>
 					{isLargerThanMd ? (
 						<Stack direction='column' w='40%' minW='160px' maxW='400px' textAlign='center' gap={4}>
-							<ColorCascadeBox>
+							<ColorCascadeBox mb={3}>
 								{image ? (
 									<Image
 										src={image}
 										alt={`${profile.fullName()}'s picture`}
 										borderRadius='md'
-										borderWidth='2px'
-										borderStyle='solid'
-										borderColor='brand.blue'
 										loading='eager'
 										fit='cover'
 										w='full'
