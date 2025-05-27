@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'url';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [react()],
@@ -18,6 +18,9 @@ export default defineConfig({
 				},
 				interop: 'compat',
 				systemNullSetters: false,
+				manualChunks: {
+					'react-player': ['react-player']
+				}
 			},
 		},
 		chunkSizeWarningLimit: 1400,

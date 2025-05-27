@@ -1,26 +1,26 @@
 import {
-    Flex,
-    FormControl,
-    FormControlProps,
-    FormErrorMessage,
-    FormHelperText,
-    FormLabel,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    InputProps,
-    Text,
-    Wrap,
+	Flex,
+	FormControl,
+	FormControlProps,
+	FormErrorMessage,
+	FormHelperText,
+	FormLabel,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	InputProps,
+	Text,
+	Wrap,
 } from '@chakra-ui/react';
 import { debounce } from 'lodash';
 import {
-    ChangeEvent,
-    forwardRef,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
+	ChangeEvent,
+	forwardRef,
+	ReactNode,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
 } from 'react';
 
 interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
@@ -180,12 +180,7 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 				<Wrap w='full' alignItems='flex-start' opacity={0.9} fontStyle='italic'>
 					<FormHelperText my={0} ml={2} flex='1' w='full'>
 						{/* TODO: Validate on the fly */}
-						<Flex
-							w='full'
-							justifyContent='space-between'
-							alignItems='center'
-							lineHeight='normal'
-						>
+						<Flex w='full' justifyContent='space-between' alignItems='center' lineHeight='normal'>
 							{error ? (
 								<FormErrorMessage fontWeight='bold' mt={0} flex='1' fontSize='xs'>
 									{error}

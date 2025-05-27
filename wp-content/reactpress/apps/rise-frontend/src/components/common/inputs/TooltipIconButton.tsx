@@ -31,7 +31,7 @@ export default function TooltipIconButton({
 			base: false,
 			md: true,
 		},
-		{ ssr: false } // TODO: Do we need this?
+		{ ssr: false }
 	);
 
 	return (
@@ -52,6 +52,7 @@ export default function TooltipIconButton({
 					icon={icon}
 					variant='solid'
 					aria-label={label}
+					isDisabled={isDisabled}
 					pointerEvents={isDisabled ? 'none' : 'auto'}
 					{...props}
 				/>

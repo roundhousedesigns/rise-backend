@@ -5,7 +5,6 @@
 import { gql, QueryResult, useQuery } from '@apollo/client';
 import { omit } from 'lodash';
 
-// TODO: Figure out why this is needed
 import '@assets/css/wordpress.css';
 
 const QUERY_WP_CORE = gql`

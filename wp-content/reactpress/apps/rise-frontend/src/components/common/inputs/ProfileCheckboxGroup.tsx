@@ -17,7 +17,7 @@ export default function ProfileCheckboxGroup({
 	name,
 	items,
 	checked,
-	isRequired,
+	isRequired, // Note: This doesn't work with CheckboxGroup
 	requiredMessage,
 	handleChange,
 	...props

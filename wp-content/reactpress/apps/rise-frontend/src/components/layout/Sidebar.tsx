@@ -5,9 +5,7 @@ import {
 	Icon,
 	IconButton,
 	List,
-	Spacer,
-	Text,
-	useMediaQuery,
+	Text
 } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
@@ -42,7 +40,6 @@ interface SidebarMenuItemProps {
 export default function Sidebar({ ...props }: BoxProps) {
 	const [{ loggedInId, loggedInSlug, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
-	const [isLargerThanMd] = useMediaQuery('(min-width: 768px)');
 
 	const {
 		search: { results },

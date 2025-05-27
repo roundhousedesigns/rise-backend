@@ -14,7 +14,6 @@ import {
 	Wrap,
 } from '@chakra-ui/react';
 import HeadingCenterline from '@common/HeadingCenterline';
-import WPItemBadgeList from '@common/WPItemBadgeList';
 import PositionsDisplay from '@common/PositionsDisplay';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { JobPost } from '@lib/classes';
@@ -29,8 +28,7 @@ import {
 	FiMail,
 	FiMap,
 	FiPhone,
-	FiTrash,
-	FiUser,
+	FiUser
 } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -116,16 +114,6 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 								Edit
 							</Button>
 						)}
-						{/* TODO: Add delete functionality */}
-						<Button
-							onClick={() => {
-								console.info('delete', job);
-							}}
-							leftIcon={<FiTrash />}
-							colorScheme='red'
-						>
-							Delete
-						</Button>
 					</ButtonGroup>
 				</Flex>
 			)}

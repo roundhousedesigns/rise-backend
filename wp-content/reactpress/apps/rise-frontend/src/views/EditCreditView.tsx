@@ -4,6 +4,7 @@ import {
 	Divider,
 	Flex,
 	Heading,
+	Highlight,
 	Spinner,
 	Stack,
 	Text,
@@ -304,7 +305,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 					isLoading={updateCreditLoading}
 					onClick={handleSubmit}
 					icon={<FiCheck />}
-					label='Save'
+					label={requirementsMet ? 'Save' : 'Save (please fill in all required fields)'}
 					colorScheme='green'
 					isDisabled={!requirementsMet || updateCreditLoading}
 				/>
@@ -430,13 +431,26 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 			<Divider />
 
 			<Stack direction='column' spacing={6} fontSize='md'>
-				{/* TODO Make this required */}
 				<Box>
 					<Heading as='h4' variant='contentTitle'>
 						Department
 						<RequiredAsterisk fontSize='md' position='relative' top={-1} />
 					</Heading>
-					<Text>Select all department(s) you worked under.</Text>
+					<Text>
+						<Highlight
+							query={
+								selectedDepartmentIds.length > 0
+									? 'departments'
+									: 'Select all departments you worked under.'
+							}
+							styles={{
+								bg: selectedDepartmentIds.length > 0 ? 'brand.yellow' : 'brand.orange',
+								color: selectedDepartmentIds.length > 0 ? 'text.dark' : 'text.light',
+							}}
+						>
+							Select all departments you worked under in this position.
+						</Highlight>
+					</Text>
 					<ProfileCheckboxGroup
 						name='departments'
 						items={allDepartments}
@@ -455,7 +469,19 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 							<RequiredAsterisk fontSize='md' position='relative' top={-1} />
 						</Heading>
 						<>
-							<Text>Select all jobs you held on this project.</Text>
+							<Text>
+								<Highlight
+									query={
+										selectedJobIds.length > 0 ? 'jobs' : 'Select all jobs you held on this project.'
+									}
+									styles={{
+										bg: selectedJobIds.length > 0 ? 'brand.yellow' : 'brand.orange',
+										color: selectedJobIds.length > 0 ? 'text.dark' : 'text.light',
+									}}
+								>
+									Select all jobs you held on this project.
+								</Highlight>
+							</Text>
 							<ProfileCheckboxGroup
 								name='jobs'
 								items={jobs}

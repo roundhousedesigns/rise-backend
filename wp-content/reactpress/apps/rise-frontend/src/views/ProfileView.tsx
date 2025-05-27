@@ -35,7 +35,6 @@ import { getWPItemsFromIds } from '@lib/utils';
 import useResumePreview from '@queries/useResumePreview';
 import useUserTaxonomies from '@queries/useUserTaxonomies';
 import { Key } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import {
 	FiExternalLink,
 	FiGlobe,
@@ -48,7 +47,7 @@ import {
 	FiUser,
 } from 'react-icons/fi';
 import ReactPlayer from 'react-player/lazy';
-import { useParams } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 
 interface Props {
 	profile: UserProfile;
@@ -69,7 +68,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 			base: false,
 			sm: true,
 		},
-		{ ssr: false } // TODO: Do we need this?
+		{ ssr: false }
 	);
 
 	const {

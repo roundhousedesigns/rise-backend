@@ -439,7 +439,6 @@ export function sortCreditsByIndex(credits: Credit[]): Credit[] {
  * @param {password} The password to validate
  * @return string|undefined 'weak' or 'strong'
  *
- * TODO: figuring out typing to allow (in index.d.ts):
  * const passwordRequirements = [{id?: number, value?: string, minDiversity?: number, minLength?: number}, {...}]
  * passwordStrength(password, passwordRequirements);
  */
