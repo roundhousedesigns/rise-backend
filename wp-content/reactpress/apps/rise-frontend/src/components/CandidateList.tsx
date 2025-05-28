@@ -6,12 +6,14 @@ import useCandidates from '@queries/useCandidates';
 interface Props {
 	userIds: number[];
 	inOrder?: boolean;
+	showToggle?: boolean;
 	mini?: boolean;
 }
 
 export default function CandidateList({
 	userIds,
 	inOrder,
+	showToggle = true,
 	mini,
 	...props
 }: Props & ListProps): JSX.Element {
@@ -29,11 +31,21 @@ export default function CandidateList({
 						? userIds.map((id) => {
 								const candidate = preparedCandidates.find((candidate) => candidate.id === id);
 								return candidate ? (
-									<CandidateListItem key={id} candidate={candidate} mini={mini} />
+									<CandidateListItem
+										key={id}
+										candidate={candidate}
+										mini={mini}
+										showToggle={showToggle}
+									/>
 								) : null;
 						  })
 						: preparedCandidates.map((candidate) => (
-								<CandidateListItem key={candidate.id} candidate={candidate} mini={mini} />
+								<CandidateListItem
+									key={candidate.id}
+									candidate={candidate}
+									mini={mini}
+									showToggle={showToggle}
+								/>
 						  ))}
 				</List>
 			)}

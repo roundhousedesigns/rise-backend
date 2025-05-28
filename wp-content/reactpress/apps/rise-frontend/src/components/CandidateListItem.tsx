@@ -51,17 +51,17 @@ const CandidateListItem = ({
 
 	return id ? (
 		<Flex alignItems='center'>
-			{showToggle ? (
+			{showToggle && (
 				<StarToggleIcon
 					id={id}
 					isDisabled={loggedInId === id}
 					size={mini ? 'sm' : 'md'}
 					ml={mini ? 0 : 2}
 				/>
-			) : null}
+			)}
 
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
-				<ColorCascadeBox spread={0.7}>
+				<ColorCascadeBox spread={0.5}>
 					<Card
 						variant={mini ? 'listItemMini' : 'listItem'}
 						w='full'

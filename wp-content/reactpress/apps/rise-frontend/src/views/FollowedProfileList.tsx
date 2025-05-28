@@ -8,14 +8,20 @@ interface Props {
 }
 
 export default function FollowedProfileList({
-	showToggle,
+	showToggle = true,
 	mini = false,
 	...props
 }: Props & ListProps): JSX.Element {
 	const [{ starredProfiles }] = useViewer();
 
 	return starredProfiles ? (
-		<CandidateList userIds={starredProfiles} spacing={mini ? 1 : 3} mini={mini} {...props} />
+		<CandidateList
+			userIds={starredProfiles}
+			spacing={mini ? 1 : 3}
+			mini={mini}
+			showToggle={showToggle}
+			{...props}
+		/>
 	) : (
 		<></>
 	);

@@ -383,11 +383,12 @@ class Rise {
 		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'conflict_range_remove_visual_editor' );
 
 		/**
-		 * Custom Post Type: job
+		 * Custom Post Type: job_post
 		 */
 		$this->loader->add_action( 'init', $plugin_data, 'job_post_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_post_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_post_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'transition_post_status', $plugin_data, 'set_job_post_expiration_on_publication', 10, 3 );
 
 		/**
 		 * Custom Post Type: network_partner

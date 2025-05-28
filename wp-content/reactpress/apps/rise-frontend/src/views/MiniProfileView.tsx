@@ -7,6 +7,7 @@ import {
 	CardProps,
 	Flex,
 	Heading,
+	Spacer,
 	Stack,
 } from '@chakra-ui/react';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
@@ -15,7 +16,7 @@ import { useProfileCompletion, useProfileUrl } from '@hooks/hooks';
 import { UserProfile } from '@lib/classes';
 import useViewer from '@queries/useViewer';
 import { useState } from 'react';
-import { FiEdit3, FiEye, FiEyeOff, FiUser } from 'react-icons/fi';
+import { FiEdit3, FiEyeOff, FiUser } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 
 interface Props {
@@ -53,47 +54,6 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 			onMouseLeave={handleMouseLeave}
 			{...props}
 		>
-			<Box
-				position='absolute'
-				top={0}
-				right={0}
-				width='70px'
-				height='70px'
-				zIndex={1000}
-				_before={{
-					content: '""',
-					position: 'absolute',
-					top: 0,
-					right: 0,
-					width: 0,
-					height: 0,
-					borderStyle: 'solid',
-					borderWidth: '0 70px 70px 0',
-					borderColor: 'transparent var(--chakra-colors-brand-blue) transparent transparent',
-				}}
-			>
-				<TooltipIconButton
-					as={RouterLink}
-					to='/settings'
-					icon={disableProfile ? <FiEyeOff /> : <FiEye />}
-					label={
-						disableProfile ? 'Your profile is set to private.' : 'Your profile is set to public.'
-					}
-					colorScheme='transparent'
-					size='sm'
-					color='text.light'
-					bg={disableProfile ? 'brand.orange' : 'brand.green'}
-					borderRadius='full'
-					position='absolute'
-					top='2px'
-					right='1px'
-					boxSize={8}
-					p={2}
-					m={0}
-					opacity={0.9}
-					_hover={{ opacity: 1 }}
-				/>
-			</Box>
 			<Flex
 				as={Flex}
 				mt={2}
@@ -134,6 +94,27 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 						Edit
 					</TooltipIconButton>
 				</ButtonGroup>
+				<Spacer />
+				{disableProfile && (
+					<TooltipIconButton
+						as={RouterLink}
+						to='/settings'
+						icon={<FiEyeOff />}
+						label={
+							disableProfile ? 'Your profile is set to private.' : 'Your profile is set to public.'
+						}
+						colorScheme='transparent'
+						size='sm'
+						color='text.light'
+						bg={'brand.orange'}
+						borderRadius='full'
+						boxSize={8}
+						p={2}
+						m={0}
+						opacity={0.9}
+						_hover={{ opacity: 1 }}
+					/>
+				)}
 			</Flex>
 			<Stack direction='column' lineHeight={1} w='full'>
 				<Box textAlign='center'>
