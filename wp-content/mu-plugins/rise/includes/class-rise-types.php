@@ -397,9 +397,15 @@ class Rise_Types {
 	 * @return void
 	 */
 	function set_job_post_expiration_on_publication( $new_status, $old_status, $post ) {
+		if ( 'job_post' !== $post->post_type ) {
+			return;
+		}
+
 		if ( 'pending' === $old_status && 'publish' === $new_status ) {
-			$pod = pods( 'job_post', $post->ID );
-			$pod->save( ['_expires_on' => date( 'Y-m-d', strtotime( '+30 days' ) )] );
+			$pod             = pods( 'job_post', $post->ID );
+			$expiration_date = date( 'Y-m-d', strtotime( '+30 days' ) );
+
+			$pod->save( ['expiration_date' => $expiration_date] );
 		}
 	}
 

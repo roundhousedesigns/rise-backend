@@ -623,7 +623,7 @@ export class JobPost extends WPPost {
 	isInternship?: boolean;
 	isPaid?: boolean;
 	isUnion?: boolean;
-	expiresOn?: string;
+	expirationDate?: string;
 	positions: {
 		departments: number[];
 		jobs: number[];
@@ -646,7 +646,7 @@ export class JobPost extends WPPost {
 		this.applicationUrl = params.applicationUrl;
 		this.applicationPhone = params.applicationPhone;
 		this.applicationEmail = params.applicationEmail;
-		this.expiresOn = params.expiresOn;
+		this.expirationDate = params.expirationDate;
 		this.isInternship = params.isInternship;
 		this.isPaid = params.isPaid;
 		this.isUnion = params.isUnion;
