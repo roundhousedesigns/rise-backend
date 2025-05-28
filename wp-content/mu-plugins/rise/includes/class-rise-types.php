@@ -389,6 +389,27 @@ class Rise_Types {
 	}
 
 	/**
+	 * Set the job post's expiration date on publication.
+	 *
+	 * @param  string $new_status The new status of the job post.
+	 * @param  string $old_status The old status of the job post.
+	 * @param  object $post       The job post object.
+	 * @return void
+	 */
+	function set_job_post_expiration_on_publication( $new_status, $old_status, $post ) {
+		if ( 'job_post' !== $post->post_type ) {
+			return;
+		}
+
+		if ( 'pending' === $old_status && 'publish' === $new_status ) {
+			$pod             = pods( 'job_post', $post->ID );
+			$expiration_date = date( 'Y-m-d', strtotime( '+30 days' ) );
+
+			$pod->save( ['expiration_date' => $expiration_date] );
+		}
+	}
+
+	/**
 	 * Registers the `network_partner` post type.
 	 *
 	 * @access    private

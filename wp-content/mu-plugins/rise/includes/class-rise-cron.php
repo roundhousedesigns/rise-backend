@@ -24,22 +24,6 @@ class Rise_Cron {
 	}
 
 	/**
-	 * Adds a custom twice daily schedule to WordPress cron schedules.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param  array $schedules Array of existing cron schedules.
-	 * @return array Modified array of cron schedules.
-	 */
-	public function add_twice_daily_schedule( $schedules ) {
-		$schedules['twice_daily'] = [
-			'interval' => 43200, // 12 hours in seconds
-			'display'  => __( 'Twice Daily' ),
-		];
-		return $schedules;
-	}
-
-	/**
 	 * Deactivates all Rise cron jobs.
 	 * Removes scheduled events for conflict ranges and expired jobs.
 	 *
@@ -66,7 +50,7 @@ class Rise_Cron {
 		}
 
 		if ( !wp_next_scheduled( 'rise_check_expired_job_posts_cron' ) ) {
-			wp_schedule_event( time(), 'twice_daily', 'rise_check_expired_job_posts_cron' );
+			wp_schedule_event( time(), 'daily', 'rise_check_expired_job_posts_cron' );
 		}
 	}
 
@@ -110,19 +94,20 @@ class Rise_Cron {
 	 * @since 1.2
 	 */
 	public function check_expired_job_posts() {
+
 		$pod = pods( 'job_post' );
 
 		$params = [
 			'where' => [
 				'relation' => 'AND',
 				[
-					'key'     => '_expires_on',
+					'key'     => 'expiration_date',
 					'value'   => current_time( 'Y-m-d' ),
 					'compare' => '<',
 					'type'    => 'DATE',
 				],
 				[
-					'key'     => '_expired',
+					'key'     => 'expired',
 					'value'   => 1,
 					'compare' => '!=',
 				],
@@ -132,13 +117,23 @@ class Rise_Cron {
 		$pod->find( $params );
 
 		$expired_job_posts = [];
+
+		error_log( '[RISE] Starting expired job posts check at ' . current_time( 'Y-m-d H:i:s' ) );
 		while ( $pod->fetch() ) {
-			$pod->save( '_expired', 1 );
+			$pod->save( 'expired', 1 );
+
+			error_log( '[RISE] Marking job post ' . $pod->field( 'ID' ) . ' as expired at ' . current_time( 'Y-m-d H:i:s' ) );
 
 			wp_update_post( [
 				'ID'          => $pod->field( 'ID' ),
 				'post_status' => 'private',
 			] );
+
+			error_log( '[RISE] Updated job post ' . $pod->field( 'ID' ) . ' to private at ' . current_time( 'Y-m-d H:i:s' ) );
+
+			$pod->save( 'expired', true );
+
+			error_log( '[RISE] Saved job post ' . $pod->field( 'ID' ) . ' to expired at ' . current_time( 'Y-m-d H:i:s' ) );
 
 			$expired_job_posts[] = $pod->field( 'ID' );
 		}

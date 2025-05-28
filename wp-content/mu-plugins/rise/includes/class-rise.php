@@ -388,6 +388,7 @@ class Rise {
 		$this->loader->add_action( 'init', $plugin_data, 'job_post_init' );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_post_updated_messages' );
 		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_post_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'transition_post_status', $plugin_data, 'set_job_post_expiration_on_publication', 10, 3 );
 
 		/**
 		 * Custom Post Type: network_partner
@@ -430,10 +431,7 @@ class Rise {
 	private function define_cron_jobs() {
 		$cron_data = new Rise_Cron();
 
-		$this->loader->add_filter( 'cron_schedules', $cron_data, 'add_twice_daily_schedule' );
 		$this->loader->add_action( 'rise_delete_expired_conflict_ranges_cron', $cron_data, 'delete_expired_conflict_ranges' );
-
-		// TODO Test job_post cron jobs
 		$this->loader->add_action( 'rise_check_expired_job_posts_cron', $cron_data, 'check_expired_job_posts' );
 	}
 
