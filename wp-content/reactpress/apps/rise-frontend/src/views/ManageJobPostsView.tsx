@@ -94,7 +94,7 @@ export default function ManageJobPostsView({ jobs, ...props }: ManageJobPostsVie
 										</Text>
 										<Separator />
 										<Text fontSize='sm' color='gray.500' as='span'>
-											Expires on {job.expiresOn}
+											Expires on {job.expirationDate}
 										</Text>
 									</ListItem>
 								))}

@@ -94,7 +94,6 @@ class Rise_Cron {
 	 * @since 1.2
 	 */
 	public function check_expired_job_posts() {
-
 		$pod = pods( 'job_post' );
 
 		$params = [
@@ -116,26 +115,8 @@ class Rise_Cron {
 
 		$pod->find( $params );
 
-		$expired_job_posts = [];
-
-		error_log( '[RISE] Starting expired job posts check at ' . current_time( 'Y-m-d H:i:s' ) );
 		while ( $pod->fetch() ) {
-			$pod->save( 'expired', 1 );
-
-			error_log( '[RISE] Marking job post ' . $pod->field( 'ID' ) . ' as expired at ' . current_time( 'Y-m-d H:i:s' ) );
-
-			wp_update_post( [
-				'ID'          => $pod->field( 'ID' ),
-				'post_status' => 'private',
-			] );
-
-			error_log( '[RISE] Updated job post ' . $pod->field( 'ID' ) . ' to private at ' . current_time( 'Y-m-d H:i:s' ) );
-
 			$pod->save( 'expired', true );
-
-			error_log( '[RISE] Saved job post ' . $pod->field( 'ID' ) . ' to expired at ' . current_time( 'Y-m-d H:i:s' ) );
-
-			$expired_job_posts[] = $pod->field( 'ID' );
 		}
 	}
 }
