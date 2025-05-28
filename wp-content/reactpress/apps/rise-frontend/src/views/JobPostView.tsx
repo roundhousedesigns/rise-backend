@@ -17,7 +17,6 @@ import HeadingCenterline from '@common/HeadingCenterline';
 import PositionsDisplay from '@common/PositionsDisplay';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { JobPost } from '@lib/classes';
-import useTaxonomyTerms from '@queries/useTaxonomyTerms';
 import useViewer from '@queries/useViewer';
 import parse from 'html-react-parser';
 import {
@@ -28,7 +27,7 @@ import {
 	FiMail,
 	FiMap,
 	FiPhone,
-	FiUser
+	FiUser,
 } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -76,10 +75,6 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 
 	const parsedInstructions = instructions ? parse(instructions) : '';
 
-	const [departments] = useTaxonomyTerms(departmentIds ? departmentIds : []);
-	const [jobs] = useTaxonomyTerms(jobIds ? jobIds : []);
-	const [skills] = useTaxonomyTerms(skillIds ? skillIds : []);
-
 	return (
 		<Box>
 			{isAuthor && (
@@ -117,38 +112,37 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 					</ButtonGroup>
 				</Flex>
 			)}
-			<HeadingCenterline lineColor='brand.blue' mt={2}>
-				{title}
-			</HeadingCenterline>
-			<Wrap>
-				<Heading as='h2' fontSize='xl' my={0}>
-					{companyName}
-				</Heading>
-				<Flex alignItems='flex-end' gap={2}>
-					{isUnion && (
-						<Tag colorScheme='orange' size='sm'>
-							Union
-						</Tag>
-					)}
-					{isInternship && (
-						<Tag colorScheme='yellow' size='sm'>
-							Internship
-						</Tag>
-					)}
-				</Flex>
-			</Wrap>
+			<Heading variant='pageTitle' mt={0} mb={1} lineHeight='shorter'>
+				{title}{' '}
+				<Text as='span' fontSize='lg'>
+					at {companyName}
+				</Text>
+			</Heading>
+
+			<Flex alignItems='flex-end' gap={2}>
+				{isUnion && (
+					<Tag colorScheme='orange' size='sm'>
+						Union
+					</Tag>
+				)}
+				{isInternship && (
+					<Tag colorScheme='yellow' size='sm'>
+						Internship
+					</Tag>
+				)}
+			</Flex>
 
 			<Stack w='full' spacing={8} mb={0}>
 				<Flex gap={4} flexWrap='wrap' w='100%'>
 					<Card gap={0} flex='0 0 250px' mb={0}>
 						{parsedCompanyAddress ? (
 							<Stack gap={2}>
-								<WrapWithIcon icon={FiMap} my={0}>
+								<WrapWithIcon icon={FiMap} iconProps={{ 'aria-label': 'Company address' }} my={0}>
 									<Text whiteSpace='pre-wrap' my={0} lineHeight='short'>
 										{parsedCompanyAddress}
 									</Text>
 								</WrapWithIcon>
-								<WrapWithIcon icon={FiCalendar}>
+								<WrapWithIcon icon={FiCalendar} iconProps={{ 'aria-label': 'Start date' }}>
 									<Wrap>
 										<Text as='span' m={0}>
 											{`Starts on ${startDate}${endDate ? ` - ${endDate}` : ''}`}
@@ -160,18 +154,18 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 					</Card>
 					<Card flex='1' mb={0}>
 						<Stack gap={2}>
-							<WrapWithIcon icon={FiUser} my={0}>
+							<WrapWithIcon icon={FiUser} iconProps={{ 'aria-label': 'Contact name' }} my={0}>
 								{contactName}
 							</WrapWithIcon>
 
-							<WrapWithIcon icon={FiMail} my={0}>
+							<WrapWithIcon icon={FiMail} iconProps={{ 'aria-label': 'Contact email' }} my={0}>
 								<Link as={RouterLink} to={`mailto:${contactEmail}`} my={0}>
 									{contactEmail}
 								</Link>
 							</WrapWithIcon>
 
 							{contactPhone && (
-								<WrapWithIcon icon={FiPhone} my={0}>
+								<WrapWithIcon icon={FiPhone} iconProps={{ 'aria-label': 'Contact phone' }} my={0}>
 									<Link as={RouterLink} to={`tel:${contactPhone}`} my={0}>
 										{contactPhone}
 									</Link>
@@ -179,7 +173,11 @@ export default function JobPostView({ job }: Props): JSX.Element | null {
 							)}
 
 							{parsedCompensation && (
-								<WrapWithIcon icon={FiDollarSign} my={0}>
+								<WrapWithIcon
+									icon={FiDollarSign}
+									iconProps={{ 'aria-label': 'Compensation' }}
+									my={0}
+								>
 									<Text whiteSpace='pre-wrap' my={0}>
 										{parsedCompensation}
 									</Text>

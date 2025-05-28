@@ -27,6 +27,7 @@ body {
 
 	&.bg-color-orange {
 		background-color: var(--wp--preset--color--orange);
+		color: var(--wp--preset--color--black);
 	}
 
 	&.bg-color-yellow {

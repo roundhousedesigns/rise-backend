@@ -143,12 +143,12 @@ function rise_add_admin_job_posts_views( $views ) {
 	$expired_count = count( get_posts( array_merge( $args, $expired_args ) ) );
 	$active_count  = count( get_posts( array_merge( $args, $active_args ) ) );
 
-	// Add 'active' view to exclude Expired
-	$views['active'] = sprintf(
+	// Modify 'publish' view to exclude Expired
+	$views['publish'] = sprintf(
 		'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 		admin_url( 'edit.php?post_type=job_post&expired=0' ),
 		isset( $_GET['expired'] ) ? '' : 'current',
-		__( 'Active', 'rise' ),
+		__( 'Published', 'rise' ),
 		$active_count
 	);
 
@@ -164,16 +164,16 @@ function rise_add_admin_job_posts_views( $views ) {
 	// Reorder views to put Active and Expired after All
 	if ( isset( $views['all'] ) ) {
 		$all_view     = $views['all'];
-		$active_view  = $views['active'];
+		$publish_view = $views['publish'];
 		$expired_view = $views['expired'];
 
 		// Remove the views we want to reorder
-		unset( $views['all'], $views['active'], $views['expired'] );
+		unset( $views['all'], $views['publish'], $views['expired'] );
 
 		// Create new array with desired order
 		$views = array_merge(
 			['all' => $all_view],
-			['active' => $active_view],
+			['publish' => $publish_view],
 			['expired' => $expired_view],
 			$views
 		);

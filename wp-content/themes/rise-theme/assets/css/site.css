@@ -6,7 +6,6 @@
 	min-height: 100%;
 	display: flex;
 	font-size: 18px;
-	font-size: 1rem;
 	flex-direction: column;
 }
 
@@ -25,7 +24,6 @@
 
 .site-header {
 	display: flex;
-	font-size: 16px;
 	justify-content: space-between;
 	align-items: center;
 	padding-top: 0.5rem;

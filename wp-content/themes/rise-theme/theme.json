@@ -5,7 +5,7 @@
 		"typography": {
 			"fontFamily": "var(--wp--custom--font-family--body)",
 			"lineHeight": "1.5",
-			"fontSize": "16px"
+			"fontSize": "18px"
 		},
 		"elements": {
 			"h1": {

@@ -10,7 +10,6 @@ import {
 	Text,
 	Wrap,
 } from '@chakra-ui/react';
-import WPItemBadgeList from '@common/WPItemBadgeList';
 import PositionsDisplay from '@common/PositionsDisplay';
 import WrapWithIcon from '@common/WrapWithIcon';
 import { Credit, WPItem } from '@lib/classes';
@@ -146,21 +145,25 @@ export default function CreditItem({
 							</Flex>
 							<Flex my={0} alignItems='center' flexWrap='wrap' gap={2}>
 								{venue ? (
-									<WrapWithIcon icon={FiStar} mr={1}>
+									<WrapWithIcon icon={FiStar} mr={1} my={0}>
 										{decodeString(venue)}
 									</WrapWithIcon>
 								) : (
 									false
 								)}
 								{jobLocation ? (
-									<WrapWithIcon icon={FiMapPin} mr={1}>
+									<WrapWithIcon icon={FiMapPin} mr={1} my={0}>
 										{decodeString(`${jobLocation}`)}
 									</WrapWithIcon>
 								) : (
 									false
 								)}
 								<Flex my={0} alignItems='center' flexWrap='wrap' gap={2}>
-									{jobTitle && <WrapWithIcon icon={FiBriefcase}>{jobTitle}</WrapWithIcon>}
+									{jobTitle && (
+										<WrapWithIcon icon={FiBriefcase} my={0}>
+											{jobTitle}
+										</WrapWithIcon>
+									)}
 									{intern || fellow ? (
 										<Flex color='brand.yellow' gap={1} ml={2}>
 											{intern ? (
