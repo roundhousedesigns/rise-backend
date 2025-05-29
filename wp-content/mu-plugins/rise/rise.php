@@ -67,6 +67,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/deprecated.php';
 require plugin_dir_path( __FILE__ ) . 'includes/utils.php';
 
 /**
+ * Shortcodes.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,

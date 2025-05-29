@@ -9,6 +9,7 @@ body {
 
 	&.bg-color-light,
 	&.bg-color-yellow,
+	&.bg-color-blue,
 	&.bg-color-dark-gray {
 		color: var(--wp--preset--color--black);
 	}
@@ -23,6 +24,12 @@ body {
 
 	&.bg-color-blue {
 		background-color: var(--wp--preset--color--blue);
+
+		.site-main {
+			a {
+				color: var(--wp--preset--color--red);
+			}
+		}
 	}
 
 	&.bg-color-orange {
@@ -49,4 +56,14 @@ a {
 
 p {
 	margin-bottom: 1em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
 }

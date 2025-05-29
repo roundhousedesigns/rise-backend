@@ -671,7 +671,7 @@ class Rise_GraphQL_Queries {
 		);
 
 		/**
-		 * Get RISE site settings.
+		 * Get the theme stylesheet.
 		 */
 		register_graphql_field(
 			'RootQuery',
