@@ -44,6 +44,8 @@ export interface UserProfileParams {
 	slug: string | null;
 	firstName?: string;
 	lastName?: string;
+	isOrg?: boolean;
+	orgName?: string;
 	email?: string;
 	selfTitle?: string;
 	homebase?: string;
@@ -276,6 +278,7 @@ export interface ViewerData {
 	firstName?: string;
 	lastName?: string;
 	disableProfile?: boolean;
+	isOrg?: boolean;
 	starredProfiles?: number[];
 }
 

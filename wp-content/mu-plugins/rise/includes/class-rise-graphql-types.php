@@ -92,6 +92,10 @@ class Rise_GraphQL_Types {
 						'type'        => 'String',
 						'description' => __( 'The user\'s last name.', 'rise' ),
 					],
+					'orgName'            => [
+						'type'        => 'String',
+						'description' => __( 'The user\'s organization name.', 'rise' ),
+					],
 					'pronouns'           => [
 						'type'        => 'String',
 						'description' => __( 'The user\'s pronouns.', 'rise' ),

@@ -162,7 +162,7 @@ function get_public_profile_users( $user_ids ) {
 	$filtered = array_filter( $users, function ( $user ) {
 		$pod = pods( 'user', $user->ID );
 
-		return $pod->field( 'disable_profile' ) !== '1' ? true : false;
+		return $pod->field( 'disable_profile' ) !== '1' && $pod->field( 'is_org' ) !== '1' ? true : false;
 	} );
 
 	return $filtered;
@@ -275,6 +275,7 @@ function rise_translate_taxonomy_filters( $args ) {
 function rise_search_and_filter_crew_members( $args, $user_id = 0 ) {
 	// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 
+	// TODO check if we're actually doing this and forgot about it.
 	// Save args for future recall
 	if ( 0 !== $user_id ) {
 		Rise_Users::save_user_search_history( $user_id, $args );

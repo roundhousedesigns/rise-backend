@@ -78,6 +78,8 @@ class Rise_UserProfile {
 	 * @since 0.1.0
 	 */
 	const META_INPUT_FIELDS = [
+		'isOrg'        => 'is_org',
+		'orgName'      => 'org_name',
 		'email'        => 'contact_email',
 		'pronouns'     => 'pronouns',
 		'selfTitle'    => 'self_title',

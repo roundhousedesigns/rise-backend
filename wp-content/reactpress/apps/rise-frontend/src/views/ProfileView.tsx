@@ -73,6 +73,8 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 
 	const {
 		id,
+		isOrg,
+		orgName,
 		image,
 		pronouns,
 		selfTitle,
@@ -204,6 +206,8 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 		);
 	};
 
+	const profileName = isOrg ? orgName : profile.fullName();
+
 	return profile ? (
 		<Stack direction='column' flexWrap='nowrap' gap={6}>
 			<ProfileStackItem as={Card} p={4} mt={2}>
@@ -221,7 +225,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 								{image ? (
 									<Image
 										src={image}
-										alt={`${profile.fullName()}'s picture`}
+										alt={`${profileName}'s picture`}
 										borderRadius='md'
 										loading='eager'
 										fit='cover'
@@ -292,7 +296,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 							) : null}
 						</Stack>
 					) : (
-						<Avatar size='superLg' src={image} name={profile.fullName()} />
+						<Avatar size='superLg' src={image} name={profileName} />
 					)}
 
 					{id && allowStar && isLargerThanMd ? (
@@ -318,9 +322,9 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 								alignItems='flex-end'
 							>
 								<Heading as='h1' size='xl' pt={4} mr={2} my={0} fontWeight='bold' lineHeight='none'>
-									{profile.fullName()}
+									{profileName}
 								</Heading>
-								{pronouns ? (
+								{!isOrg && pronouns && (
 									<Tag
 										colorScheme='blue'
 										size='md'
@@ -330,7 +334,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 									>
 										{pronouns}
 									</Tag>
-								) : null}
+								)}
 								<Spacer flex={1} />
 							</Flex>
 							<ProfileSubtitle flex='0 0 100%' w='full' />
@@ -412,7 +416,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 				</Flex>
 			</ProfileStackItem>
 
-			{credits && credits.length > 0 && (
+			{credits && credits.length > 0 && !isOrg && (
 				<ProfileStackItem centerlineColor='brand.blue' title='Credits'>
 					<>
 						<Flex justifyContent='flex-end'>
@@ -482,7 +486,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 											borderRadius='md'
 											fit='cover'
 											mb={2}
-											alt={`${profile.fullName()}'s image`}
+											alt={`${profileName}'s image`}
 										/>
 									))}
 								</Box>

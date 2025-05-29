@@ -15,6 +15,7 @@ export const QUERY_VIEWER = gql`
 			lastName
 			email
 			username
+			isOrg
 			disableProfile
 			starredProfiles(first: 100) {
 				nodes {
@@ -36,6 +37,7 @@ const useViewer = (): [ViewerData, any] => {
 		email,
 		username,
 		disableProfile,
+		isOrg,
 		starredProfiles: starredProfilesRaw,
 	} = result?.data?.viewer || {};
 
@@ -51,6 +53,7 @@ const useViewer = (): [ViewerData, any] => {
 			email,
 			username,
 			disableProfile,
+			isOrg,
 			starredProfiles,
 		},
 		omit(result, ['data']),

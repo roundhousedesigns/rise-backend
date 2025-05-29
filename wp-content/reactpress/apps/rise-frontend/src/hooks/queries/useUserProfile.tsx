@@ -3,9 +3,9 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
-import { omit } from 'lodash';
 import { UserProfile } from '@lib/classes';
 import { prepareCreditsFromGQLNodes, prepareUnavailDatesFromGQLNodes } from '@lib/utils';
+import { omit } from 'lodash';
 
 export const QUERY_PROFILE = gql`
 	query UserQuery($id: ID!, $author: Int!, $lastCredits: Int = 5) {
@@ -14,6 +14,8 @@ export const QUERY_PROFILE = gql`
 			firstName
 			lastName
 			pronouns
+			isOrg
+			orgName
 			email: contactEmail
 			selfTitle
 			homebase

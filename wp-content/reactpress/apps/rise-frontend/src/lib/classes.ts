@@ -81,6 +81,8 @@ export class CurrentUser extends User {
 export class UserProfile extends User {
 	firstName?: string;
 	lastName?: string;
+	isOrg?: boolean;
+	orgName?: string;
 	email?: string;
 	selfTitle?: string;
 	homebase?: string;
@@ -124,6 +126,8 @@ export class UserProfile extends User {
 			slug,
 			firstName,
 			lastName,
+			isOrg,
+			orgName,
 			selfTitle,
 			email,
 			homebase,
@@ -164,6 +168,8 @@ export class UserProfile extends User {
 
 		this.firstName = firstName ? decodeString(firstName) : firstName;
 		this.lastName = lastName ? decodeString(lastName) : lastName;
+		this.isOrg = isOrg ? true : false;
+		this.orgName = orgName ? decodeString(orgName) : orgName;
 		this.pronouns = pronouns ? decodeString(pronouns) : pronouns;
 		this.email = email;
 		this.homebase = homebase ? decodeString(homebase) : homebase;

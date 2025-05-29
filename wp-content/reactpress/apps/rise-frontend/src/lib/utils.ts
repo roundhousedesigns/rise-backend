@@ -147,6 +147,7 @@ export function prepareUserProfileForGQL(profile: UserProfile): object {
 	const {
 		slug,
 		image,
+		isOrg,
 		multilingual,
 		resume,
 		mediaImage1,

@@ -1,14 +1,14 @@
 import {
-    Button,
-    Divider,
-    Flex,
-    Heading,
-    Link,
-    List,
-    ListItem,
-    Spacer,
-    Text,
-    useToast,
+	Button,
+	Divider,
+	Flex,
+	Heading,
+	Link,
+	List,
+	ListItem,
+	Spacer,
+	Text,
+	useToast,
 } from '@chakra-ui/react';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import EditConflictDateRangeModal from '@components/EditConflictDateRangeModal';

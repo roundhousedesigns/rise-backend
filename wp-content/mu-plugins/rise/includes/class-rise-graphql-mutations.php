@@ -43,6 +43,7 @@ class Rise_GraphQL_Mutations {
 		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__updateOrCreateJobPost();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
+		$this->register_mutation__toggleUserOption( 'toggleIsOrg', 'is_org', 'updatedIsOrg' );
 		$this->register_mutation__markProfileNotificationAsRead();
 		$this->register_mutation__dismissProfileNotification();
 	}

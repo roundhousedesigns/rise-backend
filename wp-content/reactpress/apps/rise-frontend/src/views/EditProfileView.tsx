@@ -79,12 +79,21 @@ import {
 } from 'react-icons/fi';
 import ReactPlayer from 'react-player/lazy';
 import { useNavigate } from 'react-router-dom';
+import IsOrgToggle from '../components/IsOrgToggle';
 
 // TODO Refactor into smaller components.
 // TODO Add cancel/navigation-away confirmation when exiting with edits
 
 interface Props {
 	profile: UserProfile | null;
+}
+
+interface FileDropzoneProps {
+	fieldName: string;
+	text: string;
+	icon?: As | null;
+	allowPdf?: boolean;
+	iconProps?: { [key: string]: any };
 }
 
 /**
@@ -99,6 +108,8 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 	const {
 		firstName,
 		lastName,
+		isOrg,
+		orgName,
 		pronouns,
 		selfTitle,
 		email,
@@ -204,6 +215,13 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 		return () => setErrorCode('');
 	});
+
+	const handleToggleIsOrg = () => {
+		editProfileDispatch({
+			type: 'UPDATE_BOOLEAN_INPUT',
+			payload: { name: 'isOrg', value: !isOrg },
+		});
+	};
 
 	/**
 	 * EditCredit Modal
@@ -760,21 +778,15 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 					)}
 				</Box>
 			</Box>
-			<Card>
-				<Box>
-					<EditConflictDateRanges />
-				</Box>
-			</Card>
+			{!isOrg && (
+				<Card>
+					<Box>
+						<EditConflictDateRanges />
+					</Box>
+				</Card>
+			)}
 		</Box>
 	);
-
-	interface FileDropzoneProps {
-		fieldName: string;
-		text: string;
-		icon?: As | null;
-		allowPdf?: boolean;
-		iconProps?: { [key: string]: any };
-	}
 
 	// TODO Move to component
 	const FileDropzone = ({
@@ -937,6 +949,9 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 									<Card py={2} my={0}>
 										<DisableProfileToggle showHelperText showLabel />
 									</Card>
+									<Card py={2} my={0}>
+										<IsOrgToggle showHelperText showLabel />
+									</Card>
 								</Flex>
 							</AccordionPanel>
 						</AccordionItem>
@@ -951,56 +966,69 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 						)}
 						<Stack flex='1' px={{ base: 0, md: 4 }} w='full'>
 							<ProfileStackItem title='Name'>
-								<Flex alignItems='flex-end' gap={2} flexWrap='wrap' w='full'>
+								{isOrg ? (
 									<TextInput
-										placeholder='First'
-										value={firstName}
-										name='firstName'
-										isRequired
+										placeholder='Organization name'
+										value={orgName}
+										name='orgName'
+										label='Organization name'
 										onChange={handleInputChange}
-										flex='1'
-										label='First name'
-										minW='200px'
 										debounceTime={300}
-										onDebounceStart={() => handleDebounceStart('firstName')}
-										onDebounceEnd={() => handleDebounceEnd('firstName')}
+										onDebounceStart={() => handleDebounceStart('orgName')}
+										onDebounceEnd={() => handleDebounceEnd('orgName')}
 									/>
-									<TextInput
-										placeholder='Last'
-										value={lastName}
-										name='lastName'
-										label='Last name'
-										isRequired
-										onChange={handleInputChange}
-										flex='1'
-										minW='200px'
-										debounceTime={300}
-										onDebounceStart={() => handleDebounceStart('lastName')}
-										onDebounceEnd={() => handleDebounceEnd('lastName')}
-									/>
-									<TextInput
-										value={pronouns}
-										name='pronouns'
-										label='Pronouns'
-										onChange={handleInputChange}
-										maxW='150px'
-										inputProps={{
-											size: 'md',
-											tabIndex: 0,
-										}}
-										debounceTime={300}
-										onDebounceStart={() => handleDebounceStart('pronouns')}
-										onDebounceEnd={() => handleDebounceEnd('pronouns')}
-									/>
-								</Flex>
+								) : (
+									<Flex alignItems='flex-end' gap={2} flexWrap='wrap' w='full'>
+										<TextInput
+											placeholder='First'
+											value={firstName}
+											name='firstName'
+											isRequired
+											onChange={handleInputChange}
+											flex='1'
+											label='First name'
+											minW='200px'
+											debounceTime={300}
+											onDebounceStart={() => handleDebounceStart('firstName')}
+											onDebounceEnd={() => handleDebounceEnd('firstName')}
+										/>
+										<TextInput
+											placeholder='Last'
+											value={lastName}
+											name='lastName'
+											label='Last name'
+											isRequired
+											onChange={handleInputChange}
+											flex='1'
+											minW='200px'
+											debounceTime={300}
+											onDebounceStart={() => handleDebounceStart('lastName')}
+											onDebounceEnd={() => handleDebounceEnd('lastName')}
+										/>
+										<TextInput
+											value={pronouns}
+											name='pronouns'
+											label='Pronouns'
+											onChange={handleInputChange}
+											maxW='150px'
+											inputProps={{
+												size: 'md',
+												tabIndex: 0,
+											}}
+											debounceTime={300}
+											onDebounceStart={() => handleDebounceStart('pronouns')}
+											onDebounceEnd={() => handleDebounceEnd('pronouns')}
+										/>
+									</Flex>
+								)}
 							</ProfileStackItem>
 							<ProfileStackItem title='Profession'>
 								<Flex alignItems='flex-start' gap={2} flexWrap='wrap' w='full' mt={4}>
 									<TextInput
 										value={selfTitle}
 										name='selfTitle'
-										placeholder='Title'
-										label='Title/Trade/Profession'
+										placeholder={isOrg ? 'Organization type' : 'Title'}
+										label={isOrg ? 'What kind of organization are you?' : 'Title/Trade/Profession'}
 										leftElement={<Icon as={FiStar} />}
 										onChange={handleInputChange}
 										maxLength={50}
@@ -1013,10 +1041,12 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 										onDebounceEnd={() => handleDebounceEnd('selfTitle')}
 									/>
 									<TextInput
-										placeholder='Home base'
+										placeholder={isOrg ? 'Location' : 'Home base'}
 										value={homebase}
 										name='homebase'
-										label='Where do you currently live?'
+										label={
+											isOrg ? 'Where is your organization based?' : 'Where do you currently live?'
+										}
 										leftElement={<Icon as={FiHome} />}
 										onChange={handleInputChange}
 										maxLength={25}
@@ -1086,34 +1116,38 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 									/>
 								</Stack>
 							</ProfileStackItem>
-							<ProfileStackItem title='Additional Languages' w='full' maxW='3xl' mt={4}>
-								<>
-									<Checkbox
-										name='multilingual'
-										isChecked={multilingual}
-										onChange={handleCheckboxChange}
-										variant='buttonStyle'
-										position='relative'
-									>
-										I speak more than one language
-									</Checkbox>
-									<Collapse in={multilingual}>
-										<TextInput
-											value={languages}
-											leftElement={<Icon as={FiGlobe} />}
-											label='What languages other than English do you speak?'
-											placeholder='Spanish, Italian, Esperanto...'
-											name='languages'
-											error={errorMessage}
-											onChange={handleInputChange}
-											mt={2}
-											debounceTime={300}
-											onDebounceStart={() => handleDebounceStart('languages')}
-											onDebounceEnd={() => handleDebounceEnd('languages')}
-										/>
-									</Collapse>
-								</>
-							</ProfileStackItem>
+
+							{!isOrg && (
+								<ProfileStackItem title='Additional Languages' w='full' maxW='3xl' mt={4}>
+									<>
+										<Checkbox
+											name='multilingual'
+											isChecked={multilingual}
+											onChange={handleCheckboxChange}
+											variant='buttonStyle'
+											position='relative'
+										>
+											I speak more than one language
+										</Checkbox>
+										<Collapse in={multilingual}>
+											<TextInput
+												value={languages}
+												leftElement={<Icon as={FiGlobe} />}
+												label='What languages other than English do you speak?'
+												placeholder='Spanish, Italian, Esperanto...'
+												name='languages'
+												error={errorMessage}
+												onChange={handleInputChange}
+												mt={2}
+												debounceTime={300}
+												onDebounceStart={() => handleDebounceStart('languages')}
+												onDebounceEnd={() => handleDebounceEnd('languages')}
+											/>
+										</Collapse>
+									</>
+								</ProfileStackItem>
+							)}
+
 							<ProfileStackItem title='Social' w='full' maxW='3xl' mt={4}>
 								<SimpleGrid columns={[1, 2]} spacing={4}>
 									<TextInput
@@ -1168,7 +1202,9 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 				<ProfileStackItem title='Work Locations' fontSize='sm'>
 					<>
 						<Heading variant='contentSubtitle'>
-							Select any areas in which you're a local hire.
+							{isOrg
+								? 'Select any areas in which you operate.'
+								: "Select any areas in which you're a local hire."}
 						</Heading>
 						<ProfileCheckboxGroup
 							name='locations'
@@ -1180,71 +1216,75 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 						/>
 					</>
 				</ProfileStackItem>
-				<ProfileStackItem py={4} display='flex' gap={10}>
-					<Flex flexWrap='wrap' gap={8} justifyContent='space-between'>
-						<Box>
-							<Heading variant='contentTitle'>Travel</Heading>
-							<Heading variant='contentSubtitle'>Would you work away from home?</Heading>
-							<ProfileRadioGroup
-								defaultValue={willTravel ? 'true' : 'false'}
-								name='willTravel'
-								items={[
-									{ label: 'Yes', value: 'true' },
-									{ label: 'No', value: 'false' },
-								]}
-								handleChange={handleRadioGroupInputChange}
-							/>
-						</Box>
-						<Box>
-							<Heading variant='contentTitle'>Tour</Heading>
-							<Heading variant='contentSubtitle'>Would you go on tour?</Heading>
-							<ProfileRadioGroup
-								defaultValue={willTour ? 'true' : 'false'}
-								name='willTour'
-								items={[
-									{ label: 'Yes', value: 'true' },
-									{ label: 'No', value: 'false' },
-								]}
-								handleChange={handleRadioGroupInputChange}
-							/>
-						</Box>
-						<Box>
-							<Heading
-								variant='contentTitle'
-								flex='0 0 100%'
-								textAlign='left'
-								alignItems='center'
-								display='flex'
-							>
-								Resume
-							</Heading>
-							{!resume && <Heading variant='contentSubtitle'>PDF or image</Heading>}
-							{resume && attachment?.sourceUrl ? (
-								<Flex flexWrap='wrap'>
-									<ResumePreviewModal
-										resumePreviewSrc={attachment.sourceUrl}
-										resumeLink={resume}
-										w='100%'
-										maxW='300px'
-										mr={{ base: 0, sm: 1 }}
-										mb={{ base: 1, sm: 0 }}
-									/>
-									<ClearFieldButton field='resume' label='Delete resume'>
-										Clear
-									</ClearFieldButton>
-								</Flex>
-							) : (
-								<FileDropzone fieldName='resume' text='Resume' allowPdf={true} />
-							)}
-						</Box>
-					</Flex>
-				</ProfileStackItem>
+
+				{!isOrg && (
+					<ProfileStackItem py={4} display='flex' gap={10}>
+						<Flex flexWrap='wrap' gap={8} justifyContent='space-between'>
+							<Box>
+								<Heading variant='contentTitle'>Travel</Heading>
+								<Heading variant='contentSubtitle'>Would you work away from home?</Heading>
+								<ProfileRadioGroup
+									defaultValue={willTravel ? 'true' : 'false'}
+									name='willTravel'
+									items={[
+										{ label: 'Yes', value: 'true' },
+										{ label: 'No', value: 'false' },
+									]}
+									handleChange={handleRadioGroupInputChange}
+								/>
+							</Box>
+							<Box>
+								<Heading variant='contentTitle'>Tour</Heading>
+								<Heading variant='contentSubtitle'>Would you go on tour?</Heading>
+								<ProfileRadioGroup
+									defaultValue={willTour ? 'true' : 'false'}
+									name='willTour'
+									items={[
+										{ label: 'Yes', value: 'true' },
+										{ label: 'No', value: 'false' },
+									]}
+									handleChange={handleRadioGroupInputChange}
+								/>
+							</Box>
+							<Box>
+								<Heading
+									variant='contentTitle'
+									flex='0 0 100%'
+									textAlign='left'
+									alignItems='center'
+									display='flex'
+								>
+									Resume
+								</Heading>
+								{!resume && <Heading variant='contentSubtitle'>PDF or image</Heading>}
+								{resume && attachment?.sourceUrl ? (
+									<Flex flexWrap='wrap'>
+										<ResumePreviewModal
+											resumePreviewSrc={attachment.sourceUrl}
+											resumeLink={resume}
+											w='100%'
+											maxW='300px'
+											mr={{ base: 0, sm: 1 }}
+											mb={{ base: 1, sm: 0 }}
+										/>
+										<ClearFieldButton field='resume' label='Delete resume'>
+											Clear
+										</ClearFieldButton>
+									</Flex>
+								) : (
+									<FileDropzone fieldName='resume' text='Resume' allowPdf={true} />
+								)}
+							</Box>
+						</Flex>
+					</ProfileStackItem>
+				)}
+
 				<ProfileStackItem>
 					<Stack display='flex' gap={4}>
 						<ProfileStackItem title='Unions/Guilds/Memberships'>
 							<>
 								<Heading variant='contentSubtitle'>
-									What unions or guilds are you a member of?
+									We employ members of the following unions or guilds:
 								</Heading>
 								<Box fontSize='sm'>
 									<ProfileCheckboxGroup
@@ -1256,21 +1296,25 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 								</Box>
 							</>
 						</ProfileStackItem>
-						<ProfileStackItem title='Experience Levels'>
-							<>
-								<Heading variant='contentSubtitle'>At what levels have you worked?</Heading>
-								<Box fontSize='sm'>
-									<ProfileCheckboxGroup
-										name='experienceLevels'
-										items={experienceLevelTerms}
-										checked={
-											experienceLevels ? experienceLevels.map((item) => item.toString()) : []
-										}
-										handleChange={handleCheckboxGroupChange}
-									/>
-								</Box>
-							</>
-						</ProfileStackItem>
+
+						{!isOrg && (
+							<ProfileStackItem title='Experience Levels'>
+								<>
+									<Heading variant='contentSubtitle'>At what levels have you worked?</Heading>
+									<Box fontSize='sm'>
+										<ProfileCheckboxGroup
+											name='experienceLevels'
+											items={experienceLevelTerms}
+											checked={
+												experienceLevels ? experienceLevels.map((item) => item.toString()) : []
+											}
+											handleChange={handleCheckboxGroupChange}
+										/>
+									</Box>
+								</>
+							</ProfileStackItem>
+						)}
+
 						<ProfileStackItem title='Partner Directories'>
 							<>
 								<Heading variant='contentSubtitle'>
@@ -1290,220 +1334,242 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 						</ProfileStackItem>
 					</Stack>
 				</ProfileStackItem>
-				<ProfileStackItem title='Credits' centerlineColor='brand.blue' pos='relative' id='credits'>
-					<>
-						<Text fontSize='lg'>
-							Add your 5 best credits here.{' '}
-							<Text as='span' fontStyle='italic'>
-								You must have at least one credit to be listed in searches!
+
+				{!isOrg && (
+					<ProfileStackItem
+						title='Credits'
+						centerlineColor='brand.blue'
+						pos='relative'
+						id='credits'
+					>
+						<>
+							<Text fontSize='lg'>
+								Add your 5 best credits here.{' '}
+								<Text as='span' fontStyle='italic'>
+									You must have at least one credit to be listed in searches!
+								</Text>
 							</Text>
-						</Text>
 
-						<NewCreditButton />
+							<NewCreditButton />
 
-						{/* TODO better reorder and delete animations */}
+							{/* TODO better reorder and delete animations */}
 
-						{deleteCreditLoading ? (
-							<Spinner size='sm' colorScheme='green' />
-						) : (
-							creditsSorted.map((credit: Credit, index: number) => (
-								<Stack key={credit.id} direction='row' alignItems='center'>
-									<CreditItem
-										credit={credit}
-										onClick={() => handleEditCredit(credit.id)}
-										isEditable
-										key={index}
-										width='full'
-									/>
-									<Stack
-										as={isLargerThanMd ? ButtonGroup : undefined}
-										gap={{ base: 2, md: 0 }}
-										direction={{ base: 'column', md: 'row' }}
-									>
-										<TooltipIconButton
-											colorScheme='gray'
-											icon={<FiArrowUpCircle />}
-											label='Move Credit up'
-											isDisabled={index === 0}
-											id={credit.id}
-											onClick={() => {
-												handleCreditMoveUp(index);
-											}}
+							{deleteCreditLoading ? (
+								<Spinner size='sm' colorScheme='green' />
+							) : (
+								creditsSorted.map((credit: Credit, index: number) => (
+									<Stack key={credit.id} direction='row' alignItems='center'>
+										<CreditItem
+											credit={credit}
+											onClick={() => handleEditCredit(credit.id)}
+											isEditable
+											key={index}
+											width='full'
 										/>
-										<TooltipIconButton
-											colorScheme='gray'
-											icon={<FiArrowDownCircle />}
-											label='Move Credit down'
-											isDisabled={index === creditsSorted.length - 1}
-											id={credit.id}
-											onClick={() => {
-												handleCreditMoveDown(index);
-											}}
-										/>
-										<DeleteCreditButton handleDeleteCredit={handleDeleteCredit} id={credit.id} />
+										<Stack
+											as={isLargerThanMd ? ButtonGroup : undefined}
+											gap={{ base: 2, md: 0 }}
+											direction={{ base: 'column', md: 'row' }}
+										>
+											<TooltipIconButton
+												colorScheme='gray'
+												icon={<FiArrowUpCircle />}
+												label='Move Credit up'
+												isDisabled={index === 0}
+												id={credit.id}
+												onClick={() => {
+													handleCreditMoveUp(index);
+												}}
+											/>
+											<TooltipIconButton
+												colorScheme='gray'
+												icon={<FiArrowDownCircle />}
+												label='Move Credit down'
+												isDisabled={index === creditsSorted.length - 1}
+												id={credit.id}
+												onClick={() => {
+													handleCreditMoveDown(index);
+												}}
+											/>
+											<DeleteCreditButton handleDeleteCredit={handleDeleteCredit} id={credit.id} />
+										</Stack>
 									</Stack>
-								</Stack>
-							))
-						)}
+								))
+							)}
 
-						<EditCreditModal
-							isOpen={creditModalIsOpen}
-							onClose={handleCloseEditCredit}
-							creditId={editCredit}
-						/>
-					</>
-				</ProfileStackItem>
+							<EditCreditModal
+								isOpen={creditModalIsOpen}
+								onClose={handleCloseEditCredit}
+								creditId={editCredit}
+							/>
+						</>
+					</ProfileStackItem>
+				)}
 
-				<ProfileStackItem title='About' centerlineColor='brand.orange'>
-					<>
-						<Heading variant='contentTitle'>Bio</Heading>
-						<Text my={2} fontSize='lg'>
-							Write a little. Write a lot. It's up to you!
-						</Text>
+				{!isOrg && (
+					<ProfileStackItem title='About' centerlineColor='brand.orange'>
+						<>
+							<Heading variant='contentTitle'>{isOrg ? 'About' : 'Bio'}</Heading>
+							<Text my={2} fontSize='lg'>
+								Write a little. Write a lot. It's up to you!
+							</Text>
+							<TextareaInput
+								value={description}
+								name='description'
+								label='Bio'
+								labelHidden
+								mt={2}
+								mb={4}
+								onChange={handleInputChange}
+								inputProps={{
+									rows: 10,
+								}}
+								debounceTime={300}
+								onDebounceStart={() => handleDebounceStart('description')}
+								onDebounceEnd={() => handleDebounceEnd('description')}
+							/>
+						</>
+					</ProfileStackItem>
+				)}
+
+				{!isOrg && (
+					<ProfileStackItem title='Identity' centerlineColor='brand.yellow'>
+						<>
+							<Text fontSize='lg'>
+								The following optional fields will be <strong>searchable</strong>, but{' '}
+								<em>will not appear</em> on your public profile. Select any that apply.
+							</Text>
+							<Stack direction='row' mt={4} gap={2} flexWrap='wrap'>
+								<ProfileStackItem title='Gender' flex='1 0 33%'>
+									<ProfileCheckboxGroup
+										name='genderIdentities'
+										items={genderIdentityTerms}
+										checked={
+											genderIdentities ? genderIdentities.map((item) => item.toString()) : []
+										}
+										handleChange={handleCheckboxGroupChange}
+									/>
+								</ProfileStackItem>
+								<ProfileStackItem title='Race/Ethnicity' flex='1 0 33%'>
+									<ProfileCheckboxGroup
+										name='racialIdentities'
+										items={racialIdentityTerms}
+										checked={
+											racialIdentities ? racialIdentities.map((item) => item.toString()) : []
+										}
+										handleChange={handleCheckboxGroupChange}
+									/>
+								</ProfileStackItem>
+								<ProfileStackItem title='Additional' flex='1 0 33%'>
+									<ProfileCheckboxGroup
+										name='personalIdentities'
+										items={personalIdentityTerms}
+										checked={
+											personalIdentities ? personalIdentities.map((item) => item.toString()) : []
+										}
+										handleChange={handleCheckboxGroupChange}
+									/>
+								</ProfileStackItem>
+							</Stack>
+						</>
+					</ProfileStackItem>
+				)}
+
+				{!isOrg && (
+					<ProfileStackItem title='Education + Training' centerlineColor='brand.green'>
 						<TextareaInput
-							value={description}
-							name='description'
-							label='Bio'
+							value={education}
+							name='education'
+							variant='outline'
+							label='Education and training'
 							labelHidden
-							mt={2}
-							mb={4}
 							onChange={handleInputChange}
 							inputProps={{
-								rows: 10,
+								rows: 4,
 							}}
 							debounceTime={300}
-							onDebounceStart={() => handleDebounceStart('description')}
-							onDebounceEnd={() => handleDebounceEnd('description')}
+							onDebounceStart={() => handleDebounceStart('education')}
+							onDebounceEnd={() => handleDebounceEnd('education')}
 						/>
-					</>
-				</ProfileStackItem>
+					</ProfileStackItem>
+				)}
 
-				<ProfileStackItem title='Identity' centerlineColor='brand.yellow'>
-					<>
-						<Text fontSize='lg'>
-							The following optional fields will be <strong>searchable</strong>, but{' '}
-							<em>will not appear</em> on your public profile. Select any that apply.
-						</Text>
-						<Stack direction='row' mt={4} gap={2} flexWrap='wrap'>
-							<ProfileStackItem title='Gender' flex='1 0 33%'>
-								<ProfileCheckboxGroup
-									name='genderIdentities'
-									items={genderIdentityTerms}
-									checked={genderIdentities ? genderIdentities.map((item) => item.toString()) : []}
-									handleChange={handleCheckboxGroupChange}
-								/>
-							</ProfileStackItem>
-							<ProfileStackItem title='Race/Ethnicity' flex='1 0 33%'>
-								<ProfileCheckboxGroup
-									name='racialIdentities'
-									items={racialIdentityTerms}
-									checked={racialIdentities ? racialIdentities.map((item) => item.toString()) : []}
-									handleChange={handleCheckboxGroupChange}
-								/>
-							</ProfileStackItem>
-							<ProfileStackItem title='Additional' flex='1 0 33%'>
-								<ProfileCheckboxGroup
-									name='personalIdentities'
-									items={personalIdentityTerms}
-									checked={
-										personalIdentities ? personalIdentities.map((item) => item.toString()) : []
-									}
-									handleChange={handleCheckboxGroupChange}
-								/>
-							</ProfileStackItem>
-						</Stack>
-					</>
-				</ProfileStackItem>
-
-				<ProfileStackItem title='Education + Training' centerlineColor='brand.green'>
-					<TextareaInput
-						value={education}
-						name='education'
-						variant='outline'
-						label='Education and training'
-						labelHidden
-						onChange={handleInputChange}
-						inputProps={{
-							rows: 4,
-						}}
-						debounceTime={300}
-						onDebounceStart={() => handleDebounceStart('education')}
-						onDebounceEnd={() => handleDebounceEnd('education')}
-					/>
-				</ProfileStackItem>
-
-				<ProfileStackItem title='Media' centerlineColor='brand.blue'>
-					<>
-						<Heading variant='contentSubtitle'>Showcase your work with images and videos.</Heading>
-						<Box>
-							<Heading variant='contentTitle'>Videos</Heading>
-							<SimpleGrid columns={[1, 2]} spacing={8}>
-								<Box>
-									<TextInput
-										value={mediaVideo1}
-										name='mediaVideo1'
-										label='Video embed 1'
-										placeholder='https://www.youtube.com/watch?v=M67E9mpwBpM'
-										leftElement={<FiVideo />}
-										onChange={handleInputChange}
-										debounceTime={300}
-										onDebounceStart={() => handleDebounceStart('mediaVideo1')}
-										onDebounceEnd={() => handleDebounceEnd('mediaVideo1')}
-									/>
-									{mediaVideo1 ? (
-										<Box position='relative' paddingBottom='56.25%' w='full'>
-											<Box position='absolute' top={0} left={0} width='100%' height='100%'>
-												<ReactPlayer url={mediaVideo1} controls width='100%' height='100%' />
+				{!isOrg && (
+					<ProfileStackItem title='Media' centerlineColor='brand.blue'>
+						<>
+							<Heading variant='contentSubtitle'>
+								Showcase your work with images and videos.
+							</Heading>
+							<Box>
+								<Heading variant='contentTitle'>Videos</Heading>
+								<SimpleGrid columns={[1, 2]} spacing={8}>
+									<Box>
+										<TextInput
+											value={mediaVideo1}
+											name='mediaVideo1'
+											label='Video embed 1'
+											placeholder='https://www.youtube.com/watch?v=M67E9mpwBpM'
+											leftElement={<FiVideo />}
+											onChange={handleInputChange}
+											debounceTime={300}
+											onDebounceStart={() => handleDebounceStart('mediaVideo1')}
+											onDebounceEnd={() => handleDebounceEnd('mediaVideo1')}
+										/>
+										{mediaVideo1 ? (
+											<Box position='relative' paddingBottom='56.25%' w='full'>
+												<Box position='absolute' top={0} left={0} width='100%' height='100%'>
+													<ReactPlayer url={mediaVideo1} controls width='100%' height='100%' />
+												</Box>
 											</Box>
-										</Box>
-									) : (
-										false
-									)}
-								</Box>
-								<Box>
-									<TextInput
-										value={mediaVideo2}
-										name='mediaVideo2'
-										label='Video embed 2'
-										placeholder='https://www.youtube.com/watch?v=eR8YUj3C9lI'
-										leftElement={<FiVideo />}
-										onChange={handleInputChange}
-										debounceTime={300}
-										onDebounceStart={() => handleDebounceStart('mediaVideo2')}
-										onDebounceEnd={() => handleDebounceEnd('mediaVideo2')}
-									/>
-									{mediaVideo2 ? (
-										<Box position='relative' paddingBottom='56.25%' w='full'>
-											<Box position='absolute' top={0} left={0} width='100%' height='100%'>
-												<ReactPlayer url={mediaVideo2} controls width='100%' height='100%' />
+										) : (
+											false
+										)}
+									</Box>
+									<Box>
+										<TextInput
+											value={mediaVideo2}
+											name='mediaVideo2'
+											label='Video embed 2'
+											placeholder='https://www.youtube.com/watch?v=eR8YUj3C9lI'
+											leftElement={<FiVideo />}
+											onChange={handleInputChange}
+											debounceTime={300}
+											onDebounceStart={() => handleDebounceStart('mediaVideo2')}
+											onDebounceEnd={() => handleDebounceEnd('mediaVideo2')}
+										/>
+										{mediaVideo2 ? (
+											<Box position='relative' paddingBottom='56.25%' w='full'>
+												<Box position='absolute' top={0} left={0} width='100%' height='100%'>
+													<ReactPlayer url={mediaVideo2} controls width='100%' height='100%' />
+												</Box>
 											</Box>
-										</Box>
-									) : (
-										false
-									)}
-								</Box>
-							</SimpleGrid>
-						</Box>
-						<Box mt={6}>
-							<Heading variant='contentTitle'>Images</Heading>
-							<Text fontSize='lg' mb={0}>
-								Allowed formats: jpg, png, gif, heic, or webp. 2MB or less, please.
-							</Text>
-							<Text variant='notice' fontSize='sm' fontStyle='italic' mb={4}>
-								* By uploading images to your RISE profile, you acknowledge that you own the rights
-								or are authorized to use these images as work samples.
-							</Text>
-							<SimpleGrid columns={[1, 2, 3]} spacing={8}>
-								<FileDropzone fieldName='mediaImage1' text='Image 1' />
-								<FileDropzone fieldName='mediaImage2' text='Image 2' />
-								<FileDropzone fieldName='mediaImage3' text='Image 3' />
-								<FileDropzone fieldName='mediaImage4' text='Image 4' />
-								<FileDropzone fieldName='mediaImage5' text='Image 5' />
-								<FileDropzone fieldName='mediaImage6' text='Image 6' />
-							</SimpleGrid>
-						</Box>
-					</>
-				</ProfileStackItem>
+										) : (
+											false
+										)}
+									</Box>
+								</SimpleGrid>
+							</Box>
+							<Box mt={6}>
+								<Heading variant='contentTitle'>Images</Heading>
+								<Text fontSize='lg' mb={0}>
+									Allowed formats: jpg, png, gif, heic, or webp. 2MB or less, please.
+								</Text>
+								<Text variant='notice' fontSize='sm' fontStyle='italic' mb={4}>
+									* By uploading images to your RISE profile, you acknowledge that you own the
+									rights or are authorized to use these images as work samples.
+								</Text>
+								<SimpleGrid columns={[1, 2, 3]} spacing={8}>
+									<FileDropzone fieldName='mediaImage1' text='Image 1' />
+									<FileDropzone fieldName='mediaImage2' text='Image 2' />
+									<FileDropzone fieldName='mediaImage3' text='Image 3' />
+									<FileDropzone fieldName='mediaImage4' text='Image 4' />
+									<FileDropzone fieldName='mediaImage5' text='Image 5' />
+									<FileDropzone fieldName='mediaImage6' text='Image 6' />
+								</SimpleGrid>
+							</Box>
+						</>
+					</ProfileStackItem>
+				)}
 			</Stack>
 
 			<Slide
