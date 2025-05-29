@@ -26,3 +26,6 @@ Text Domain: rise
 
 /* Import nav */
 @import url("./assets/css/nav.css");
+
+/* Import plugins */
+@import url("./assets/css/plugins.css");

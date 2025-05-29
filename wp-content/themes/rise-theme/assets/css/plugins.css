@@ -1,0 +1,7 @@
+.wp-block-rhdwp-expandable-text .expand-toggle-icon svg path {
+	fill: var(--wp--preset--color--white);
+}
+
+.wp-block-rhdwp-expandable-text .align-left .expand-blocks {
+	border-left-color: var(--wp--preset--color--white);
+}

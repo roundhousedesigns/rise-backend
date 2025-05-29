@@ -38,27 +38,8 @@
 		}
 	}
 
-	.directory-link {
-		.wp-block-button__link {
-			background-color: var(--wp--preset--color--blue);
-			color: var(--wp--preset--color--white);
-		}
-
-		@media screen and (max-width: 28rem) {
-			visibility: hidden;
-			width: 1px;
-			height: 1px;
-			position: absolute;
-			left: -9999px;
-		}
-	}
-
 	.spacer {
 		flex: 1;
-	}
-
-	.menu-container {
-		margin-left: 1em;
 	}
 }
 

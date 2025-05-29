@@ -83,13 +83,16 @@ function rise_theme_scripts() {
 
 	// Enqueue frontend JS
 	wp_enqueue_script( 'rise-frontend', get_template_directory_uri() . '/js/frontend.js', [], wp_get_theme()->get( 'Version' ), true );
-
-	// Enqueue nav JS
-	// wp_enqueue_script( 'rise-nav', get_template_directory_uri() . '/js/nav.js', [], wp_get_theme()->get( 'Version' ), true );
 }
 add_action( 'wp_enqueue_scripts', 'rise_theme_scripts' );
 
-/**
- * Disable WordPress admin bar
- */
-add_filter( 'show_admin_bar', '__return_false' );
+function rise_enqueue_scripts() {
+	wp_enqueue_script(
+		'rise-nav',
+		get_template_directory_uri() . '/js/nav.js',
+		[],
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'rise_enqueue_scripts' );
