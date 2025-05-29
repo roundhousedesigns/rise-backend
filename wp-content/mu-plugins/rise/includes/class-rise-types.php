@@ -401,9 +401,13 @@ class Rise_Types {
 			return;
 		}
 
+		$default_expiration_length = 30;
+		$expiration_length         = get_option( 'rise_settings_job_post_expiration' );
+		$length_string             = '+' . ( $expiration_length ? $expiration_length : $default_expiration_length ) . ' days';
+
 		if ( 'pending' === $old_status && 'publish' === $new_status ) {
 			$pod             = pods( 'job_post', $post->ID );
-			$expiration_date = date( 'Y-m-d', strtotime( '+30 days' ) );
+			$expiration_date = date( 'Y-m-d', strtotime( $length_string ) );
 
 			$pod->save( ['expiration_date' => $expiration_date] );
 		}

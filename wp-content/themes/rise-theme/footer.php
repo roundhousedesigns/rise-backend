@@ -1,20 +1,16 @@
 <?php
-/**
- * Footer
- *
- * @package rise
- */
+	/**
+	 * Footer
+	 *
+	 * @package rise
+	 */
 ?>
+
+			<?php $footer_content = get_option( 'rise_settings_footer_content' ); ?>
 
 			<footer id="colophon" class="site-footer">
 				<div class="site-info">
-					<?php
-						printf(
-							esc_html__( '© %d %s', 'rise' ),
-							date( 'Y' ),
-							get_bloginfo( 'name' )
-						);
-					?>
+					<?php echo apply_filters( 'the_content', $footer_content ); ?>
 				</div>
 			</footer>
 
