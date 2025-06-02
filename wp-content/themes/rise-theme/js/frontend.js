@@ -68,8 +68,39 @@
 		});
 	}
 
+	/**
+	 * Navigation menu functionality
+	 */
+	function initNavigation() {
+		const menuItems = document.querySelectorAll('.wp-block-navigation-item.has-child');
+		
+		menuItems.forEach(item => {
+			const toggleButton = item.querySelector('.wp-block-navigation-submenu__toggle');
+			const submenu = item.querySelector('.wp-block-navigation__submenu-container');
+			
+			if (toggleButton && submenu) {
+				toggleButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					
+					const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+					
+					// Toggle aria-expanded
+					toggleButton.setAttribute('aria-expanded', !isExpanded);
+					
+					// Toggle submenu visibility
+					submenu.classList.toggle('is-open');
+					
+					// Toggle parent item class
+					item.classList.toggle('is-open');
+				});
+			}
+		});
+	}
+
 	// Initialize when DOM is fully loaded
 	document.addEventListener("DOMContentLoaded", function () {
 		initNetworkPartners();
+		initNavigation();
 	});
 })();

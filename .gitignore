@@ -73,7 +73,6 @@ Thumbs.db
 !composer.json
 
 # Plugins and Themes
-!wp-content/themes/rhd-headless-theme
 !wp-content/themes/rise-theme
 !wp-content/mu-plugins/rise
 !wp-content/mu-plugins/rise/**/*.zip

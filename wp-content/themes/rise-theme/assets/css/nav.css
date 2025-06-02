@@ -1,12 +1,195 @@
-.wp-block-navigation__responsive-container-open svg {
-	width: 34px;
-	height: 34px;
+/* Hamburger Menu Button */
+.menu-toggle {
+	display: block;
+	background: none;
+	border: none;
+	padding: 10px;
+	cursor: pointer;
+	z-index: 1000;
+	color: var(--wp--preset--color--white);
 }
 
-.wp-block-navigation__responsive-container.is-menu-open
-	.wp-block-navigation__responsive-container-content
-	.has-child
-	.wp-block-navigation__submenu-container {
-	padding-top: 0.667em;
-	padding-right: 1em;
+.hamburger-icon {
+	display: block;
+	position: relative;
+	width: 24px;
+	height: 2px;
+	background: currentColor;
+	transition: background 0.3s ease;
+	border-radius: var(--wp--custom--border-radius--radius);
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+	content: "";
+	position: absolute;
+	width: 24px;
+	height: 2px;
+	background: currentColor;
+	transition: transform 0.3s ease;
+	border-radius: var(--wp--custom--border-radius--radius);
+}
+
+.hamburger-icon::before {
+	top: -8px;
+	left: 0;
+}
+
+.hamburger-icon::after {
+	bottom: -8px;
+	left: 0;
+}
+
+/* Menu Container */
+.menu-container {
+	position: fixed;
+	top: 0;
+	right: -100%;
+	width: 80%;
+	max-width: 400px;
+	height: 100vh;
+	background: var(--wp--preset--color--dark-gray);
+	box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+	transition: right 0.3s ease;
+	z-index: 999;
+	overflow-y: auto;
+	padding-left: 0.75em;
+}
+
+.menu-container.is-active {
+	right: 0;
+}
+
+/* Primary Menu */
+.primary-menu {
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	margin: 0;
+	padding: 60px 0 20px;
+	font-size: var(--wp--preset--font-size--large);
+}
+
+.primary-menu li {
+	position: relative;
+	line-height: 1.5;
+}
+
+.primary-menu a {
+	display: block;
+	padding: 0.25em 1em;
+	text-decoration: none;
+	color: var(--wp--preset--color--white);
+}
+
+.primary-menu li.feature-button-style {
+	background-color: var(--wp--preset--color--blue);
+	color: var(--wp--preset--color--white);
+	/* border-radius: var(--wp--custom--border-radius--radius); */
+}
+
+.primary-menu li.feature-button-style a {
+	color: var(--wp--preset--color--white);
+}
+
+.primary-menu li.menu-item-has-children {
+	position: relative;
+}
+
+.primary-menu li.menu-item-has-children > a {
+	cursor: pointer;
+	position: relative;
+	right: 0.75em; /* matches margin-right of .primary-menu a */
+}
+
+.primary-menu li.menu-item-has-children > a::before {
+	content: "+";
+	display: inline-block;
+	font-size: 1.2em;
+	line-height: 1;
+	width: 24px;
+	margin-right: 0.1em;
+}
+
+.primary-menu li.menu-item-has-children > a[aria-expanded="true"]::before {
+	content: "−";
+}
+
+/* Submenu */
+.primary-menu .sub-menu {
+	display: block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	height: 0;
+	opacity: 0;
+	overflow: hidden;
+	transition: height 0.3s ease, opacity 0.2s ease;
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.primary-menu .sub-menu a {
+	padding-left: 2em;
+	position: relative;
+}
+
+.primary-menu .sub-menu a::before {
+	content: "";
+	position: absolute;
+	left: 1em;
+	top: 50%;
+	width: 0.5em;
+	height: 1px;
+	background: currentColor;
+	opacity: 0.5;
+	transform: translateY(-50%);
+}
+
+.primary-menu .sub-menu.is-active {
+	height: auto;
+	opacity: 1;
+}
+
+.screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Hamburger Animation */
+.menu-toggle[aria-expanded="true"] .hamburger-icon {
+	background: transparent;
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-icon::before {
+	transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-icon::after {
+	transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Focus Styles */
+.menu-toggle:focus {
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+}
+
+.menu-toggle:focus-visible {
+	outline: 2px solid currentColor;
+}
+
+.primary-menu a:focus {
+	outline: 2px solid transparent;
+	outline-offset: -2px;
+}
+
+.primary-menu a:focus-visible {
+	outline: 2px solid currentColor;
 }

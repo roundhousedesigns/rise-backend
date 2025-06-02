@@ -195,26 +195,26 @@
 				"body": "\"Victor Serif\", serif"
 			},
 			"borderRadius": {
-				"radius": "6.75px"
+				"radius": "0.375rem"
 			}
 		},
 		"blocks": {
 			"core/cover": {
 				"spacing": {
 					"margin": true,
-					"padding": false
+					"padding": true
 				}
 			},
 			"core/group": {
 				"spacing": {
 					"margin": true,
-					"padding": false
+					"padding": true
 				}
 			},
 			"core/columns": {
 				"spacing": {
 					"margin": true,
-					"padding": false
+					"padding": true
 				}
 			}
 		}
