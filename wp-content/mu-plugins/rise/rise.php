@@ -17,6 +17,36 @@ if ( !defined( 'WPINC' ) ) {
 }
 
 /**
+ * Autoloader.
+ *
+ * @param string $class The name of the class to load.
+ */
+spl_autoload_register(function ( $class ) {
+	// We are only autoloading our own classes.
+	if ( strpos( $class, 'Rise_' ) !== 0 ) {
+		return;
+	}
+
+	$base_dir = plugin_dir_path( __FILE__ );
+
+	// Convert class name to file name (e.g., Rise_Job_Post -> class-rise-job-post.php).
+	$file = 'class-' . str_replace( '_', '-', strtolower( str_replace( 'Rise_', 'rise_', $class ) ) ) . '.php';
+
+	$possible_locations = [
+		$base_dir . 'includes/' . $file,
+		$base_dir . 'admin/' . $file,
+		$base_dir . 'public/' . $file,
+	];
+
+	foreach ( $possible_locations as $location ) {
+		if ( file_exists( $location ) ) {
+			require_once $location;
+			return;
+		}
+	}
+});
+
+/**
  * Current plugin version.
  */
 define( 'RISE_VERSION', '1.2-network-partners' );
