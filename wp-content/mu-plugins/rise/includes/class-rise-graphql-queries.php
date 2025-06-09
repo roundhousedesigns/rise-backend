@@ -593,7 +593,7 @@ class Rise_GraphQL_Queries {
 			'personalIdentities',
 			[
 				'type'        => ['list_of' => 'Personal_Identity'],
-				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
+                                'description' => __( 'The user\'s selected personal identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
 				},
