@@ -16,53 +16,54 @@ class Rise_Users {
 	 *
 	 * @return void
 	 */
-	public function add_roles() {
-		$role = get_role( 'crew-member' );
+       public function add_roles() {
+               $caps = [
+                       'read'                            => true,
+                       'list_users'                      => true,
+                       'unfiltered_upload'               => true,
+                       'upload_files'                    => true,
+                       'edit_files'                      => true,
+                       'read_credits'                    => true,
+                       'publish_credits'                 => true,
+                       'edit_credits'                    => true,
+                       'edit_published_credits'          => true,
+                       'delete_published_credits'        => true,
+                       'read_saved_searches'             => true,
+                       'publish_saved_searches'          => true,
+                       'edit_saved_searches'             => true,
+                       'edit_published_saved_searches'   => true,
+                       'delete_published_saved_searches' => true,
+               ];
 
-		/**
-		 * Credits
-		 */
-		$role->add_cap( 'read_credits' );
-		$role->add_cap( 'publish_credits' );
-		$role->add_cap( 'edit_credits' );
-		$role->add_cap( 'edit_published_credits' );
-		$role->add_cap( 'delete_credits' );
-		$role->add_cap( 'delete_published_credits' );
+               $role = get_role( 'crew-member' );
 
-		/**
-		 * Saved Searches
-		 */
-		$role->add_cap( 'read_saved_searches' );
-		$role->add_cap( 'publish_saved_searches' );
-		$role->add_cap( 'edit_saved_searches' );
-		$role->add_cap( 'edit_published_saved_searches' );
-		$role->add_cap( 'delete_saved_searches' );
-		$role->add_cap( 'delete_published_saved_searches' );
+               if ( null === $role ) {
+                       add_role( 'crew-member', 'Crew Member', $caps );
+                       $role = get_role( 'crew-member' );
+               }
 
-		$roles = [
-			'crew-member' => [
-				'read'                            => true,
-				'list_users'                      => true,
-				'unfiltered_upload'               => true,
-				'upload_files'                    => true,
-				'edit_files'                      => true,
-				'read_credits'                    => true,
-				'publish_credits'                 => true,
-				'edit_credits'                    => true,
-				'edit_published_credits'          => true,
-				'delete_published_credits'        => true,
-				'read_saved_searches'             => true,
-				'publish_saved_searches'          => true,
-				'edit_saved_searches'             => true,
-				'edit_published_saved_searches'   => true,
-				'delete_published_saved_searches' => true,
-			],
-		];
+               if ( $role ) {
+                       /**
+                        * Credits
+                        */
+                       $role->add_cap( 'read_credits' );
+                       $role->add_cap( 'publish_credits' );
+                       $role->add_cap( 'edit_credits' );
+                       $role->add_cap( 'edit_published_credits' );
+                       $role->add_cap( 'delete_credits' );
+                       $role->add_cap( 'delete_published_credits' );
 
-		foreach ( $roles as $role => $caps ) {
-			add_role( $role, $caps );
-		}
-	}
+                       /**
+                        * Saved Searches
+                        */
+                       $role->add_cap( 'read_saved_searches' );
+                       $role->add_cap( 'publish_saved_searches' );
+                       $role->add_cap( 'edit_saved_searches' );
+                       $role->add_cap( 'edit_published_saved_searches' );
+                       $role->add_cap( 'delete_saved_searches' );
+                       $role->add_cap( 'delete_published_saved_searches' );
+               }
+       }
 
 	/**
 	 * Blocks access to the Dashboard for users with the 'crew-member' role.
