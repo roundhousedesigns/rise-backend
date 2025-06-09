@@ -89,13 +89,15 @@ class Rise_GraphQL_Queries {
 		return $prepared_terms;
 	}
 
-	/**
-	 * Get jobs from departments.
-	 *
-	 * @param  array $departments
-	 * @return array An array of job IDs.
-	 */
-	private static function get_job_skills( $jobs ) {
+       /**
+        * Retrieve skills for specified jobs.
+        *
+        * Returns skills related to the provided job IDs.
+        *
+        * @param array $jobs Job IDs to look up.
+        * @return array An array of skill terms.
+        */
+       private static function get_job_skills( $jobs ) {
 		$selected_skills = [];
 		foreach ( $jobs as $job ) {
 			$pod       = pods( 'position', $job );
