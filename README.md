@@ -16,3 +16,12 @@ Current tooling:
 - theme.json
   - Set up font size defaults to match frontend's size chart.
   - TODO: clean up theme.json, removing all unnecessary properties and attributes.
+
+## Running Tests
+
+Install PHPUnit via your package manager and run:
+
+```bash
+phpunit
+```
+from the repository root.
