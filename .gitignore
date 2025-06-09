@@ -71,6 +71,9 @@ Thumbs.db
 !readme.txt
 !CHANGELOG.md
 !composer.json
+!phpunit.xml
+!tests/
+!tests/**
 
 # Plugins and Themes
 !wp-content/themes/rise-theme

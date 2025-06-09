@@ -89,13 +89,15 @@ class Rise_GraphQL_Queries {
 		return $prepared_terms;
 	}
 
-	/**
-	 * Get jobs from departments.
-	 *
-	 * @param  array $departments
-	 * @return array An array of job IDs.
-	 */
-	private static function get_job_skills( $jobs ) {
+       /**
+        * Retrieve skills for specified jobs.
+        *
+        * Returns skills related to the provided job IDs.
+        *
+        * @param array $jobs Job IDs to look up.
+        * @return array An array of skill terms.
+        */
+       private static function get_job_skills( $jobs ) {
 		$selected_skills = [];
 		foreach ( $jobs as $job ) {
 			$pod       = pods( 'position', $job );
@@ -606,7 +608,7 @@ class Rise_GraphQL_Queries {
 			'personalIdentities',
 			[
 				'type'        => ['list_of' => 'Personal_Identity'],
-				'description' => __( 'The user\'s seelcted personal identity terms.', 'rise' ),
+                                'description' => __( 'The user\'s selected personal identity terms.', 'rise' ),
 				'resolve'     => function ( $user ) {
 					return self::prepare_taxonomy_terms( $user->fields['userId'], 'personal_identity' );
 				},

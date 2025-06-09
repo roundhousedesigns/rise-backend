@@ -63,10 +63,12 @@ function camel_to_snake( $string ) {
  * @return string The converted string.
  */
 function snake_to_camel( $string ) {
-	$string = strtolower( $string );
-	$string = preg_replace( '/_([a-z0-9])/e', 'strtoupper("$1")', $string );
-	$string = lcfirst( $string );
-	return $string;
+        $string = strtolower( $string );
+        $string = preg_replace_callback( '/_([a-z0-9])/', function( $matches ) {
+                return strtoupper( $matches[1] );
+        }, $string );
+        $string = lcfirst( $string );
+        return $string;
 }
 
 /**
