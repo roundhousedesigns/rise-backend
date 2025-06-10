@@ -4,8 +4,6 @@ namespace RHD\Rise\Core;
 
 use RHD\Rise\Core\Loader;
 use RHD\Rise\Core\I18n;
-use RHD\Rise\Core\Activator;
-use RHD\Rise\Core\Deactivator;
 use RHD\Rise\Includes\Init;
 use RHD\Rise\Includes\Taxonomies;
 use RHD\Rise\Includes\UserProfile;
@@ -198,7 +196,7 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_user_hooks() {
-		$plugin_users = new Users( $this->get_plugin_name(), $this->get_version() );
+		$plugin_users = new Users();
 
 		$this->loader->add_action( 'init', $plugin_users, 'create_roles' );
 		$this->loader->add_action( 'init', $plugin_users, 'add_role_caps' );

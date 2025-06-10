@@ -37,4 +37,4 @@ class Activator {
 		flush_rewrite_rules();
 	}
 
-} 
+}

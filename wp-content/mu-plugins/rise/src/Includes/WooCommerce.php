@@ -13,7 +13,7 @@ namespace RHD\Rise\Includes;
  * @since      0.1.0
  */
 class WooCommerce {
-	
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -49,7 +49,7 @@ class WooCommerce {
 	 * Add job post data to order.
 	 *
 	 * @param  \WC_Order $order
-	 * @param  array    $data
+	 * @param  array     $data
 	 * @return void
 	 */
 	public function add_job_post_data_to_order( $order ) {
@@ -126,27 +126,4 @@ class WooCommerce {
 	public function on_woocommerce_order_complete( $order_id ) {
 		$this->create_job_post_from_order_after_payment_complete( $order_id );
 	}
-
-	/**
-	 * Redirect to the manage jobs page after payment is complete.
-	 *
-	 * @param  int    $order_id
-	 * @return void
-	 */
-	// public function redirect_to_manage_jobs_after_payment_complete( $order_id ) {
-	// 	$order = wc_get_order( $order_id );
-	// 	if ( !$order || $order->get_status() !== 'completed' ) {
-	// 		return;
-	// 	}
-
-	// 	$job_post_id = $order->get_meta( 'job_post_id' );
-
-	// 	if ( !$job_post_id ) {
-	// 		return;
-	// 	}
-
-	// 	// TODO make this a constant (or just more graceful)
-	// 	wp_safe_redirect( home_url( '/directory/#/jobs/manage/' ) );
-	// 	exit;
-	// }
-} 
+}

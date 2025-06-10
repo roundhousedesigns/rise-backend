@@ -5,55 +5,13 @@ namespace RHD\Rise\Includes;
 /**
  * Initialize the plugin and run sanity checks.
  *
- * @package    RHD\Rise
- * @subpackage RHD\Rise\Includes
+ * @package    Rise
+ * @subpackage Rise/includes
  *
  * @link       https://roundhouse-designs.com
  * @since      0.1.0
  */
-
-/**
- * This class defines all code necessary to run during the plugin's startup.
- *
- * @package    RHD\Rise
- * @subpackage RHD\Rise\Includes
- *
- * @author     Roundhouse Designs <nick@roundhouse-designs.com>
- *
- * @since      0.1.0
- */
 class Init {
-
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @access   private
-	 * @var string $plugin_name The ID of this plugin.
-	 * @since    0.1.0
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @access   private
-	 * @var string $version The current version of this plugin.
-	 * @since    0.1.0
-	 */
-	private $version;
-
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @since    0.1.0
-	 *
-	 * @param string $plugin_name The name of this plugin.
-	 * @param string $version     The version of this plugin.
-	 */
-	public function __construct( $plugin_name, $version ) {
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
-	}
 
 	/**
 	 * TGM Plugin Activation.
@@ -132,15 +90,6 @@ class Init {
 			'dev.risedirectory.pages.dev',
 		];
 
-		return array_merge( $hosts, $allowed );
+		return \array_merge( $hosts, $allowed );
 	}
-
-	public function register_post_types() {}
-	public function add_rewrite_rules() {}
-	public function add_custom_image_sizes() {}
-	public function add_editor_styles() {}
-	public function add_meta_to_rest() {}
-	public function initialize_acf_fields() {}
-	public function initialize_acf_options() {}
-	public function allow_custom_upload_mimes() {}
-} 
+}

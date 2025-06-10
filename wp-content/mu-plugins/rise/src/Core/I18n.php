@@ -8,11 +8,11 @@ namespace RHD\Rise\Core;
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://roundhouse-designs.com
- * @since      0.1.0
- *
  * @package    RHD\Rise
  * @subpackage RHD\Rise\Core
+ *
+ * @link       https://roundhouse-designs.com
+ * @since      0.1.0
  */
 
 /**
@@ -21,10 +21,12 @@ namespace RHD\Rise\Core;
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @since      0.1.0
  * @package    RHD\Rise
  * @subpackage RHD\Rise\Core
+ *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
+ *
+ * @since      0.1.0
  */
 class I18n {
 
@@ -40,4 +42,4 @@ class I18n {
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
 	}
-} 
+}

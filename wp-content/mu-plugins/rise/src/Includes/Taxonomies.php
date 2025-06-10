@@ -13,15 +13,10 @@ namespace RHD\Rise\Includes;
  * @since      0.1.0
  */
 
-// TODO: Rename this to class-rise-types.php or something more appropriate.
-
 class Taxonomies {
-	private $plugin_name;
-	private $version;
 
-	public function __construct( $plugin_name, $version ) {
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+	public function __construct() {
+		// No initialization needed
 	}
 
 	/**
@@ -303,4 +298,4 @@ class Taxonomies {
 	}
 
 	public function add_role_taxonomy() {}
-} 
+}

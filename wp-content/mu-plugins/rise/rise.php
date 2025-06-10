@@ -21,11 +21,40 @@ if ( !defined( 'WPINC' ) ) {
 define( 'RISE_VERSION', '1.2-autoloader' );
 
 /**
+ * Load Composer autoloader with error handling.
+ */
+function rise_load_autoloader() {
+	$autoloader_path = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	
+	// Debug information (remove after fixing)
+	if ( !file_exists( $autoloader_path ) ) {
+		$debug_info = [
+			'Plugin file path: ' . __FILE__,
+			'Plugin dir path: ' . plugin_dir_path( __FILE__ ),
+			'Autoloader path: ' . $autoloader_path,
+			'Directory exists: ' . ( is_dir( plugin_dir_path( __FILE__ ) . 'vendor' ) ? 'Yes' : 'No' ),
+			'Files in vendor: ' . ( is_dir( plugin_dir_path( __FILE__ ) . 'vendor' ) ? implode( ', ', scandir( plugin_dir_path( __FILE__ ) . 'vendor' ) ) : 'N/A' )
+		];
+		
+		wp_die( 
+			'<h1>RISE Plugin: Autoloader Error</h1>' .
+			'<p>Composer autoloader not found. Please run <code>composer install</code> in the plugin directory.</p>' .
+			'<h3>Debug Information:</h3>' .
+			'<ul><li>' . implode( '</li><li>', $debug_info ) . '</li></ul>' .
+			'<p><strong>Expected path:</strong> <code>' . esc_html( $autoloader_path ) . '</code></p>',
+			'RISE Plugin Error'
+		);
+	}
+	
+	require_once $autoloader_path;
+}
+
+/**
  * The code that runs during plugin activation.
  * This action is documented in src/Core/Activator.php
  */
 function activate_rise() {
-	require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	rise_load_autoloader();
 	\RHD\Rise\Core\Activator::activate();
 }
 
@@ -34,7 +63,7 @@ function activate_rise() {
  * This action is documented in src/Core/Deactivator.php
  */
 function deactivate_rise() {
-	require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	rise_load_autoloader();
 	\RHD\Rise\Core\Deactivator::deactivate();
 }
 
@@ -47,7 +76,7 @@ register_deactivation_hook( __FILE__, 'deactivate_rise' );
 /**
  * Load Composer autoloader for classes and standalone files.
  */
-require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+rise_load_autoloader();
 
 /**
  * Begins execution of the plugin.
