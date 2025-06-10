@@ -21,6 +21,9 @@ wp-content/mu-plugins/rhdwp-environment.php
 .*
 ~*
 
+# ignore vendor directory
+vendor/
+
 # ignore node dependency directories (used by grunt)
 node_modules/
 

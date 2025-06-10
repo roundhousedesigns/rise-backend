@@ -15,58 +15,27 @@
 if ( !defined( 'WPINC' ) ) {
 	die;
 }
-
-/**
- * Autoloader.
- *
- * @param string $class The name of the class to load.
- */
-spl_autoload_register(function ( $class ) {
-	// We are only autoloading our own classes.
-	if ( strpos( $class, 'Rise_' ) !== 0 ) {
-		return;
-	}
-
-	$base_dir = plugin_dir_path( __FILE__ );
-
-	// Convert class name to file name (e.g., Rise_Job_Post -> class-rise-job-post.php).
-	$file = 'class-' . str_replace( '_', '-', strtolower( str_replace( 'Rise_', 'rise_', $class ) ) ) . '.php';
-
-	$possible_locations = [
-		$base_dir . 'includes/' . $file,
-		$base_dir . 'admin/' . $file,
-		$base_dir . 'public/' . $file,
-	];
-
-	foreach ( $possible_locations as $location ) {
-		if ( file_exists( $location ) ) {
-			require_once $location;
-			return;
-		}
-	}
-});
-
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.2-network-partners' );
+define( 'RISE_VERSION', '1.2-autoloader' );
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-rise-activator.php
+ * This action is documented in src/Core/Activator.php
  */
 function activate_rise() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-rise-activator.php';
-	Rise_Activator::activate();
+	require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	\RHD\Rise\Core\Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-rise-deactivator.php
+ * This action is documented in src/Core/Deactivator.php
  */
 function deactivate_rise() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-rise-deactivator.php';
-	Rise_Deactivator::deactivate();
+	require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	\RHD\Rise\Core\Deactivator::deactivate();
 }
 
 /**
@@ -76,30 +45,9 @@ register_activation_hook( __FILE__, 'activate_rise' );
 register_deactivation_hook( __FILE__, 'deactivate_rise' );
 
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
+ * Load Composer autoloader for classes and standalone files.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-rise.php';
-
-/**
- * Functions.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/functions.php';
-
-/**
- * Backwards compatibility.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/deprecated.php';
-
-/**
- * Utilities and helpers.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/utils.php';
-
-/**
- * Shortcodes.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
+require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
  * Begins execution of the plugin.
@@ -111,7 +59,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
  * @since    0.1.0
  */
 function run_rise() {
-	$plugin = new Rise();
+	$plugin = new \RHD\Rise\Core\Rise();
 	$plugin->run();
 
 	// Add filters for job post admin views

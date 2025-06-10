@@ -1,0 +1,31 @@
+{
+    "name": "rhd/rise",
+    "description": "RISE backend",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "RHD\\Rise\\": "src/"
+        },
+        "files": [
+            "includes/functions.php",
+            "includes/utils.php",
+            "includes/shortcodes.php",
+            "includes/deprecated.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Nick Gaswirth",
+            "email": "nick@roundhouse-designs.com"
+        }
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.13",
+        "wp-coding-standards/wpcs": "^3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
