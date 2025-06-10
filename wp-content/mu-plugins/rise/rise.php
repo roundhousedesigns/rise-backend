@@ -25,27 +25,7 @@ define( 'RISE_VERSION', '1.2-autoloader' );
  */
 function rise_load_autoloader() {
 	$autoloader_path = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
-	
-	// Debug information (remove after fixing)
-	if ( !file_exists( $autoloader_path ) ) {
-		$debug_info = [
-			'Plugin file path: ' . __FILE__,
-			'Plugin dir path: ' . plugin_dir_path( __FILE__ ),
-			'Autoloader path: ' . $autoloader_path,
-			'Directory exists: ' . ( is_dir( plugin_dir_path( __FILE__ ) . 'vendor' ) ? 'Yes' : 'No' ),
-			'Files in vendor: ' . ( is_dir( plugin_dir_path( __FILE__ ) . 'vendor' ) ? implode( ', ', scandir( plugin_dir_path( __FILE__ ) . 'vendor' ) ) : 'N/A' )
-		];
-		
-		wp_die( 
-			'<h1>RISE Plugin: Autoloader Error</h1>' .
-			'<p>Composer autoloader not found. Please run <code>composer install</code> in the plugin directory.</p>' .
-			'<h3>Debug Information:</h3>' .
-			'<ul><li>' . implode( '</li><li>', $debug_info ) . '</li></ul>' .
-			'<p><strong>Expected path:</strong> <code>' . esc_html( $autoloader_path ) . '</code></p>',
-			'RISE Plugin Error'
-		);
-	}
-	
+
 	require_once $autoloader_path;
 }
 
