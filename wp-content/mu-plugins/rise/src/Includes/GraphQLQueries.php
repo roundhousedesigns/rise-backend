@@ -2,6 +2,9 @@
 
 namespace RHD\Rise\Includes;
 
+use RHD\Rise\Includes\ProfileNotification;
+use RHD\Rise\Core\Utils;
+
 /**
  * Registers GraphQL queries.
  *
@@ -96,7 +99,7 @@ class GraphQLQueries {
 	 *
 	 * Returns skills related to the provided job IDs.
 	 *
-	 * @param array $jobs Job IDs to look up.
+	 * @param  array $jobs Job IDs to look up.
 	 * @return array An array of skill terms.
 	 */
 	private static function get_job_skills( $jobs ) {
@@ -117,7 +120,7 @@ class GraphQLQueries {
 		}
 
 		// Flatten the array of job-related skills and remove duplicates.
-		$selected_skills = \array_unique( \flatten_array( $selected_skills ) );
+		$selected_skills = \array_unique( Utils::flatten_array( $selected_skills ) );
 
 		$term_args = [
 			'include'    => $selected_skills,
@@ -218,7 +221,7 @@ class GraphQLQueries {
 		}
 
 		// Remove incomplete profiles
-		$user_ids = \array_filter( \array_unique( $user_ids ), '\rise_remove_incomplete_profiles_from_search' );
+		$user_ids = \array_filter( \array_unique( $user_ids ), [Search::class, 'remove_incomplete_profiles_from_search'] );
 
 		// Remove users with the 'disable_profile' pod meta set to true
 		$user_ids = \array_filter( $user_ids, function ( $id ) {
@@ -300,7 +303,7 @@ class GraphQLQueries {
 			unset( $args['positions'], $args['skills'] );
 
 			// Score the rest of the filters.
-			$filters = \rise_translate_taxonomy_filters( $args );
+			$filters = Search::translate_taxonomy_filters( $args );
 
 			foreach ( $filters as $user_taxonomy => $term_ids ) {
 				if ( empty( $term_ids ) ) {
@@ -505,7 +508,7 @@ class GraphQLQueries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-					$candidate_ids = \rise_search_and_filter_crew_members( $args );
+					$candidate_ids = Search::search_and_filter_crew_members( $args );
 
 					return self::rise_score_search_results( $args, $candidate_ids );
 				},
@@ -779,7 +782,7 @@ class GraphQLQueries {
 						return [];
 					}
 
-					return \Rise_Profile_Notification::get_profile_notices_for_graphql( $args['authorId'], false );
+					return ProfileNotification::get_profile_notices_for_graphql( $args['authorId'], false );
 				},
 			]
 		);
@@ -809,10 +812,9 @@ class GraphQLQueries {
 						return [];
 					}
 
-					return \Rise_Profile_Notification::get_profile_notices_for_graphql( $args['authorId'], true, $args['limit'] );
+					return ProfileNotification::get_profile_notices_for_graphql( $args['authorId'], true, $args['limit'] );
 				},
 			]
 		);
 	}
 }
-

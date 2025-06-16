@@ -21,6 +21,11 @@ if ( !defined( 'WPINC' ) ) {
 define( 'RISE_VERSION', '1.2-autoloader' );
 
 /**
+ * Define the plugin directory.
+ */
+define( 'RISE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+/**
  * Load Composer autoloader with error handling.
  */
 function rise_load_autoloader() {

@@ -1,16 +1,6 @@
 <?php
 
-namespace RHD\Rise\Public;
-
-/**
- * The public-facing functionality of the plugin.
- *
- * @package    RHD\Rise
- * @subpackage RHD\Rise\Public
- *
- * @link       https://roundhouse-designs.com
- * @since      0.1.0
- */
+namespace RHD\Rise\Core;
 
 /**
  * The public-facing functionality of the plugin.
@@ -19,11 +9,13 @@ namespace RHD\Rise\Public;
  * enqueue the public-facing stylesheet and JavaScript.
  *
  * @package    RHD\Rise
- * @subpackage RHD\Rise\Public
+ * @subpackage RHD\Rise\Core
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
+ *
+ * @since      0.1.0
  */
-class PublicFacing {
+class Frontend {
 
 	/**
 	 * The ID of this plugin.
@@ -52,10 +44,8 @@ class PublicFacing {
 	 * @param string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
 	}
 
 	/**
@@ -73,7 +63,6 @@ class PublicFacing {
 	 * @since    0.1.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-public.js', ['jquery'], $this->version, false );
 	}
-
-} 
+}

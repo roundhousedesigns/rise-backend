@@ -1,49 +1,25 @@
 <?php
 
-namespace RHD\Rise\Includes;
+namespace RHD\Rise\Core;
 
 /**
  * Registers cron jobs.
  *
  * @package    RHD\Rise
- * @subpackage RHD\Rise\Includes
+ * @subpackage RHD\Rise\Core
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  *
  * @since      0.1.0
  */
 class Cron {
-
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @access   private
-	 * @var string $plugin_name The ID of this plugin.
-	 * @since    0.1.0
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @access   private
-	 * @var string $version The current version of this plugin.
-	 * @since    0.1.0
-	 */
-	private $version;
-
 	/**
 	 * Constructor for the Cron class.
 	 * Initializes the cron job scheduling.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @param string $plugin_name The name of this plugin.
-	 * @param string $version     The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+	public function __construct() {
 		$this->schedule_cron_jobs();
 	}
 
@@ -150,4 +126,4 @@ class Cron {
 	public function expire_job_posts() {
 		$this->check_expired_job_posts();
 	}
-} 
+}

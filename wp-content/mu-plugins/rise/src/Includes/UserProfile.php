@@ -166,7 +166,7 @@ class UserProfile {
 	/**
 	 * Get an input key from its associated frontend key.
 	 *
-	 * @param  string $frontend_key
+	 * @param  string       $frontend_key
 	 * @return string|false The input key for use in wp_update_user() or pods->save().
 	 */
 	protected static function get_input_key( $frontend_key ) {
@@ -374,7 +374,7 @@ class UserProfile {
 		} elseif ( 'integer' === $type ) {
 			$sanitized = \absint( $value );
 		} elseif ( 'array' === $type ) {
-			$sanitized = array_map( '\sanitize_text_field', $value );
+			$sanitized = array_map( 'sanitize_text_field', $value );
 		}
 
 		return $sanitized;
@@ -418,4 +418,3 @@ class UserProfile {
 		return $pod->save( $field, '' );
 	}
 }
-

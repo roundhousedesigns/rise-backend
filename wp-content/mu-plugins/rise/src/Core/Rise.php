@@ -2,36 +2,18 @@
 
 namespace RHD\Rise\Core;
 
-use RHD\Rise\Core\Loader;
+use RHD\Rise\Core\Admin;
+use RHD\Rise\Core\Cron;
+use RHD\Rise\Core\Frontend;
 use RHD\Rise\Core\I18n;
-use RHD\Rise\Includes\Init;
-use RHD\Rise\Includes\Taxonomies;
-use RHD\Rise\Includes\UserProfile;
-use RHD\Rise\Includes\Credit;
-use RHD\Rise\Includes\JobPost;
-use RHD\Rise\Includes\ProfileNotification;
+use RHD\Rise\Core\Init;
+use RHD\Rise\Core\Shortcodes;
+use RHD\Rise\Includes\GraphQLMutations;
+use RHD\Rise\Includes\GraphQLQueries;
+use RHD\Rise\Includes\GraphQLTypes;
 use RHD\Rise\Includes\Types;
 use RHD\Rise\Includes\Users;
-use RHD\Rise\Includes\GraphQLTypes;
-use RHD\Rise\Includes\GraphQLQueries;
-use RHD\Rise\Includes\GraphQLMutations;
-use RHD\Rise\Includes\Cron;
 use RHD\Rise\Includes\WooCommerce;
-use RHD\Rise\Admin\Admin;
-use RHD\Rise\Public\PublicFacing;
-
-/**
- * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @package    RHD\Rise
- * @subpackage RHD\Rise\Core
- *
- * @link       https://roundhouse-designs.com
- * @since      0.1.0
- */
 
 /**
  * The core plugin class.
@@ -139,9 +121,6 @@ class Rise {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
 	 * @access   private
 	 * @since    0.1.0
 	 */
@@ -157,6 +136,8 @@ class Rise {
 	 *
 	 * @access   private
 	 * @since    0.1.0
+	 *
+	 * @return void
 	 */
 	private function set_locale() {
 		$plugin_i18n = new I18n();
@@ -165,283 +146,253 @@ class Rise {
 	}
 
 	/**
-	 * Register all of the hooks related to plugin initialization
-	 * of the plugin.
+	 * Register all required external plugins.
 	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * @return void
 	 */
 	private function define_init_hooks() {
-		$plugin_init = new Init( $this->get_plugin_name(), $this->get_version() );
-		$plugin_taxonomies = new Taxonomies( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Init();
 
-		$this->loader->add_action( 'init', $plugin_init, 'register_post_types' );
-		$this->loader->add_action( 'init', $plugin_init, 'add_rewrite_rules' );
-		$this->loader->add_action( 'init', $plugin_init, 'add_custom_image_sizes' );
-		$this->loader->add_action( 'init', $plugin_init, 'add_editor_styles' );
-		$this->loader->add_action( 'init', $plugin_taxonomies, 'add_role_taxonomy' );
-
-		$this->loader->add_action( 'rest_api_init', $plugin_init, 'add_meta_to_rest' );
-		$this->loader->add_action( 'acf/init', $plugin_init, 'initialize_acf_fields' );
-		$this->loader->add_action( 'acf/init', $plugin_init, 'initialize_acf_options' );
-
-		$this->loader->add_filter( 'upload_mimes', $plugin_init, 'allow_custom_upload_mimes' );
+		/**
+		 * Safe redirects.
+		 */
+		$this->loader->add_action( 'allowed_redirect_hosts', $plugin_data, 'allowed_redirect_hosts' );
 	}
 
 	/**
-	 * Register all of the hooks related to user functionality
-	 * of the plugin.
+	 * Register all of the custom user data hooks.
 	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * @access private
+	 * @since 0.1.0
 	 */
 	private function define_user_hooks() {
-		$plugin_users = new Users();
+		$user_data = new Users();
 
-		$this->loader->add_action( 'init', $plugin_users, 'create_roles' );
-		$this->loader->add_action( 'init', $plugin_users, 'add_role_caps' );
+		/**
+		 * User roles.
+		 */
+		$this->loader->add_action( 'admin_init', $user_data, 'add_roles' );
+		$this->loader->add_action( 'current_screen', $user_data, 'redirect_crew_members_from_dashboard' );
+		$this->loader->add_action( 'after_setup_theme', $user_data, 'remove_admin_bar_for_crew_members' );
+		$this->loader->add_action( 'after_setup_theme', $user_data, 'add_image_sizes' );
 
-		$this->loader->add_action( 'user_register', $plugin_users, 'user_register' );
-		$this->loader->add_action( 'profile_update', $plugin_users, 'profile_update' );
-		$this->loader->add_action( 'delete_user', $plugin_users, 'user_delete' );
+		/**
+		 * Custom taxonomy: gender_identity (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'gender_identity_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_gender_identity_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_gender_identity_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_gender_identity_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_gender_identity_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_gender_identity_on_user_profile' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_get_filtered_users', $plugin_users, 'get_filtered_users' );
-		$this->loader->add_action( 'wp_ajax_get_filtered_users', $plugin_users, 'get_filtered_users' );
+		/**
+		 * Custom taxonomy: personal_identity (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'personal_identity_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_personal_identity_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_personal_identity_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_personal_identity_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_personal_identity_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_personal_identity_on_user_profile' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_get_user_profile_for_directory', $plugin_users, 'get_user_profile_for_directory' );
-		$this->loader->add_action( 'wp_ajax_get_user_profile_for_directory', $plugin_users, 'get_user_profile_for_directory' );
+		/**
+		 * Custom taxonomy: racial_identity (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'racial_identity_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_racial_identity_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_racial_identity_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_racial_identity_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_racial_identity_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_racial_identity_on_user_profile' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_get_user_profile_for_editing', $plugin_users, 'get_user_profile_for_editing' );
-		$this->loader->add_action( 'wp_ajax_get_user_profile_for_editing', $plugin_users, 'get_user_profile_for_editing' );
+		/**
+		 * Custom taxonomy: union (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'union_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_union_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_union_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_union_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_union_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_union_on_user_profile' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_update_user_profile', $plugin_users, 'update_user_profile' );
-		$this->loader->add_action( 'wp_ajax_update_user_profile', $plugin_users, 'update_user_profile' );
+		/**
+		 * Custom taxonomy: location (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'location_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_location_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_location_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_location_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_location_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_location_on_user_profile' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_register_user', $plugin_users, 'register_user' );
-		$this->loader->add_action( 'wp_ajax_register_user', $plugin_users, 'register_user' );
+		/**
+		 * Custom taxonomy: experience_level (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'experience_level_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_experience_level_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_experience_level_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_experience_level_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_experience_level_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_experience_level_on_user_profile' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_user_login', $plugin_users, 'user_login' );
-		$this->loader->add_action( 'wp_ajax_user_login', $plugin_users, 'user_login' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_reset_password', $plugin_users, 'reset_password' );
-		$this->loader->add_action( 'wp_ajax_reset_password', $plugin_users, 'reset_password' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_set_new_password', $plugin_users, 'set_new_password' );
-		$this->loader->add_action( 'wp_ajax_set_new_password', $plugin_users, 'set_new_password' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_upload_user_files', $plugin_users, 'upload_user_files' );
-		$this->loader->add_action( 'wp_ajax_upload_user_files', $plugin_users, 'upload_user_files' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_delete_user_files', $plugin_users, 'delete_user_files' );
-		$this->loader->add_action( 'wp_ajax_delete_user_files', $plugin_users, 'delete_user_files' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_update_user_subscription_status', $plugin_users, 'update_user_subscription_status' );
-		$this->loader->add_action( 'wp_ajax_update_user_subscription_status', $plugin_users, 'update_user_subscription_status' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_create_profile_notification', $plugin_users, 'create_profile_notification' );
-		$this->loader->add_action( 'wp_ajax_create_profile_notification', $plugin_users, 'create_profile_notification' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_profile_notifications', $plugin_users, 'get_profile_notifications' );
-		$this->loader->add_action( 'wp_ajax_get_profile_notifications', $plugin_users, 'get_profile_notifications' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_mark_profile_notification_read', $plugin_users, 'mark_profile_notification_read' );
-		$this->loader->add_action( 'wp_ajax_mark_profile_notification_read', $plugin_users, 'mark_profile_notification_read' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_delete_profile_notification', $plugin_users, 'delete_profile_notification' );
-		$this->loader->add_action( 'wp_ajax_delete_profile_notification', $plugin_users, 'delete_profile_notification' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_toggle_credit_favorite', $plugin_users, 'toggle_credit_favorite' );
-		$this->loader->add_action( 'wp_ajax_toggle_credit_favorite', $plugin_users, 'toggle_credit_favorite' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_user_favorite_credits', $plugin_users, 'get_user_favorite_credits' );
-		$this->loader->add_action( 'wp_ajax_get_user_favorite_credits', $plugin_users, 'get_user_favorite_credits' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_toggle_conflict_of_interest', $plugin_users, 'toggle_conflict_of_interest' );
-		$this->loader->add_action( 'wp_ajax_toggle_conflict_of_interest', $plugin_users, 'toggle_conflict_of_interest' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_user_conflicts_of_interest', $plugin_users, 'get_user_conflicts_of_interest' );
-		$this->loader->add_action( 'wp_ajax_get_user_conflicts_of_interest', $plugin_users, 'get_user_conflicts_of_interest' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_toggle_partner_member', $plugin_users, 'toggle_partner_member' );
-		$this->loader->add_action( 'wp_ajax_toggle_partner_member', $plugin_users, 'toggle_partner_member' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_partner_member_info', $plugin_users, 'get_partner_member_info' );
-		$this->loader->add_action( 'wp_ajax_get_partner_member_info', $plugin_users, 'get_partner_member_info' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_remove_partner_member', $plugin_users, 'remove_partner_member' );
-		$this->loader->add_action( 'wp_ajax_remove_partner_member', $plugin_users, 'remove_partner_member' );
-
-		$this->loader->add_filter( 'wp_new_user_notification_email_admin', $plugin_users, 'disable_admin_new_user_notification', 10, 3 );
+		/**
+		 * Custom taxonomy: partner_directory (`user`)
+		 */
+		$this->loader->add_action( 'init', $user_data, 'partner_directory_init' );
+		$this->loader->add_action( 'admin_menu', $user_data, 'add_partner_directory_to_user_menu' );
+		$this->loader->add_action( 'show_user_profile', $user_data, 'add_partner_directory_to_user_profile' );
+		$this->loader->add_action( 'edit_user_profile', $user_data, 'add_partner_directory_to_user_profile' );
+		$this->loader->add_action( 'personal_options_update', $user_data, 'save_partner_directory_on_user_profile' );
+		$this->loader->add_action( 'edit_user_profile_update', $user_data, 'save_partner_directory_on_user_profile' );
 	}
 
 	/**
-	 * Register all of the hooks related to post type functionality
-	 * of the plugin.
+	 * Register all of the custom data hooks.
 	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * @access private
+	 * @since 0.1.0
 	 */
 	private function define_post_type_hooks() {
-		$plugin_userprofile = new UserProfile( $this->get_plugin_name(), $this->get_version() );
-		$plugin_credit = new Credit( $this->get_plugin_name(), $this->get_version() );
-		$plugin_job_post = new JobPost( $this->get_plugin_name(), $this->get_version() );
-		$plugin_profile_notification = new ProfileNotification( $this->get_plugin_name(), $this->get_version() );
-		$plugin_types = new Types( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Types();
 
-		// UserProfile hooks.
-		$this->loader->add_action( 'wp_ajax_nopriv_get_userprofiles', $plugin_userprofile, 'get_userprofiles' );
-		$this->loader->add_action( 'wp_ajax_get_userprofiles', $plugin_userprofile, 'get_userprofiles' );
+		/**
+		 * Custom Post Type: credit
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'credit_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'credit_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'credit_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'manage_users_columns', $plugin_data, 'add_credit_posts_column' );
+		$this->loader->add_filter( 'manage_users_custom_column', $plugin_data, 'display_credit_posts_column', 10, 3 );
+		$this->loader->add_filter( 'manage_users_sortable_columns', $plugin_data, 'make_credit_posts_column_sortable' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_get_userprofile', $plugin_userprofile, 'get_userprofile' );
-		$this->loader->add_action( 'wp_ajax_get_userprofile', $plugin_userprofile, 'get_userprofile' );
+		/**
+		 * Taxonomy: position (`credit`)
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'position_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'position_updated_messages' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_save_userprofile', $plugin_userprofile, 'save_userprofile' );
-		$this->loader->add_action( 'wp_ajax_save_userprofile', $plugin_userprofile, 'save_userprofile' );
+		/**
+		 * Taxonomy: skill (`credit`)
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'skill_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'skill_updated_messages' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_delete_userprofile', $plugin_userprofile, 'delete_userprofile' );
-		$this->loader->add_action( 'wp_ajax_delete_userprofile', $plugin_userprofile, 'delete_userprofile' );
+		/**
+		 * Custom Post Type: user_notice
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'user_notice_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'user_notice_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'user_notice_bulk_updated_messages', 10, 2 );
 
-		// Credit hooks.
-		$this->loader->add_action( 'wp_ajax_nopriv_get_credits', $plugin_credit, 'get_credits' );
-		$this->loader->add_action( 'wp_ajax_get_credits', $plugin_credit, 'get_credits' );
+		/**
+		 * Custom Post Type: saved_search
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'saved_search_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'saved_search_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'saved_search_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'saved_search_disable_block_editor', 10, 2 );
+		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'saved_search_remove_visual_editor' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_get_credit', $plugin_credit, 'get_credit' );
-		$this->loader->add_action( 'wp_ajax_get_credit', $plugin_credit, 'get_credit' );
+		/**
+		 * Custom Post Type: conflict_range
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'conflict_range_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'conflict_range_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'conflict_range_bulk_updated_messages', 10, 2 );
+		$this->loader->add_filter( 'use_block_editor_for_post_type', $plugin_data, 'conflict_range_disable_block_editor', 10, 2 );
+		$this->loader->add_filter( 'user_can_richedit', $plugin_data, 'conflict_range_remove_visual_editor' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_save_credit', $plugin_credit, 'save_credit' );
-		$this->loader->add_action( 'wp_ajax_save_credit', $plugin_credit, 'save_credit' );
+		/**
+		 * Custom Post Type: job_post
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'job_post_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'job_post_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'job_post_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'transition_post_status', $plugin_data, 'set_job_post_expiration_on_publication', 10, 3 );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_delete_credit', $plugin_credit, 'delete_credit' );
-		$this->loader->add_action( 'wp_ajax_delete_credit', $plugin_credit, 'delete_credit' );
+		/**
+		 * Custom Post Type: network_partner
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'network_partner_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'network_partner_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'network_partner_bulk_updated_messages', 10, 2 );
 
-		$this->loader->add_action( 'save_post_credit', $plugin_credit, 'on_credit_save' );
-		$this->loader->add_action( 'before_delete_post', $plugin_credit, 'on_credit_delete' );
+		/**
+		 * Custom Post Type: profile_notification
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'profile_notification_init' );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_data, 'profile_notification_updated_messages' );
+		$this->loader->add_filter( 'bulk_post_updated_messages', $plugin_data, 'profile_notification_bulk_updated_messages', 10, 2 );
+		$this->loader->add_action( 'profile_update', $plugin_data, 'create_notification_for_profile_starred_by', 10, 1 );
+		$this->loader->add_action( 'wp_insert_post', $plugin_data, 'delete_duplicate_profile_notifications', 10, 1 );
 
-		// Job Post hooks.
-		$this->loader->add_action( 'wp_ajax_nopriv_get_job_posts', $plugin_job_post, 'get_job_posts' );
-		$this->loader->add_action( 'wp_ajax_get_job_posts', $plugin_job_post, 'get_job_posts' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_job_post', $plugin_job_post, 'get_job_post' );
-		$this->loader->add_action( 'wp_ajax_get_job_post', $plugin_job_post, 'get_job_post' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_save_job_post', $plugin_job_post, 'save_job_post' );
-		$this->loader->add_action( 'wp_ajax_save_job_post', $plugin_job_post, 'save_job_post' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_delete_job_post', $plugin_job_post, 'delete_job_post' );
-		$this->loader->add_action( 'wp_ajax_delete_job_post', $plugin_job_post, 'delete_job_post' );
-
-		$this->loader->add_action( 'save_post_job_post', $plugin_job_post, 'on_job_post_save' );
-
-		// Profile Notification hooks.
-		$this->loader->add_action( 'wp_ajax_nopriv_get_profile_notifications', $plugin_profile_notification, 'get_profile_notifications' );
-		$this->loader->add_action( 'wp_ajax_get_profile_notifications', $plugin_profile_notification, 'get_profile_notifications' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_profile_notification', $plugin_profile_notification, 'get_profile_notification' );
-		$this->loader->add_action( 'wp_ajax_get_profile_notification', $plugin_profile_notification, 'get_profile_notification' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_save_profile_notification', $plugin_profile_notification, 'save_profile_notification' );
-		$this->loader->add_action( 'wp_ajax_save_profile_notification', $plugin_profile_notification, 'save_profile_notification' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_delete_profile_notification', $plugin_profile_notification, 'delete_profile_notification' );
-		$this->loader->add_action( 'wp_ajax_delete_profile_notification', $plugin_profile_notification, 'delete_profile_notification' );
-
-		// Types hooks.
-		$this->loader->add_action( 'wp_ajax_nopriv_get_skills', $plugin_types, 'get_skills' );
-		$this->loader->add_action( 'wp_ajax_get_skills', $plugin_types, 'get_skills' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_positions', $plugin_types, 'get_positions' );
-		$this->loader->add_action( 'wp_ajax_get_positions', $plugin_types, 'get_positions' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_locations', $plugin_types, 'get_locations' );
-		$this->loader->add_action( 'wp_ajax_get_locations', $plugin_types, 'get_locations' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_production_types', $plugin_types, 'get_production_types' );
-		$this->loader->add_action( 'wp_ajax_get_production_types', $plugin_types, 'get_production_types' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_employment_types', $plugin_types, 'get_employment_types' );
-		$this->loader->add_action( 'wp_ajax_get_employment_types', $plugin_types, 'get_employment_types' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_union_statuses', $plugin_types, 'get_union_statuses' );
-		$this->loader->add_action( 'wp_ajax_get_union_statuses', $plugin_types, 'get_union_statuses' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_experience_levels', $plugin_types, 'get_experience_levels' );
-		$this->loader->add_action( 'wp_ajax_get_experience_levels', $plugin_types, 'get_experience_levels' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_genders', $plugin_types, 'get_genders' );
-		$this->loader->add_action( 'wp_ajax_get_genders', $plugin_types, 'get_genders' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_ethnicities', $plugin_types, 'get_ethnicities' );
-		$this->loader->add_action( 'wp_ajax_get_ethnicities', $plugin_types, 'get_ethnicities' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_age_ranges', $plugin_types, 'get_age_ranges' );
-		$this->loader->add_action( 'wp_ajax_get_age_ranges', $plugin_types, 'get_age_ranges' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_get_partner_organizations', $plugin_types, 'get_partner_organizations' );
-		$this->loader->add_action( 'wp_ajax_get_partner_organizations', $plugin_types, 'get_partner_organizations' );
+		/**
+		 * Taxonomy: network_partner_tag (`network_partner`)
+		 */
+		$this->loader->add_action( 'init', $plugin_data, 'network_partner_tag_init' );
+		$this->loader->add_filter( 'term_updated_messages', $plugin_data, 'network_partner_tag_updated_messages' );
 	}
 
 	/**
-	 * Register all of the hooks related to GraphQL type definitions.
-	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * Register GraphQL object types, connections, interfaces, etc.
 	 */
 	private function define_graphql_types() {
-		$plugin_graphql_types = new GraphQLTypes( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data_types = new GraphQLTypes();
 
-		$this->loader->add_action( 'graphql_register_types', $plugin_graphql_types, 'register_types' );
+		$this->loader->add_filter( 'graphql_is_valid_http_content_type', $plugin_data_types, 'is_valid_http_content_type', 10, 2 );
+		$this->loader->add_action( 'graphql_register_types', $plugin_data_types, 'register_types' );
 	}
 
 	/**
-	 * Register all of the hooks related to cron jobs.
+	 * Register cron jobs.
 	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * @return void
 	 */
 	private function define_cron_jobs() {
-		$plugin_cron = new Cron( $this->get_plugin_name(), $this->get_version() );
+		$cron_data = new Cron();
 
-		$this->loader->add_action( 'rise_expire_job_posts', $plugin_cron, 'expire_job_posts' );
+		$this->loader->add_action( 'rise_delete_expired_conflict_ranges_cron', $cron_data, 'delete_expired_conflict_ranges' );
+		$this->loader->add_action( 'rise_check_expired_job_posts_cron', $cron_data, 'check_expired_job_posts' );
 	}
 
 	/**
-	 * Register all of the hooks related to GraphQL queries.
+	 * Register custom GraphQL queries.
 	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * @return void
 	 */
 	private function define_graphql_queries() {
-		$plugin_graphql_queries = new GraphQLQueries( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data_queries = new GraphQLQueries();
 
-		$this->loader->add_action( 'graphql_register_types', $plugin_graphql_queries, 'register_queries' );
-		$this->loader->add_action( 'graphql_register_types', $plugin_graphql_queries, 'register_query_filters' );
-		$this->loader->add_filter( 'graphql_connection_query_args', $plugin_graphql_queries, 'modify_user_connection_query_args', 10, 5 );
-		$this->loader->add_filter( 'graphql_map_input_fields_to_wp_user_query', $plugin_graphql_queries, 'map_user_meta_query_args', 10, 2 );
+		$this->loader->add_action( 'graphql_require_authentication_allowed_fields', $plugin_data_queries, 'require_authentication_allowed_fields', 10, 1 );
+		$this->loader->add_action( 'graphql_register_types', $plugin_data_queries, 'register_queries' );
+
+		// TODO `remove_graphql_extensions_response_data` doesn't seem to be working. `extensions` still in responses. THIS IS ALSO BREAKING USER REG AND PASSWORD RESET.
+		// $this->loader->add_action( 'graphql_request_results', $plugin_data_queries, 'remove_graphql_extensions_response_data', 10, 1 );
 	}
 
 	/**
-	 * Register all of the hooks related to WooCommerce functionality.
+	 * Define the WooCommerce hooks.
 	 *
 	 * @access   private
-	 * @since    0.1.0
+	 * @since    1.2
 	 */
 	private function define_woocommerce_hooks() {
-		$plugin_woocommerce = new WooCommerce( $this->get_plugin_name(), $this->get_version() );
+		$woocommerce_data = new WooCommerce( $this->plugin_name, $this->version );
 
-		$this->loader->add_action( 'woocommerce_order_status_completed', $plugin_woocommerce, 'on_woocommerce_order_complete' );
+		$this->loader->add_action( 'woocommerce_store_api_checkout_order_processed', $woocommerce_data, 'add_job_post_data_to_order', 10, 2 );
+		$this->loader->add_action( 'woocommerce_order_status_completed', $woocommerce_data, 'create_job_post_from_order_after_payment_complete', 10, 1 );
 	}
 
 	/**
-	 * Register all of the hooks related to GraphQL mutations.
+	 * Register custom GraphQL mutations.
 	 *
-	 * @access   private
-	 * @since    0.1.0
+	 * @return void
 	 */
 	private function define_graphql_mutations() {
-		$plugin_graphql_mutations = new GraphQLMutations( $this->get_plugin_name(), $this->get_version() );
+		$plugin_gql_muts = new GraphQLMutations();
 
-		$this->loader->add_action( 'graphql_register_types', $plugin_graphql_mutations, 'register_mutations' );
-		$this->loader->add_filter( 'graphql_user_object_mutation_data_is_valid', $plugin_graphql_mutations, 'validate_user_data', 10, 2 );
+		$this->loader->add_filter( 'graphql_register_types', $plugin_gql_muts, 'register_mutations' );
 	}
 
 	/**
@@ -452,15 +403,23 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_data = new Admin( $this->plugin_name, $this->version );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'plugin_options_page' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'plugin_settings_init' );
-		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'register_rise_basic_stats_widget' );
-		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'remove_dashboard_widgets' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'remove_menu_pages', 999 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
+
+		/**
+		 * Menus
+		 */
+		$this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );
+		$this->loader->add_action( 'admin_menu', $plugin_data, 'plugin_options_page' );
+		$this->loader->add_action( 'admin_menu', $plugin_data, 'remove_menu_pages' );
+
+		/**
+		 * Dashboard widget
+		 */
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'register_rise_basic_stats_widget' );
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'remove_dashboard_widgets' );
 	}
 
 	/**
@@ -471,10 +430,14 @@ class Rise {
 	 * @since    0.1.0
 	 */
 	private function define_public_hooks() {
-		$plugin_public = new PublicFacing( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Frontend( $this->plugin_name, $this->version );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_filter( 'retrieve_password_message', $plugin_public, 'filter_retrieve_password_message', 20, 3 );
+
+		// Initialize shortcodes
+		new Shortcodes();
 	}
 
 	/**
@@ -485,36 +448,4 @@ class Rise {
 	public function run() {
 		$this->loader->run();
 	}
-
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @return string The name of the plugin.
-	 * @since     0.1.0
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @return Loader Orchestrates the hooks of the plugin.
-	 * @since     0.1.0
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @return string The version number of the plugin.
-	 * @since     0.1.0
-	 */
-	public function get_version() {
-		return $this->version;
-	}
-
-} 
+}

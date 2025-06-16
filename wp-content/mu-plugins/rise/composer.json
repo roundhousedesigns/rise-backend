@@ -4,14 +4,9 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "RHD\\Rise\\": "src/"
-        },
-        "files": [
-            "includes/functions.php",
-            "includes/utils.php",
-            "includes/shortcodes.php",
-            "includes/deprecated.php"
-        ]
+            "RHD\\Rise\\": "src/",
+            "RHD\\Rise\\Tests\\": "tests/"
+        }
     },
     "authors": [
         {

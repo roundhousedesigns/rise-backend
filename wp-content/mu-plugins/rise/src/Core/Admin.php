@@ -1,13 +1,9 @@
 <?php
-/**
- * The admin-specific functionality of the plugin.
- *
- * @package    Rise
- * @subpackage Rise/admin
- *
- * @link       https://roundhouse-designs.com
- * @since      0.1.0
- */
+
+namespace RHD\Rise\Core;
+
+use RHD\Rise\Includes\Search;
+use RHD\Rise\Includes\Users;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -15,12 +11,12 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Rise
- * @subpackage Rise/admin
+ * @package    RHD\Rise
+ * @subpackage RHD\Rise\Core
  *
  * @author     Roundhouse Designs <nick@roundhouse-designs.com>
  */
-class Rise_Admin {
+class Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -49,10 +45,8 @@ class Rise_Admin {
 	 * @param string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
 	}
 
 	/**
@@ -61,7 +55,7 @@ class Rise_Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-admin.css', [], $this->version, 'all' );
+		\wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-admin.css', [], $this->version, 'all' );
 	}
 
 	/**
@@ -70,9 +64,9 @@ class Rise_Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_scripts() {
-		$current_screen = get_current_screen();
+		$current_screen = \get_current_screen();
 		if ( $current_screen && 'toplevel_page_rise-admin' === $current_screen->id ) {
-			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-table-sort.js', [], $this->version, false );
+			\wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-table-sort.js', [], $this->version, false );
 		}
 	}
 
@@ -82,7 +76,7 @@ class Rise_Admin {
 	 * @since    1.0.2
 	 */
 	public function plugin_options_page() {
-		add_menu_page(
+		\add_menu_page(
 			'RISE Administration', // Page title
 			'RISE Admin', // Menu title
 			'read', // Capability/role required to access the page
@@ -101,8 +95,8 @@ class Rise_Admin {
 	public function plugin_options_page_callback() {
 		self::section_html_start();
 
-		settings_fields( 'rise_directory_options' ); // Add the settings field group
-		do_settings_sections( 'rise-admin' ); // Render the settings section(s)
+		\settings_fields( 'rise_directory_options' ); // Add the settings field group
+		\do_settings_sections( 'rise-admin' ); // Render the settings section(s)
 
 		// Not currently in use
 		// submit_button(); // Add the submit button
@@ -117,10 +111,10 @@ class Rise_Admin {
 	 */
 	public function plugin_settings_init() {
 		// Register a setting field for 'rise_frontend_url'
-		register_setting( 'rise_directory_options', 'rise_frontend_url', 'esc_url' );
+		\register_setting( 'rise_directory_options', 'rise_frontend_url', 'esc_url' );
 
 		// Add a section for the stats
-		add_settings_section(
+		\add_settings_section(
 			'rise_directory_stats_section',
 			'RISE Directory Statistics',
 			[$this, 'rise_directory_stats_section_callback'],
@@ -193,7 +187,7 @@ class Rise_Admin {
 	 * @return void
 	 */
 	public function register_rise_basic_stats_widget() {
-		wp_add_dashboard_widget(
+		\wp_add_dashboard_widget(
 			'crew_member_stats_widget',
 			'RISE Member Stats',
 			[$this, 'render_rise_stats_widget_content']
@@ -232,10 +226,10 @@ class Rise_Admin {
 	 */
 	public function remove_menu_pages() {
 		// Posts
-		remove_menu_page( 'edit.php' );
+		\remove_menu_page( 'edit.php' );
 
 		// Comments
-		remove_menu_page( 'edit-comments.php' );
+		\remove_menu_page( 'edit-comments.php' );
 
 		// Plugins
 		// remove_menu_page( 'plugins.php' );
@@ -251,19 +245,19 @@ class Rise_Admin {
 	 */
 	private static function crew_member_stats__basic() {
 		// Get all users with the 'crew-member' role. Then separate the users by those who are authors of at least one `credit` post type post, and those who are not.
-		$crew_members = get_users( ['role' => 'crew-member'] );
+		$crew_members = \get_users( ['role' => 'crew-member'] );
 		$authors      = [];
 		$non_authors  = [];
 		$output       = '<h2>Base Stats</h2><div class="data-feature">';
 
 		foreach ( $crew_members as $crew_member ) {
-			$posts = get_posts( [
+			$posts = \get_posts( [
 				'author'      => $crew_member->ID,
 				'post_type'   => 'credit',
 				'post_status' => 'publish',
 			] );
 
-			if ( count( $posts ) > 0 ) {
+			if ( \count( $posts ) > 0 ) {
 				$authors[] = $crew_member;
 				continue;
 			}
@@ -290,16 +284,16 @@ class Rise_Admin {
 		// $output .= sprintf( '<p>Users with no credits:</p><pre>%s</pre>', esc_textarea( $non_authors_data ) );
 
 		// Use the find() method to query users
-		$disabled_profiles = pods(
+		$disabled_profiles = \pods(
 			'user',
 			[
 				'where' => 'd.disable_profile = 1',
 			]
 		);
 
-		$output .= sprintf( '<p>Users registered on the site: <strong>%s</strong></p>', count( $crew_members ) );
-		$output .= sprintf( '<p>Users with at least one credit: <strong>%s</strong></p>', count( $authors ) );
-		$output .= sprintf( '<p>Users with <strong>no</strong> credits: <strong>%s</strong></p>', count( $non_authors ) );
+		$output .= sprintf( '<p>Users registered on the site: <strong>%s</strong></p>', \count( $crew_members ) );
+		$output .= sprintf( '<p>Users with at least one credit: <strong>%s</strong></p>', \count( $authors ) );
+		$output .= sprintf( '<p>Users with <strong>no</strong> credits: <strong>%s</strong></p>', \count( $non_authors ) );
 		$output .= sprintf( '<p>Users with hidden profiles ("search only"): <strong>%s</strong></p>', $disabled_profiles->total_found() );
 
 		$output .= '</div>';
@@ -363,7 +357,7 @@ class Rise_Admin {
 					$taxonomy_plural = 'positions';
 				}
 
-				$terms = get_terms( [
+				$terms = \get_terms( [
 					'taxonomy'   => $slug,
 					'hide_empty' => false,
 					'parent'     => 'position__department' === $datapoint ? 0 : '',
@@ -374,11 +368,11 @@ class Rise_Admin {
 
 				foreach ( $terms as $term ) {
 					$args    = [$taxonomy_plural => $term->term_id];
-					$results = rise_search_and_filter_crew_members( $args );
+					$results = Search::search_and_filter_crew_members( $args );
 
 					$data[] = [
 						'name'  => $term->name,
-						'count' => count( $results ),
+						'count' => \count( $results ),
 					];
 				}
 
@@ -394,7 +388,7 @@ class Rise_Admin {
 
 				$output .= self::generate_table_open( $label );
 
-				$terms = get_terms( [
+				$terms = \get_terms( [
 					'taxonomy'   => $slug,
 					'hide_empty' => false,
 				] );
@@ -403,11 +397,11 @@ class Rise_Admin {
 
 				foreach ( $terms as $term ) {
 					$args    = [$slug => $term->term_id];
-					$results = rise_query_users( $args );
+					$results = Users::query_users( $args );
 
 					$data[] = [
 						'name'  => $term->name,
-						'count' => count( $results ),
+						'count' => \count( $results ),
 					];
 				}
 
@@ -428,7 +422,7 @@ class Rise_Admin {
 	private static function dev_info() {
 		$info = [
 			'PHP Version'       => phpversion(),
-			'WP Version'        => get_bloginfo( 'version' ),
+			'WP Version'        => \get_bloginfo( 'version' ),
 			'RISE_FRONTEND_URL' => defined( 'RISE_FRONTEND_URL' ) ? RISE_FRONTEND_URL : 'Not set',
 		];
 
@@ -447,7 +441,7 @@ class Rise_Admin {
 	 * @return void
 	 */
 	public function rise_frontend_url_callback() {
-		$value = get_option( 'rise_frontend_url' );
+		$value = \get_option( 'rise_frontend_url' );
 		printf( '<input type="text" name="rise_frontend_url" value="%s" />', esc_attr( $value ) );
 	}
 

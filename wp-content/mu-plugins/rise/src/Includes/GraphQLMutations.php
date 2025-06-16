@@ -22,6 +22,7 @@ use RHD\Rise\Includes\Users;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\UserMutation;
 use WP_Error;
+use RHD\Rise\Core\Utils;
 
 class GraphQLMutations {
 	/**
@@ -110,13 +111,13 @@ class GraphQLMutations {
 					/**
 					 * Check the reCAPTCHA response
 					 */
-					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
+					if ( !Utils::recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
 						throw new UserError( esc_attr( 'bad_recaptcha_token' ) );
 					}
 
 					// Set the user's slug (user_nicename)
 					$input_data = $input;
-					$input_data = \array_merge( $input_data, ['nicename' => rise_generate_default_user_slug( $input['firstName'], $input['lastName'] )] );
+					$input_data = \array_merge( $input_data, ['nicename' => Users::generate_default_user_slug( $input['firstName'], $input['lastName'] )] );
 
 					/**
 					 * Map all of the args from GQL to WP friendly
@@ -213,7 +214,7 @@ class GraphQLMutations {
 					/**
 					 * Check the reCAPTCHA response
 					 */
-					if ( !\recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
+					if ( !Utils::recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
 						throw new UserError( esc_attr( 'bad_recaptcha_token' ) );
 					}
 
@@ -304,7 +305,7 @@ class GraphQLMutations {
 					/**
 					 * Check the reCAPTCHA response
 					 */
-					if ( !recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
+					if ( !Utils::recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
 						throw new UserError( esc_attr( 'bad_recpatcha_response' ) );
 					}
 
@@ -326,8 +327,8 @@ class GraphQLMutations {
 					}
 
 					// Mail the reset key.
-					$subject = rise_get_password_reset_email_subject( $user_data );
-					$message = rise_get_password_reset_email_message( $user_data, $key );
+					$subject = Email::get_password_reset_email_subject( $user_data );
+					$message = Email::get_password_reset_email_message( $user_data, $key );
 
 					$email_sent = wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
 						$user_data->user_email,
@@ -409,8 +410,8 @@ class GraphQLMutations {
 					);
 
 					// Send the confirmation email
-					$message = rise_get_email_change_email_message( $user );
-					$subject = rise_get_email_change_email_subject();
+					$message = Email::get_email_change_email_message( $user );
+					$subject = Email::get_email_change_email_subject();
 
 					// TODO verify that change password notices are sending
 					$email_sent = wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
@@ -487,8 +488,8 @@ class GraphQLMutations {
 					\wp_set_password( $input['newPassword'], $user->ID );
 
 					// Send the confirmation email
-					$message = rise_get_password_change_email_message( $user );
-					$subject = rise_get_password_change_email_subject();
+					$message = Email::get_password_change_email_message( $user );
+					$subject = Email::get_password_change_email_subject();
 
 					// TODO verify that change password notices are sending
 					$email_sent = \wp_mail(  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
@@ -775,7 +776,8 @@ class GraphQLMutations {
 
 					$result = [];
 					foreach ( $input['creditIds'] as $index => $id ) {
-						$result[] = rise_update_credit_index( absint( $id ), $index );
+						$credit   = new Credit( ['id' => absint( $id )] );
+						$result[] = $credit->update_index( $index );
 					}
 
 					// TODO maybe return a WP_Error object instead of 0.
@@ -833,7 +835,7 @@ class GraphQLMutations {
 						];
 					}
 
-					$result = rise_delete_own_allowed_post_item( $input['id'], $input['userId'] );
+					$result = Users::delete_own_allowed_post_item( $input['id'], $input['userId'] );
 
 					if ( $result ) {
 						$payload['result'] = true;
@@ -888,7 +890,7 @@ class GraphQLMutations {
 						];
 					}
 
-					$result = rise_delete_own_allowed_post_item( $input['id'], $input['userId'] );
+					$result = Users::delete_own_allowed_post_item( $input['id'], $input['userId'] );
 
 					if ( $result ) {
 						$payload['result'] = true;
@@ -941,7 +943,7 @@ class GraphQLMutations {
 						];
 					}
 
-					$result = rise_delete_own_allowed_post_item( $input['id'], $input['userId'] );
+					$result = Users::delete_own_allowed_post_item( $input['id'], $input['userId'] );
 
 					if ( $result ) {
 						$payload['result'] = true;
@@ -988,7 +990,7 @@ class GraphQLMutations {
 						require_once ABSPATH . 'wp-admin/includes/file.php';
 					}
 
-					$field   = isset( $input['name'] ) ? \camel_to_snake( $input['name'] ) : '';
+					$field   = isset( $input['name'] ) ? Utils::camel_to_snake( $input['name'] ) : '';
 					$user_id = isset( $input['userId'] ) ? $input['userId'] : null;
 
 					$uploaded = \wp_handle_sideload( $input['file'], [
@@ -996,10 +998,10 @@ class GraphQLMutations {
 						'test_type' => true,
 					] );
 
-					$uploaded['file'] = \maybe_strip_exif( $uploaded['file'] );
+					$uploaded['file'] = Utils::maybe_strip_exif( $uploaded['file'] );
 
 					// Get the attachment ID from the uploaded file.
-					$attachment_id = \rise_get_attachment_id_by_url( $uploaded['url'] );
+					$attachment_id = Utils::get_attachment_id_by_url( $uploaded['url'] );
 
 					// Set the user's profile image.
 					if ( $attachment_id && $user_id ) {
@@ -1097,10 +1099,10 @@ class GraphQLMutations {
 					}
 
 					// Get the current starred IDs.
-					$current_starred_ids = rise_pluck_profile_ids( $current_starred_profiles );
+					$current_starred_ids = Users::pluck_profile_ids( $current_starred_profiles );
 
 					// Update the collection.
-					$updated_starred_ids = toggle_id_in_array( $current_starred_ids, $input['toggledId'] );
+					$updated_starred_ids = Utils::toggle_id_in_array( $current_starred_ids, $input['toggledId'] );
 
 					// Sanitize the input.
 					$updated_starred_ids = array_map( 'absint', $updated_starred_ids );
