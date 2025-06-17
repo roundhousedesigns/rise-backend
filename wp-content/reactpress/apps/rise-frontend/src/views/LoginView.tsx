@@ -14,6 +14,7 @@ import {
 	Icon,
 	IconButton,
 	Link,
+	Spacer,
 	Stack,
 	Text,
 	chakra,
@@ -124,18 +125,33 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 									}}
 								/>
 
-								{turnstileStatus === 'solved' && (
-									<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
-										Sign In
-									</Button>
-								)}
+								<Box mt={2}>
+									<Turnstile
+										siteKey={VITE_TURNSTILE_SITE_KEY}
+										onError={() => setTurnstileStatus('error')}
+										onExpire={() => setTurnstileStatus('expired')}
+										onSuccess={() => setTurnstileStatus('solved')}
+									/>
+								</Box>
 
-								<Turnstile
-									siteKey={VITE_TURNSTILE_SITE_KEY}
-									onError={() => setTurnstileStatus('error')}
-									onExpire={() => setTurnstileStatus('expired')}
-									onSuccess={() => setTurnstileStatus('solved')}
-								/>
+								<Flex
+									gap={4}
+									alignItems='center'
+									justifyContent='space-between'
+									mt={2}
+									flexWrap='wrap'
+								>
+									{turnstileStatus === 'solved' ? (
+										<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
+											Sign In
+										</Button>
+									) : (
+										<Spacer />
+									)}
+									<Link as={RouterLink} to='/lost-password' fontSize='sm' my={0}>
+										Lost your password?
+									</Link>
+								</Flex>
 
 								{turnstileStatus === 'error' ||
 									(turnstileStatus === 'expired' && (
@@ -143,18 +159,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 											There was an error verifying your browser. Please try again.
 										</Alert>
 									))}
-
-								<Flex
-									gap={4}
-									alignItems='center'
-									justifyContent='space-between'
-									mt={4}
-									flexWrap='wrap'
-								>
-									<Link as={RouterLink} to='/lost-password' fontSize='sm'>
-										Lost your password?
-									</Link>
-								</Flex>
 
 								<Divider />
 
