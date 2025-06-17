@@ -23,7 +23,6 @@ const useResetUserPassword = () => {
 	const resetUserPasswordMutation = (key: string, login: string, password: string) => {
 		return mutation({
 			variables: {
-				clientMutationId: 'resetUserPasswordMutation',
 				key,
 				login,
 				password,
