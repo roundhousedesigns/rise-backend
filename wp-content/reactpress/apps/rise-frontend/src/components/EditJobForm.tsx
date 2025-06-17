@@ -233,12 +233,6 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 				...prev,
 				[name]: (e.target as HTMLInputElement).checked,
 			}));
-		} else if (type === 'date') {
-			// Ensure date is in YYYY-MM-DD format
-			setFormData((prev) => ({
-				...prev,
-				[name]: value,
-			}));
 		} else {
 			setFormData((prev) => ({
 				...prev,
