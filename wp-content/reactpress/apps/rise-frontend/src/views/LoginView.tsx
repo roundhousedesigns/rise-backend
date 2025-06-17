@@ -140,7 +140,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 								{turnstileStatus === 'error' ||
 									(turnstileStatus === 'expired' && (
 										<Alert status='error'>
-											There was an error with the reCAPTCHA. Please try again.
+											There was an error verifying your browser. Please try again.
 										</Alert>
 									))}
 
