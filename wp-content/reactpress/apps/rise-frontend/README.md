@@ -57,7 +57,6 @@ _Note:_ The main `dev` branch is now the `preview` branch. Use `v1.2-dev` as the
 2.  Add the following information:
 
     ```
-       VITE_FRONTEND_URL = http://localhost:3000
        VITE_BACKEND_URL = (backend server URL)
        VITE_RECAPTCHA_SITE_KEY = (your recaptcha site key)
     ```
