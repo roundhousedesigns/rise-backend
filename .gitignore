@@ -27,9 +27,6 @@ vendor/
 # ignore node dependency directories (used by grunt)
 node_modules/
 
-# ignore IDE configuration files
-# idehelper.php
-
 # ignore OS generated files
 ehthumbs.db
 Thumbs.db

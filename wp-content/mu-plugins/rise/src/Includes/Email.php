@@ -32,7 +32,7 @@ class Email {
 		$message .= sprintf( __( 'This email has been sent to %s', 'rise' ), $user_data->user_email ) . "\r\n\r\n";
 		$message .= __( 'Thanks,', 'rise' ) . "\r\n\r\n";
 		$message .= self::get_email_friendly_site_name() . "\r\n";
-		$message .= RISE_FRONTEND_URL . "\r\n";
+		$message .= site_url() . "\r\n";
 
 		return $message;
 	}
@@ -68,7 +68,7 @@ class Email {
 		$message .= sprintf( __( 'This email has been sent to %s', 'rise' ), $user_data->user_email ) . "\r\n\r\n";
 		$message .= __( 'Thanks,', 'rise' ) . "\r\n\r\n";
 		$message .= self::get_email_friendly_site_name() . "\r\n";
-		$message .= RISE_FRONTEND_URL . "\r\n";
+		$message .= site_url() . "\r\n";
 
 		return $message;
 	}
@@ -103,7 +103,7 @@ class Email {
 		$message .= sprintf( __( 'Username: %s', 'rise' ), $user_data->user_login ) . "\r\n\r\n";
 		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'rise' ) . "\r\n\r\n";
 		$message .= __( 'To reset your password, visit the following address:', 'rise' ) . "\r\n\r\n";
-		$message .= '<' . RISE_FRONTEND_URL . "?key={$key}&login=" . rawurlencode( $user_data->user_login ) . ">\r\n";
+		$message .= '<' . site_url() . "?key={$key}&login=" . rawurlencode( $user_data->user_login ) . ">\r\n";
 
 		/**
 		 * Filters the message body of the password reset mail.
@@ -151,7 +151,7 @@ class Email {
 	 */
 	public function filter_retrieve_password_message( $message, $key, $user_login ) {
 		$site_name       = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-		$reset_link_base = defined( 'RISE_FRONTEND_URL' ) ? esc_url( RISE_FRONTEND_URL ) : home_url();
+		$reset_link_base = home_url();
 		$reset_link      = esc_url( $reset_link_base ) . '/reset-password?key=' . $key . '&login=' . rawurlencode( $user_login );
 
 		// Create new message

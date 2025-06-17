@@ -191,8 +191,6 @@ export const useSavedSearchFiltersChanged = (): boolean => {
  *
  * @param {number} profileId - The ID of the user's profile to calculate completion for.
  * @return {number} The completion percentage of the user's profile, as a whole number between 0 and 100.
- *
- * @todo Unimplemented.
  */
 export const useProfileCompletion = (profileId: number | null): number => {
 	const [profile] = useUserProfile(profileId);

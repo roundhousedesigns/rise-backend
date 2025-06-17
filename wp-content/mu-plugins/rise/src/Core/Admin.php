@@ -110,9 +110,6 @@ class Admin {
 	 * @return void
 	 */
 	public function plugin_settings_init() {
-		// Register a setting field for 'rise_frontend_url'
-		\register_setting( 'rise_directory_options', 'rise_frontend_url', 'esc_url' );
-
 		// Add a section for the stats
 		\add_settings_section(
 			'rise_directory_stats_section',
@@ -120,27 +117,6 @@ class Admin {
 			[$this, 'rise_directory_stats_section_callback'],
 			'rise-admin'
 		);
-
-		// Example: Add a section for the settings
-		// add_settings_section(
-		// 	'rise_directory_settings_section',
-		// 	'RISE Directory Settings',
-		// 	[$this, 'rise_directory_settings_section_callback'],
-		// 	'rise-admin'
-		// );
-
-		// Example: Add a field for 'rise_frontend_url' in the section
-		/**
-		 * Sample setting: Frontend URL
-		 */
-		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-		// add_settings_field(
-		// 	'rise_frontend_url',
-		// 	'Frontend URL',
-		// 	[$this, 'rise_frontend_url_callback'],
-		// 	'rise-admin',
-		// 	'rise_directory_settings_section'
-		// );
 	}
 
 	/**
@@ -421,9 +397,8 @@ class Admin {
 	 */
 	private static function dev_info() {
 		$info = [
-			'PHP Version'       => phpversion(),
-			'WP Version'        => \get_bloginfo( 'version' ),
-			'RISE_FRONTEND_URL' => defined( 'RISE_FRONTEND_URL' ) ? RISE_FRONTEND_URL : 'Not set',
+			'PHP Version' => phpversion(),
+			'WP Version'  => \get_bloginfo( 'version' ),
 		];
 
 		$output = '<p>Development Info:</p><pre>';
@@ -433,16 +408,6 @@ class Admin {
 		$output .= '</pre>';
 
 		return $output;
-	}
-
-	/**
-	 * Callback function for the 'rise_frontend_url' field
-	 *
-	 * @return void
-	 */
-	public function rise_frontend_url_callback() {
-		$value = \get_option( 'rise_frontend_url' );
-		printf( '<input type="text" name="rise_frontend_url" value="%s" />', esc_attr( $value ) );
 	}
 
 	/**

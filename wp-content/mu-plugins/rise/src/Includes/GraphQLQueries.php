@@ -38,31 +38,12 @@ class GraphQLQueries {
 	 * @return array The modified allowed fields.
 	 */
 	public function require_authentication_allowed_fields( $allowed ) {
-		$allowed[] = 'loginWithCookies'; // TODO check if we need this since it's a built-in mutation
-		$allowed[] = 'sendPasswordResetEmail'; // TODO check if we need this since it's a built-in mutation
-		$allowed[] = 'registerUser'; // TODO check if we need this since it's a built-in mutation
+		$allowed[] = 'loginWithCookies';
+		$allowed[] = 'sendPasswordResetEmail';
+		$allowed[] = 'registerUser';
 		$allowed[] = 'resetUserPasswordMutation';
 
 		return $allowed;
-	}
-
-	/**
-	 * Removes the "extensions" data from the GraphQL response.
-	 *
-	 * @see @link https://www.wpgraphql.com/recipes/remove-extensions-from-graphql-response
-	 * @since 1.0.8
-	 *
-	 * @param  array $response The GraphQL response.
-	 * @return array The modified GraphQL response.
-	 */
-	public function remove_graphql_extensions_response_data( $response ) {
-		if ( \is_array( $response ) && isset( $response['extensions'] ) ) {
-			unset( $response['extensions'] );
-		}
-		if ( \is_object( $response ) && isset( $response->extensions ) ) {
-			unset( $response->extensions );
-		}
-		return $response;
 	}
 
 	/**
