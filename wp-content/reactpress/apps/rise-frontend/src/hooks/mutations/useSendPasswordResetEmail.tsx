@@ -5,10 +5,8 @@
 import { gql, useMutation } from '@apollo/client';
 
 const MUTATE_SEND_PASSWORD_RESET = gql`
-	mutation SendPasswordResetEmailMutation(
-		$input: SendPasswordResetEmailWithReCaptchaInput = { reCaptchaToken: "", username: "" }
-	) {
-		sendPasswordResetEmailWithReCaptcha(input: $input) {
+	mutation SendPasswordResetEmailMutation($input: SendPasswordResetEmailInput = { username: "" }) {
+		sendPasswordResetEmail(input: $input) {
 			clientMutationId
 			success
 		}

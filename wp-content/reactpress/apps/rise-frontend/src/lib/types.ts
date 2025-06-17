@@ -163,7 +163,6 @@ export interface CreditOutput {
 export interface LoginInput {
 	login: string;
 	password: string;
-	reCaptchaToken: string;
 }
 
 /**

@@ -197,29 +197,6 @@ export function generateRandomString(length: number = 8): string {
 }
 
 /**
- * Handle reCAPTCHA verification.
- *
- * @param {label} The label for the reCAPTCHA.
- * @param {executeRecaptcha} The reCAPTCHA execution function.
- * @returns The reCAPTCHA token (Promise)
- */
-export async function handleReCaptchaVerify({
-	label,
-	executeRecaptcha,
-}: {
-	label: string;
-	executeRecaptcha: ((action?: string | undefined) => Promise<string>) | undefined;
-}): Promise<string | undefined> {
-	if (!executeRecaptcha) {
-		return;
-	}
-
-	const token = await executeRecaptcha(label);
-
-	return token;
-}
-
-/**
  * Validate a profile slug string.
  *
  * @param {str} The string to validate.

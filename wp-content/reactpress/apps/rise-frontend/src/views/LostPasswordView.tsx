@@ -1,14 +1,18 @@
+import { Box, Button, chakra, Container, Flex, Heading, Text, useToast } from '@chakra-ui/react';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Text, Flex, Container, Heading, Box, useToast, chakra } from '@chakra-ui/react';
 
 import TextInput from '@common/inputs/TextInput';
-import useSendPasswordResetEmail from '@mutations/useSendPasswordResetEmail';
 import { useErrorMessage } from '@hooks/hooks';
+import { Turnstile } from '@marsidev/react-turnstile';
+import useSendPasswordResetEmail from '@mutations/useSendPasswordResetEmail';
 
 export default function LoginView() {
 	const [username, setUsername] = useState<string>('');
 	const [errorCode, setErrorCode] = useState<string>('');
+	const [turnstileStatus, setTurnstileStatus] = useState<'error' | 'expired' | 'solved' | ''>('');
+
+	const { VITE_TURNSTILE_SITE_KEY } = import.meta.env;
 
 	const {
 		sendPasswordResetEmailMutation,
@@ -68,9 +72,19 @@ export default function LoginView() {
 							}}
 							error={errorMessage}
 						/>
-						<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
-							Submit
-						</Button>
+
+						<Turnstile
+							siteKey={VITE_TURNSTILE_SITE_KEY}
+							onError={() => setTurnstileStatus('error')}
+							onExpire={() => setTurnstileStatus('expired')}
+							onSuccess={() => setTurnstileStatus('solved')}
+						/>
+
+						{turnstileStatus === 'solved' && (
+							<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
+								Submit
+							</Button>
+						)}
 					</Flex>
 				</chakra.form>
 			</Box>

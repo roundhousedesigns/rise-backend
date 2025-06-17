@@ -24,6 +24,7 @@ import TextInput from '@common/inputs/TextInput';
 import { useErrorMessage } from '@hooks/hooks';
 import { LoginInput } from '@lib/types';
 import { decodeString } from '@lib/utils';
+import { Turnstile } from '@marsidev/react-turnstile';
 import useLogin from '@mutations/useLogin';
 import PageContent from '@views/PageContent';
 import { ChangeEvent, FormEvent, useState } from 'react';
@@ -37,12 +38,15 @@ interface Props {
 }
 
 export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
+	const { VITE_TURNSTILE_SITE_KEY } = import.meta.env;
+
 	const [credentials, setCredentials] = useState<LoginInput>({
 		login: '',
 		password: '',
-		reCaptchaToken: '',
 	});
 	const [errorCode, setErrorCode] = useState<string>('');
+	const [turnstileStatus, setTurnstileStatus] = useState<'error' | 'expired' | 'solved' | ''>('');
+
 	const [isLargerThanMd] = useMediaQuery('(min-width: 48rem)');
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -50,7 +54,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 		loginMutation,
 		results: { loading: submitLoading },
 	} = useLogin();
-	// const { executeRecaptcha } = useGoogleReCaptcha();
 
 	const errorMessage = useErrorMessage(errorCode);
 
@@ -67,24 +70,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 		loginMutation({ ...credentials }).catch((errors: { message: string }) => {
 			setErrorCode(errors.message);
 		});
-
-		// RECAPTCHA IS DISABLED FOR NOW
-		// handleReCaptchaVerify({ label: 'login', executeRecaptcha })
-		// 	.then((token) => {
-		// 		if (!token) {
-		// 			setErrorCode('recaptcha_error');
-		// 			return;
-		// 		}
-
-		// 		loginMutation({ ...credentials, reCaptchaToken: token }).catch(
-		// 			(errors: { message: string }) => {
-		// 				setErrorCode(errors.message);
-		// 			}
-		// 		);
-		// 	})
-		// 	.catch(() => {
-		// 		setErrorCode('recaptcha_error');
-		// 	});
 	};
 
 	const sanitizedAlertStatus = alertStatus === 'error' ? 'error' : 'success';
@@ -138,6 +123,27 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 										fontSize: 'lg',
 									}}
 								/>
+
+								{turnstileStatus === 'solved' && (
+									<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
+										Sign In
+									</Button>
+								)}
+
+								<Turnstile
+									siteKey={VITE_TURNSTILE_SITE_KEY}
+									onError={() => setTurnstileStatus('error')}
+									onExpire={() => setTurnstileStatus('expired')}
+									onSuccess={() => setTurnstileStatus('solved')}
+								/>
+
+								{turnstileStatus === 'error' ||
+									(turnstileStatus === 'expired' && (
+										<Alert status='error'>
+											There was an error with the reCAPTCHA. Please try again.
+										</Alert>
+									))}
+
 								<Flex
 									gap={4}
 									alignItems='center'
@@ -145,16 +151,14 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 									mt={4}
 									flexWrap='wrap'
 								>
-									<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
-										Sign In
-									</Button>
 									<Link as={RouterLink} to='/lost-password' fontSize='sm'>
 										Lost your password?
 									</Link>
 								</Flex>
-								<Box id='recaptcha-badge' />
+
 								<Divider />
-								<Box textAlign='center' flex='1'>
+
+								<Box textAlign='center' flex='1' mb={4}>
 									<Heading variant='pageSubtitle' fontSize='xl'>
 										Don't have an account?
 									</Heading>

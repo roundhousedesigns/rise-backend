@@ -18,8 +18,10 @@ import TextInput from '@common/inputs/TextInput';
 import RequiredAsterisk from '@common/RequiredAsterisk';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
 import { RegisterUserInput } from '@lib/types';
+import { Turnstile } from '@marsidev/react-turnstile';
 import useRegisterUser from '@mutations/useRegisterUser';
 import usePageById from '@queries/usePageById';
+import parse from 'html-react-parser';
 import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
@@ -98,6 +100,10 @@ export default function RegisterView() {
 	const toast = useToast();
 	const errorMessage = useErrorMessage(errorCode);
 
+	const { VITE_TURNSTILE_SITE_KEY } = import.meta.env;
+
+	const [turnstileStatus, setTurnstileStatus] = useState<'error' | 'expired' | 'solved' | ''>('');
+
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
@@ -125,7 +131,7 @@ export default function RegisterView() {
 			) : pageError ? (
 				'Error loading content'
 			) : page ? (
-				<Box my={4}>{page.content}</Box>
+				<Box my={4}>{parse(page.content || '')}</Box>
 			) : (
 				false
 			)}
@@ -265,16 +271,26 @@ export default function RegisterView() {
 								<RequiredAsterisk />
 							</Checkbox>
 						</FormControl>
-						<Button
-							type='submit'
-							colorScheme='orange'
-							isDisabled={!formIsValid || submitLoading}
-							mt={4}
-							tabIndex={8}
-							isLoading={!!submitLoading}
-						>
-							Create account
-						</Button>
+
+						<Turnstile
+							siteKey={VITE_TURNSTILE_SITE_KEY}
+							onError={() => setTurnstileStatus('error')}
+							onExpire={() => setTurnstileStatus('expired')}
+							onSuccess={() => setTurnstileStatus('solved')}
+						/>
+
+						{turnstileStatus === 'solved' && (
+							<Button
+								type='submit'
+								colorScheme='orange'
+								isDisabled={!formIsValid || submitLoading}
+								mt={4}
+								tabIndex={8}
+								isLoading={!!submitLoading}
+							>
+								Create account
+							</Button>
+						)}
 					</Box>
 					{!isLargerThanMd && <BackToLoginButton width='full' justifyContent='flex-end' />}
 				</Flex>
