@@ -78,43 +78,6 @@ class Utils {
 	}
 
 	/**
-	 * Checks whether the given reCAPTCHA response is valid.
-	 *
-	 * @deprecated 1.2 Use the Turnstile library instead.
-	 * @since 1.0.0
-	 *
-	 * @param  string  $response The reCAPTCHA response.
-	 * @return boolean Whether the response is valid.
-	 */
-	public static function recaptcha_is_valid( $response ) {
-		if ( !defined( 'RECAPTCHA_SECRET_KEY' ) ) {
-			return false;
-		}
-
-		$url  = 'https://www.google.com/recaptcha/api/siteverify';
-		$data = [
-			'secret'   => \RECAPTCHA_SECRET_KEY,
-			'response' => $response,
-		];
-
-		$options = [
-			'http' => [
-				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-				'method'  => 'POST',
-				'content' => http_build_query( $data ),
-			],
-		];
-
-		$context = stream_context_create( $options );
-
-		// TODO use wp_remote_get() instead of file_get_contents()
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$result = file_get_contents( $url, false, $context );
-
-		return json_decode( $result )->success;
-	}
-
-	/**
 	 * Flatten a multidimensional array.
 	 *
 	 * @since 1.0.8
