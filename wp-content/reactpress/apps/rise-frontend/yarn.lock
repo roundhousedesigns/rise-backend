@@ -1113,6 +1113,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@marsidev/react-turnstile@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@marsidev/react-turnstile@npm:1.1.0"
+  peerDependencies:
+    react: ^17.0.2 || ^18.0.0 || ^19.0
+    react-dom: ^17.0.2 || ^18.0.0 || ^19.0
+  checksum: 10c0/58d599bcc8bb8f01b90c166e13394d2890f0a75eb7cc354fb4187b36a53976c31495a50e87ecd3ae5bcbf5b63a0585f11064dd83bb908faa5b13d5f200ad397a
+  languageName: node
+  linkType: hard
+
 "@motionone/animation@npm:^10.18.0":
   version: 10.18.0
   resolution: "@motionone/animation@npm:10.18.0"
@@ -4016,18 +4026,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-google-recaptcha-v3@npm:^1.10.1":
-  version: 1.10.1
-  resolution: "react-google-recaptcha-v3@npm:1.10.1"
-  dependencies:
-    hoist-non-react-statics: "npm:^3.3.2"
-  peerDependencies:
-    react: ^16.3 || ^17.0 || ^18.0
-    react-dom: ^17.0 || ^18.0
-  checksum: 10c0/fb7adc7f9f9580893f76b81efa1c00121b71d494ad679d0e561f48485e5a0396c239278964ea97a73b471dd1388a7d79eb355c7dac3800fd756320e99216e1de
-  languageName: node
-  linkType: hard
-
 "react-icons@npm:^4.12.0":
   version: 4.12.0
   resolution: "react-icons@npm:4.12.0"
@@ -4329,6 +4327,7 @@ __metadata:
     "@choc-ui/chakra-autocomplete": "npm:^5.8.1"
     "@emotion/react": "npm:^11.13.5"
     "@emotion/styled": "npm:^11.13.5"
+    "@marsidev/react-turnstile": "npm:^1.1.0"
     "@types/apollo-upload-client": "npm:^17.0.2"
     "@types/autosize": "npm:^4.0.1"
     "@types/chance": "npm:^1.1.3"
@@ -4355,7 +4354,6 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-dropzone: "npm:^14.2.7"
     react-ga4: "npm:^2.1.0"
-    react-google-recaptcha-v3: "npm:^1.10.1"
     react-icons: "npm:^4.12.0"
     react-player: "npm:^2.14.0"
     react-router-dom: "npm:^6.29.0"

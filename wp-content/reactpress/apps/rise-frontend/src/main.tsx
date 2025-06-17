@@ -2,7 +2,6 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import ReactGA from 'react-ga4';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
@@ -12,9 +11,10 @@ import Fonts from '@theme/Fonts';
 import App from '@/App';
 import WordPressStyles from '@components/WordPressStyles';
 import reportWebVitals from '@/reportWebVitals';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 // Env vars
-const { VITE_BACKEND_URL, VITE_GA4_ID, VITE_RECAPTCHA_SITE_KEY } = import.meta.env;
+const { VITE_BACKEND_URL, VITE_GA4_ID, VITE_CF_SITE_KEY } = import.meta.env;
 
 // Initialize Google Analytics
 if (VITE_GA4_ID) ReactGA.initialize(VITE_GA4_ID);
@@ -42,6 +42,7 @@ root.render(
 				<ChakraProvider resetCSS={true} theme={theme}>
 					<Fonts />
 					<WordPressStyles />
+					<Turnstile siteKey={VITE_CF_SITE_KEY} />
 					<App />
 				</ChakraProvider>
 			</ApolloProvider>
