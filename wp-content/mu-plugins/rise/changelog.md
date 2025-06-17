@@ -19,6 +19,7 @@ with 1.1.1.
 - Improve: Profile layout shifts
 - Improve: Clarify Edit Profile Sidebar (`Sidebar` -> `EditProfileSidebar`) to avoid confusion over new `<Sidebar>` layout component.
 - Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
+- Change: Replace Google reCAPTCHA with CloudFlare Turnstile.
 - Fix: "$lastCredits" as count var in `useUserProfile`.
 - Improve: Refactor classes to PSR-4.
 - Remove: <Page> component and slug route. Static pages handled by WP theme.
