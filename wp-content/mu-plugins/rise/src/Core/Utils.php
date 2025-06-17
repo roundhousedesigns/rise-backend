@@ -80,6 +80,7 @@ class Utils {
 	/**
 	 * Checks whether the given reCAPTCHA response is valid.
 	 *
+	 * @deprecated 1.2 Use the Turnstile library instead.
 	 * @since 1.0.0
 	 *
 	 * @param  string  $response The reCAPTCHA response.
@@ -92,7 +93,7 @@ class Utils {
 
 		$url  = 'https://www.google.com/recaptcha/api/siteverify';
 		$data = [
-			'secret'   => RECAPTCHA_SECRET_KEY,
+			'secret'   => \RECAPTCHA_SECRET_KEY,
 			'response' => $response,
 		];
 
@@ -105,6 +106,7 @@ class Utils {
 		];
 
 		$context = stream_context_create( $options );
+
 		// TODO use wp_remote_get() instead of file_get_contents()
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$result = file_get_contents( $url, false, $context );

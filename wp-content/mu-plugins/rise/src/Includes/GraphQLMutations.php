@@ -14,6 +14,7 @@ namespace RHD\Rise\Includes;
  */
 
 use GraphQL\Error\UserError;
+use RHD\Rise\Core\Utils;
 use RHD\Rise\Includes\Credit;
 use RHD\Rise\Includes\JobPost;
 use RHD\Rise\Includes\ProfileNotification;
@@ -22,7 +23,6 @@ use RHD\Rise\Includes\Users;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\UserMutation;
 use WP_Error;
-use RHD\Rise\Core\Utils;
 
 class GraphQLMutations {
 	/**
@@ -35,7 +35,7 @@ class GraphQLMutations {
 	public function register_mutations() {
 		$this->register_mutation__registerUserWithReCaptcha();
 		$this->register_mutation__loginWithCookiesAndReCaptcha();
-		$this->register_mutation__sendPasswordResetEmailWithReCaptcha();
+		// $this->register_mutation__sendPasswordResetEmail();
 		$this->register_mutation__changeEmail();
 		$this->register_mutation__changePassword();
 		$this->register_mutation__changeProfileSlug();
@@ -60,6 +60,8 @@ class GraphQLMutations {
 	/**
 	 * Create a user with reCAPTCHA verification.
 	 *
+	 * @deprecated 1.2 Use the built-in registerUser mutation instead since we're no longer using reCAPTCHA.
+	 *
 	 * @return void
 	 */
 	protected function register_mutation__registerUserWithReCaptcha() {
@@ -67,30 +69,26 @@ class GraphQLMutations {
 			'registerUserWithReCaptcha',
 			[
 				'inputFields'         => [
-					'username'       => [
+					'username'  => [
 						'type'        => [
 							'non_null' => 'String',
 						],
 						// translators: the placeholder is the name of the type of post object being updated
 						'description' => __( 'A string that contains the user\'s username for logging in.', 'rise' ),
 					],
-					'email'          => [
+					'email'     => [
 						'type'        => 'String',
 						'description' => __( 'A string containing the user\'s email address.', 'rise' ),
 					],
-					'reCaptchaToken' => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the reCAPTCHA response token.', 'rise' ),
-					],
-					'firstName'      => [
+					'firstName' => [
 						'type'        => 'String',
 						'description' => __( '	The user\'s first name.', 'rise' ),
 					],
-					'lastName'       => [
+					'lastName'  => [
 						'type'        => 'String',
 						'description' => __( 'The user\'s last name.', 'rise' ),
 					],
-					'password'       => [
+					'password'  => [
 						'type'        => 'String',
 						'description' => __( 'A string that contains the plain text password for the user.', 'rise' ),
 					],
@@ -103,17 +101,6 @@ class GraphQLMutations {
 				],
 				'mutateAndGetPayload' => function ( $input, $context, $info ) {
 					// TODO Refactor and abstract this into a function
-
-					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( esc_attr( 'no_recaptcha_token' ) );
-					}
-
-					/**
-					 * Check the reCAPTCHA response
-					 */
-					if ( !Utils::recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( esc_attr( 'bad_recaptcha_token' ) );
-					}
 
 					// Set the user's slug (user_nicename)
 					$input_data = $input;
@@ -168,6 +155,8 @@ class GraphQLMutations {
 
 	/**
 	 * Logs in a user with WordPress cookies.
+	 *
+	 * @deprecated 1.2 Use the built-in loginWithCookies mutation instead since we're no longer using reCAPTCHA.
 	 *
 	 * @return void
 	 */
@@ -262,19 +251,15 @@ class GraphQLMutations {
 	 *
 	 * @return void
 	 */
-	protected function register_mutation__sendPasswordResetEmailWithReCaptcha() {
+	protected function register_mutation__sendPasswordResetEmail() {
 		\register_graphql_mutation(
-			'sendPasswordResetEmailWithReCaptcha',
+			'sendPasswordResetEmail',
 			[
 				'description'         => __( 'Send password reset email to user', 'rise' ),
 				'inputFields'         => [
-					'username'       => [
+					'username' => [
 						'type'        => ['non_null' => 'String'],
 						'description' => __( 'A string that contains the user\'s username or email address.', 'rise' ),
-					],
-					'reCaptchaToken' => [
-						'type'        => ['non_null' => 'String'],
-						'description' => __( 'A string that contains the reCAPTCHA response token.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -296,17 +281,6 @@ class GraphQLMutations {
 
 					if ( !$username_provided ) {
 						throw new UserError( esc_attr( 'no_username' ) );
-					}
-
-					if ( !isset( $input['reCaptchaToken'] ) || !$input['reCaptchaToken'] ) {
-						throw new UserError( esc_attr( 'no_recaptcha_token' ) );
-					}
-
-					/**
-					 * Check the reCAPTCHA response
-					 */
-					if ( !Utils::recaptcha_is_valid( $input['reCaptchaToken'] ) ) {
-						throw new UserError( esc_attr( 'bad_recpatcha_response' ) );
 					}
 
 					// We obfuscate the actual success of this mutation to prevent user enumeration.
@@ -343,12 +317,12 @@ class GraphQLMutations {
 						graphql_debug( __( 'The email could not be sent.', 'rise' ) . "<br />\n" . __( 'Possible reason: your host may have disabled the mail() function.', 'rise' ) );
 					}
 
+					$payload['success'] = $email_sent;
+
 					/**
 					 * Return the ID of the user
 					 */
-					return [
-						'success' => true,
-					];
+					return $payload;
 				},
 			]
 		);

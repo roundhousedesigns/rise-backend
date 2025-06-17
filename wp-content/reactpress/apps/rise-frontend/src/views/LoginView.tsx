@@ -27,7 +27,6 @@ import { decodeString } from '@lib/utils';
 import useLogin from '@mutations/useLogin';
 import PageContent from '@views/PageContent';
 import { ChangeEvent, FormEvent, useState } from 'react';
-// import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FiExternalLink, FiX } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 

@@ -2,8 +2,8 @@
 
 namespace RHD\Rise\Includes;
 
-use RHD\Rise\Includes\ProfileNotification;
 use RHD\Rise\Core\Utils;
+use RHD\Rise\Includes\ProfileNotification;
 
 /**
  * Registers GraphQL queries.
@@ -38,9 +38,9 @@ class GraphQLQueries {
 	 * @return array The modified allowed fields.
 	 */
 	public function require_authentication_allowed_fields( $allowed ) {
-		$allowed[] = 'loginWithCookiesAndReCaptcha';
-		$allowed[] = 'sendPasswordResetEmailWithReCaptcha';
-		$allowed[] = 'registerUserWithReCaptcha';
+		$allowed[] = 'loginWithCookies'; // TODO check if we need this since it's a built-in mutation
+		$allowed[] = 'sendPasswordResetEmail'; // TODO check if we need this since it's a built-in mutation
+		$allowed[] = 'registerUser'; // TODO check if we need this since it's a built-in mutation
 		$allowed[] = 'resetUserPasswordMutation';
 
 		return $allowed;

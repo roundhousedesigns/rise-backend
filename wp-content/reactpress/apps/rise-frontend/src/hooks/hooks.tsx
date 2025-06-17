@@ -113,12 +113,6 @@ export const useErrorMessage = (errorCode?: string, defaultMessage: string = 'Er
 		case 'unspecified_create_user_error':
 			return 'Something went wrong. Please try again.';
 
-		// ReCAPTCHA errors
-		case 'recaptcha_error':
-		case 'no_recaptcha_token':
-		case 'bad_recaptcha_token':
-			return 'reCAPTCHA error.';
-
 		// Change profile slug errors
 		case 'user_not_found':
 			return 'There was an error updating your profile URL. Please contact support.';

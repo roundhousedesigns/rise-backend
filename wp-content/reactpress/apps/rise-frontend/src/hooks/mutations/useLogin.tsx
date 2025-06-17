@@ -6,17 +6,6 @@ import { gql, useMutation } from '@apollo/client';
 import { LoginInput } from '@lib/types';
 import { QUERY_VIEWER } from '@queries/useViewer';
 
-// CAPTCHA LOGIN DISABLED FOR NOW
-// const MUTATE_LOGIN = gql`
-// 	mutation Login($login: String!, $password: String!, $reCaptchaToken: String!) {
-// 		loginWithCookiesAndReCaptcha(
-// 			input: { login: $login, password: $password, reCaptchaToken: $reCaptchaToken }
-// 		) {
-// 			status
-// 		}
-// 	}
-// `;
-
 const MUTATE_LOGIN = gql`
 	mutation Login($login: String!, $password: String!) {
 		loginWithCookies(input: { login: $login, password: $password }) {

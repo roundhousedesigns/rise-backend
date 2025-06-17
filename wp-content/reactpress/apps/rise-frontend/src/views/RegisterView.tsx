@@ -1,28 +1,26 @@
 import {
-    Box,
-    Button,
-    chakra,
-    Checkbox,
-    Divider,
-    Flex,
-    FormControl,
-    Heading,
-    Link,
-    Spinner,
-    Stack,
-    useMediaQuery,
-    useToast,
+	Box,
+	Button,
+	chakra,
+	Checkbox,
+	Divider,
+	Flex,
+	FormControl,
+	Heading,
+	Link,
+	Spinner,
+	Stack,
+	useMediaQuery,
+	useToast,
 } from '@chakra-ui/react';
 import BackToLoginButton from '@common/BackToLoginButton';
 import TextInput from '@common/inputs/TextInput';
 import RequiredAsterisk from '@common/RequiredAsterisk';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
 import { RegisterUserInput } from '@lib/types';
-import { handleReCaptchaVerify } from '@lib/utils';
 import useRegisterUser from '@mutations/useRegisterUser';
 import usePageById from '@queries/usePageById';
 import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 export default function RegisterView() {
@@ -32,7 +30,6 @@ export default function RegisterView() {
 		lastName: '',
 		password: '',
 		confirmPassword: '',
-		reCaptchaToken: '',
 	});
 	const { email, firstName, lastName, password, confirmPassword } = userFields;
 	const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
@@ -44,8 +41,6 @@ export default function RegisterView() {
 	const [page, { pageLoading, pageError }] = usePageById(576);
 
 	const passwordStrength = useValidatePassword(password);
-
-	const { executeRecaptcha } = useGoogleReCaptcha();
 
 	const [isLargerThanMd] = useMediaQuery('(min-width: 48rem)');
 
@@ -106,28 +101,21 @@ export default function RegisterView() {
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		handleReCaptchaVerify({ label: 'registerUser', executeRecaptcha }).then((token) => {
-			if (!token) {
-				setErrorCode('recaptcha_error');
-				return;
-			}
-
-			registerUserMutation({ ...userFields, reCaptchaToken: token })
-				.then(() => {
-					toast({
-						title: 'Account created!',
-						description: 'Please check your inbox for confirmation.',
-						status: 'success',
-						duration: 3000,
-						isClosable: true,
-						position: 'bottom',
-					});
-				})
-				.then(() => {
-					navigate('/login');
-				})
-				.catch((errors: { message: SetStateAction<string> }) => setErrorCode(errors.message));
-		});
+		registerUserMutation({ ...userFields })
+			.then(() => {
+				toast({
+					title: 'Account created!',
+					description: 'Please check your inbox for confirmation.',
+					status: 'success',
+					duration: 3000,
+					isClosable: true,
+					position: 'bottom',
+				});
+			})
+			.then(() => {
+				navigate('/login');
+			})
+			.catch((errors: { message: SetStateAction<string> }) => setErrorCode(errors.message));
 	};
 
 	return (

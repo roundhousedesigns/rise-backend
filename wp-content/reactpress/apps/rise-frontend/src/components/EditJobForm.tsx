@@ -26,10 +26,6 @@ import usePositions from '@queries/usePositions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// TODO implement recaptcha
-// import { executeRecaptcha } from '@hooks/useGoogleReCaptcha';
-// import { handleReCaptchaVerify } from '@lib/utils';
-
 interface EditJobFormProps {
 	initialData?: JobPostOutput;
 }

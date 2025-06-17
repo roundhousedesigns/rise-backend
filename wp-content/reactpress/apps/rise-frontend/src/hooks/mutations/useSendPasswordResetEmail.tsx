@@ -18,19 +18,12 @@ const MUTATE_SEND_PASSWORD_RESET = gql`
 const useSendPasswordResetEmail = () => {
 	const [mutation, results] = useMutation(MUTATE_SEND_PASSWORD_RESET);
 
-	const sendPasswordResetEmailMutation = ({
-		username,
-		reCaptchaToken,
-	}: {
-		username: string;
-		reCaptchaToken: string;
-	}) => {
+	const sendPasswordResetEmailMutation = ({ username }: { username: string }) => {
 		return mutation({
 			variables: {
 				input: {
 					clientMutationId: 'sendPasswordResetEmailMutation',
 					username,
-					reCaptchaToken,
 				},
 			},
 		});
