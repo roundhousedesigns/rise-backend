@@ -14,6 +14,7 @@ with 1.1.1.
   - Payment via WooCommerce
   - Auto expiration 30 days after `pending` -> `publish`
 - Add: RSS Feed component!
+- Add: Organization profile toggle
 - Change: Move Search Drawer to a dedicated route `/search`
 - Change: New Dashboard!
 - Improve: Profile layout shifts

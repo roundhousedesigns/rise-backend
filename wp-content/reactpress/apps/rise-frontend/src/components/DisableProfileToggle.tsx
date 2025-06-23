@@ -55,7 +55,7 @@ export default function DisableProfileToggle({
 			id='disableProfile'
 			checked={!!disableProfile}
 			callback={handleToggleDisableProfile}
-			label={`Privacy ${disableProfile ? 'On' : 'Off'}`}
+			label={`Personal privacy ${disableProfile ? 'On' : 'Off'}`}
 			iconRight={FiEyeOff}
 			iconLeft={FiEye}
 			size={size}
