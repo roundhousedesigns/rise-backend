@@ -108,6 +108,7 @@ export const hasProfileChanged = (editProfile: UserProfile, origProfile: UserPro
 	if (origProfile === null) return false;
 
 	const ignoreFields = [
+		'isOrg',
 		'credits',
 		'conflictRanges',
 		'slug',

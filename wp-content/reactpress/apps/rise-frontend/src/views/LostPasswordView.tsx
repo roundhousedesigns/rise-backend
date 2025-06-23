@@ -3,16 +3,14 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import TextInput from '@common/inputs/TextInput';
+import Turnstile from '@common/Turnstile';
 import { useErrorMessage } from '@hooks/hooks';
-import { Turnstile } from '@marsidev/react-turnstile';
 import useSendPasswordResetEmail from '@mutations/useSendPasswordResetEmail';
 
 export default function LoginView() {
 	const [username, setUsername] = useState<string>('');
 	const [errorCode, setErrorCode] = useState<string>('');
 	const [turnstileStatus, setTurnstileStatus] = useState<'error' | 'expired' | 'solved' | ''>('');
-
-	const { VITE_TURNSTILE_SITE_KEY } = import.meta.env;
 
 	const {
 		sendPasswordResetEmailMutation,
@@ -74,7 +72,6 @@ export default function LoginView() {
 						/>
 
 						<Turnstile
-							siteKey={VITE_TURNSTILE_SITE_KEY}
 							onError={() => setTurnstileStatus('error')}
 							onExpire={() => setTurnstileStatus('expired')}
 							onSuccess={() => setTurnstileStatus('solved')}

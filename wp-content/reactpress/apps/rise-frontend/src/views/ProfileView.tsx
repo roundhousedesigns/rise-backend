@@ -373,7 +373,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						) : null}
 
 						{partnerDirectories && partnerDirectories.length > 0 && partnerDirectoryTerms ? (
-							<ProfileStackItem title='RISE Network Partner Directories'>
+							<ProfileStackItem title='RISE Partner Directories'>
 								<Flex alignItems='center' flexWrap='nowrap' justifyContent='space-between'>
 									<Icon as={FiStar} boxSize={4} flex='0 0 auto' />
 									<Wrap flex='1' pl={2} spacing={2}>

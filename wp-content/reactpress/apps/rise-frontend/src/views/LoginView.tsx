@@ -14,18 +14,17 @@ import {
 	Icon,
 	IconButton,
 	Link,
-	Spacer,
 	Stack,
 	Text,
 	chakra,
 	useDisclosure,
-	useMediaQuery,
+	useMediaQuery
 } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
+import Turnstile from '@common/Turnstile';
 import { useErrorMessage } from '@hooks/hooks';
 import { LoginInput } from '@lib/types';
 import { decodeString } from '@lib/utils';
-import { Turnstile } from '@marsidev/react-turnstile';
 import useLogin from '@mutations/useLogin';
 import PageContent from '@views/PageContent';
 import { ChangeEvent, FormEvent, useState } from 'react';
@@ -39,7 +38,7 @@ interface Props {
 }
 
 export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
-	const { VITE_TURNSTILE_SITE_KEY } = import.meta.env;
+	const { VITE_DEV_MODE } = import.meta.env;
 
 	const [credentials, setCredentials] = useState<LoginInput>({
 		login: '',
@@ -127,7 +126,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 
 								<Box mt={2}>
 									<Turnstile
-										siteKey={VITE_TURNSTILE_SITE_KEY}
 										onError={() => setTurnstileStatus('error')}
 										onExpire={() => setTurnstileStatus('expired')}
 										onSuccess={() => setTurnstileStatus('solved')}
@@ -141,13 +139,11 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 									mt={2}
 									flexWrap='wrap'
 								>
-									{turnstileStatus === 'solved' ? (
+									{turnstileStatus === 'solved' || VITE_DEV_MODE ? (
 										<Button type='submit' colorScheme='blue' px={6} isLoading={!!submitLoading}>
 											Sign In
 										</Button>
-									) : (
-										<Spacer />
-									)}
+									) : null}
 									<Link as={RouterLink} to='/lost-password' fontSize='sm' my={0}>
 										Lost your password?
 									</Link>

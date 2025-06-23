@@ -589,7 +589,7 @@
 					$filtered = array_filter( $users, function ( $user ) {
 						$pod = pods( 'user', $user->ID );
 
-						return $pod->field( 'disable_profile' ) !== '1' ? true : false;
+						return $pod->field( 'disable_profile' ) !== '1' && $pod->field( 'is_org' ) !== '1' ? true : false;
 					} );
 
 					return $filtered;

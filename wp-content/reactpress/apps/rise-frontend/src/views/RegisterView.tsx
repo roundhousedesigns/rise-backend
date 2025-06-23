@@ -16,9 +16,9 @@ import {
 import BackToLoginButton from '@common/BackToLoginButton';
 import TextInput from '@common/inputs/TextInput';
 import RequiredAsterisk from '@common/RequiredAsterisk';
+import Turnstile from '@common/Turnstile';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
 import { RegisterUserInput } from '@lib/types';
-import { Turnstile } from '@marsidev/react-turnstile';
 import useRegisterUser from '@mutations/useRegisterUser';
 import usePageById from '@queries/usePageById';
 import parse from 'html-react-parser';
@@ -26,6 +26,8 @@ import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'rea
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 export default function RegisterView() {
+	const { VITE_DEV_MODE } = import.meta.env;
+
 	const [userFields, setUserFields] = useState<RegisterUserInput>({
 		email: '',
 		firstName: '',
@@ -99,8 +101,6 @@ export default function RegisterView() {
 	const navigate = useNavigate();
 	const toast = useToast();
 	const errorMessage = useErrorMessage(errorCode);
-
-	const { VITE_TURNSTILE_SITE_KEY } = import.meta.env;
 
 	const [turnstileStatus, setTurnstileStatus] = useState<'error' | 'expired' | 'solved' | ''>('');
 
@@ -273,13 +273,12 @@ export default function RegisterView() {
 						</FormControl>
 
 						<Turnstile
-							siteKey={VITE_TURNSTILE_SITE_KEY}
 							onError={() => setTurnstileStatus('error')}
 							onExpire={() => setTurnstileStatus('expired')}
 							onSuccess={() => setTurnstileStatus('solved')}
 						/>
 
-						{turnstileStatus === 'solved' && (
+						{turnstileStatus === 'solved' || VITE_DEV_MODE ? (
 							<Button
 								type='submit'
 								colorScheme='orange'
@@ -290,7 +289,7 @@ export default function RegisterView() {
 							>
 								Create account
 							</Button>
-						)}
+						) : null}
 					</Box>
 					{!isLargerThanMd && <BackToLoginButton width='full' justifyContent='flex-end' />}
 				</Flex>

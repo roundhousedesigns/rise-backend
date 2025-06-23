@@ -3,7 +3,7 @@ import ToggleOptionSwitch from '@common/ToggleOptionSwitch';
 import useToggleIsOrg from '@mutations/useToggleIsOrg';
 import useViewer from '@queries/useViewer';
 import { useEffect } from 'react';
-import { FiBriefcase, FiSmile } from 'react-icons/fi';
+import { FiBriefcase, FiUser } from 'react-icons/fi';
 
 interface Props {
 	size?: string;
@@ -53,9 +53,9 @@ export default function IsOrgToggle({
 			id='isOrg'
 			checked={!!isOrg}
 			callback={handleToggleIsOrg}
-			label={`This profile is for an organization.`}
+			label={`Company`}
 			iconRight={FiBriefcase}
-			iconLeft={FiSmile}
+			iconLeft={FiUser}
 			size={size}
 			loading={loading}
 			showLabel={showLabel}
@@ -70,12 +70,12 @@ const Description = ({ isOrg }: { isOrg: boolean }) => {
 	return (
 		<Text as='span' lineHeight='shorter' fontSize='xs'>
 			{isOrg ? (
-				<Highlight query={['organization']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
-					Your profile is set up for an organization.
+				<Highlight query={['company']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
+					This is a company profile.
 				</Highlight>
 			) : (
-				<Highlight query={['person']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
-					Your profile is set up for a person.
+				<Highlight query={['personal']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
+					This is a personal profile
 				</Highlight>
 			)}
 		</Text>

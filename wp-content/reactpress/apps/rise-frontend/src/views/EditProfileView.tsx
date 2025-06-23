@@ -778,6 +778,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 					)}
 				</Box>
 			</Box>
+
 			{!isOrg && (
 				<Card>
 					<Box>
@@ -945,14 +946,16 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 								</AccordionButton>
 							</Heading>
 							<AccordionPanel>
-								<Flex justifyContent='flex-start' gap={4}>
-									<Card py={2} my={0}>
-										<DisableProfileToggle showHelperText showLabel />
-									</Card>
+								<Stack gap={2}>
+									{!isOrg && (
+										<Card py={2} my={0}>
+											<DisableProfileToggle showHelperText showLabel />
+										</Card>
+									)}
 									<Card py={2} my={0}>
 										<IsOrgToggle showHelperText showLabel />
 									</Card>
-								</Flex>
+								</Stack>
 							</AccordionPanel>
 						</AccordionItem>
 					</Accordion>
