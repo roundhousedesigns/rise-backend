@@ -6,14 +6,11 @@ import { gql, useMutation } from '@apollo/client';
 import { RegisterUserInput } from '@lib/types';
 
 const MUTATE_REGISTER_USER = gql`
-	mutation RegisterUserMutation(
-		$input: RegisterUserWithReCaptchaInput = { reCaptchaToken: "", username: "" }
-	) {
-		registerUserWithReCaptcha(input: $input) {
+	mutation RegisterUserMutation($input: RegisterUserInput = { username: "" }) {
+		registerUser(input: $input) {
 			user {
 				databaseId
 			}
-			clientMutationId
 		}
 	}
 `;
@@ -22,7 +19,7 @@ const useRegisterUser = () => {
 	const [mutation, results] = useMutation(MUTATE_REGISTER_USER);
 
 	const registerUserMutation = (user: RegisterUserInput) => {
-		const { email, firstName, lastName, password, confirmPassword, reCaptchaToken } = user;
+		const { email, firstName, lastName, password, confirmPassword } = user;
 
 		if (password !== confirmPassword) {
 			throw new Error('Passwords do not match');
@@ -36,7 +33,6 @@ const useRegisterUser = () => {
 					lastName,
 					firstName,
 					password,
-					reCaptchaToken,
 				},
 			},
 		});

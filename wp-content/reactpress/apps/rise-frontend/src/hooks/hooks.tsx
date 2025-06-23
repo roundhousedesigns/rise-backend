@@ -113,12 +113,6 @@ export const useErrorMessage = (errorCode?: string, defaultMessage: string = 'Er
 		case 'unspecified_create_user_error':
 			return 'Something went wrong. Please try again.';
 
-		// ReCAPTCHA errors
-		case 'recaptcha_error':
-		case 'no_recaptcha_token':
-		case 'bad_recaptcha_token':
-			return 'reCAPTCHA error.';
-
 		// Change profile slug errors
 		case 'user_not_found':
 			return 'There was an error updating your profile URL. Please contact support.';
@@ -197,8 +191,6 @@ export const useSavedSearchFiltersChanged = (): boolean => {
  *
  * @param {number} profileId - The ID of the user's profile to calculate completion for.
  * @return {number} The completion percentage of the user's profile, as a whole number between 0 and 100.
- *
- * @todo Unimplemented.
  */
 export const useProfileCompletion = (profileId: number | null): number => {
 	const [profile] = useUserProfile(profileId);

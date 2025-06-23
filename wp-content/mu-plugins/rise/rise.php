@@ -15,28 +15,41 @@
 if ( !defined( 'WPINC' ) ) {
 	die;
 }
-
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.2-network-partners' );
+define( 'RISE_VERSION', '1.2-autoloader' );
+
+/**
+ * Define the plugin directory.
+ */
+define( 'RISE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+/**
+ * Load Composer autoloader with error handling.
+ */
+function rise_load_autoloader() {
+	$autoloader_path = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
+	require_once $autoloader_path;
+}
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-rise-activator.php
+ * This action is documented in src/Core/Activator.php
  */
 function activate_rise() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-rise-activator.php';
-	Rise_Activator::activate();
+	rise_load_autoloader();
+	\RHD\Rise\Core\Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-rise-deactivator.php
+ * This action is documented in src/Core/Deactivator.php
  */
 function deactivate_rise() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-rise-deactivator.php';
-	Rise_Deactivator::deactivate();
+	rise_load_autoloader();
+	\RHD\Rise\Core\Deactivator::deactivate();
 }
 
 /**
@@ -46,30 +59,9 @@ register_activation_hook( __FILE__, 'activate_rise' );
 register_deactivation_hook( __FILE__, 'deactivate_rise' );
 
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
+ * Load Composer autoloader for classes and standalone files.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-rise.php';
-
-/**
- * Functions.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/functions.php';
-
-/**
- * Backwards compatibility.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/deprecated.php';
-
-/**
- * Utilities and helpers.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/utils.php';
-
-/**
- * Shortcodes.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
+rise_load_autoloader();
 
 /**
  * Begins execution of the plugin.
@@ -81,7 +73,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
  * @since    0.1.0
  */
 function run_rise() {
-	$plugin = new Rise();
+	$plugin = new \RHD\Rise\Core\Rise();
 	$plugin->run();
 
 	// Add filters for job post admin views

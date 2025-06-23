@@ -232,3 +232,27 @@ export function toggleArrayItem(array: any[], item: any): any[] {
  * @returns string The user profile URL prefix with trailing slash.
  */
 export const getProfilePrefix = (): string => `${VITE_FRONTEND_URL}/profile/`;
+
+/**
+ * Handle reCAPTCHA verification.
+ *
+ * @deprecated 1.2 Use the Turnstile library instead.
+ * @param {label} The label for the reCAPTCHA.
+ * @param {executeRecaptcha} The reCAPTCHA execution function.
+ * @returns The reCAPTCHA token (Promise)
+ */
+export async function handleReCaptchaVerify({
+	label,
+	executeRecaptcha,
+}: {
+	label: string;
+	executeRecaptcha: ((action?: string | undefined) => Promise<string>) | undefined;
+}): Promise<string | undefined> {
+	if (!executeRecaptcha) {
+		return;
+	}
+
+	const token = await executeRecaptcha(label);
+
+	return token;
+}

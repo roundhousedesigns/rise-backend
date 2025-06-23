@@ -26,10 +26,6 @@ import usePositions from '@queries/usePositions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// TODO implement recaptcha
-// import { executeRecaptcha } from '@hooks/useGoogleReCaptcha';
-// import { handleReCaptchaVerify } from '@lib/utils';
-
 interface EditJobFormProps {
 	initialData?: JobPostOutput;
 }
@@ -232,12 +228,6 @@ export default function EditJobForm({ initialData }: EditJobFormProps) {
 			setFormData((prev) => ({
 				...prev,
 				[name]: (e.target as HTMLInputElement).checked,
-			}));
-		} else if (type === 'date') {
-			// Ensure date is in YYYY-MM-DD format
-			setFormData((prev) => ({
-				...prev,
-				[name]: value,
 			}));
 		} else {
 			setFormData((prev) => ({

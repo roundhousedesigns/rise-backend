@@ -61,9 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			var header = target;
 			var table = header.closest("table");
 			var columnIndex = Array.from(header.parentNode.cells).indexOf(header);
-			var sortDirection = header.dataset.sortDir;
 
-			sortDirection = toggleSortDirection(header); // Toggle the sort direction and get the updated value
+			var sortDirection = toggleSortDirection(header); // Get the new sort direction directly
 
 			sortTable(table, columnIndex, sortDirection);
 		}
