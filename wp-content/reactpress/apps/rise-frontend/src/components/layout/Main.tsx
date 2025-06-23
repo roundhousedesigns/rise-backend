@@ -1,10 +1,10 @@
-import { Box, BoxProps, Text, chakra } from '@chakra-ui/react';
+import { Box, BoxProps } from '@chakra-ui/react';
 import ProfileNotices from '@common/ProfileNotices';
 import LoggedIn from '@components/LoggedIn';
-import DevMode from '@dev/DevMode';
 import Dashboard from '@routes/Dashboard';
 import EditJobPost from '@routes/EditJobPost';
 import EditProfile from '@routes/EditProfile';
+import FollowedProfiles from '@routes/FollowedProfiles';
 import JobPost from '@routes/JobPost';
 import JobPosts from '@routes/JobPosts';
 import Login from '@routes/Login';
@@ -17,7 +17,6 @@ import ResetPassword from '@routes/ResetPassword';
 import Results from '@routes/Results';
 import SavedSearches from '@routes/SavedSearches';
 import Settings from '@routes/Settings';
-import FollowedProfiles from '@routes/FollowedProfiles';
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import pkgJSON from '@@/package.json';
@@ -165,32 +164,6 @@ export default function Main({ ...props }: BoxProps) {
 			<ProfileNotices />
 
 			<Box px={2}>{routes}</Box>
-
-			<DevMode>
-				<Box
-					textAlign='center'
-					m={0}
-					px={0}
-					bgColor='whiteAlpha.500'
-					color='text.light'
-					opacity={0.3}
-					lineHeight='shorter'
-					fontSize='2xs'
-					position='fixed'
-					bottom={0}
-					left={0}
-					right={0}
-					borderTop='1px solid var(--chakra-colors-bg-dark)'
-					zIndex={1000}
-				>
-					<Text my={0.5}>
-						{`Development Branch: `}
-						<chakra.span as={chakra.code} pl={1}>
-							{__APP_VERSION__}
-						</chakra.span>
-					</Text>
-				</Box>
-			</DevMode>
 		</Box>
 	);
 }

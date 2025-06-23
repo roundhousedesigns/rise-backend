@@ -18,7 +18,7 @@ import {
 	Text,
 	chakra,
 	useDisclosure,
-	useMediaQuery
+	useMediaQuery,
 } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
 import Turnstile from '@common/Turnstile';
