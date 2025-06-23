@@ -176,6 +176,7 @@ export interface RegisterUserInput {
 	lastName: string;
 	password: string;
 	confirmPassword: string;
+	isOrg: boolean;
 }
 
 /**

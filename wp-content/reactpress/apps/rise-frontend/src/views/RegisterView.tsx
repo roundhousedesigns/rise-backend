@@ -24,6 +24,8 @@ import usePageById from '@queries/usePageById';
 import parse from 'html-react-parser';
 import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import ToggleOptionSwitch from '../components/common/ToggleOptionSwitch';
+import { FiBriefcase, FiUser } from 'react-icons/fi';
 
 export default function RegisterView() {
 	const { VITE_DEV_MODE } = import.meta.env;
@@ -34,8 +36,9 @@ export default function RegisterView() {
 		lastName: '',
 		password: '',
 		confirmPassword: '',
+		isOrg: false,
 	});
-	const { email, firstName, lastName, password, confirmPassword } = userFields;
+	const { email, firstName, lastName, password, confirmPassword, isOrg } = userFields;
 	const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
 	const [ofAge, setOfAge] = useState<boolean>(false);
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
@@ -142,6 +145,17 @@ export default function RegisterView() {
 				Create an account
 			</Heading>
 			<chakra.form onSubmit={handleSubmit}>
+				<ToggleOptionSwitch
+					checked={isOrg}
+					callback={() => setUserFields({
+						...userFields,
+						isOrg: !isOrg
+					})}
+					id='isOrg'
+					label='Company Profile'
+					iconRight={FiBriefcase}
+					iconLeft={FiUser}
+				/>
 				<Stack direction='row' spacing={6}>
 					<TextInput
 						value={firstName}

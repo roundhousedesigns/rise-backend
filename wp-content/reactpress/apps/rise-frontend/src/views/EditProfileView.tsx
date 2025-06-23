@@ -216,13 +216,6 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		return () => setErrorCode('');
 	});
 
-	const handleToggleIsOrg = () => {
-		editProfileDispatch({
-			type: 'UPDATE_BOOLEAN_INPUT',
-			payload: { name: 'isOrg', value: !isOrg },
-		});
-	};
-
 	/**
 	 * EditCredit Modal
 	 */
@@ -948,10 +941,12 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 							<AccordionPanel>
 								<Stack gap={2}>
 									{!isOrg && (
+										// Don't show this toggle if the user is a company.
 										<Card py={2} my={0}>
 											<DisableProfileToggle showHelperText showLabel />
 										</Card>
 									)}
+
 									<Card py={2} my={0}>
 										<IsOrgToggle showHelperText showLabel />
 									</Card>
@@ -1409,31 +1404,29 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 					</ProfileStackItem>
 				)}
 
-				{!isOrg && (
-					<ProfileStackItem title='About' centerlineColor='brand.orange'>
-						<>
-							<Heading variant='contentTitle'>{isOrg ? 'About' : 'Bio'}</Heading>
-							<Text my={2} fontSize='lg'>
-								Write a little. Write a lot. It's up to you!
-							</Text>
-							<TextareaInput
-								value={description}
-								name='description'
-								label='Bio'
-								labelHidden
-								mt={2}
-								mb={4}
-								onChange={handleInputChange}
-								inputProps={{
-									rows: 10,
-								}}
-								debounceTime={300}
-								onDebounceStart={() => handleDebounceStart('description')}
-								onDebounceEnd={() => handleDebounceEnd('description')}
-							/>
-						</>
-					</ProfileStackItem>
-				)}
+				<ProfileStackItem title='About' centerlineColor='brand.orange'>
+					<>
+						<Heading variant='contentTitle'>{isOrg ? 'About' : 'Bio'}</Heading>
+						<Text my={2} fontSize='lg'>
+							Write a little. Write a lot. It's up to you!
+						</Text>
+						<TextareaInput
+							value={description}
+							name='description'
+							label='Bio'
+							labelHidden
+							mt={2}
+							mb={4}
+							onChange={handleInputChange}
+							inputProps={{
+								rows: 10,
+							}}
+							debounceTime={300}
+							onDebounceStart={() => handleDebounceStart('description')}
+							onDebounceEnd={() => handleDebounceEnd('description')}
+						/>
+					</>
+				</ProfileStackItem>
 
 				{!isOrg && (
 					<ProfileStackItem title='Identity' centerlineColor='brand.yellow'>
