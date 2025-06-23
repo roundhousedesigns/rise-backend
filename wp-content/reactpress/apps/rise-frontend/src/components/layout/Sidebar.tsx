@@ -1,12 +1,4 @@
-import {
-	Box,
-	BoxProps,
-	Flex,
-	Icon,
-	IconButton,
-	List,
-	Text
-} from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Icon, IconButton, List, Text } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
@@ -16,7 +8,6 @@ import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { ReactNode, useContext } from 'react';
 import {
-	FiBriefcase,
 	FiChevronsLeft,
 	FiFolder,
 	FiHome,
@@ -93,7 +84,6 @@ export default function Sidebar({ ...props }: BoxProps) {
 			),
 			isDisabled: results.length === 0,
 		},
-		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' },
 		{
 			icon: (
 				<Icon
