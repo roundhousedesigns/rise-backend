@@ -54,7 +54,7 @@ class Frontend {
 	 * @since    0.1.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-public.css', [], $this->version, 'all' );
+		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-public.css', [], $this->version, 'all' );
 	}
 
 	/**
@@ -63,6 +63,6 @@ class Frontend {
 	 * @since    0.1.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-public.js', ['jquery'], $this->version, false );
+		// wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-public.js', ['jquery'], $this->version, false );
 	}
 }
