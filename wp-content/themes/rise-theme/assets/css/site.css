@@ -41,6 +41,15 @@
 	.spacer {
 		flex: 1;
 	}
+
+	.directory-link {
+		margin: 0;
+
+		.wp-block-button__link {
+			background-color: var(--wp--preset--color--blue);
+			font-size: var(--wp--preset--font-size--small);
+		}
+	}
 }
 
 .site-main {

@@ -29,11 +29,11 @@
 
 			<div class="spacer"></div>
 
-			<!-- <div class="directory-link wp-block-buttons">
+			<div class="directory-link wp-block-buttons">
 				<div class="wp-block-button">
 					<a href="<?php echo esc_url( home_url( '/directory' ) ); ?>" class="wp-block-button__link">Directory</a>
 				</div>
-			</div> -->
+			</div>
 
 			<button 
 				class="menu-toggle" 
