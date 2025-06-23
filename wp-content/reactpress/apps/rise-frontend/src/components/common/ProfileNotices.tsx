@@ -16,10 +16,7 @@ export default function ProfileNotices(): JSX.Element {
 
 	const { credits, isOrg } = profile;
 
-	return disableProfile ? (
-		// <ProfileNotice code='profile_disabled' status='warning' />
-		<></>
-	) : credits && credits.length < 1 && !isOrg ? (
+	return credits && credits.length < 1 && !isOrg ? (
 		<ProfileNotice code='no_credits' status='warning' />
 	) : (
 		<></>

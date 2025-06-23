@@ -81,7 +81,7 @@ export default function DashboardView() {
 			</GridItem>
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
 				{notices.length > 0 ? (
-					<Widget title='News' titleStyle='centerline'>
+					<Widget title='RISE News' titleStyle='centerline'>
 						<List>
 							{notices.map((notice: any) => (
 								<ListItem key={notice.id} my={0}>
@@ -92,7 +92,7 @@ export default function DashboardView() {
 					</Widget>
 				) : null}
 
-				<Widget title='Top News' titleStyle='centerline'>
+				<Widget title='Industry News' titleStyle='centerline'>
 					<DashboardRSSFeeds />
 				</Widget>
 			</GridItem>
