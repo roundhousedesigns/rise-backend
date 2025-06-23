@@ -16,7 +16,6 @@ namespace RHD\Rise\Includes;
 use GraphQL\Error\UserError;
 use RHD\Rise\Core\Utils;
 use RHD\Rise\Includes\Credit;
-use RHD\Rise\Includes\JobPost;
 use RHD\Rise\Includes\ProfileNotification;
 use RHD\Rise\Includes\UserProfile;
 use RHD\Rise\Includes\Users;
@@ -46,7 +45,6 @@ class GraphQLMutations {
 		$this->register_mutation__updateStarredProfiles();
 		$this->register_mutation__updateOrCreateSavedSearch();
 		$this->register_mutation__updateOrCreateConflictRange();
-		$this->register_mutation__updateOrCreateJobPost();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
 		$this->register_mutation__toggleUserOption( 'toggleIsOrg', 'is_org', 'updatedIsOrg' );
 		$this->register_mutation__markProfileNotificationAsRead();
@@ -981,97 +979,6 @@ class GraphQLMutations {
 					return [
 						'result' => true,
 					];
-				},
-			]
-		);
-	}
-
-	protected function register_mutation__updateOrCreateJobPost() {
-		\register_graphql_mutation(
-			'updateOrCreateJobPost',
-			[
-				'inputFields'         => [
-					'jobPost' => [
-						'type'        => 'JobPostInput',
-						'description' => __( 'The job post data to insert.', 'rise' ),
-					],
-				],
-				'outputFields'        => [
-					'updatedJobPost'     => [
-						'type'        => 'JobPostOutput',
-						'description' => __( 'The updated job post data.', 'rise' ),
-						'resolve'     => function ( $payload ) {
-							return $payload['updatedJobPost'];
-						},
-					],
-					'awaitingPayment'    => [
-						'type'        => 'Boolean',
-						'description' => __( 'Whether the job post is awaiting payment.', 'rise' ),
-					],
-					'wcCheckoutEndpoint' => [
-						'type'        => 'String',
-						'description' => __( 'The WooCommerce cart endpoint.', 'rise' ),
-					],
-				],
-				'mutateAndGetPayload' => function ( $input ) {
-					// We obfuscate the actual success of this mutation to prevent user enumeration.
-					$payload = [
-						'updatedJobPost'     => null,
-						'awaitingPayment'    => false,
-						'wcCheckoutEndpoint' => \esc_url_raw( \wc_get_checkout_url() ),
-					];
-
-					if ( !isset( $input['jobPost'] ) ) {
-						return [
-							'updatedJobPost' => new \WP_Error( 'no_job_post_data', __( 'No job post data provided.', 'rise' ) ),
-						];
-					}
-
-					$job_input_data = $input['jobPost'];
-
-					$job_post_product_id = 15695;
-
-					// Exit early if WooCommerce is not active.
-					if ( !class_exists( 'WC_Session' ) ) {
-						throw new \Error( 'WooCommerce is not active.' );
-					}
-
-					$job_post_defaults = [
-						'post_author' => get_current_user_id(),
-					];
-					$job_post_defaults['isNew'] = !isset( $job_input_data['id'] ) || !$job_input_data['id'];
-
-					if ( $job_post_defaults['isNew'] ) {
-						// Only force the status if the job post is new.
-						$job_post_defaults['status'] = 'pending';
-					}
-
-					// Create a new job post object
-					$job_post = new JobPost( array_merge( $job_input_data, $job_post_defaults ) );
-
-					// Store the job post in session so we can post it after payment is complete.
-					if ( $job_post_defaults['isNew'] ) {
-						WC()->session->set( 'new_job_post_awaiting_payment', $job_post );
-
-						$payload['updatedJobPost']  = $job_post->prepare_job_post_for_graphql();
-						$payload['awaitingPayment'] = true;
-
-						// Empty the cart and add the job post product to it.
-						WC()->cart->empty_cart();
-						WC()->cart->add_to_cart( $job_post_product_id );
-					} else {
-						// Update the job post if it already exists.
-						$result = $job_post->update_job_post();
-
-						if ( \is_wp_error( $result ) ) {
-							throw new UserError( esc_html( $result->get_error_message() ) );
-						}
-
-						$payload['updatedJobPost']  = $job_post->prepare_job_post_for_graphql();
-						$payload['awaitingPayment'] = false;
-					}
-
-					return $payload;
 				},
 			]
 		);
