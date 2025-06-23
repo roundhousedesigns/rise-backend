@@ -1,6 +1,7 @@
 import {
 	Box,
 	Button,
+	Card,
 	chakra,
 	Checkbox,
 	Divider,
@@ -23,9 +24,9 @@ import useRegisterUser from '@mutations/useRegisterUser';
 import usePageById from '@queries/usePageById';
 import parse from 'html-react-parser';
 import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
+import { FiBriefcase, FiUser } from 'react-icons/fi';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import ToggleOptionSwitch from '../components/common/ToggleOptionSwitch';
-import { FiBriefcase, FiUser } from 'react-icons/fi';
 
 export default function RegisterView() {
 	const { VITE_DEV_MODE } = import.meta.env;
@@ -37,8 +38,9 @@ export default function RegisterView() {
 		password: '',
 		confirmPassword: '',
 		isOrg: false,
+		orgName: '',
 	});
-	const { email, firstName, lastName, password, confirmPassword, isOrg } = userFields;
+	const { email, firstName, lastName, password, confirmPassword, isOrg, orgName } = userFields;
 	const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
 	const [ofAge, setOfAge] = useState<boolean>(false);
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
@@ -70,7 +72,8 @@ export default function RegisterView() {
 					passwordStrongEnough &&
 					passwordsMatch &&
 					ofAge &&
-					termsAccepted
+					termsAccepted &&
+					(!isOrg || (isOrg && !!orgName && orgName.length > 0))
 			);
 		setErrorCode('');
 	}, [
@@ -145,17 +148,36 @@ export default function RegisterView() {
 				Create an account
 			</Heading>
 			<chakra.form onSubmit={handleSubmit}>
-				<ToggleOptionSwitch
-					checked={isOrg}
-					callback={() => setUserFields({
-						...userFields,
-						isOrg: !isOrg
-					})}
-					id='isOrg'
-					label='Company Profile'
-					iconRight={FiBriefcase}
-					iconLeft={FiUser}
-				/>
+				<Card>
+					<ToggleOptionSwitch
+						checked={isOrg}
+						callback={() =>
+							setUserFields({
+								...userFields,
+								isOrg: !isOrg,
+							})
+						}
+						id='isOrg'
+						label='Company Profile'
+						iconRight={FiBriefcase}
+						iconLeft={FiUser}
+					/>
+				</Card>
+				{isOrg && (
+					<TextInput
+						value={orgName}
+						name='orgName'
+						isRequired
+						onChange={handleInputChange}
+						label='Organization name'
+						inputProps={{
+							size: 'xl',
+							autoComplete: 'organization-name',
+							tabIndex: 1,
+						}}
+					/>
+				)}
+
 				<Stack direction='row' spacing={6}>
 					<TextInput
 						value={firstName}
@@ -163,7 +185,7 @@ export default function RegisterView() {
 						isRequired
 						onChange={handleInputChange}
 						flex='1'
-						label='First name'
+						label={isOrg ? 'Contact first name' : 'First name'}
 						inputProps={{
 							size: 'xl',
 							autoComplete: 'given-name',
@@ -176,7 +198,7 @@ export default function RegisterView() {
 						isRequired
 						onChange={handleInputChange}
 						flex='1'
-						label='Last name'
+						label={isOrg ? 'Contact last name' : 'Last name'}
 						inputProps={{
 							size: 'xl',
 							autoComplete: 'family-name',

@@ -1170,37 +1170,52 @@ class GraphQLMutations {
 	 *
 	 * @return void
 	 */
-	public function add_isOrg_field_to_registerUser() {
+	public function add_fields_to_registerUser() {
 		register_graphql_field( 'RegisterUserInput', 'isOrg', [
 			'type'        => 'Boolean',
 			'description' => __( 'Whether the user is registering as an organization', 'rise' ),
 		] );
+
+		register_graphql_field( 'RegisterUserInput', 'orgName', [
+			'type'        => 'String',
+			'description' => __( 'The name of the organization.', 'rise' ),
+		] );
 	}
 
 	/**
-	 * Handle the isOrg field during user registration.
+	 * Handle organization-related fields during user registration.
 	 *
-	 * @param int    $user_id       The ID of the user being created/updated.
-	 * @param array  $input         The input data for the mutation.
-	 * @param string $mutation_name The name of the mutation being executed.
-	 * @param mixed  $context       The application context.
-	 * @param mixed  $info          The resolve info.
+	 * @param  int    $user_id       The ID of the user being created/updated.
+	 * @param  array  $input         The input data for the mutation.
+	 * @param  string $mutation_name The name of the mutation being executed.
+	 * @param  mixed  $context       The application context.
+	 * @param  mixed  $info          The resolve info.
 	 * @return void
 	 */
-	public function handle_registerUser_isOrg_field( $user_id, $input, $mutation_name, $context, $info ) {
+	public function handle_registerUser_org_fields( $user_id, $input, $mutation_name, $context, $info ) {
 		// Only handle registerUser mutation
 		if ( 'registerUser' !== $mutation_name ) {
 			return;
 		}
 
+		// Prepare fields to save
+		$fields_to_save = [];
+
 		// Check if isOrg field is provided in the input
 		if ( isset( $input['isOrg'] ) ) {
-			// Save the isOrg value as user meta using the Pods field
+			$fields_to_save['is_org'] = (bool) $input['isOrg'];
+		}
+
+		// Check if orgName field is provided in the input
+		if ( isset( $input['orgName'] ) ) {
+			$fields_to_save['org_name'] = sanitize_text_field( $input['orgName'] );
+		}
+
+		// Save the fields if any are provided
+		if ( !empty( $fields_to_save ) ) {
 			$pod = pods( 'user', $user_id );
 			if ( $pod ) {
-				$pod->save( [
-					'is_org' => (bool) $input['isOrg'],
-				] );
+				$pod->save( $fields_to_save );
 			}
 		}
 	}

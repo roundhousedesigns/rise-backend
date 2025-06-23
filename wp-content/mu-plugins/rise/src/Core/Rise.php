@@ -390,10 +390,10 @@ class Rise {
 		$plugin_gql_muts = new GraphQLMutations();
 
 		$this->loader->add_action( 'graphql_register_types', $plugin_gql_muts, 'register_mutations' );
-		
+
 		// Register registerUser mutation extensions
-		$this->loader->add_action( 'graphql_register_types', $plugin_gql_muts, 'add_isOrg_field_to_registerUser' );
-		$this->loader->add_action( 'graphql_user_object_mutation_update_additional_data', $plugin_gql_muts, 'handle_registerUser_isOrg_field', 10, 5 );
+		$this->loader->add_action( 'graphql_register_types', $plugin_gql_muts, 'add_fields_to_registerUser' );
+		$this->loader->add_action( 'graphql_user_object_mutation_update_additional_data', $plugin_gql_muts, 'handle_registerUser_org_fields', 10, 5 );
 	}
 
 	/**
