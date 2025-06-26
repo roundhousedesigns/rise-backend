@@ -41,7 +41,8 @@ export default function Sidebar({ ...props }: BoxProps) {
 
 	const handleLogout = () => {
 		logoutMutation().then(() => {
-			window.location.href = '/#/login?alert=You have logged out.';
+			localStorage.clear();
+			window.location.reload();
 		});
 	};
 

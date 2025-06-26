@@ -158,7 +158,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 
 								<Divider />
 
-								<Box textAlign='center' flex='1' mb={4}>
+								<Box textAlign='center' flex='1' mb={0}>
 									<Heading variant='pageSubtitle' fontSize='xl'>
 										Don't have an account?
 									</Heading>
@@ -178,8 +178,8 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 					</Box>
 				</Box>
 				{!isLargerThanMd ? <Divider my={0} /> : false}
-				<Box textAlign='center' flex='1' pb={2}>
-					<Stack textAlign='center' gap={6}>
+				<Box textAlign='center' flex='1' pb={{ base: 8, md: 2 }}>
+					<Stack textAlign='center' gap={4}>
 						<Heading as='h2' my={0} fontSize={{ base: '2xl', md: '3xl' }}>
 							<Highlight query={['project']} styles={{ bg: 'blue.200' }}>
 								Find your next project

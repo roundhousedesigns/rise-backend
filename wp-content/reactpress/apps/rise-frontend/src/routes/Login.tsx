@@ -2,13 +2,10 @@ import Shell from '@layout/Shell';
 import useViewer from '@queries/useViewer';
 import LoginView from '@views/LoginView';
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
 	const navigate = useNavigate();
-	const [params] = useSearchParams();
-	const alert = params.get('alert');
-	const alertStatus = params.get('alertStatus');
 
 	const [{ loggedInId }] = useViewer();
 
@@ -21,7 +18,7 @@ export default function Login() {
 
 	return (
 		<Shell title='Sign in to RISE' mx='auto'>
-			<LoginView alert={alert ? alert : ''} alertStatus={alertStatus ? alertStatus : ''} />
+			<LoginView />
 		</Shell>
 	);
 }
