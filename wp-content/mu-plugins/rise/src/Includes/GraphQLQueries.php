@@ -479,10 +479,6 @@ class GraphQLQueries {
 						'description' => \__( 'A list of `personal_identity` term ids', 'rise' ),
 						'type'        => ['list_of' => 'ID'],
 					],
-					'searchUserId'       => [
-						'description' => \__( 'The ID of the user performing the search', 'rise' ),
-						'type'        => 'ID',
-					],
 					'exclude'            => [
 						'description' => \__( 'Deprecate A list of user ids to exclude', 'rise' ),
 						'type'        => ['list_of' => 'ID'],

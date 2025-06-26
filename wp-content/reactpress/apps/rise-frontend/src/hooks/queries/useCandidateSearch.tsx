@@ -19,7 +19,6 @@ const QUERY_CANDIDATES = gql`
 		$genderIdentities: [ID] = []
 		$racialIdentities: [ID] = []
 		$personalIdentities: [ID] = []
-		$searchUserId: ID = ""
 	) {
 		filteredCandidates(
 			positions: $positions
@@ -30,7 +29,6 @@ const QUERY_CANDIDATES = gql`
 			genderIdentities: $genderIdentities
 			racialIdentities: $racialIdentities
 			personalIdentities: $personalIdentities
-			searchUserId: $searchUserId
 		) {
 			id: user_id
 			score

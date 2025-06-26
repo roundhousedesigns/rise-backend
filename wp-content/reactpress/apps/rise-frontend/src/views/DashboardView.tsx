@@ -26,7 +26,7 @@ export default function DashboardView() {
 			w='full'
 			maxW='6xl'
 		>
-			<GridItem as={Stack} spacing={6} id='dashboard-secondary'>
+			<GridItem as={Stack} spacing={6} id='dashboard-secondary' maxW={{ base: 'none', md: '300px' }}>
 				<Widget>
 					<ColorCascadeBox>
 						{profile ? (

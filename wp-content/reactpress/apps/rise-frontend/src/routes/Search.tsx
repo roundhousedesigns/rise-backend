@@ -66,7 +66,6 @@ export default function Search() {
 				racialIdentities: racialIdentities && racialIdentities.length > 0 ? racialIdentities : [],
 				personalIdentities:
 					personalIdentities && personalIdentities.length > 0 ? personalIdentities : [],
-				searchUserId: loggedInId,
 			},
 		})
 			.then(() => {

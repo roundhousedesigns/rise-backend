@@ -9,16 +9,16 @@ class Search {
 	 * Used by the frontend search filters, and by reporting functions.
 	 *
 	 * @param  array $args
-	 * @param  int   $user_id The user ID to exclude from the query (current user). Default 0.
 	 * @return int[] The user IDs.
 	 */
-	public static function search_and_filter_crew_members( $args, $user_id = 0 ) {
+	public static function search_and_filter_crew_members( $args ) {
 		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 
+		$user_id = get_current_user_id();
+
 		// Save args for future recall
-		if ( 0 !== $user_id ) {
-			Users::save_user_search_history( $user_id, $args );
-		}
+		// TODO Complete saved search history feature.
+		// Users::save_user_search_history( $user_id, $args );
 
 		$credit_filters = [
 			'position' => isset( $args['positions'] ) ? $args['positions'] : '',
@@ -86,7 +86,7 @@ class Search {
 		}
 
 		// Filter out authors with no name set, or no contact info.
-		$authors = array_filter( array_unique( $authors ), 'rise_remove_incomplete_profiles_from_search' );
+		$authors = array_filter( array_unique( $authors ), [self::class, 'remove_incomplete_profiles_from_search'] );
 
 		// Filter users by selected taxonomies.
 		$user_taxonomy_term_ids = [];
@@ -100,7 +100,9 @@ class Search {
 
 		return Users::query_users( $user_taxonomy_term_ids, $authors );
 	}
-// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+
+	// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+
 	/**
 	 * Filters out user profiles which don't have either a first or last name, or which have no contact information.
 	 *
