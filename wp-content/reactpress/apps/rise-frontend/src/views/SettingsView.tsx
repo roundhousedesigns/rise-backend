@@ -3,6 +3,7 @@ import DarkModeToggle from '@components/DarkModeToggle';
 import DisableProfileToggle from '@components/DisableProfileToggle';
 import { SettingsModal } from '@components/SettingsModal';
 import SettingsSection from '@components/SettingsSection';
+import IsOrgToggle from '@components/IsOrgToggle';
 import ChangeEmailView from '@views/ChangeEmailView';
 import ChangePasswordView from '@views/ChangePasswordView';
 import ChangeProfileSlugView from '@views/ChangeProfileSlugView';
@@ -37,6 +38,11 @@ export default function SettingsView() {
 
 	return (
 		<Container maxW='4xl' pl={0} mx={0}>
+			<SettingsSection title='Options'>
+				<DisableProfileToggle showHelperText={true} size='lg' />
+				<IsOrgToggle showHelperText={true} size='lg' />
+				<DarkModeToggle showHelperText={true} size='lg' />
+			</SettingsSection>
 			<SettingsSection title='Account'>
 				<Flex gap={2} flexWrap='wrap'>
 					<Box>
@@ -66,16 +72,10 @@ export default function SettingsView() {
 					</Box>
 				</Flex>
 			</SettingsSection>
-
-			<SettingsSection title='Options'>
-				<DisableProfileToggle showHelperText={true} size='lg' />
-				<DarkModeToggle showHelperText={true} size='lg' />
-			</SettingsSection>
-
 			<SettingsSection title='Profile'>
 				<ChangeProfileSlugView />
 			</SettingsSection>
-
+			account
 			<SettingsSection title='Close your account'>
 				<Text m={0}>
 					If you'd like to remove your account entirely and delete your data, please use the button

@@ -964,51 +964,54 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 						)}
 						<Stack flex='1' px={{ base: 0, md: 4 }} w='full'>
 							<ProfileStackItem title='Name'>
-								{isOrg ? (
+								<Flex alignItems='flex-end' gap={2} flexWrap='wrap' w='full'>
+									{isOrg && (
+										<TextInput
+											placeholder='Organization name'
+											flex='0 0 100%'
+											w='full'
+											value={orgName}
+											name='orgName'
+											label='Organization name'
+											onChange={handleInputChange}
+											debounceTime={300}
+											onDebounceStart={() => handleDebounceStart('orgName')}
+											onDebounceEnd={() => handleDebounceEnd('orgName')}
+										/>
+									)}
 									<TextInput
-										placeholder='Organization name'
-										value={orgName}
-										name='orgName'
-										label='Organization name'
+										placeholder='First'
+										value={firstName}
+										name='firstName'
+										isRequired
 										onChange={handleInputChange}
+										flex='1'
+										minW='200px'
+										label={isOrg ? 'Contact First Name' : 'First name'}
 										debounceTime={300}
-										onDebounceStart={() => handleDebounceStart('orgName')}
-										onDebounceEnd={() => handleDebounceEnd('orgName')}
+										onDebounceStart={() => handleDebounceStart('firstName')}
+										onDebounceEnd={() => handleDebounceEnd('firstName')}
 									/>
-								) : (
-									<Flex alignItems='flex-end' gap={2} flexWrap='wrap' w='full'>
-										<TextInput
-											placeholder='First'
-											value={firstName}
-											name='firstName'
-											isRequired
-											onChange={handleInputChange}
-											flex='1'
-											label='First name'
-											minW='200px'
-											debounceTime={300}
-											onDebounceStart={() => handleDebounceStart('firstName')}
-											onDebounceEnd={() => handleDebounceEnd('firstName')}
-										/>
-										<TextInput
-											placeholder='Last'
-											value={lastName}
-											name='lastName'
-											label='Last name'
-											isRequired
-											onChange={handleInputChange}
-											flex='1'
-											minW='200px'
-											debounceTime={300}
-											onDebounceStart={() => handleDebounceStart('lastName')}
-											onDebounceEnd={() => handleDebounceEnd('lastName')}
-										/>
+									<TextInput
+										placeholder='Last'
+										value={lastName}
+										name='lastName'
+										label={isOrg ? 'Contact Last Name' : 'Last name'}
+										isRequired
+										onChange={handleInputChange}
+										flex='1'
+										minW='200px'
+										debounceTime={300}
+										onDebounceStart={() => handleDebounceStart('lastName')}
+										onDebounceEnd={() => handleDebounceEnd('lastName')}
+									/>
+									{!isOrg && (
 										<TextInput
 											value={pronouns}
 											name='pronouns'
 											label='Pronouns'
 											onChange={handleInputChange}
-											maxW='150px'
+											flex='0 0 130px'
 											inputProps={{
 												size: 'md',
 												tabIndex: 0,
@@ -1017,8 +1020,8 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 											onDebounceStart={() => handleDebounceStart('pronouns')}
 											onDebounceEnd={() => handleDebounceEnd('pronouns')}
 										/>
-									</Flex>
-								)}
+									)}
+								</Flex>
 							</ProfileStackItem>
 							<ProfileStackItem title='Profession'>
 								<Flex alignItems='flex-start' gap={2} flexWrap='wrap' w='full' mt={4}>
@@ -1201,7 +1204,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 					<>
 						<Heading variant='contentSubtitle'>
 							{isOrg
-								? 'Select any areas in which you operate.'
+								? 'Select any areas in which you do business.'
 								: "Select any areas in which you're a local hire."}
 						</Heading>
 						<ProfileCheckboxGroup
@@ -1316,7 +1319,9 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 						<ProfileStackItem title='Partner Directories'>
 							<>
 								<Heading variant='contentSubtitle'>
-									Are you a member of one of our partner organizations?
+									{`Are you ${
+										isOrg ? 'affiliated with' : 'a member of'
+									} one of our partner organizations?`}
 								</Heading>
 								<Box fontSize='sm'>
 									<ProfileCheckboxGroup
@@ -1406,10 +1411,6 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 				<ProfileStackItem title='About' centerlineColor='brand.orange'>
 					<>
-						<Heading variant='contentTitle'>{isOrg ? 'About' : 'Bio'}</Heading>
-						<Text my={2} fontSize='lg'>
-							Write a little. Write a lot. It's up to you!
-						</Text>
 						<TextareaInput
 							value={description}
 							name='description'
@@ -1490,82 +1491,78 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 					</ProfileStackItem>
 				)}
 
-				{!isOrg && (
-					<ProfileStackItem title='Media' centerlineColor='brand.blue'>
-						<>
-							<Heading variant='contentSubtitle'>
-								Showcase your work with images and videos.
-							</Heading>
-							<Box>
-								<Heading variant='contentTitle'>Videos</Heading>
-								<SimpleGrid columns={[1, 2]} spacing={8}>
-									<Box>
-										<TextInput
-											value={mediaVideo1}
-											name='mediaVideo1'
-											label='Video embed 1'
-											placeholder='https://www.youtube.com/watch?v=M67E9mpwBpM'
-											leftElement={<FiVideo />}
-											onChange={handleInputChange}
-											debounceTime={300}
-											onDebounceStart={() => handleDebounceStart('mediaVideo1')}
-											onDebounceEnd={() => handleDebounceEnd('mediaVideo1')}
-										/>
-										{mediaVideo1 ? (
-											<Box position='relative' paddingBottom='56.25%' w='full'>
-												<Box position='absolute' top={0} left={0} width='100%' height='100%'>
-													<ReactPlayer url={mediaVideo1} controls width='100%' height='100%' />
-												</Box>
+				<ProfileStackItem title='Media' centerlineColor='brand.blue'>
+					<>
+						<Heading variant='contentSubtitle'>Showcase your work with images and videos.</Heading>
+						<Box>
+							<Heading variant='contentTitle'>Videos</Heading>
+							<SimpleGrid columns={[1, 2]} spacing={8}>
+								<Box>
+									<TextInput
+										value={mediaVideo1}
+										name='mediaVideo1'
+										label='Video embed 1'
+										placeholder='https://www.youtube.com/watch?v=M67E9mpwBpM'
+										leftElement={<FiVideo />}
+										onChange={handleInputChange}
+										debounceTime={300}
+										onDebounceStart={() => handleDebounceStart('mediaVideo1')}
+										onDebounceEnd={() => handleDebounceEnd('mediaVideo1')}
+									/>
+									{mediaVideo1 ? (
+										<Box position='relative' paddingBottom='56.25%' w='full'>
+											<Box position='absolute' top={0} left={0} width='100%' height='100%'>
+												<ReactPlayer url={mediaVideo1} controls width='100%' height='100%' />
 											</Box>
-										) : (
-											false
-										)}
-									</Box>
-									<Box>
-										<TextInput
-											value={mediaVideo2}
-											name='mediaVideo2'
-											label='Video embed 2'
-											placeholder='https://www.youtube.com/watch?v=eR8YUj3C9lI'
-											leftElement={<FiVideo />}
-											onChange={handleInputChange}
-											debounceTime={300}
-											onDebounceStart={() => handleDebounceStart('mediaVideo2')}
-											onDebounceEnd={() => handleDebounceEnd('mediaVideo2')}
-										/>
-										{mediaVideo2 ? (
-											<Box position='relative' paddingBottom='56.25%' w='full'>
-												<Box position='absolute' top={0} left={0} width='100%' height='100%'>
-													<ReactPlayer url={mediaVideo2} controls width='100%' height='100%' />
-												</Box>
+										</Box>
+									) : (
+										false
+									)}
+								</Box>
+								<Box>
+									<TextInput
+										value={mediaVideo2}
+										name='mediaVideo2'
+										label='Video embed 2'
+										placeholder='https://www.youtube.com/watch?v=eR8YUj3C9lI'
+										leftElement={<FiVideo />}
+										onChange={handleInputChange}
+										debounceTime={300}
+										onDebounceStart={() => handleDebounceStart('mediaVideo2')}
+										onDebounceEnd={() => handleDebounceEnd('mediaVideo2')}
+									/>
+									{mediaVideo2 ? (
+										<Box position='relative' paddingBottom='56.25%' w='full'>
+											<Box position='absolute' top={0} left={0} width='100%' height='100%'>
+												<ReactPlayer url={mediaVideo2} controls width='100%' height='100%' />
 											</Box>
-										) : (
-											false
-										)}
-									</Box>
-								</SimpleGrid>
-							</Box>
-							<Box mt={6}>
-								<Heading variant='contentTitle'>Images</Heading>
-								<Text fontSize='lg' mb={0}>
-									Allowed formats: jpg, png, gif, heic, or webp. 2MB or less, please.
-								</Text>
-								<Text variant='notice' fontSize='sm' fontStyle='italic' mb={4}>
-									* By uploading images to your RISE profile, you acknowledge that you own the
-									rights or are authorized to use these images as work samples.
-								</Text>
-								<SimpleGrid columns={[1, 2, 3]} spacing={8}>
-									<FileDropzone fieldName='mediaImage1' text='Image 1' />
-									<FileDropzone fieldName='mediaImage2' text='Image 2' />
-									<FileDropzone fieldName='mediaImage3' text='Image 3' />
-									<FileDropzone fieldName='mediaImage4' text='Image 4' />
-									<FileDropzone fieldName='mediaImage5' text='Image 5' />
-									<FileDropzone fieldName='mediaImage6' text='Image 6' />
-								</SimpleGrid>
-							</Box>
-						</>
-					</ProfileStackItem>
-				)}
+										</Box>
+									) : (
+										false
+									)}
+								</Box>
+							</SimpleGrid>
+						</Box>
+						<Box mt={6}>
+							<Heading variant='contentTitle'>Images</Heading>
+							<Text fontSize='lg' mb={0}>
+								Allowed formats: jpg, png, gif, heic, or webp. 2MB or less, please.
+							</Text>
+							<Text variant='notice' fontSize='sm' fontStyle='italic' mb={4}>
+								* By uploading images to your RISE profile, you acknowledge that you own the rights
+								or are authorized to use these images as work samples.
+							</Text>
+							<SimpleGrid columns={[1, 2, 3]} spacing={8}>
+								<FileDropzone fieldName='mediaImage1' text='Image 1' />
+								<FileDropzone fieldName='mediaImage2' text='Image 2' />
+								<FileDropzone fieldName='mediaImage3' text='Image 3' />
+								<FileDropzone fieldName='mediaImage4' text='Image 4' />
+								<FileDropzone fieldName='mediaImage5' text='Image 5' />
+								<FileDropzone fieldName='mediaImage6' text='Image 6' />
+							</SimpleGrid>
+						</Box>
+					</>
+				</ProfileStackItem>
 			</Stack>
 
 			<Slide

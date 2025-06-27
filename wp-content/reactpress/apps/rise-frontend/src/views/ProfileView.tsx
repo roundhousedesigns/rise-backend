@@ -341,31 +341,33 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						</Box>
 
 						{locations && locations.length > 0 ? (
-							<ProfileStackItem title='Works in'>
+							<ProfileStackItem title={isOrg ? 'Based in' : 'Works in'}>
 								<>
 									<WrapWithIcon icon={FiMapPin} mr={2}>
 										{locationTerms ? SelectedTerms({ ids: locations, terms: locationTerms }) : null}
 									</WrapWithIcon>
-									<WrapWithIcon icon={FiMap} mr={2}>
-										<Wrap>
-											{willTravel !== undefined && (
-												<Tag size='md' colorScheme={willTravel ? 'green' : 'orange'}>
-													{willTravel ? 'Will Travel' : 'Local Only'}
-												</Tag>
-											)}
-											{willTour !== undefined && (
-												<Tag size='md' colorScheme={willTour ? 'green' : 'orange'}>
-													{willTour ? 'Will Tour' : 'No Tours'}
-												</Tag>
-											)}
-										</Wrap>
-									</WrapWithIcon>
+									{!isOrg && (
+										<WrapWithIcon icon={FiMap} mr={2}>
+											<Wrap>
+												{willTravel !== undefined && (
+													<Tag size='md' colorScheme={willTravel ? 'green' : 'orange'}>
+														{willTravel ? 'Will Travel' : 'Local Only'}
+													</Tag>
+												)}
+												{willTour !== undefined && (
+													<Tag size='md' colorScheme={willTour ? 'green' : 'orange'}>
+														{willTour ? 'Will Tour' : 'No Tours'}
+													</Tag>
+												)}
+											</Wrap>
+										</WrapWithIcon>
+									)}
 								</>
 							</ProfileStackItem>
 						) : null}
 
 						{unions && unions.length > 0 && unionTerms ? (
-							<ProfileStackItem title='Unions/Guilds/Memberships'>
+							<ProfileStackItem title='Union/Guild/Member Affiliations'>
 								<WrapWithIcon icon={FiUser}>
 									{SelectedTerms({ ids: unions, terms: unionTerms })}
 								</WrapWithIcon>
