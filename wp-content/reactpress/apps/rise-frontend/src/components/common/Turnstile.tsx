@@ -9,7 +9,9 @@ interface Props {
 export default function TurnstileComponent({ onSuccess, onError, onExpire }: Props) {
 	const { VITE_TURNSTILE_SITE_KEY, VITE_DEV_MODE } = import.meta.env;
 
-	if (VITE_DEV_MODE) {
+	const devMode = VITE_DEV_MODE === 'true' || import.meta.env.MODE === '1';
+
+	if (devMode) {
 		return <div>Cloudflare Turnstile</div>;
 	}
 

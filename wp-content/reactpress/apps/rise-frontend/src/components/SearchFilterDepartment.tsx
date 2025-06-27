@@ -30,7 +30,7 @@ export default function SearchFilterDepartment() {
 		// Scroll to next section on selection
 		const nextSection = document.getElementById('filterJobs');
 		if (nextSection) {
-			nextSection.scrollIntoView({ behavior: 'smooth' });
+			nextSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 		}
 	};
 
