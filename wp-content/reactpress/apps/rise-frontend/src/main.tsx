@@ -13,7 +13,7 @@ import Fonts from '@theme/Fonts';
 import theme from '@theme/index';
 
 // Env vars
-const { VITE_BACKEND_URL, VITE_GA4_ID, VITE_TURNSTILE_SITE_KEY } = import.meta.env;
+const { VITE_BACKEND_URL, VITE_GA4_ID } = import.meta.env;
 
 // Initialize Google Analytics
 if (VITE_GA4_ID) ReactGA.initialize(VITE_GA4_ID);
