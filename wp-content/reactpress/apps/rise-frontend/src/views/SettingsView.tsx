@@ -1,9 +1,9 @@
 import { Box, Button, ButtonGroup, Container, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import DarkModeToggle from '@components/DarkModeToggle';
 import DisableProfileToggle from '@components/DisableProfileToggle';
+import IsOrgToggle from '@components/IsOrgToggle';
 import { SettingsModal } from '@components/SettingsModal';
 import SettingsSection from '@components/SettingsSection';
-import IsOrgToggle from '@components/IsOrgToggle';
 import ChangeEmailView from '@views/ChangeEmailView';
 import ChangePasswordView from '@views/ChangePasswordView';
 import ChangeProfileSlugView from '@views/ChangeProfileSlugView';
@@ -75,7 +75,6 @@ export default function SettingsView() {
 			<SettingsSection title='Profile'>
 				<ChangeProfileSlugView />
 			</SettingsSection>
-			account
 			<SettingsSection title='Close your account'>
 				<Text m={0}>
 					If you'd like to remove your account entirely and delete your data, please use the button
