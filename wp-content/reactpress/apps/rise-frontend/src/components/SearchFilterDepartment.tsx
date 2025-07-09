@@ -41,7 +41,7 @@ export default function SearchFilterDepartment() {
 	return !loading && !error ? (
 		<Box id='filterDepartment'>
 			<Heading as='h3' variant='searchFilterTitle' mb={4}>
-				{savedSearchId ? 'Browse' : 'Or, browse'} by department:
+				{savedSearchId ? 'Browse' : 'Or, browse manually'} by department:
 			</Heading>
 			<RadioGroup onChange={handleToggleTerm} value={departmentId} size='sm'>
 				<Wrap>

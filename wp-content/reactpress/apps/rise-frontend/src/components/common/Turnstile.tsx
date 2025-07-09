@@ -1,3 +1,4 @@
+import { Text } from '@chakra-ui/react';
 import { Turnstile } from '@marsidev/react-turnstile';
 
 interface Props {
@@ -11,10 +12,8 @@ export default function TurnstileComponent({ onSuccess, onError, onExpire }: Pro
 
 	const devMode = VITE_DEV_MODE === 'true' || import.meta.env.MODE === '1';
 
-	console.info(devMode);
-
 	if (devMode) {
-		return <div>Cloudflare Turnstile</div>;
+		return <Text color='brand.orange'>&mdash; Turnstile disabled in dev mode &mdash;</Text>;
 	}
 
 	return (

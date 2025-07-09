@@ -289,13 +289,13 @@ export const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): RSSFeed
 					error: null,
 				});
 			} catch (err) {
+				console.error('Error fetching RSS feed:', err);
+
 				setState({
 					posts: [],
 					loading: false,
 					error: 'Failed to load RSS feed',
 				});
-
-				console.error('Error fetching RSS feed:', err);
 			}
 		};
 

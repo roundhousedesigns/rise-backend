@@ -102,43 +102,38 @@ export default function SearchWizardView({ onSubmit }: Props) {
 							</Fade>
 							<Box>
 								<Stack gap={8}>
-									<Box>
-										<SearchFilterSection id='filterDepartment'>
+									<Box id='filterDepartment'>
+										<SearchFilterSection>
 											<SearchFilterDepartment />
 										</SearchFilterSection>
 									</Box>
-									<Fade in={!!departments.length} unmountOnExit>
-										<SearchFilterSection
-											id='filterJobs'
-											heading='What job(s) are you looking to fill?'
-										>
-											<SearchFilterJobs />
-										</SearchFilterSection>
-									</Fade>
+									<Box id='filterJobs'>
+										<Fade in={!!departments.length} unmountOnExit>
+											<SearchFilterSection heading='What job(s) are you looking to fill?'>
+												<SearchFilterJobs />
+											</SearchFilterSection>
+										</Fade>
+									</Box>
+									<Box id='filterSkills'>
+										<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
+											<SearchFilterSection heading='What skills are you looking for?'>
+												<SearchFilterSkills />
+											</SearchFilterSection>
+										</Fade>
+									</Box>
+									<Box id='filterDates'></Box>
 									<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
-										<SearchFilterSection
-											id='filterSkills'
-											heading='What skills are you looking for?'
-										>
-											<SearchFilterSkills />
-										</SearchFilterSection>
-									</Fade>
-									<Fade in={!!departments.length && !!jobs.length} unmountOnExit>
-										<SearchFilterSection
-											id='filterDates'
-											heading='Are you hiring for a particular date?'
-										>
+										<SearchFilterSection heading='Are you hiring for a particular date?'>
 											<SearchFilterDates />
 										</SearchFilterSection>
 									</Fade>
-									<Fade in={searchWizardActive && jobs && !!jobs.length} unmountOnExit>
-										<SearchFilterSection
-											id='filterAdditional'
-											heading='And some additional filters to refine your search:'
-										>
-											<AdditionalSearchFilters />
-										</SearchFilterSection>
-									</Fade>
+									<Box id='filterAdditional'>
+										<Fade in={searchWizardActive && jobs && !!jobs.length} unmountOnExit>
+											<SearchFilterSection heading='And some additional filters to refine your search:'>
+												<AdditionalSearchFilters />
+											</SearchFilterSection>
+										</Fade>
+									</Box>
 								</Stack>
 							</Box>
 						</Stack>

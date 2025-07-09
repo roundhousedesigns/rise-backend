@@ -5,6 +5,7 @@ import {
 	Card,
 	Flex,
 	Heading,
+	HeadingProps,
 	Icon,
 	Image,
 	Link,
@@ -53,6 +54,14 @@ interface Props {
 	profile: UserProfile;
 	allowStar?: boolean;
 }
+
+const ProfileHeading = ({ title, ...props }: { title: string } & HeadingProps) => {
+	return (
+		<Heading as='h1' size='xl' fontWeight='bold' lineHeight='none' {...props}>
+			{title}
+		</Heading>
+	);
+};
 
 /**
  * @param {UserProfile} profile The user profile data.
@@ -211,99 +220,102 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 	return profile ? (
 		<Stack direction='column' flexWrap='nowrap' gap={6}>
 			<ProfileStackItem as={Card} p={4} mt={2}>
-				{id && allowStar && !isLargerThanMd ? (
-					<StarToggleIcon id={id} mx={{ base: 0 }} borderRadius='md' size='lg' />
-				) : null}
 				<Flex
 					gap={6}
 					flexWrap={{ base: 'wrap', md: 'nowrap' }}
 					justifyContent={{ base: 'center', md: 'flex-start' }}
 				>
-					{isLargerThanMd ? (
-						<Stack direction='column' w='40%' minW='160px' maxW='400px' textAlign='center' gap={4}>
-							<ColorCascadeBox mb={3}>
-								{image ? (
-									<Image
-										src={image}
-										alt={`${profileName}'s picture`}
-										borderRadius='md'
-										loading='eager'
-										fit='cover'
-										w='full'
-										transform='translate(0, 0)'
-									/>
-								) : (
-									<Link as={RouterLink} to='/profile/edit' opacity={0.8} _hover={{ opacity: 1 }}>
-										<Tooltip
-											role='presentation'
-											label='Add a profile image'
-											placement='bottom'
-											bg={colorMode === 'dark' ? 'gray.700' : 'text.light'}
-											hasArrow
-										>
-											<Avatar size='superLg' src={''} name={''} mt={7} mb={5} mx={4} />
-										</Tooltip>
-									</Link>
-								)}
-							</ColorCascadeBox>
+					<Stack
+						direction='column'
+						w={isLargerThanMd ? '40%' : 'full'}
+						minW='160px'
+						maxW='400px'
+						textAlign='center'
+						gap={4}
+						mt={isLargerThanMd ? 0 : 10}
+					>
+						{!isLargerThanMd && <ProfileHeading title={profileName || ''} pt={4} mr={2} my={0} />}
 
-							{!socials.isEmpty() ? (
-								<PersonalIconLinks
-									socials={socials}
-									profileSlug={slug}
-									boxSize={10}
-									justifyContent='center'
+						<ColorCascadeBox mb={3}>
+							{image ? (
+								<Image
+									src={image}
+									alt={`${profileName}'s picture`}
+									borderRadius='md'
+									loading='eager'
+									fit='cover'
+									w='full'
+									transform='translate(0, 0)'
 								/>
-							) : null}
+							) : (
+								<Link as={RouterLink} to='/profile/edit' opacity={0.8} _hover={{ opacity: 1 }}>
+									<Tooltip
+										role='presentation'
+										label='Add a profile image'
+										placement='bottom'
+										bg={colorMode === 'dark' ? 'gray.700' : 'text.light'}
+										hasArrow
+									>
+										<Avatar size='superLg' src={''} name={''} mt={7} mb={5} mx={4} />
+									</Tooltip>
+								</Link>
+							)}
+						</ColorCascadeBox>
 
-							{email || phone || website ? (
-								<ProfileStackItem title='Contact'>
-									<List mt={0} spacing={1}>
-										{email ? (
-											<ListItem>
-												<LinkWithIcon href={`mailto:${email}`} icon={FiMail}>
-													{email}
-												</LinkWithIcon>
-											</ListItem>
-										) : null}
-										{phone ? (
-											<ListItem>
-												<LinkWithIcon href={`tel:${phone}`} icon={FiPhone}>
-													{phone}
-												</LinkWithIcon>
-											</ListItem>
-										) : null}
-										{website ? (
-											<ListItem>
-												<LinkWithIcon href={website} target='_blank' icon={FiExternalLink}>
-													Visit Website
-												</LinkWithIcon>
-											</ListItem>
-										) : null}
-									</List>
-								</ProfileStackItem>
-							) : null}
+						{!socials.isEmpty() ? (
+							<PersonalIconLinks
+								socials={socials}
+								profileSlug={slug}
+								boxSize={10}
+								justifyContent='center'
+							/>
+						) : null}
 
-							{conflictRanges.length ? (
-								<Card pb={0} _dark={{ bg: 'gray.600' }} _light={{ bg: 'gray.200' }}>
-									<Box>
-										<Heading as='h3' variant='contentTitle'>
-											Schedule Conflicts
-										</Heading>
-										<ConflictDateRanges my={4} conflictRanges={conflictRanges} />
-									</Box>
-								</Card>
-							) : null}
-						</Stack>
-					) : (
-						<Avatar size='superLg' src={image} name={profileName} />
-					)}
+						{email || phone || website ? (
+							<ProfileStackItem title='Contact'>
+								<List mt={0} spacing={1}>
+									{email ? (
+										<ListItem>
+											<LinkWithIcon href={`mailto:${email}`} icon={FiMail}>
+												{email}
+											</LinkWithIcon>
+										</ListItem>
+									) : null}
+									{phone ? (
+										<ListItem>
+											<LinkWithIcon href={`tel:${phone}`} icon={FiPhone}>
+												{phone}
+											</LinkWithIcon>
+										</ListItem>
+									) : null}
+									{website ? (
+										<ListItem>
+											<LinkWithIcon href={website} target='_blank' icon={FiExternalLink}>
+												Visit Website
+											</LinkWithIcon>
+										</ListItem>
+									) : null}
+								</List>
+							</ProfileStackItem>
+						) : null}
 
-					{id && allowStar && isLargerThanMd ? (
+						{conflictRanges.length ? (
+							<Card pb={0} _dark={{ bg: 'gray.600' }} _light={{ bg: 'gray.200' }}>
+								<Box>
+									<Heading as='h3' variant='contentTitle'>
+										Schedule Conflicts
+									</Heading>
+									<ConflictDateRanges my={4} conflictRanges={conflictRanges} />
+								</Box>
+							</Card>
+						) : null}
+					</Stack>
+
+					{id && allowStar ? (
 						<StarToggleIcon
 							id={id}
 							mx={{ base: 0 }}
-							borderRadius='md'
+							borderRadius='full'
 							size='lg'
 							pos='absolute'
 							top={2}
@@ -312,7 +324,6 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 					) : (
 						false
 					)}
-
 					<Stack direction='column' justifyContent='flex-start' gap={6} width='100%' lineHeight={1}>
 						<Box>
 							<Flex
@@ -321,9 +332,10 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 								flexWrap='wrap'
 								alignItems='flex-end'
 							>
-								<Heading as='h1' size='xl' pt={4} mr={2} my={0} fontWeight='bold' lineHeight='none'>
-									{profileName}
-								</Heading>
+								{isLargerThanMd && (
+									<ProfileHeading title={profileName || ''} pt={4} mr={2} my={0} />
+								)}
+
 								{!isOrg && pronouns && (
 									<Tag
 										colorScheme='blue'
@@ -367,7 +379,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						) : null}
 
 						{unions && unions.length > 0 && unionTerms ? (
-							<ProfileStackItem title='Union/Guild/Member Affiliations'>
+							<ProfileStackItem title='Affiliations'>
 								<WrapWithIcon icon={FiUser}>
 									{SelectedTerms({ ids: unions, terms: unionTerms })}
 								</WrapWithIcon>
@@ -404,12 +416,12 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 
 						{resume && attachment?.sourceUrl ? (
 							<ProfileStackItem title='Resume'>
-								<Flex gap={2}>
+								<Flex gap={0}>
 									<ResumePreviewModal
 										resumePreviewSrc={attachment.sourceUrl}
 										resumeLink={resume}
 										previewIcon={false}
-										maxW='250px'
+										maxW='full'
 									/>
 								</Flex>
 							</ProfileStackItem>
