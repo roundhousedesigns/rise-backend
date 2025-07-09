@@ -124,6 +124,7 @@ export default function Sidebar({ ...props }: BoxProps) {
 			overflow='hidden'
 			transition='all 200ms ease'
 			w={sidebarExpanded ? '160px' : '50px'}
+			minW='50px'
 			aria-expanded={sidebarExpanded}
 			zIndex={1000}
 			{...props}

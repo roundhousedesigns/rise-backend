@@ -216,8 +216,8 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 				) : null}
 				<Flex
 					gap={6}
-					flexWrap={{ base: 'wrap', sm: 'nowrap' }}
-					justifyContent={{ base: 'center', sm: 'flex-start' }}
+					flexWrap={{ base: 'wrap', md: 'nowrap' }}
+					justifyContent={{ base: 'center', md: 'flex-start' }}
 				>
 					{isLargerThanMd ? (
 						<Stack direction='column' w='40%' minW='160px' maxW='400px' textAlign='center' gap={4}>

@@ -100,9 +100,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 						as={RouterLink}
 						to='/settings'
 						icon={<FiEyeOff />}
-						label={
-							disableProfile ? 'Your profile is set to private.' : 'Your profile is set to public.'
-						}
+						label='Your profile is set to private.'
 						colorScheme='transparent'
 						size='sm'
 						color='text.light'

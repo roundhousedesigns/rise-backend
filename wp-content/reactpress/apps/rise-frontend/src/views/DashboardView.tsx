@@ -14,8 +14,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardView() {
 	const [{ loggedInId, starredProfiles }] = useViewer();
-	const [notices] = useUserNotices();
 	const [{ unread, read }] = useProfileNotifications(loggedInId);
+	const [notices] = useUserNotices();
 
 	const [profile, { loading: profileLoading }] = useUserProfile(loggedInId);
 
@@ -26,7 +26,12 @@ export default function DashboardView() {
 			w='full'
 			maxW='6xl'
 		>
-			<GridItem as={Stack} spacing={6} id='dashboard-secondary' maxW={{ base: 'none', md: '300px' }}>
+			<GridItem
+				as={Stack}
+				spacing={6}
+				id='dashboard-secondary'
+				maxW={{ base: 'none', md: '300px' }}
+			>
 				<Widget>
 					<ColorCascadeBox>
 						{profile ? (
@@ -51,7 +56,7 @@ export default function DashboardView() {
 							<Card gap={2}>
 								<List spacing={1}>
 									<AnimatePresence>
-										{unread?.map((notification) => (
+										{unread.map((notification) => (
 											<ListItem
 												key={notification.id}
 												as={motion.div}
@@ -62,7 +67,7 @@ export default function DashboardView() {
 												<ProfileNotificationItem notification={notification} />
 											</ListItem>
 										))}
-										{read?.map((notification) => (
+										{read.map((notification) => (
 											<ListItem key={notification.id}>
 												<ProfileNotificationItem notification={notification} />
 											</ListItem>
