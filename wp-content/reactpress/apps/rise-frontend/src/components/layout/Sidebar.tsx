@@ -8,6 +8,7 @@ import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { ReactNode, useContext } from 'react';
 import {
+	FiBriefcase,
 	FiChevronsLeft,
 	FiFolder,
 	FiHome,
@@ -102,6 +103,7 @@ export default function Sidebar({ ...props }: BoxProps) {
 			target: '/searches',
 			label: 'Searches',
 		},
+		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' },
 		{
 			icon: <Icon as={FiSettings} />,
 			target: '/settings',
