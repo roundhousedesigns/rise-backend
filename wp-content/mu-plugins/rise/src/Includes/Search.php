@@ -136,4 +136,44 @@ class Search {
 			'racial_identity'   => isset( $args['racialIdentities'] ) ? $args['racialIdentities'] : '',
 		];
 	}
+
+	/**
+	 * Filter job posts query based on expired status
+	 *
+	 * @param  WP_Query $query   The WP_Query instance
+	 * @return WP_Query Modified query
+	 */
+	public function filter_job_posts_query( $query ) {
+		// Only modify queries in admin and for job posts
+		if ( !is_admin() || !$query->is_main_query() || $query->get( 'post_type' ) !== 'job_post' ) {
+			return $query;
+		}
+
+		// If expired view is selected
+		if ( isset( $_GET['expired'] ) ) {
+			$query->set( 'meta_query', [
+				[
+					'key'     => 'expired',
+					'value'   => '1',
+					'compare' => '=',
+				],
+			] );
+		} else {
+			// Exclude expired posts from "All" view
+			$query->set( 'meta_query', [
+				'relation' => 'OR',
+				[
+					'key'     => 'expired',
+					'value'   => '0',
+					'compare' => '=',
+				],
+				[
+					'key'     => 'expired',
+					'compare' => 'NOT EXISTS',
+				],
+			] );
+		}
+
+		return $query;
+	}
 }

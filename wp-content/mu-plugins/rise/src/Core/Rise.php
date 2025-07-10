@@ -11,6 +11,7 @@ use RHD\Rise\Core\Shortcodes;
 use RHD\Rise\Includes\GraphQLMutations;
 use RHD\Rise\Includes\GraphQLQueries;
 use RHD\Rise\Includes\GraphQLTypes;
+use RHD\Rise\Includes\Search;
 use RHD\Rise\Includes\Types;
 use RHD\Rise\Includes\Users;
 use RHD\Rise\Includes\WooCommerce;
@@ -90,6 +91,7 @@ class Rise {
 		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_search_hooks();
 		$this->define_woocommerce_hooks();
 	}
 
@@ -447,6 +449,19 @@ class Rise {
 	}
 
 	/**
+	 * Register all of the hooks related to the search functionality
+	 * of the plugin.
+	 *
+	 * @access   private
+	 * @since    0.1.0
+	 */
+	private function define_search_hooks() {
+		$plugin_search = new Search();
+
+		$this->loader->add_filter( 'pre_get_posts', $plugin_search, 'filter_job_posts_query' );
+	}
+
+	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
 	 * @since    0.1.0
@@ -455,4 +470,3 @@ class Rise {
 		$this->loader->run();
 	}
 }
-add_filter( 'pre_get_posts', 'rise_filter_job_posts_query' );

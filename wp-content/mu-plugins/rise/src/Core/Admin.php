@@ -479,4 +479,102 @@ class Admin {
 
 		return $output;
 	}
+
+	/**
+	 * Add "Expired" view to job posts admin screen
+	 *
+	 * @param  array $views   The array of views
+	 * @return array Modified views array
+	 */
+	public function add_admin_job_posts_views( $views ) {
+		// Get count of expired posts including private posts
+		$args = [
+			'post_type'   => 'job_post',
+			'limit'       => -1,
+			'post_status' => 'any',
+		];
+
+		$expired_args = [
+			'meta_query' => [
+				[
+					'key'     => 'expired',
+					'value'   => '1',
+					'compare' => '=',
+				],
+			],
+		];
+
+		$active_args = [
+			'meta_query' => [
+				'relation' => 'OR',
+				[
+					'key'     => 'expired',
+					'value'   => '0',
+					'compare' => '=',
+				],
+				[
+					'key'     => 'expired',
+					'compare' => 'NOT EXISTS',
+				],
+			],
+		];
+
+		// TODO Determine if 'pending' args are needed
+		$pending_args = [
+			'post_status' => 'pending',
+			'meta_query'  => [
+				'relation' => 'OR',
+				[
+					'key'     => 'expired',
+					'value'   => '0',
+					'compare' => '=',
+				],
+			],
+			[
+				'key'     => 'expired',
+				'compare' => 'NOT EXISTS',
+			],
+		];
+
+		$expired_count = count( get_posts( array_merge( $args, $expired_args ) ) );
+		$active_count  = count( get_posts( array_merge( $args, $active_args ) ) );
+
+		// Modify 'publish' view to exclude Expired
+		$views['publish'] = sprintf(
+			'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
+			admin_url( 'edit.php?post_type=job_post&expired=0' ),
+			isset( $_GET['expired'] ) ? '' : 'current',
+			__( 'Published', 'rise' ),
+			$active_count
+		);
+
+		// Add 'expired' view
+		$views['expired'] = sprintf(
+			'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
+			admin_url( 'edit.php?post_type=job_post&expired=1' ),
+			isset( $_GET['expired'] ) ? 'current' : '',
+			__( 'Expired', 'rise' ),
+			$expired_count
+		);
+
+		// Reorder views to put Active and Expired after All
+		if ( isset( $views['all'] ) ) {
+			$all_view     = $views['all'];
+			$publish_view = $views['publish'];
+			$expired_view = $views['expired'];
+
+			// Remove the views we want to reorder
+			unset( $views['all'], $views['publish'], $views['expired'] );
+
+			// Create new array with desired order
+			$views = array_merge(
+				['all' => $all_view],
+				['publish' => $publish_view],
+				['expired' => $expired_view],
+				$views
+			);
+		}
+
+		return $views;
+	}
 }
