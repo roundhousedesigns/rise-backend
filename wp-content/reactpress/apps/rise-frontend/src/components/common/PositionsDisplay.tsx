@@ -1,5 +1,5 @@
 import { Stack } from '@chakra-ui/react';
-import { Credit, WPItem } from '@lib/classes';
+import { Credit, JobPost, WPItem } from '@lib/classes';
 import { sortAndCompareArrays } from '@lib/utils';
 import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
 import useTaxonomyTerms from '@queries/useTaxonomyTerms';
@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import WPItemBadgeList from './WPItemBadgeList';
 
 interface PositionsDisplayProps {
-	item: Credit;
+	item: JobPost | Credit;
 	showDepartmentBadges?: boolean;
 	showJobBadges?: boolean;
 	showSkillBadges?: boolean;
@@ -74,6 +74,8 @@ export default function PositionsDisplay({
 	if (!departments?.length && !jobs?.length && !skills?.length) {
 		return null;
 	}
+
+	// TODO add loading state spinner
 
 	return (
 		<Stack direction='column'>

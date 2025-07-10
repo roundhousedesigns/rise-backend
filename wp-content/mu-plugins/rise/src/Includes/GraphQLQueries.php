@@ -670,6 +670,71 @@ class GraphQLQueries {
 		);
 
 		/**
+		 * Query filtered job posts.
+		 */
+		\register_graphql_field(
+			'RootQuery',
+			'filteredJobPostIds',
+			[
+				'type'        => ['list_of' => 'ID'],
+				'description' => \__( 'Get filtered job post IDs.', 'rise' ),
+				'args'        => [
+					'internships' => [
+						'type'        => 'Boolean',
+						'description' => \__( 'Filter by internship status', 'rise' ),
+					],
+					'union'       => [
+						'type'        => 'Boolean',
+						'description' => \__( 'Filter by union status', 'rise' ),
+					],
+					'paid'        => [
+						'type'        => 'Boolean',
+						'description' => \__( 'Filter by paid status', 'rise' ),
+					],
+					'status'      => [
+						'type'        => ['list_of' => 'String'],
+						'description' => \__( 'Filter by post status', 'rise' ),
+					],
+				],
+				'resolve'     => function ( $root, $args ) {
+					$post_status = isset( $args['status'] ) ? $args['status'] : ['publish'];
+
+					$params = [
+						'where' => 't.post_status IN ("' . \implode( '", "', $post_status ) . '")',
+						'limit' => -1,
+					];
+
+					// Only add where conditions for filters that are explicitly set to true
+					if ( isset( $args['internships'] ) && $args['internships'] ) {
+						$params['where'] .= ' AND is_internship.meta_value = "1"';
+					}
+
+					if ( isset( $args['union'] ) && $args['union'] ) {
+						$params['where'] .= ' AND is_union.meta_value = "1"';
+					}
+
+					if ( isset( $args['paid'] ) && $args['paid'] ) {
+						$params['where'] .= ' AND is_paid.meta_value = "1"';
+					}
+
+					$jobs = \pods( 'job_post' )->find( $params );
+
+					$job_ids = [];
+
+					while ( $jobs->fetch() ) {
+						$job_ids[] = $jobs->field( 'ID' );
+					}
+
+					if ( !$job_ids ) {
+						return [];
+					}
+
+					return $job_ids;
+				},
+			]
+		);
+
+		/**
 		 * Get the unread notifications for the current user.
 		 */
 		\register_graphql_field(
