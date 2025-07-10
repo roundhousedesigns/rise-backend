@@ -46,7 +46,7 @@ class Search {
 				if ( 'position' === $taxonomy ) {
 					foreach ( $terms as $term_id ) {
 						// Get 'also_search' terms add them to the query.
-						$pod     = pods( 'position', $term_id );
+						$pod     = \pods( 'position', $term_id );
 						$related = $pod->field( 'also_search' );
 
 						// No related terms.

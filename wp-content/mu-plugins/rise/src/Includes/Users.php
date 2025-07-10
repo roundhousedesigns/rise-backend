@@ -73,15 +73,24 @@ class Users {
 	 * @return void
 	 */
 	public function redirect_crew_members_from_dashboard() {
+		if ( !\is_user_logged_in() ) {
+			return;
+		}
+
+		$frontend_url = defined( 'RISE_FRONTEND_URL' ) ? \RISE_FRONTEND_URL : 'https://risetheatre.org/directory';
+
 		// Check if the user is logged in and has the 'crew-member' role
-		if ( \is_user_logged_in() && \current_user_can( 'crew-member' ) ) {
+		$current_user = \wp_get_current_user();
+
+		if ( in_array( 'crew-member', $current_user->roles, true ) ) {
 			// Get the current screen object
 			$current_screen = \get_current_screen();
 
 			// Check if the user is on the dashboard
 			if ( 'dashboard' === $current_screen->base || 'admin' === $current_screen->base ) {
-				\wp_safe_redirect( 'https://work.risetheatre.org' );
-				\wp_die();
+				if ( wp_safe_redirect( $frontend_url ) ) {
+					exit;
+				}
 			}
 		}
 	}
@@ -92,9 +101,9 @@ class Users {
 	 * @return void
 	 */
 	public function remove_admin_bar_for_crew_members() {
-		if ( \current_user_can( 'crew-member' ) ) {
-			\show_admin_bar( false );
-		}
+		// if ( !\current_user_can( 'administrator' ) ) {
+		\show_admin_bar( false );
+		// }
 	}
 
 	/**
@@ -393,28 +402,13 @@ class Users {
 
 		\wp_nonce_field( 'save_' . $taxonomy, $taxonomy . '_nonce' );
 
-		// TODO move this HTML to a template file.
-
-		?>
-		<!-- Add a new section to the user profile edit screen for the given taxonomy -->
-		<h2><?php \__( $name, 'rise' ); ?></h2>
-		<table class="form-table">
-			<tr>
-				<!-- Add a field for the taxonomy checkboxes -->
-				<th><label><?php \__( 'Select ' . $name, 'rise' ); ?></label></th>
-				<td>
-					<?php foreach ( $all_terms as $term ): ?>
-						<label>
-							<input type="checkbox" name="<?php \printf( '%s', \esc_attr( $taxonomy ) ); ?>[]" value="<?php \printf( '%s', \esc_attr( $term->term_id ) ); ?>"<?php \checked( in_array( $term->term_id, $selected_terms, true ), true ); ?>>
-							<?php \printf( '%s', \esc_html( $term->name ) ); ?>
-						</label>
-						<br>
-					<?php endforeach; ?>
-				</td>
-			</tr>
-		</table>
-
-		<?php
+		$template_args = [
+			'name'           => $name,
+			'taxonomy'       => $taxonomy,
+			'selected_terms' => $selected_terms,
+			'all_terms'      => $all_terms,
+		];
+		include RISE_PLUGIN_DIR . 'templates/taxonomy-term-checkboxes.php';
 	}
 
 	/**
@@ -587,7 +581,7 @@ class Users {
 		$users = get_users( $args );
 
 		$filtered = array_filter( $users, function ( $user ) {
-			$pod = pods( 'user', $user->ID );
+			$pod = \pods( 'user', $user->ID );
 
 			return $pod->field( 'disable_profile' ) !== '1' && $pod->field( 'is_org' ) !== '1' ? true : false;
 		} );

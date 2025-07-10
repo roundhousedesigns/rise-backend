@@ -215,6 +215,33 @@ class Admin {
 	}
 
 	/**
+	 * Redirect crew members to the frontend URL after login from wp-login.php.
+	 *
+	 * @param  string           $redirect_to The redirect destination URL.
+	 * @param  string           $request     The requested redirect destination URL passed as a parameter.
+	 * @param  WP_User|WP_Error $user        WP_User object if login was successful, WP_Error object otherwise.
+	 * @return string           The redirect URL.
+	 */
+	public function redirect_crew_members_after_login( $redirect_to, $request, $user ) {
+		// Check if we have a valid user object
+		if ( !is_wp_error( $user ) && is_object( $user ) && isset( $user->ID ) ) {
+			// Check if user has crew-member role
+			if ( in_array( 'crew-member', $user->roles ) ) {
+				// Check if this appears to be from the main WordPress login
+				// (typically redirects to admin area by default)
+				$admin_url         = admin_url();
+				$is_admin_redirect = strpos( $redirect_to, $admin_url ) === 0;
+
+				if ( $is_admin_redirect && defined( 'RISE_FRONTEND_URL' ) ) {
+					return \RISE_FRONTEND_URL;
+				}
+			}
+		}
+
+		return $redirect_to;
+	}
+
+	/**
 	 * Generate basic stats for the user base.
 	 *
 	 * @return string HTML output.

@@ -40,6 +40,7 @@ function import_positions_and_skills_from_csv( $file_path ) {
 		// Loop through each cell in the current row
 		foreach ( $data as $index => $cell ) {
 			if ( 0 === $index ) {
+				error_log( 'CELL: ' . print_r( $cell, true ) );
 
 				if ( strpos( $cell, 'DEPT:' ) === 0 ) {
 					// This is a department cell, so add or update it in the position taxonomy

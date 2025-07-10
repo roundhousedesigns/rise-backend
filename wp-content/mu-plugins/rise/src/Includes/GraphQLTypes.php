@@ -24,7 +24,6 @@ class GraphQLTypes {
 	 * @return boolean
 	 */
 	public function is_valid_http_content_type( $is_valid, $content_type ) {
-
 		if ( 0 === \stripos( $content_type, 'multipart/form-data' ) ) {
 			return true;
 		}

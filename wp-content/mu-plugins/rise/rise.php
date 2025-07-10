@@ -18,7 +18,7 @@ if ( !defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'RISE_VERSION', '1.2-autoloader' );
+define( 'RISE_VERSION', '1.2' );
 
 /**
  * Define the plugin directory.
@@ -77,6 +77,7 @@ function run_rise() {
 	$plugin->run();
 
 	// Add filters for job post admin views
+	// TODO: move these to the Admin class.
 	add_filter( 'views_edit-job_post', 'rise_add_admin_job_posts_views' );
 	add_filter( 'pre_get_posts', 'rise_filter_job_posts_query' );
 }

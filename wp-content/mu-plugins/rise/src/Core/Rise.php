@@ -410,6 +410,11 @@ class Rise {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
 
 		/**
+		 * Login redirect
+		 */
+		$this->loader->add_filter( 'login_redirect', $plugin_data, 'redirect_crew_members_after_login', 10, 3 );
+
+		/**
 		 * Menus
 		 */
 		$this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );
@@ -450,3 +455,4 @@ class Rise {
 		$this->loader->run();
 	}
 }
+add_filter( 'pre_get_posts', 'rise_filter_job_posts_query' );
