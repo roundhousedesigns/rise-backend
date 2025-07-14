@@ -19,51 +19,75 @@ class Users {
 	 * @return void
 	 */
 	public function add_roles() {
-		$caps = [
+		$roles = $this->get_role_definitions();
+
+		foreach ( $roles as $role_slug => $role_config ) {
+			$this->create_or_update_role( $role_slug, $role_config );
+		}
+	}
+
+	/**
+	 * Get definitions for all custom roles.
+	 *
+	 * @return array Array of role configurations keyed by role slug.
+	 */
+	private function get_role_definitions() {
+		$base_caps = [
 			'read'                            => true,
 			'list_users'                      => true,
 			'unfiltered_upload'               => true,
 			'upload_files'                    => true,
 			'edit_files'                      => true,
+		];
+
+		$crew_capabilities = array_merge( $base_caps, [
 			'read_credits'                    => true,
 			'publish_credits'                 => true,
 			'edit_credits'                    => true,
 			'edit_published_credits'          => true,
+			'delete_credits'                  => true,
 			'delete_published_credits'        => true,
 			'read_saved_searches'             => true,
 			'publish_saved_searches'          => true,
 			'edit_saved_searches'             => true,
 			'edit_published_saved_searches'   => true,
+			'delete_saved_searches'           => true,
 			'delete_published_saved_searches' => true,
-		];
+		] );
 
-		$role = \get_role( 'crew-member' );
+		return [
+			'crew-member'     => [
+				'display_name' => 'Crew Member',
+				'capabilities' => $crew_capabilities,
+			],
+			'network-partner' => [
+				'display_name' => 'Network Partner',
+				'capabilities' => $crew_capabilities,
+			],
+		];
+	}
+
+	/**
+	 * Create or update a user role with the specified capabilities.
+	 *
+	 * @param string $role_slug   The role slug.
+	 * @param array  $role_config The role configuration array.
+	 * @return void
+	 */
+	private function create_or_update_role( $role_slug, $role_config ) {
+		$role = \get_role( $role_slug );
 
 		if ( null === $role ) {
-			\add_role( 'crew-member', 'Crew Member', $caps );
-			$role = \get_role( 'crew-member' );
+			\add_role( $role_slug, $role_config['display_name'], $role_config['capabilities'] );
+			$role = \get_role( $role_slug );
 		}
 
 		if ( $role ) {
-			/**
-			 * Credits
-			 */
-			$role->add_cap( 'read_credits' );
-			$role->add_cap( 'publish_credits' );
-			$role->add_cap( 'edit_credits' );
-			$role->add_cap( 'edit_published_credits' );
-			$role->add_cap( 'delete_credits' );
-			$role->add_cap( 'delete_published_credits' );
-
-			/**
-			 * Saved Searches
-			 */
-			$role->add_cap( 'read_saved_searches' );
-			$role->add_cap( 'publish_saved_searches' );
-			$role->add_cap( 'edit_saved_searches' );
-			$role->add_cap( 'edit_published_saved_searches' );
-			$role->add_cap( 'delete_saved_searches' );
-			$role->add_cap( 'delete_published_saved_searches' );
+			foreach ( $role_config['capabilities'] as $cap => $grant ) {
+				if ( $grant ) {
+					$role->add_cap( $cap );
+				}
+			}
 		}
 	}
 

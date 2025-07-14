@@ -232,8 +232,9 @@ class Admin {
 				$admin_url         = admin_url();
 				$is_admin_redirect = strpos( $redirect_to, $admin_url ) === 0;
 
-				if ( $is_admin_redirect && defined( 'RISE_FRONTEND_URL' ) ) {
-					return \RISE_FRONTEND_URL;
+				if ( $is_admin_redirect ) {
+					$frontend_url = defined( 'RISE_FRONTEND_URL' ) ? \RISE_FRONTEND_URL : 'https://risetheatre.org/directory';
+					return $frontend_url;
 				}
 			}
 		}
