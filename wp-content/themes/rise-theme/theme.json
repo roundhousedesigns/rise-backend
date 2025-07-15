@@ -161,6 +161,12 @@
 					}
 				},
 				{
+					"size": "22px",
+					"name": "Medium-Large",
+					"slug": "medium-large",
+					"fluid": false
+				},
+				{
 					"size": "24px",
 					"name": "Large",
 					"slug": "large",

@@ -70,3 +70,15 @@ h6 {
 	margin-top: 0.25em;
 	margin-bottom: 0.25em;
 }
+
+.mobile-only {
+	@media screen and (min-width: 34rem) {
+		display: none !important;
+	}
+}
+
+.desktop-only {
+	@media screen and (max-width: 34rem) {
+		display: none !important;
+	}
+}

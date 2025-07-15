@@ -7,6 +7,34 @@
 	cursor: pointer;
 	z-index: 1000;
 	color: var(--wp--preset--color--white);
+
+	&:focus {
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+	}
+
+	&:focus-visible {
+		outline: 2px solid currentColor;
+	}
+
+	&[aria-expanded="true"] {
+		@media screen and (max-width: 34rem) {
+			position: fixed;
+			right: 0;
+		}
+
+		.hamburger-icon {
+			background: transparent;
+
+			&::before {
+				transform: translateY(8px) rotate(45deg);
+			}
+
+			&::after {
+				transform: translateY(-8px) rotate(-45deg);
+			}
+		}
+	}
 }
 
 .hamburger-icon {
@@ -17,27 +45,27 @@
 	background: currentColor;
 	transition: background 0.3s ease;
 	border-radius: var(--wp--custom--border-radius--radius);
-}
 
-.hamburger-icon::before,
-.hamburger-icon::after {
-	content: "";
-	position: absolute;
-	width: 24px;
-	height: 2px;
-	background: currentColor;
-	transition: transform 0.3s ease;
-	border-radius: var(--wp--custom--border-radius--radius);
-}
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		width: 24px;
+		height: 2px;
+		background: currentColor;
+		transition: transform 0.3s ease;
+		border-radius: var(--wp--custom--border-radius--radius);
+	}
 
-.hamburger-icon::before {
-	top: -8px;
-	left: 0;
-}
+	&::before {
+		top: -8px;
+		left: 0;
+	}
 
-.hamburger-icon::after {
-	bottom: -8px;
-	left: 0;
+	&::after {
+		bottom: -8px;
+		left: 0;
+	}
 }
 
 /* Menu Container */
@@ -53,11 +81,49 @@
 	transition: right 0.3s ease;
 	z-index: 999;
 	overflow-y: auto;
-	padding-left: 0.75em;
-}
+	padding: 0;
 
-.menu-container.is-active {
-	right: 0;
+	&.is-active {
+		right: 0;
+	}
+
+	.mobile-nav-branding {
+		display: flex;
+		align-items: center;
+		margin-top: 0.5em;
+		padding: 0.5em 1em;
+		width: 90%;
+
+		.social-links {
+			gap: 0.25em;
+		}
+
+		.custom-logo-link {
+			display: block;
+			margin: 0 auto;
+			width: 100%;
+
+			img {
+				width: 100%;
+				height: auto;
+				display: block;
+			}
+		}
+	}
+
+	.social-links {
+		justify-content: center;
+		gap: 0.65em;
+
+		@media screen and (min-width: 34rem) {
+			margin-top: 0.5em;
+		}
+
+		.icon {
+			width: 24px;
+			height: 24px;
+		}
+	}
 }
 
 /* Primary Menu */
@@ -66,88 +132,80 @@
 	flex-direction: column;
 	list-style: none;
 	margin: 0;
-	padding: 60px 0 20px;
+	padding: 8px 0 20px;
 	font-size: var(--wp--preset--font-size--large);
-}
 
-.primary-menu li {
-	position: relative;
-	line-height: 1.5;
-}
+	li {
+		position: relative;
+		line-height: 1.5;
 
-.primary-menu a {
-	display: block;
-	padding: 0.25em 1em;
-	text-decoration: none;
-	color: var(--wp--preset--color--white);
-}
+		&.feature-button-style {
+			background-color: var(--wp--preset--color--blue);
+			color: var(--wp--preset--color--white);
+			/* border-radius: var(--wp--custom--border-radius--radius); */
 
-.primary-menu li.feature-button-style {
-	background-color: var(--wp--preset--color--blue);
-	color: var(--wp--preset--color--white);
-	/* border-radius: var(--wp--custom--border-radius--radius); */
-}
+			a {
+				color: var(--wp--preset--color--white);
+			}
+		}
 
-.primary-menu li.feature-button-style a {
-	color: var(--wp--preset--color--white);
-}
+		&.menu-item-has-children {
+			position: relative;
 
-.primary-menu li.menu-item-has-children {
-	position: relative;
-}
+			>a {
+				cursor: pointer;
+				position: relative;
+				right: 0.75em;
+				/* matches margin-right of .primary-menu a */
 
-.primary-menu li.menu-item-has-children > a {
-	cursor: pointer;
-	position: relative;
-	right: 0.75em; /* matches margin-right of .primary-menu a */
-}
+				&::before {
+					content: "+";
+					display: inline-block;
+					font-size: 1.2em;
+					line-height: 1;
+					width: 24px;
+					margin-right: 0.1em;
+				}
 
-.primary-menu li.menu-item-has-children > a::before {
-	content: "+";
-	display: inline-block;
-	font-size: 1.2em;
-	line-height: 1;
-	width: 24px;
-	margin-right: 0.1em;
-}
+				&[aria-expanded="true"]::before {
+					content: "−";
+				}
+			}
+		}
+	}
 
-.primary-menu li.menu-item-has-children > a[aria-expanded="true"]::before {
-	content: "−";
-}
+	a {
+		display: block;
+		padding: 0.25em 1em;
+		text-decoration: none;
+		color: var(--wp--preset--color--white);
+	}
 
-/* Submenu */
-.primary-menu .sub-menu {
-	display: block;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	height: 0;
-	opacity: 0;
-	overflow: hidden;
-	transition: height 0.3s ease, opacity 0.2s ease;
-	background: rgba(255, 255, 255, 0.05);
-}
+	/* Submenu */
+	.sub-menu {
+		display: block;
+		list-style: none;
+		border-left: 4px solid var(--wp--preset--color--blue);
+		margin: 0 0 0 0.667em;
+		padding: 0 0 0 0.667em;
+		height: 0;
+		opacity: 0;
+		overflow: hidden;
+		transition: height 0.3s ease, opacity 0.2s ease;
 
-.primary-menu .sub-menu a {
-	padding-left: 2em;
-	position: relative;
-}
+		&.is-active {
+			height: auto;
+			opacity: 1;
+		}
 
-.primary-menu .sub-menu a::before {
-	content: "";
-	position: absolute;
-	left: 1em;
-	top: 50%;
-	width: 0.5em;
-	height: 1px;
-	background: currentColor;
-	opacity: 0.5;
-	transform: translateY(-50%);
-}
+		li {
+			font-size: var(--wp--preset--font-size--medium-large);
+		}
 
-.primary-menu .sub-menu.is-active {
-	height: auto;
-	opacity: 1;
+		a {
+			padding-left: 0;
+		}
+	}
 }
 
 .screen-reader-text {
@@ -162,34 +220,14 @@
 	border: 0;
 }
 
-/* Hamburger Animation */
-.menu-toggle[aria-expanded="true"] .hamburger-icon {
-	background: transparent;
-}
-
-.menu-toggle[aria-expanded="true"] .hamburger-icon::before {
-	transform: translateY(8px) rotate(45deg);
-}
-
-.menu-toggle[aria-expanded="true"] .hamburger-icon::after {
-	transform: translateY(-8px) rotate(-45deg);
-}
-
 /* Focus Styles */
-.menu-toggle:focus {
-	outline: 2px solid transparent;
-	outline-offset: 2px;
-}
+a {
+	&:focus {
+		outline: 2px solid transparent;
+		outline-offset: -2px;
+	}
 
-.menu-toggle:focus-visible {
-	outline: 2px solid currentColor;
-}
-
-.primary-menu a:focus {
-	outline: 2px solid transparent;
-	outline-offset: -2px;
-}
-
-.primary-menu a:focus-visible {
-	outline: 2px solid currentColor;
+	&:focus-visible {
+		outline: 2px solid currentColor;
+	}
 }
