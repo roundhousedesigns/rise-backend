@@ -63,8 +63,8 @@
 	},
 	"settings": {
 		"layout": {
-			"contentSize": "840px",
-			"wideSize": "1100px"
+			"contentSize": "1000px",
+			"wideSize": "1400px"
 		},
 		"useRootPaddingAwareAlignments": true,
 		"color": {
@@ -128,6 +128,7 @@
 			]
 		},
 		"typography": {
+			"defaultFontSizes": false,
 			"fontFamilies": [
 				{
 					"fontFamily": "\"Victor Serif\", serif",
@@ -162,7 +163,7 @@
 				},
 				{
 					"size": "22px",
-					"name": "Medium-Large",
+					"name": "Medium-Large (Static)",
 					"slug": "medium-large",
 					"fluid": false
 				},
@@ -172,7 +173,7 @@
 					"slug": "large",
 					"fluid": {
 						"min": "24px",
-						"max": "32px"
+						"max": "28px"
 					}
 				},
 				{
@@ -191,6 +192,15 @@
 					"fluid": {
 						"min": "32px",
 						"max": "50px"
+					}
+				},
+				{
+					"size": "40px",
+					"name": "XXX-Large",
+					"slug": "xxx-large",
+					"fluid": {
+						"min": "40px",
+						"max": "64px"
 					}
 				}
 			]

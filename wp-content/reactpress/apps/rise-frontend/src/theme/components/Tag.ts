@@ -13,4 +13,10 @@ const sizes = {
 	xs: definePartsStyle({ container: xs, label: xs }),
 };
 
-export default defineMultiStyleConfig({ sizes });
+const baseStyle = {
+	label: {
+		fontFamily: 'heading',
+	},
+};
+
+export default defineMultiStyleConfig({ sizes, baseStyle });

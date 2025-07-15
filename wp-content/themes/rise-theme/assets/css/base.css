@@ -82,3 +82,44 @@ h6 {
 		display: none !important;
 	}
 }
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+textarea {
+	font-family: var(--wp--custom--font-family--body);
+	font-size: var(--wp--preset--font-size--medium);
+	border-radius: var(--wp--custom--border-radius--radius);
+	border-width: 2px;
+	border-style: solid;
+	border-color: transparent;
+	color: var(--wp--preset--color--bg-dark);
+	background-color: var(--wp--preset--color--white);
+	padding: 0.5em;
+
+	&:focus {
+		border-color: var(--wp--preset--color--blue);
+		outline: none;
+	}
+}
+
+input[type="submit"] {
+	background-color: var(--wp--preset--color--blue);
+	color: var(--wp--preset--color--white);
+	border: none;
+	padding: 0.5em 1em;
+	border-radius: var(--wp--custom--border-radius--radius);
+	font-size: var(--wp--preset--font-size--medium);
+	font-family: var(--wp--custom--font-family--heading);
+	cursor: pointer;
+	opacity: 0.9;
+	transition: opacity 0.3s ease;
+
+	&:hover {
+		opacity: 1;
+	}
+}

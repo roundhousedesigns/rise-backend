@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
 import { Box, BoxProps, Heading } from '@chakra-ui/react';
 import HeadingCenterline from '@common/HeadingCenterline';
+import { ReactNode } from 'react';
 
 interface Props {
 	title?: string;
@@ -20,7 +20,7 @@ export default function ProfileStackItem({
 				{title}
 			</HeadingCenterline>
 		) : (
-			<Heading as='h3' variant='pageSubtitle'>
+			<Heading as='h3' variant='contentTitle'>
 				{title}
 			</Heading>
 		);

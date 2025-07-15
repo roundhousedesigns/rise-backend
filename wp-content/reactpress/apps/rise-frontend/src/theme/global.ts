@@ -109,6 +109,7 @@ export const radioCheckboxButtonStyleObject = {
 	},
 	label: {
 		letterSpacing: '0.06em',
+		fontFamily: 'heading',
 		_dark: {
 			_checked: {
 				color: 'gray.900',

@@ -57,7 +57,7 @@ interface Props {
 
 const ProfileHeading = ({ title, ...props }: { title: string } & HeadingProps) => {
 	return (
-		<Heading as='h1' size='xl' fontWeight='bold' lineHeight='none' {...props}>
+		<Heading as='h1' lineHeight='none' variant='pageSubtitle' {...props}>
 			{title}
 		</Heading>
 	);
@@ -204,7 +204,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 
 		return (
 			<Heading as='h2' size='sm' fontWeight='medium' {...props}>
-				{selfTitle && homebase ? (
+				{selfTitle && homebase && !isOrg ? (
 					<>
 						<SelfTitle /> based in <HomeBase />
 					</>

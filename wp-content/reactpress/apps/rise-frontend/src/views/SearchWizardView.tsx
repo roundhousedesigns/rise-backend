@@ -39,7 +39,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 	return (
 		<>
 			<Flex gap={0} flexWrap='wrap'>
-				{savedSearches.length > 0 && (
+				{savedSearches && savedSearches.length > 0 && (
 					<Accordion flex='1 0 300px' allowToggle defaultIndex={savedSearchId ? 0 : undefined}>
 						<SearchFilterAccordionItem
 							heading={

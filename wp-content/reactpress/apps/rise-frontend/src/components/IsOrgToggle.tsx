@@ -53,7 +53,7 @@ export default function IsOrgToggle({
 			id='isOrg'
 			checked={!!isOrg}
 			callback={handleToggleIsOrg}
-			label={`Profile type`}
+			label={`Profile type: ${isOrg ? 'Company' : 'Personal'}`}
 			iconRight={FiBriefcase}
 			iconLeft={FiUser}
 			size={size}

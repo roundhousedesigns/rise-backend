@@ -74,7 +74,7 @@
 	top: 0;
 	right: -100%;
 	width: 80%;
-	max-width: 400px;
+	max-width: 340px;
 	height: 100vh;
 	background: var(--wp--preset--color--dark-gray);
 	box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -114,6 +114,11 @@
 	.social-links {
 		justify-content: center;
 		gap: 0.65em;
+
+		@media screen and (max-width: 34rem) {
+			margin-top: 0;
+			margin-bottom: 0;
+		}
 
 		@media screen and (min-width: 34rem) {
 			margin-top: 0.5em;

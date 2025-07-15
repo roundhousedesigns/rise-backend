@@ -9,7 +9,7 @@ export default function FollowedProfilesView() {
 			<InlineIconText
 				icon={<Icon as={FiStar} fill='brand.orange' />}
 				iconProps={{ _dark: { bg: 'whiteAlpha.200' }, _light: { bg: 'blackAlpha.100' } }}
-				text='Click the star button next to a profile to follow or unfollow it.'
+				text='Click the star button next to a profile to save it or remove it from your list.'
 				query='star'
 				description='star'
 				fontSize='md'

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { BoxProps, Flex, Icon } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface Props {
 	icon: any;
@@ -14,7 +14,7 @@ export default function WrapWithIcon({
 	...props
 }: Props & BoxProps): JSX.Element {
 	return (
-		<Flex my={2} alignItems='center' {...props}>
+		<Flex my={2} alignItems='center' fontFamily='heading' {...props}>
 			{icon ? <Icon as={icon} mr={2} {...iconProps} /> : null}
 			{children}
 		</Flex>

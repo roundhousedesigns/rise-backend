@@ -3,24 +3,26 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 const baseStyle = defineStyle({
 	mb: 2,
 	fontWeight: 'normal',
+	fontFamily: 'heading',
 });
 
 const variants = {
 	pageTitle: defineStyle({
-		fontSize: { base: '3xl', md: '4xl' },
+		fontSize: { base: '3xl', md: '5xl' },
 	}),
 	pageSubtitle: defineStyle({
-		fontSize: { base: '2xl', md: '3xl' },
+		fontSize: { base: '2xl', md: '4xl' },
 		fontWeight: 'bold',
 	}),
 	contentTitle: defineStyle({
-		fontSize: { base: '2xl', md: '3xl' },
+		fontSize: '2xl',
 		fontWeight: 'bold',
 		pb: 0,
 	}),
 	contentSubtitle: defineStyle({
 		fontSize: 'lg',
 		fontWeight: 'bold',
+		fontFamily: 'body',
 		mt: 0,
 		pb: 0,
 	}),

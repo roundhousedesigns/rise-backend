@@ -91,6 +91,7 @@ const CandidateListItem = ({
 									as='h3'
 									id={`candidate-${id}`}
 									fontSize={mini ? 'md' : 'lg'}
+									variant='contentTitle'
 									fontWeight='normal'
 									textAlign='left'
 									flex={{ base: '0 0 100%', md: '1' }}

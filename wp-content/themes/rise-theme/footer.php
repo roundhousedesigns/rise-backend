@@ -9,8 +9,12 @@
 			<?php $footer_content = get_option( 'rise_settings_footer_content' ); ?>
 
 			<footer id="colophon" class="site-footer">
+				<?php if ( has_custom_logo() ): ?>
+					<?php the_custom_logo(); ?>
+				<?php endif; ?>
+
 				<div class="social-links">
-					<?php echo do_blocks( '<!-- wp:block {"ref":15749} /-->' ); ?>
+					<?php get_template_part( 'template-parts/snippet', 'social-links' ); ?>
 				</div>
 				<div class="site-info">
 					<?php echo apply_filters( 'the_content', $footer_content ); ?>
