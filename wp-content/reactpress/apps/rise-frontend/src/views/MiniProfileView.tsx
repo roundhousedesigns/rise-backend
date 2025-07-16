@@ -69,7 +69,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 				<ButtonGroup
 					size='xs'
 					spacing={1}
-					opacity={isHovered ? 1 : 0}
+					opacity={isHovered ? 1 : 0.4}
 					transition='opacity 200ms ease'
 					zIndex={1000}
 				>

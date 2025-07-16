@@ -1,4 +1,4 @@
-import { Flex, IconProps, ListItem, ListItemProps, Text } from '@chakra-ui/react';
+import { Flex, ListItem, ListItemProps, Text } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -6,7 +6,6 @@ interface Props {
 	icon?: ReactNode;
 	target: string | (() => void);
 	isActive?: boolean;
-	iconProps?: IconProps;
 	isExpanded?: boolean;
 	children: ReactNode;
 }
@@ -15,7 +14,6 @@ export default function SidebarMenuItem({
 	icon,
 	target,
 	isActive,
-	iconProps,
 	isExpanded,
 	children,
 	...props
@@ -23,9 +21,10 @@ export default function SidebarMenuItem({
 	return (
 		<ListItem
 			w='full'
-			borderBottomWidth='1px'
-			borderBottomColor='gray.700'
-			_first={{ borderTopWidth: '1px' }}
+			borderBottomWidth='1.5px'
+			borderBottomStyle='dotted'
+			_dark={{ borderBottomColor: 'gray.700' }}
+			_light={{ borderBottomColor: 'whiteAlpha.300' }}
 			{...props}
 		>
 			<Flex
@@ -35,24 +34,25 @@ export default function SidebarMenuItem({
 				alignItems='center'
 				justifyContent='flex-start'
 				flexWrap='nowrap'
-				pr={isExpanded ? 8 : 0}
+				pr={isExpanded ? 4 : 0}
 				pl={isExpanded ? 4 : 3.5}
 				gap={2}
 				w='100%'
 				textDecoration='none'
-				transition='all 200ms ease-in-out'
+				transition='all 0.15s ease-in-out'
+				color='text.light'
 				_light={{
-					bg: isActive ? 'gray.500' : 'transparent',
+					bg: isActive ? 'whiteAlpha.400' : 'transparent',
 				}}
 				_dark={{
-					bg: isActive ? 'gray.800' : 'transparent',
+					bg: isActive ? 'blackAlpha.600' : 'transparent',
 				}}
 				_hover={{
 					_light: {
-						bg: 'gray.400',
+						bg: 'whiteAlpha.200',
 					},
 					_dark: {
-						bg: 'gray.700',
+						bg: 'blackAlpha.400',
 					},
 				}}
 			>
@@ -64,7 +64,7 @@ export default function SidebarMenuItem({
 					pos='relative'
 					left={isExpanded ? 0 : 3}
 					opacity={isExpanded ? 1 : 0}
-					transition='all 200ms ease-in-out'
+					transition='all 0.3s ease-in-out'
 					fontFamily='heading'
 				>
 					{children}

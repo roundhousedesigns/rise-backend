@@ -2,11 +2,10 @@ import { Box, BoxProps, Flex, Icon, IconButton, List, Text } from '@chakra-ui/re
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import { SearchContext } from '@context/SearchContext';
-import { useLocalStorage } from '@hooks/hooks';
 import useLogout from '@mutations/useLogout';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
-import { ReactNode, useContext } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import {
 	FiBriefcase,
 	FiChevronsLeft,
@@ -29,9 +28,15 @@ interface SidebarMenuItemProps {
 	isExpanded?: boolean;
 }
 
-export default function Sidebar({ ...props }: BoxProps) {
+interface SidebarProps extends BoxProps {
+	sidebarExpanded: boolean;
+	setSidebarExpanded: (expanded: boolean) => void;
+}
+
+export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props }: SidebarProps) {
 	const [{ loggedInId, loggedInSlug, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
+	const [sidebarHeight, setSidebarHeight] = useState('100vh');
 
 	const {
 		search: { results },
@@ -40,14 +45,33 @@ export default function Sidebar({ ...props }: BoxProps) {
 	const location = useLocation();
 	const { logoutMutation } = useLogout();
 
+	// Calculate sidebar height by subtracting masthead height from 100vh
+	useEffect(() => {
+		const calculateHeight = () => {
+			const masthead = document.getElementById('masthead');
+			if (masthead) {
+				const mastheadHeight = masthead.offsetHeight;
+				setSidebarHeight(`calc(100vh - ${mastheadHeight}px)`);
+			}
+		};
+
+		// Calculate on mount
+		calculateHeight();
+
+		// Recalculate on window resize
+		window.addEventListener('resize', calculateHeight);
+
+		return () => {
+			window.removeEventListener('resize', calculateHeight);
+		};
+	}, []);
+
 	const handleLogout = () => {
 		logoutMutation().then(() => {
 			localStorage.clear();
 			window.location.reload();
 		});
 	};
-
-	const [sidebarExpanded, setSidebarExpanded] = useLocalStorage('sidebarExpanded', false);
 
 	const menuItems: SidebarMenuItemProps[] = [
 		{ icon: <Icon as={FiHome} />, target: `/`, label: 'Dashboard' },
@@ -121,51 +145,57 @@ export default function Sidebar({ ...props }: BoxProps) {
 			id='sidebar'
 			minH='100%'
 			py={0}
-			_light={{ bg: 'blackAlpha.700', color: 'text.light' }}
+			_light={{ bg: 'blackAlpha.800', color: 'text.light' }}
 			_dark={{ bg: 'gray.800', color: 'text.light' }}
 			overflow='hidden'
-			transition='all 200ms ease'
-			w={sidebarExpanded ? '160px' : '50px'}
-			minW='50px'
+			transition='all 0.3s ease'
+			minW='48px'
 			aria-expanded={sidebarExpanded}
-			zIndex={1000}
 			{...props}
 		>
 			<Flex
-				h='full'
-				maxH='100vh'
+				h={sidebarHeight}
+				w='full'
 				mt={0}
 				mx={0}
 				pt={3}
-				pb={4}
 				flexDirection='column'
+				flexWrap='nowrap'
 				alignItems='center'
 				justifyContent='flex-start'
 				borderRight='1px solid'
-				transition='all 200ms ease'
+				transition='all 0.3s ease'
 				_light={{ borderColor: 'text.dark' }}
 				_dark={{ borderColor: 'gray.800' }}
 			>
-				<IconButton
-					aria-label='Toggle wide sidebar'
-					aria-expanded={sidebarExpanded}
-					icon={<FiChevronsLeft />}
-					size='xs'
-					onClick={() => setSidebarExpanded(!sidebarExpanded)}
-					transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
-					transition='all 200ms ease'
-					alignSelf='flex-start'
-					ml={sidebarExpanded ? '13px' : '10.5px'}
-				/>
+				<Flex
+					justifyContent='space-between'
+					flexWrap='nowrap'
+					w='full'
+					minW='170px'
+					left={sidebarExpanded ? 0 : 14}
+					pos='relative'
+				>
+					<IconButton
+						aria-label='Toggle wide sidebar'
+						aria-expanded={sidebarExpanded}
+						ml={sidebarExpanded ? '13px' : '10.5px'}
+						icon={<FiChevronsLeft />}
+						size='xs'
+						onClick={() => setSidebarExpanded(!sidebarExpanded)}
+						transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
+						transition='all 0.3s ease'
+					/>
+					<DarkModeToggle showLabel={false} showHelperText={false} mr={1} w='90px' />
+				</Flex>
 
 				<List
 					spacing={0}
 					w='full'
 					px={0}
-					mt={3}
-					mb={2}
-					fontSize={{ base: 'xs', lg: 'sm' }}
-					transition='all 200ms ease'
+					my={2}
+					fontSize={{ base: 'sm', lg: 'md' }}
+					transition='all 0.3s ease'
 				>
 					{menuItems.map((item, index) => {
 						if (item.isDisabled) return null;
@@ -184,16 +214,6 @@ export default function Sidebar({ ...props }: BoxProps) {
 						);
 					})}
 				</List>
-
-				<DarkModeToggle
-					showLabel={false}
-					showHelperText={false}
-					justifyContent={sidebarExpanded ? 'flex-start' : 'center'}
-					ml={sidebarExpanded ? '12px' : '0'}
-					size='md'
-					transform='scale(0.9)'
-					transition='all 200ms ease'
-				/>
 			</Flex>
 		</Box>
 	) : null;

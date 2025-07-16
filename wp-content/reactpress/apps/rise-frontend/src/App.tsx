@@ -2,13 +2,24 @@
  * Copyright (c) 2024 Maestra Music and Roundhouse Designs. All rights reserved.
  */
 
-import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
+import { Box, Grid, useMediaQuery } from '@chakra-ui/react';
 import { SearchContextProvider } from '@context/SearchContext';
 import Main from '@layout/Main';
 import Sidebar from '@layout/Sidebar';
+import { useEffect, useState } from 'react';
 
 export default function App() {
 	const [isLargerThanMd] = useMediaQuery('(min-width: 36rem)');
+	const [sidebarExpanded, setSidebarExpanded] = useState(false);
+
+	// Initialize sidebar expansion based on screen size
+	useEffect(() => {
+		if (isLargerThanMd) {
+			setSidebarExpanded(true);
+		} else {
+			setSidebarExpanded(false);
+		}
+	}, [isLargerThanMd]);
 
 	return (
 		<Box
@@ -27,10 +38,17 @@ export default function App() {
 		>
 			<SearchContextProvider>
 				<Box h='100%' w='full'>
-					<Flex w='full' h='100%' justifyContent='stretch' alignItems='stretch' position='relative'>
-						<Sidebar />
+					<Grid
+						w='full'
+						h='100%'
+						position='relative'
+						templateAreas='sidebar main'
+						templateColumns={`${sidebarExpanded ? '170px' : '45px'} 1fr`}
+						transition='all 0.3s ease'
+					>
+						<Sidebar sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
 						<Main />
-					</Flex>
+					</Grid>
 				</Box>
 			</SearchContextProvider>
 		</Box>

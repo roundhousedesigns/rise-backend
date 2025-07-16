@@ -228,7 +228,6 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 					<Stack
 						direction='column'
 						w={isLargerThanMd ? '40%' : 'full'}
-						minW='160px'
 						maxW='400px'
 						textAlign='center'
 						gap={4}
@@ -416,7 +415,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 
 						{resume && attachment?.sourceUrl ? (
 							<ProfileStackItem title='Resume'>
-								<Flex gap={0}>
+								<Flex gap={0} maxW='2xs'>
 									<ResumePreviewModal
 										resumePreviewSrc={attachment.sourceUrl}
 										resumeLink={resume}

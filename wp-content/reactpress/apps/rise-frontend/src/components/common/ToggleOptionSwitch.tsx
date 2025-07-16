@@ -66,7 +66,6 @@ export default function ToggleOptionSwitch({
 				onChange={handleChange}
 				isChecked={toggleState}
 				color='inherit'
-				mx={1}
 				colorScheme={colorScheme}
 				aria-label={label}
 				isDisabled={loading}
