@@ -5,6 +5,7 @@ import {
 	Flex,
 	Heading,
 	Highlight,
+	Skeleton,
 	Spinner,
 	Stack,
 	Text,
@@ -23,74 +24,17 @@ import useLazyPositions from '@queries/useLazyPositions';
 import useLazyRelatedSkills from '@queries/useLazyRelatedSkills';
 import usePositions from '@queries/usePositions';
 import useViewer from '@queries/useViewer';
-import { ChangeEvent, memo, useEffect, useReducer, useState } from 'react';
+import { ChangeEvent, memo, useEffect, useState } from 'react';
 import { FiCheck, FiX } from 'react-icons/fi';
-import useUserProfile from '../hooks/queries/useUserProfile';
-
-function editCreditReducer(state: CreditParams, action: { type: string; payload: any }) {
-	switch (action.type) {
-		case 'UPDATE_INPUT':
-			return {
-				...state,
-				[action.payload.name]: action.payload.value,
-			};
-
-		case 'UPDATE_DEPARTMENTS':
-			return {
-				...state,
-				positions: {
-					...state.positions,
-					departments: action.payload.value.map((item: number) => item),
-				},
-			};
-
-		case 'UPDATE_JOBS':
-			return {
-				...state,
-				positions: {
-					...state.positions,
-					jobs: action.payload.value.map((item: number) => item),
-				},
-			};
-
-		case 'UPDATE_SKILLS':
-			return {
-				...state,
-				skills: action.payload.value.map((item: number) => item),
-			};
-
-		case 'INIT':
-		case 'RESET':
-			return action.payload;
-
-		default:
-			return state;
-	}
-}
 
 interface Props {
-	creditId: string;
+	credit: Credit;
 	onClose: () => void;
 }
 
-export default function EditCreditView({ creditId, onClose: closeModal }: Props) {
+export default function EditCreditView({ credit, onClose: closeModal }: Props) {
 	const [{ loggedInId }] = useViewer();
-	const [profile] = useUserProfile(loggedInId);
-
-	const credit =
-		profile?.credits?.find((credit) => credit.id === creditId) ||
-		new Credit({
-			id: creditId,
-			index: 0,
-			positions: { departments: [], jobs: [] },
-			isNew: true,
-		});
-
-	const [editCredit, editCreditDispatch] = useReducer(
-		editCreditReducer,
-		credit ||
-			new Credit({ id: creditId, index: 0, positions: { departments: [], jobs: [] }, isNew: true })
-	);
+	const [editCredit, setEditCredit] = useState<CreditParams>(credit);
 
 	const toast = useToast();
 
@@ -111,6 +55,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 		fellow,
 		positions: { departments: selectedDepartmentIds = [], jobs: selectedJobIds = [] },
 		skills: selectedSkills,
+		isNew,
 	} = editCredit;
 
 	const [allDepartments] = usePositions();
@@ -122,16 +67,29 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 	const [requirementsMet, setRequirementsMet] = useState<boolean>(false);
 	const requiredFields = ['title', 'jobTitle', 'jobLocation', 'venue', 'workStart'];
 
-	// Fetch jobs & skills lists on mount
+	const stringifyCredit = JSON.stringify(credit);
+
+	/**
+	 * Sync the editCredit state with the credit state.
+	 */
+	useEffect(() => {
+		setEditCredit(credit);
+	}, [stringifyCredit]);
+
+	/**
+	 * Refetch jobs & skills lists when the selectedDepartmentIds or selectedJobIds change.
+	 */
 	useEffect(() => {
 		refetchAndSetJobs(selectedDepartmentIds);
 		refetchAndSetSkills(selectedJobIds);
-	}, []);
+	}, [selectedDepartmentIds, selectedJobIds]);
 
-	// Check that all required fields have been filled.
+	/**
+	 * Check that all required fields have been filled.
+	 */
 	useEffect(() => {
 		let allFilled = requiredFields.every((field: string) => {
-			if (!!editCredit[field]) return true;
+			if (!!editCredit[field as keyof CreditParams]) return true;
 
 			return false;
 		});
@@ -145,7 +103,8 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 		setRequirementsMet(allFilled);
 	}, [editCredit]);
 
-	/** Fetches jobs given array of departmentIds, sets jobs
+	/**
+	 * Fetches jobs given array of departmentIds, sets jobs
 	 *
 	 * @returns {Array} returns array of numbers of related/visible jobIds
 	 */
@@ -207,22 +166,27 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 
-		editCreditDispatch({
-			type: 'UPDATE_INPUT',
-			payload: {
-				name,
-				value,
-			},
-		});
+		setEditCredit((prev) => ({
+			...prev,
+			[name as keyof CreditParams]: value,
+		}));
 	};
 
 	const dispatchCheckboxTermChange = (name: string, terms: number[]) => {
-		editCreditDispatch({
-			type: `UPDATE_${name.toUpperCase()}`,
-			payload: {
-				value: terms,
-			},
-		});
+		if (name === 'departments' || name === 'jobs') {
+			setEditCredit((prev) => ({
+				...prev,
+				positions: {
+					...prev.positions,
+					[name]: terms,
+				},
+			}));
+		} else if (name === 'skills') {
+			setEditCredit((prev) => ({
+				...prev,
+				skills: terms,
+			}));
+		}
 	};
 
 	const handleDepartmentsChange = (name: string) => async (terms: string[]) => {
@@ -237,9 +201,8 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 		// update skills to align with selected jobs:
 		const visibleSkills = await refetchAndSetSkills(filteredSelectedJobIds);
-		const filteredSelectedSkillIds = selectedSkills.filter((id: number) =>
-			visibleSkills.includes(id)
-		);
+		const filteredSelectedSkillIds =
+			selectedSkills?.filter((id: number) => visibleSkills.includes(id)) || [];
 		dispatchCheckboxTermChange('skills', filteredSelectedSkillIds);
 	};
 
@@ -250,9 +213,8 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 		// update skills to align with selected jobs:
 		const visibleSkills = await refetchAndSetSkills(termsAsNums);
-		const filteredSelectedSkillIds = selectedSkills.filter((id: number) =>
-			visibleSkills.includes(id)
-		);
+		const filteredSelectedSkillIds =
+			selectedSkills?.filter((id: number) => visibleSkills.includes(id)) || [];
 		dispatchCheckboxTermChange('skills', filteredSelectedSkillIds);
 	};
 
@@ -263,13 +225,10 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 	};
 
 	const handleRadioInputChange = (name: string) => (value: string) => {
-		editCreditDispatch({
-			type: 'UPDATE_INPUT',
-			payload: {
-				name,
-				value: value === 'true' ? true : false,
-			},
-		});
+		setEditCredit((prev) => ({
+			...prev,
+			[name]: value === 'true' ? true : false,
+		}));
 	};
 
 	const handleSubmit = () => {
@@ -304,10 +263,7 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 
 	const handleCancel = () => {
 		closeModal();
-		editCreditDispatch({
-			type: 'RESET',
-			payload: credit,
-		});
+		setEditCredit(credit);
 	};
 
 	const EditCreditButtons = memo(() => {
@@ -334,8 +290,8 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 	});
 
 	return (
-		<>
-			<Flex flex='1' justifyContent='space-between' py={2} mb={2}>
+		<Skeleton isLoaded={!!title || !!isNew}>
+			<Flex flex='1' justifyContent='space-between' py={5} mb={2}>
 				<Heading as='h3' size='lg' lineHeight='base'>
 					Edit Credit
 				</Heading>
@@ -515,7 +471,22 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 							Skills
 						</Heading>
 						<>
-							<Text>Select any skills used on this job.</Text>
+							<Text>
+								<Highlight
+									query={
+										selectedSkills && selectedSkills.length > 0
+											? 'skills'
+											: 'Select any skills used on this job.'
+									}
+									styles={{
+										bg:
+											selectedSkills && selectedSkills.length > 0 ? 'brand.yellow' : 'brand.orange',
+										color: selectedSkills && selectedSkills.length > 0 ? 'text.dark' : 'text.light',
+									}}
+								>
+									Select any skills used on this job.
+								</Highlight>
+							</Text>
 							<ProfileCheckboxGroup
 								name='skills'
 								items={skills}
@@ -534,6 +505,6 @@ export default function EditCreditView({ creditId, onClose: closeModal }: Props)
 			<Flex justifyContent='flex-end' mt={4} mb={0}>
 				<EditCreditButtons />
 			</Flex>
-		</>
+		</Skeleton>
 	);
 }

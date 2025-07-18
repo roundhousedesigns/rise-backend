@@ -80,8 +80,6 @@ const useProfileNotifications = (
 			return new ProfileNotification({ id, title, notificationType, value, isRead, dateTime });
 		}) ?? [];
 
-	console.log(allProfileNotifications);
-
 	return [allProfileNotifications, omit(result, ['data'])];
 };
 
