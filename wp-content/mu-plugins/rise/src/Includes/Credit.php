@@ -264,15 +264,16 @@ class Credit {
 	/**
 	 * Set the credit's `index` field.
 	 *
+	 * @param  int            $new_index The new index to set.
 	 * @return int|false|null The ID of the conflict range on success, false on failure, or null if there was an issue with the Pod itself.
 	 */
-	public function update_index() {
+	public function update_index( $new_index ) {
 		// Get the credit's pod.
 		$pod = \pods( 'credit', $this->credit_id );
 
 		// Update the credit's pod.
 		$update_fields = [
-			'index' => $this->index,
+			'index' => $new_index,
 		];
 
 		return $pod->save( $update_fields );
