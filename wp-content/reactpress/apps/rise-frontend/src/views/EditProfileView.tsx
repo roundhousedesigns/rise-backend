@@ -44,7 +44,6 @@ import EditConflictDateRanges from '@components/EditConflictDateRanges';
 import EditCreditModal from '@components/EditCreditModal';
 import IsOrgToggle from '@components/IsOrgToggle';
 import ResumePreviewModal from '@components/ResumePreviewModal';
-// import { EditProfileContext } from '@context/EditProfileContext';
 import { useErrorMessage, useStringifiedState } from '@hooks/hooks';
 import useClearProfileField from '@hooks/mutations/useClearProfileFileField';
 import useDeleteCredit from '@hooks/mutations/useDeleteCredit';
@@ -63,6 +62,7 @@ import {
 	sortCreditsByIndex,
 } from '@lib/utils';
 import useUserProfile from '@queries/useUserProfile';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import {
@@ -105,7 +105,6 @@ interface FileDropzoneProps {
 export default function EditProfileView(): JSX.Element | null {
 	const [{ loggedInId, loggedInSlug }] = useViewer();
 	const [profile] = useUserProfile(loggedInId);
-	// const { editProfile, editProfileDispatch } = useContext(EditProfileContext);
 	const { colorMode } = useColorMode();
 
 	// Initialize editProfile as null instead of empty UserProfile
@@ -317,6 +316,7 @@ export default function EditProfileView(): JSX.Element | null {
 		const temp = newOrder[index - 1];
 		newOrder[index - 1] = newOrder[index];
 		newOrder[index] = temp;
+
 		setCreditsSorted(newOrder);
 		setHasEditedCreditOrder(true);
 	};
@@ -1343,11 +1343,17 @@ export default function EditProfileView(): JSX.Element | null {
 
 							{/* TODO better reorder and delete animations */}
 
-							{deleteCreditLoading ? (
-								<Spinner size='sm' colorScheme='green' />
-							) : (
-								creditsSorted.map((credit: Credit, index: number) => (
-									<Stack key={credit.id} direction='row' alignItems='center'>
+							<AnimatePresence>
+								{creditsSorted.map((credit: Credit, index: number) => (
+									<Stack
+										key={credit.id}
+										direction='row'
+										alignItems='center'
+										as={motion.div}
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										exit={{ opacity: 0 }}
+									>
 										<CreditItem
 											credit={credit}
 											onClick={() => handleEditCredit(credit.id)}
@@ -1383,8 +1389,8 @@ export default function EditProfileView(): JSX.Element | null {
 											<DeleteCreditButton handleDeleteCredit={handleDeleteCredit} id={credit.id} />
 										</Stack>
 									</Stack>
-								))
-							)}
+								))}
+							</AnimatePresence>
 
 							<EditCreditModal
 								isOpen={creditModalIsOpen}

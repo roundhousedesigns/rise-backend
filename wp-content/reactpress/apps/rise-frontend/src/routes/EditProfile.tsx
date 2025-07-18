@@ -1,6 +1,5 @@
 import { Button, Spinner } from '@chakra-ui/react';
 import ErrorAlert from '@common/ErrorAlert';
-import { EditProfileContextProvider } from '@context/EditProfileContext';
 import Shell from '@layout/Shell';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
@@ -39,17 +38,15 @@ export default function EditProfile() {
 
 	return (
 		<Shell title='Update Profile' actions={<PageActions />}>
-			<EditProfileContextProvider initialState={profile}>
-				{profile && !loading && !error ? (
-					<EditProfileView />
-				) : loading ? (
-					<Spinner alignSelf='center' />
-				) : error ? (
-					<ErrorAlert message={error.message} />
-				) : (
-					''
-				)}
-			</EditProfileContextProvider>
+			{profile && !loading && !error ? (
+				<EditProfileView />
+			) : loading ? (
+				<Spinner alignSelf='center' />
+			) : error ? (
+				<ErrorAlert message={error.message} />
+			) : (
+				''
+			)}
 		</Shell>
 	);
 }
