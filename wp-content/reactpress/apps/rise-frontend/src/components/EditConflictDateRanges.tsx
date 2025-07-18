@@ -19,11 +19,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { FiDelete, FiPlus } from 'react-icons/fi';
 
-export default function EditConflictDateRanges({
-	conflictRanges,
-}: {
+interface Props {
 	conflictRanges: DateRange[];
-}) {
+	showTitle?: boolean;
+}
+
+export default function EditConflictDateRanges({ conflictRanges, showTitle = true }: Props) {
 	const [{ loggedInId }] = useViewer();
 
 	const {
@@ -74,7 +75,7 @@ export default function EditConflictDateRanges({
 
 	return (
 		<>
-			<Heading variant='contentTitle'>Scheduling Conflicts</Heading>
+			{showTitle && <Heading variant='contentTitle'>Scheduling Conflicts</Heading>}
 			<Text fontSize='sm' my={0}>
 				Add your conflict dates here. These will appear on your profile, but will not affect your
 				appearance in search results.

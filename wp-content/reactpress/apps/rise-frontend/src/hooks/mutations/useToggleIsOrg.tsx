@@ -4,6 +4,7 @@
 
 import { gql, useMutation } from '@apollo/client';
 import { QUERY_VIEWER } from '@queries/useViewer';
+import { QUERY_PROFILE } from '../queries/useUserProfile';
 
 const MUTATE_TOGGLE_IS_ORG = gql`
 	mutation ToggleIsOrg($userId: Int!) {
@@ -23,7 +24,14 @@ const useToggleIsOrg = () => {
 				clientMutationId: 'toggleIsOrgMutation',
 				userId,
 			},
-			refetchQueries: [{ query: QUERY_VIEWER }],
+			refetchQueries: [
+				{ query: QUERY_VIEWER },
+				{
+					query: QUERY_PROFILE,
+					variables: { id: userId, author: userId, lastCredits: 5 },
+					fetchPolicy: 'network-only',
+				},
+			],
 		});
 	};
 

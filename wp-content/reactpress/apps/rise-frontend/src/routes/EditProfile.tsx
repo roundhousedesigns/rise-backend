@@ -34,7 +34,12 @@ export default function EditProfile() {
 	const [profile, { loading, error }] = useUserProfile(loggedInId);
 	const ref = useRef<HTMLButtonElement>(null);
 
-	const PageActions = () => <JumpToCreditsButton ref={ref} />;
+	const { isOrg } = profile ?? {};
+
+	const PageActions = () => {
+		if (isOrg) return null;
+		return <JumpToCreditsButton ref={ref} />;
+	};
 
 	return (
 		<Shell title='Update Profile' actions={<PageActions />}>

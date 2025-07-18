@@ -1,9 +1,4 @@
 import {
-	Accordion,
-	AccordionButton,
-	AccordionIcon,
-	AccordionItem,
-	AccordionPanel,
 	Box,
 	BoxProps,
 	Button,
@@ -13,6 +8,7 @@ import {
 	chakra,
 	Checkbox,
 	Collapse,
+	Divider,
 	Flex,
 	Heading,
 	Icon,
@@ -22,6 +18,7 @@ import {
 	Slide,
 	Spinner,
 	Stack,
+	StackProps,
 	Text,
 	useColorMode,
 	useDisclosure,
@@ -114,7 +111,6 @@ export default function EditProfileView(): JSX.Element | null {
 	const {
 		firstName,
 		lastName,
-		isOrg,
 		orgName,
 		pronouns,
 		selfTitle,
@@ -147,11 +143,10 @@ export default function EditProfileView(): JSX.Element | null {
 		mediaImage4,
 		mediaImage5,
 		mediaImage6,
-		// credits,
 	} = editProfile || {};
 
 	// We don't need to use the credits from the editProfile state, because it's not updated when the credits are updated.
-	const credits = profile?.credits;
+	const { credits, isOrg } = profile ?? {};
 
 	const stringifiedProfile = useStringifiedState(profile);
 	const stringifiedEditProfile = useStringifiedState(editProfile);
@@ -177,10 +172,7 @@ export default function EditProfileView(): JSX.Element | null {
 
 	const { updateCreditOrderMutation } = useUpdateCreditOrder();
 
-	const {
-		deleteCreditMutation,
-		results: { loading: deleteCreditLoading },
-	} = useDeleteCredit();
+	const { deleteCreditMutation } = useDeleteCredit();
 
 	const [errorCode, setErrorCode] = useState<string>('');
 	const errorMessage = useErrorMessage(errorCode);
@@ -275,20 +267,6 @@ export default function EditProfileView(): JSX.Element | null {
 			setCreditsSorted([]);
 		};
 	}, [stringifiedCredits]);
-
-	////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////
-
-	/**
-	 * Set the original profile to the current profile when it is loaded.
-	 */
-	// useEffect(() => {
-	// 	// if (!editProfile || !!originalProfile.current) return;
-	// 	if (!editProfile || !!profile) return;
-
-	// 	// originalProfile.current = editProfile;
-	// 	originalProfile.current = profile;
-	// }, [editProfile]);
 
 	/**
 	 * If credits are changed, update the creditsSorted state.
@@ -719,10 +697,10 @@ export default function EditProfileView(): JSX.Element | null {
 		<Spinner thickness='5px' speed='800ms' color='blue.500' size='xl' />
 	);
 
-	const EditProfileSidebar = ({ ...props }: BoxProps) => (
-		<Box {...props}>
+	const EditProfileSidebar = ({ ...props }: StackProps) => (
+		<Stack gap={4} {...props}>
 			<Box>
-				<Heading variant='pageSubtitle' my={0}>
+				<Heading variant='fieldSectionTitle' my={0}>
 					Profile image
 				</Heading>
 				<Text fontSize='sm' m={0}>
@@ -745,7 +723,7 @@ export default function EditProfileView(): JSX.Element | null {
 								borderRadius='md'
 							/>
 							<ClearFieldButton field='image' label='Remove image' mt={2}>
-								Remove
+								Delete image
 							</ClearFieldButton>
 						</>
 					) : (
@@ -760,14 +738,23 @@ export default function EditProfileView(): JSX.Element | null {
 				</Box>
 			</Box>
 
-			{!isOrg && (
-				<Card>
-					<Box>
-						<EditConflictDateRanges conflictRanges={conflictRanges || []} />
-					</Box>
+			<Divider mb={0} />
+
+			<ProfileStackItem title='Options'>
+				<Card my={0}>
+					{!isOrg && <DisableProfileToggle showHelperText showLabel />}
+					<IsOrgToggle showHelperText showLabel />
 				</Card>
+			</ProfileStackItem>
+
+			{!isOrg && (
+				<ProfileStackItem title='Scheduling Conflicts'>
+					<Card my={0}>
+						<EditConflictDateRanges conflictRanges={conflictRanges || []} showTitle={false} />
+					</Card>
+				</ProfileStackItem>
 			)}
-		</Box>
+		</Stack>
 	);
 
 	// TODO Move to component
@@ -912,35 +899,16 @@ export default function EditProfileView(): JSX.Element | null {
 
 	return editProfile ? (
 		<chakra.form id='edit-profile' onSubmit={handleSubmit}>
-			<Stack direction='column' flexWrap='nowrap' gap={4} position='relative'>
-				<ProfileStackItem mt={4} mb={0}>
-					<Accordion allowToggle>
-						<AccordionItem>
-							<Heading as='h3' m={0}>
-								<AccordionButton>
-									<Box as='span' fontWeight='normal'>
-										Options
-									</Box>
-									<AccordionIcon />
-								</AccordionButton>
-							</Heading>
-							<AccordionPanel>
-								<Stack gap={2}>
-									{!isOrg && (
-										// Don't show this toggle if the user is a company.
-										<Card py={2} my={0}>
-											<DisableProfileToggle showHelperText showLabel />
-										</Card>
-									)}
-
-									<Card py={2} my={0}>
-										<IsOrgToggle showHelperText showLabel />
-									</Card>
-								</Stack>
-							</AccordionPanel>
-						</AccordionItem>
-					</Accordion>
-				</ProfileStackItem>
+			<Stack
+				direction='column'
+				flexWrap='nowrap'
+				gap={4}
+				position='relative'
+				borderTop='1px solid'
+				borderColor='gray.200'
+				mt={4}
+				pt={2}
+			>
 				<ProfileStackItem>
 					<Flex alignItems='flex-start' flexWrap='wrap' mt={2}>
 						{isLargerThanMd ? (
@@ -1009,6 +977,7 @@ export default function EditProfileView(): JSX.Element | null {
 									)}
 								</Flex>
 							</ProfileStackItem>
+
 							<ProfileStackItem title='Profession'>
 								<Flex alignItems='flex-start' gap={2} flexWrap='wrap' w='full' mt={4}>
 									<TextInput
