@@ -14,5 +14,5 @@
 .wp-block-heading h4,
 .wp-block-heading h5,
 .wp-block-heading h6 {
-	font-family: var(--wp--custom--font-family--heading);
+	font-family: var(--wp--custom--font-family--special);
 }

@@ -16,7 +16,7 @@ const ProfilePercentComplete = ({ ...props }: ProgressProps) => {
 				borderRadius='md'
 				{...props}
 			/>
-			<Text mt={1} mb={0} fontSize='2xs' textAlign='right' fontStyle='italic' fontFamily='heading'>
+			<Text mt={1} mb={0} fontSize='2xs' textAlign='right' fontStyle='italic' fontFamily='special'>
 				{`Profile ${percentComplete}% complete`}
 			</Text>
 		</Box>

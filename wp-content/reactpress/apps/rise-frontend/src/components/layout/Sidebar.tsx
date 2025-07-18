@@ -4,6 +4,7 @@ import {
 	Button,
 	Circle,
 	Flex,
+	Heading,
 	Icon,
 	IconButton,
 	List,
@@ -21,7 +22,9 @@ import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
 import ProfileNotificationItem from '@components/ProfileNotificationItem';
 import { SearchContext } from '@context/SearchContext';
+import useDismissProfileNotifications from '@mutations/useDismissProfileNotifications';
 import useLogout from '@mutations/useLogout';
+import useMarkProfileNotificationsAsRead from '@mutations/useMarkProfileNotificationsAsRead';
 import useProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
@@ -59,6 +62,8 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 	const [{ loggedInId, loggedInSlug, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
 	const [sidebarHeight, setSidebarHeight] = useState('100vh');
+	const { markProfileNotificationsAsReadMutation } = useMarkProfileNotificationsAsRead();
+	const { dismissProfileNotificationsMutation } = useDismissProfileNotifications();
 
 	const {
 		search: { results },
@@ -165,11 +170,30 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 		},
 	];
 
+	const markAllNotificationsAsRead = () => {
+		markProfileNotificationsAsReadMutation(
+			unread.map((notification) => {
+				return notification.id;
+			})
+		);
+	};
+
+	const deleteAllNotifications = () => {
+		const allNotifications = [...unread, ...read];
+
+		dismissProfileNotificationsMutation(
+			allNotifications.map((notification) => {
+				return notification.id;
+			})
+		);
+	};
+
 	return loggedInId ? (
 		<Box
 			id='sidebar'
 			minH='100%'
-			py={0}
+			pt={0}
+			pb={0}
 			_light={{ bg: 'blackAlpha.800', color: 'text.light' }}
 			_dark={{ bg: 'gray.800', color: 'text.light' }}
 			overflow='hidden'
@@ -178,12 +202,91 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			aria-expanded={sidebarExpanded}
 			{...props}
 		>
+			<Popover isLazy placement='right-end'>
+				<PopoverTrigger>
+					<Button
+						position='relative'
+						colorScheme={(unread && unread.length > 0) || (read && read.length > 0) ? 'yellow' : ''}
+						tabIndex={0}
+						px={0}
+						size='sm'
+						m={2}
+					>
+						<Icon as={FiBell} boxSize={5} />
+						{unread.length > 0 && (
+							<Circle
+								size={3}
+								bg='brand.orange'
+								color='white'
+								position='absolute'
+								bottom={1.5}
+								right={2.5}
+								fontSize='3xs'
+							>
+								{unread.length}
+							</Circle>
+						)}
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent>
+					<PopoverArrow />
+					<PopoverCloseButton />
+					<PopoverHeader fontFamily='special'>
+						<Flex justifyContent='space-between' alignItems='center' w='full'>
+							<Heading variant='contentSubtitle' my={0}>
+								Notifications
+							</Heading>
+							{unread.length > 0 && (
+								<Button onClick={markAllNotificationsAsRead} size='xs' colorScheme='yellow'>
+									Mark all as read
+								</Button>
+							)}
+							{read.length > 0 && (
+								<Button onClick={deleteAllNotifications} size='xs' colorScheme='yellow'>
+									Delete all
+								</Button>
+							)}
+						</Flex>
+					</PopoverHeader>
+					<PopoverBody>
+						{unread.length === 0 && read.length === 0 && (
+							<Text fontSize='xs' my={0}>
+								You're all caught up!
+							</Text>
+						)}
+
+						<AnimatePresence>
+							<List>
+								{unread.map((notification) => (
+									<ListItem
+										key={notification.id}
+										as={motion.li}
+										initial={{ opacity: 1 }}
+										animate={{ opacity: 1 }}
+										exit={{ opacity: 0 }}
+									>
+										<ProfileNotificationItem notification={notification} />
+									</ListItem>
+								))}
+							</List>
+						</AnimatePresence>
+						<AnimatePresence>
+							<List>
+								{read.map((notification) => (
+									<ListItem as={motion.li} key={notification.id}>
+										<ProfileNotificationItem notification={notification} />
+									</ListItem>
+								))}
+							</List>
+						</AnimatePresence>
+					</PopoverBody>
+				</PopoverContent>
+			</Popover>
 			<Flex
 				h={sidebarHeight}
 				w='full'
 				mt={0}
 				mx={0}
-				pt={3}
 				flexDirection='column'
 				flexWrap='nowrap'
 				alignItems='center'
@@ -193,64 +296,12 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 				_light={{ borderColor: 'text.dark' }}
 				_dark={{ borderColor: 'gray.800' }}
 			>
-				<Popover isLazy>
-					<PopoverTrigger>
-						<Button position='relative' colorScheme='yellow' variant='ghost' tabIndex={0}>
-							<Icon as={FiBell} boxSize={5} />
-							{unread.length > 0 && (
-								<Circle
-									size={3}
-									bg='brand.orange'
-									color='white'
-									position='absolute'
-									bottom={1.5}
-									right={2.5}
-									fontSize='3xs'
-								>
-									{unread.length}
-								</Circle>
-							)}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent>
-						<PopoverArrow />
-						<PopoverCloseButton />
-						<PopoverHeader fontFamily='heading'>Notifications</PopoverHeader>
-						<PopoverBody>
-							{unread.length === 0 && read.length === 0 && <Text>No notifications</Text>}
-							<AnimatePresence>
-								<List>
-									{unread.map((notification) => (
-										<ListItem
-											key={notification.id}
-											as={motion.li}
-											initial={{ opacity: 1 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-										>
-											<ProfileNotificationItem notification={notification} />
-										</ListItem>
-									))}
-								</List>
-							</AnimatePresence>
-							<AnimatePresence>
-								<List>
-									{read.map((notification) => (
-										<ListItem as={motion.li} key={notification.id}>
-											<ProfileNotificationItem notification={notification} />
-										</ListItem>
-									))}
-								</List>
-							</AnimatePresence>
-						</PopoverBody>
-					</PopoverContent>
-				</Popover>
-
 				<List
 					spacing={0}
 					w='full'
 					px={0}
-					my={2}
+					mt={0}
+					mb={3}
 					fontSize={{ base: 'sm', lg: 'md' }}
 					transition='all 0.3s ease'
 				>

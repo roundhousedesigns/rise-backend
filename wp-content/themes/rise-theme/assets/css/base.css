@@ -114,7 +114,7 @@ input[type="submit"] {
 	padding: 0.5em 1em;
 	border-radius: var(--wp--custom--border-radius--radius);
 	font-size: var(--wp--preset--font-size--medium);
-	font-family: var(--wp--custom--font-family--heading);
+	font-family: var(--wp--custom--font-family--special);
 	cursor: pointer;
 	opacity: 0.9;
 	transition: opacity 0.3s ease;
@@ -122,4 +122,8 @@ input[type="submit"] {
 	&:hover {
 		opacity: 1;
 	}
+}
+
+select {
+	border-radius: var(--wp--custom--border-radius--radius);
 }

@@ -508,7 +508,7 @@
 /* Container for content above the chevron */
 .chevron-banner {
 	position: relative;
-	padding-bottom: 10vh;
+	padding-bottom: 100px;
 	/* Same as chevron height */
 	margin-bottom: -50px;
 	/* Pull up the chevron */

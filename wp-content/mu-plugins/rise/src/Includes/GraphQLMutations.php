@@ -47,8 +47,8 @@ class GraphQLMutations {
 		$this->register_mutation__updateOrCreateConflictRange();
 		$this->register_mutation__toggleUserOption( 'toggleDisableProfile', 'disable_profile', 'updatedDisableProfile' );
 		$this->register_mutation__toggleUserOption( 'toggleIsOrg', 'is_org', 'updatedIsOrg' );
-		$this->register_mutation__markProfileNotificationAsRead();
-		$this->register_mutation__dismissProfileNotification();
+		$this->register_mutation__markProfileNotificationsAsRead();
+		$this->register_mutation__dismissProfileNotifications();
 	}
 
 	/**
@@ -985,17 +985,17 @@ class GraphQLMutations {
 	}
 
 	/**
-	 * Register the markProfileNotificationAsRead mutation.
+	 * Register the markProfileNotificationsAsRead mutation.
 	 *
 	 * @return void
 	 */
-	private function register_mutation__markProfileNotificationAsRead() {
+	private function register_mutation__markProfileNotificationsAsRead() {
 		\register_graphql_mutation(
-			'markProfileNotificationAsRead',
+			'markProfileNotificationsAsRead',
 			[
 				'inputFields'         => [
-					'id' => [
-						'type'        => ['non_null' => 'ID'],
+					'ids' => [
+						'type'        => ['list_of' => 'ID'],
 						'description' => __( 'The ID of the notification to mark as read.', 'rise' ),
 					],
 				],
@@ -1006,8 +1006,12 @@ class GraphQLMutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					$notification_id = $input['id'];
-					$user_id         = get_current_user_id();
+					$notification_ids = $input['ids'];
+					$user_id          = get_current_user_id();
+
+					$payload = [
+						'success' => false,
+					];
 
 					if ( !$user_id ) {
 						return [
@@ -1015,36 +1019,42 @@ class GraphQLMutations {
 						];
 					}
 
-					// Verify the notification belongs to the current user
-					$notification_author_id = absint( get_post_field( 'post_author', $notification_id ) );
+					foreach ( $notification_ids as $notification_id ) {
+						// Verify the notification belongs to the current user
+						$notification_author_id = absint( get_post_field( 'post_author', $notification_id ) );
 
-					if ( !$notification_author_id || $notification_author_id !== $user_id ) {
-						throw new UserError( 'You are not authorized to mark this notification as read.' );
+						if ( !$notification_author_id || $notification_author_id !== $user_id ) {
+							throw new UserError( 'You are not authorized to mark this notification as read.' );
+						}
+
+						$result = ProfileNotification::mark_notification_as_read( $notification_id );
+
+						if ( !$result ) {
+							return $payload;
+						}
 					}
 
-					$success = ProfileNotification::mark_notification_as_read( $notification_id );
+					$payload['success'] = true;
 
-					return [
-						'success' => $success,
-					];
+					return $payload;
 				},
 			]
 		);
 	}
 
 	/**
-	 * Register the dismissProfileNotification mutation.
+	 * Register the dismissProfileNotifications mutation.
 	 *
 	 * @return void
 	 */
-	private function register_mutation__dismissProfileNotification() {
+	private function register_mutation__dismissProfileNotifications() {
 		\register_graphql_mutation(
-			'dismissProfileNotification',
+			'dismissProfileNotifications',
 			[
 				'inputFields'         => [
-					'id' => [
-						'type'        => ['non_null' => 'ID'],
-						'description' => __( 'The ID of the notification to dismiss.', 'rise' ),
+					'ids' => [
+						'type'        => ['list_of' => 'ID'],
+						'description' => __( 'The IDs of the notifications to dismiss.', 'rise' ),
 					],
 				],
 				'outputFields'        => [
@@ -1054,19 +1064,31 @@ class GraphQLMutations {
 					],
 				],
 				'mutateAndGetPayload' => function ( $input ) {
-					$notification_id = $input['id'];
-					$user_id         = get_current_user_id();
-					$author_id       = absint( get_post_field( 'post_author', $notification_id ) );
+					$notification_ids = $input['ids'];
+					$user_id          = get_current_user_id();
 
-					if ( !$user_id || $author_id !== $user_id ) {
-						throw new UserError( 'You are not authorized to dismiss this notification.' );
+					$payload = [
+						'success' => false,
+					];
+
+					foreach ( $notification_ids as $notification_id ) {
+						$author_id = absint( get_post_field( 'post_author', $notification_id ) );
+
+						if ( !$user_id || $author_id !== $user_id ) {
+							throw new UserError( 'You are not authorized to dismiss this notification.' );
+						}
+
+						$success = ProfileNotification::dismiss_notification( $notification_id );
+
+						if ( !$success ) {
+							// TODO: Add error code for this.
+							return $payload;
+						}
 					}
 
-					$success = ProfileNotification::dismiss_notification( $notification_id );
+					$payload['success'] = true;
 
-					return [
-						'success' => $success,
-					];
+					return $payload;
 				},
 			]
 		);

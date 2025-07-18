@@ -17,6 +17,7 @@ import {
 import BackToLoginButton from '@common/BackToLoginButton';
 import TextInput from '@common/inputs/TextInput';
 import RequiredAsterisk from '@common/RequiredAsterisk';
+import ToggleOptionSwitch from '@common/ToggleOptionSwitch';
 import Turnstile from '@common/Turnstile';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
 import { RegisterUserInput } from '@lib/types';
@@ -26,7 +27,6 @@ import parse from 'html-react-parser';
 import { ChangeEvent, FormEvent, SetStateAction, useEffect, useState } from 'react';
 import { FiBriefcase, FiUser } from 'react-icons/fi';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import ToggleOptionSwitch from '../components/common/ToggleOptionSwitch';
 
 export default function RegisterView() {
 	const { VITE_DEV_MODE } = import.meta.env;

@@ -37,6 +37,8 @@ const useProfileNotifications = (
 			authorId,
 			limit,
 		},
+		// pollInterval: 10000,
+		pollInterval: 2000,
 		fetchPolicy: 'cache-and-network',
 	});
 

@@ -1,8 +1,8 @@
 import { Box, Flex, Icon, IconButton, Link, Text } from '@chakra-ui/react';
 import { useProfileUrl } from '@hooks/hooks';
 import { Candidate, ProfileNotification } from '@lib/classes';
-import useDismissProfileNotification from '@mutations/useDismissProfileNotification';
-import useMarkProfileNotificationAsRead from '@mutations/useMarkProfileNotificationAsRead';
+import useDismissProfileNotifications from '@mutations/useDismissProfileNotifications';
+import useMarkProfileNotificationsAsRead from '@mutations/useMarkProfileNotificationsAsRead';
 import useCandidates from '@queries/useCandidates';
 import { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
@@ -17,20 +17,21 @@ export default function ProfileNotificationItem({ notification }: Props) {
 	const { id, notificationType, value, title, dateTime, isRead } = notification;
 	const [userProfile, setUserProfile] = useState<Candidate | null>(null);
 	const profileUrl = useProfileUrl(userProfile?.slug || '');
-	const { markProfileNotificationAsReadMutation } = useMarkProfileNotificationAsRead();
-	const { dismissProfileNotificationMutation } = useDismissProfileNotification();
+	const { markProfileNotificationsAsReadMutation } = useMarkProfileNotificationsAsRead();
+	const { dismissProfileNotificationsMutation } = useDismissProfileNotifications();
 
-	// Parse profile ID from notification value if needed
-	const profileId = notificationType === 'starred_profile_updated' ? parseInt(value) : null;
-
-	const [profiles] = useCandidates(profileId ? [profileId] : []);
+	// Notification type: starred_profile_updated
+	// `value` is the profile ID of the starred profile
+	const [profiles] = useCandidates(
+		notificationType === 'starred_profile_updated' ? [parseInt(value)] : []
+	);
 
 	const handleMarkAsRead = () => {
-		markProfileNotificationAsReadMutation(id);
+		markProfileNotificationsAsReadMutation([id]);
 	};
 
 	const handleDismiss = () => {
-		dismissProfileNotificationMutation(id);
+		dismissProfileNotificationsMutation([id]);
 	};
 
 	// Update user profile when candidates are loaded
@@ -53,7 +54,7 @@ export default function ProfileNotificationItem({ notification }: Props) {
 			: '';
 
 	return (
-		<Box>
+		<Box onMouseEnter={handleMarkAsRead} onFocus={handleMarkAsRead}>
 			<Flex fontSize='sm' w='full' m={0} alignItems='center' justifyContent='space-between' gap={2}>
 				<Flex alignItems='center' gap={1}>
 					{!isRead && (
@@ -61,13 +62,7 @@ export default function ProfileNotificationItem({ notification }: Props) {
 					)}
 					<Box>
 						{link ? (
-							<Link
-								as={RouterLink}
-								to={link}
-								m={0}
-								onClick={handleMarkAsRead}
-								fontWeight={isRead ? 'normal' : 'bold'}
-							>
+							<Link as={RouterLink} to={link} m={0} fontWeight={isRead ? 'normal' : 'bold'}>
 								{title}
 							</Link>
 						) : (

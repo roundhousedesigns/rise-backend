@@ -96,7 +96,7 @@ export default function CreditItem({
 
 	const InternFellowBadges = ({ ...props }: FlexProps): JSX.Element | null =>
 		intern || fellow ? (
-			<Flex color='brand.yellow' fontFamily='heading' gap={1} fontSize='sm' {...props}>
+			<Flex color='brand.yellow' fontFamily='special' gap={1} fontSize='sm' {...props}>
 				<RiseStar px={0} mx={0} fontSize='sm' />
 				<Text textTransform='none' my={0}>
 					{intern ? 'Internship' : ''}
@@ -136,7 +136,7 @@ export default function CreditItem({
 									textTransform='none'
 								>{` ${yearString()}`}</Badge>
 							</Flex>
-							<Box my={0} fontFamily='heading'>
+							<Box my={0} fontFamily='special'>
 								{jobTitle && (
 									<WrapWithIcon icon={FiBriefcase} my={0}>
 										{jobTitle}

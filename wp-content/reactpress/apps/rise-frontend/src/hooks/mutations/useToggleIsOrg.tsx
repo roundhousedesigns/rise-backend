@@ -3,8 +3,8 @@
  */
 
 import { gql, useMutation } from '@apollo/client';
+import { QUERY_PROFILE } from '@queries/useUserProfile';
 import { QUERY_VIEWER } from '@queries/useViewer';
-import { QUERY_PROFILE } from '../queries/useUserProfile';
 
 const MUTATE_TOGGLE_IS_ORG = gql`
 	mutation ToggleIsOrg($userId: Int!) {

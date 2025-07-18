@@ -1,0 +1,84 @@
+/* Bloomerang Self-Hosted Form */
+
+#donation-form-container {
+	background: var(--wp--preset--color--light-gray);
+	padding: 2em;
+	border-radius: var(--wp--custom--border-radius--radius);
+}
+
+.donation-form {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+
+	.section {
+		flex: 1 0 50%;
+		padding: 1em 2em;
+
+		&.donation,
+		&.true-impact,
+		&.captcha {
+			flex: 0 0 100%;
+			width: 100%;
+			text-align: center;
+		}
+
+		&.captcha {
+			padding-top: 0;
+
+			&>div {
+				display: flex;
+				justify-content: center;
+			}
+		}
+
+		.payment {
+			#card-element {
+				border-radius: var(--wp--custom--border-radius--radius);
+				border-color: transparent;
+				transform: scale(1.3);
+				transform-origin: left;
+				max-width: 212px;
+			}
+		}
+	}
+
+	.btn-group {
+		flex: 0 0 100%;
+		font-family: var(--wp--custom--font-family--special);
+
+		.btn-submit-donation {
+			padding: 0.5em 1em;
+			font-size: var(--wp--preset--font-size--medium);
+		}
+	}
+
+	.field {
+
+		input {
+
+			&[type="text"],
+			&[type="email"],
+			&[type="tel"],
+			&[type="number"] {
+				padding: 4px 6px;
+			}
+
+		}
+
+		input,
+		textarea,
+		select {
+			font-size: var(--wp--preset--font-size--medium);
+			border-color: transparent;
+		}
+
+		input {
+			padding: 4px 8px;
+
+			&.otherAmount {
+				width: 70px;
+			}
+		}
+	}
+}

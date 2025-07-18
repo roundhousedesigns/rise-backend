@@ -167,7 +167,7 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 							pt={0}
 							lineHeight='normal'
 							fontSize='sm'
-							fontFamily='heading'
+							fontFamily='special'
 							flexGrow='1'
 							sx={{
 								visibility: labelHidden ? 'hidden' : 'visible',

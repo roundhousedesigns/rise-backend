@@ -10,37 +10,37 @@
 		"elements": {
 			"h1": {
 				"typography": {
-					"fontFamily": "var(--wp--custom--font-family--heading)",
+					"fontFamily": "var(--wp--custom--font-family--special)",
 					"lineHeight": "1.2"
 				}
 			},
 			"h2": {
 				"typography": {
-					"fontFamily": "var(--wp--custom--font-family--heading)",
+					"fontFamily": "var(--wp--custom--font-family--special)",
 					"lineHeight": "1.2"
 				}
 			},
 			"h3": {
 				"typography": {
-					"fontFamily": "var(--wp--custom--font-family--heading)",
+					"fontFamily": "var(--wp--custom--font-family--special)",
 					"lineHeight": "1.1"
 				}
 			},
 			"h4": {
 				"typography": {
-					"fontFamily": "var(--wp--custom--font-family--heading)",
+					"fontFamily": "var(--wp--custom--font-family--special)",
 					"lineHeight": "1.3"
 				}
 			},
 			"h5": {
 				"typography": {
-					"fontFamily": "var(--wp--custom--font-family--heading)",
+					"fontFamily": "var(--wp--custom--font-family--special)",
 					"lineHeight": "1.4"
 				}
 			},
 			"h6": {
 				"typography": {
-					"fontFamily": "var(--wp--custom--font-family--heading)",
+					"fontFamily": "var(--wp--custom--font-family--special)",
 					"lineHeight": "1.4"
 				}
 			}
@@ -114,6 +114,11 @@
 					"name": "Dark Gray",
 					"slug": "dark-gray",
 					"color": "#1A2231"
+				},
+				{
+					"name": "Light Gray",
+					"slug": "light-gray",
+					"color": "#E3E6E8"
 				},
 				{
 					"name": "Background (Dark)",
@@ -207,7 +212,7 @@
 		},
 		"custom": {
 			"fontFamily": {
-				"heading": "\"Stabil Grotesk\", sans-serif",
+				"special": "\"Stabil Grotesk\", sans-serif",
 				"body": "\"Victor Serif\", serif"
 			},
 			"borderRadius": {

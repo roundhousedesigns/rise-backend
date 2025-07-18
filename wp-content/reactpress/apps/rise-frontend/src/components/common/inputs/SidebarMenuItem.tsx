@@ -65,7 +65,6 @@ export default function SidebarMenuItem({
 					left={isExpanded ? 0 : 3}
 					opacity={isExpanded ? 1 : 0}
 					transition='all 0.3s ease-in-out'
-					fontFamily='special'
 				>
 					{children}
 				</Text>
