@@ -291,220 +291,230 @@ export default function EditCreditView({ credit, onClose: closeModal }: Props) {
 
 	return (
 		<Skeleton isLoaded={!!title || !!isNew}>
-			<Flex flex='1' justifyContent='space-between' py={5} mb={2}>
-				<Heading as='h3' size='lg' lineHeight='base'>
-					Edit Credit
-				</Heading>
-				<EditCreditButtons />
-			</Flex>
-
-			<Flex gap={4}>
-				<TextInput
-					name='title'
-					label='Company/Production Name'
-					value={title}
-					isRequired
-					onChange={handleInputChange}
-					debounceTime={300}
-				/>
-
-				<TextInput
-					name='jobTitle'
-					label='Job/Position Title'
-					isRequired
-					value={jobTitle}
-					onChange={handleInputChange}
-					debounceTime={300}
-				/>
-			</Flex>
-
-			<Flex justifyContent='space-between' w='full' gap={4} flexWrap='wrap' mt={1}>
-				<TextInput
-					name='workStart'
-					label='Start year'
-					isRequired
-					value={workStart}
-					onChange={handleInputChange}
-					flex='1'
-					debounceTime={300}
-				/>
-
-				<TextInput
-					name='workEnd'
-					label='End year'
-					value={!workCurrent ? workEnd : ''}
-					isDisabled={workCurrent}
-					onChange={handleInputChange}
-					flex='1'
-					debounceTime={300}
-				/>
-
-				<ProfileRadioGroup
-					defaultValue={workCurrent ? 'true' : 'false'}
-					name='workCurrent'
-					label='Currently working here'
-					items={[
-						{ label: 'Yes', value: 'true' },
-						{ label: 'No', value: 'false' },
-					]}
-					handleChange={handleRadioInputChange}
-				/>
-			</Flex>
-
-			<Flex justifyContent='space-between' w='full' gap={4} flexWrap='wrap' mt={1}>
-				<TextInput
-					name='venue'
-					label='Venue'
-					value={venue}
-					onChange={handleInputChange}
-					isRequired
-					flex='1'
-					debounceTime={300}
-				/>
-
-				<TextInput
-					name='jobLocation'
-					label='Job Location'
-					value={jobLocation}
-					isRequired
-					onChange={handleInputChange}
-					flex='1'
-					debounceTime={300}
-				/>
-			</Flex>
-
-			<Flex justifyContent='flex-start' w='full' gap={4} flexWrap='wrap' mt={1}>
-				<ProfileRadioGroup
-					defaultValue={intern ? 'true' : 'false'}
-					name='intern'
-					label={`This ${workCurrent ? 'is' : 'was'} an internship`}
-					items={[
-						{ label: 'Yes', value: 'true' },
-						{ label: 'No', value: 'false' },
-					]}
-					handleChange={handleRadioInputChange}
-				/>
-
-				<ProfileRadioGroup
-					defaultValue={fellow ? 'true' : 'false'}
-					name='fellow'
-					label={`This ${workCurrent ? 'is' : 'was'} a fellowship`}
-					items={[
-						{ label: 'Yes', value: 'true' },
-						{ label: 'No', value: 'false' },
-					]}
-					handleChange={handleRadioInputChange}
-				/>
-			</Flex>
-
-			<Divider />
-
-			<Stack direction='column' spacing={6} fontSize='md'>
-				<Box>
-					<Heading as='h4' variant='contentTitle'>
-						Department
-						<RequiredAsterisk fontSize='md' position='relative' top={-1} />
+			<Box
+				opacity={updateCreditLoading ? 0.5 : 1}
+				pointerEvents={updateCreditLoading ? 'none' : 'auto'}
+			>
+				<Flex flex='1' justifyContent='space-between' py={5} mb={2}>
+					<Heading as='h3' size='lg' lineHeight='base'>
+						Edit Credit
 					</Heading>
-					<Text>
-						<Highlight
-							query={
-								selectedDepartmentIds.length > 0
-									? 'departments'
-									: 'Select all departments you worked under.'
-							}
-							styles={{
-								bg: selectedDepartmentIds.length > 0 ? 'brand.yellow' : 'brand.orange',
-								color: selectedDepartmentIds.length > 0 ? 'text.dark' : 'text.light',
-							}}
-						>
-							Select all departments you worked under in this position.
-						</Highlight>
-					</Text>
-					<ProfileCheckboxGroup
-						name='departments'
-						items={allDepartments}
-						checked={
-							selectedDepartmentIds
-								? selectedDepartmentIds.map((item: number) => item.toString())
-								: []
-						}
-						handleChange={handleDepartmentsChange}
+					<EditCreditButtons />
+				</Flex>
+
+				<Flex gap={4}>
+					<TextInput
+						name='title'
+						label='Company/Production Name'
+						value={title}
+						isRequired
+						onChange={handleInputChange}
+						debounceTime={300}
 					/>
-				</Box>
-				{selectedDepartmentIds.length && !jobsLoading ? (
+
+					<TextInput
+						name='jobTitle'
+						label='Job/Position Title'
+						isRequired
+						value={jobTitle}
+						onChange={handleInputChange}
+						debounceTime={300}
+					/>
+				</Flex>
+
+				<Flex justifyContent='space-between' w='full' gap={4} flexWrap='wrap' mt={1}>
+					<TextInput
+						name='workStart'
+						label='Start year'
+						isRequired
+						value={workStart}
+						onChange={handleInputChange}
+						flex='1'
+						debounceTime={300}
+					/>
+
+					<TextInput
+						name='workEnd'
+						label='End year'
+						value={!workCurrent ? workEnd : ''}
+						isDisabled={workCurrent}
+						onChange={handleInputChange}
+						flex='1'
+						debounceTime={300}
+					/>
+
+					<ProfileRadioGroup
+						defaultValue={workCurrent ? 'true' : 'false'}
+						name='workCurrent'
+						label='Currently working here'
+						items={[
+							{ label: 'Yes', value: 'true' },
+							{ label: 'No', value: 'false' },
+						]}
+						handleChange={handleRadioInputChange}
+					/>
+				</Flex>
+
+				<Flex justifyContent='space-between' w='full' gap={4} flexWrap='wrap' mt={1}>
+					<TextInput
+						name='venue'
+						label='Venue'
+						value={venue}
+						onChange={handleInputChange}
+						isRequired
+						flex='1'
+						debounceTime={300}
+					/>
+
+					<TextInput
+						name='jobLocation'
+						label='Job Location'
+						value={jobLocation}
+						isRequired
+						onChange={handleInputChange}
+						flex='1'
+						debounceTime={300}
+					/>
+				</Flex>
+
+				<Flex justifyContent='flex-start' w='full' gap={4} flexWrap='wrap' mt={1}>
+					<ProfileRadioGroup
+						defaultValue={intern ? 'true' : 'false'}
+						name='intern'
+						label={`This ${workCurrent ? 'is' : 'was'} an internship`}
+						items={[
+							{ label: 'Yes', value: 'true' },
+							{ label: 'No', value: 'false' },
+						]}
+						handleChange={handleRadioInputChange}
+					/>
+
+					<ProfileRadioGroup
+						defaultValue={fellow ? 'true' : 'false'}
+						name='fellow'
+						label={`This ${workCurrent ? 'is' : 'was'} a fellowship`}
+						items={[
+							{ label: 'Yes', value: 'true' },
+							{ label: 'No', value: 'false' },
+						]}
+						handleChange={handleRadioInputChange}
+					/>
+				</Flex>
+
+				<Divider />
+
+				<Stack direction='column' spacing={6} fontSize='md'>
 					<Box>
 						<Heading as='h4' variant='contentTitle'>
-							Position
+							Department
 							<RequiredAsterisk fontSize='md' position='relative' top={-1} />
 						</Heading>
-						<>
-							<Text>
-								<Highlight
-									query={
-										selectedJobIds.length > 0 ? 'jobs' : 'Select all jobs you held on this project.'
-									}
-									styles={{
-										bg: selectedJobIds.length > 0 ? 'brand.yellow' : 'brand.orange',
-										color: selectedJobIds.length > 0 ? 'text.dark' : 'text.light',
-									}}
-								>
-									Select all jobs you held on this project.
-								</Highlight>
-							</Text>
-							<ProfileCheckboxGroup
-								name='jobs'
-								items={jobs}
-								checked={
-									selectedJobIds ? selectedJobIds.map((item: number) => item.toString()) : []
+						<Text>
+							<Highlight
+								query={
+									selectedDepartmentIds.length > 0
+										? 'departments'
+										: 'Select all departments you worked under.'
 								}
-								handleChange={handleJobsChange}
-							/>
-						</>
+								styles={{
+									bg: selectedDepartmentIds.length > 0 ? 'brand.yellow' : 'brand.orange',
+									color: selectedDepartmentIds.length > 0 ? 'text.dark' : 'text.light',
+								}}
+							>
+								Select all departments you worked under in this position.
+							</Highlight>
+						</Text>
+						<ProfileCheckboxGroup
+							name='departments'
+							items={allDepartments}
+							checked={
+								selectedDepartmentIds
+									? selectedDepartmentIds.map((item: number) => item.toString())
+									: []
+							}
+							handleChange={handleDepartmentsChange}
+						/>
 					</Box>
-				) : jobsLoading ? (
-					<Spinner />
-				) : null}
-
-				{selectedJobIds.length && !relatedSkillsLoading ? (
-					<Box>
-						<Heading as='h4' variant='contentTitle'>
-							Skills
-						</Heading>
-						<>
-							<Text>
-								<Highlight
-									query={
-										selectedSkills && selectedSkills.length > 0
-											? 'skills'
-											: 'Select any skills used on this job.'
+					{selectedDepartmentIds.length && !jobsLoading ? (
+						<Box>
+							<Heading as='h4' variant='contentTitle'>
+								Position
+								<RequiredAsterisk fontSize='md' position='relative' top={-1} />
+							</Heading>
+							<>
+								<Text>
+									<Highlight
+										query={
+											selectedJobIds.length > 0
+												? 'jobs'
+												: 'Select all jobs you held on this project.'
+										}
+										styles={{
+											bg: selectedJobIds.length > 0 ? 'brand.yellow' : 'brand.orange',
+											color: selectedJobIds.length > 0 ? 'text.dark' : 'text.light',
+										}}
+									>
+										Select all jobs you held on this project.
+									</Highlight>
+								</Text>
+								<ProfileCheckboxGroup
+									name='jobs'
+									items={jobs}
+									checked={
+										selectedJobIds ? selectedJobIds.map((item: number) => item.toString()) : []
 									}
-									styles={{
-										bg:
-											selectedSkills && selectedSkills.length > 0 ? 'brand.yellow' : 'brand.orange',
-										color: selectedSkills && selectedSkills.length > 0 ? 'text.dark' : 'text.light',
-									}}
-								>
-									Select any skills used on this job.
-								</Highlight>
-							</Text>
-							<ProfileCheckboxGroup
-								name='skills'
-								items={skills}
-								checked={
-									selectedSkills ? selectedSkills.map((item: number) => item.toString()) : []
-								}
-								handleChange={handleSkillsChange}
-							/>
-						</>
-					</Box>
-				) : relatedSkillsLoading ? (
-					<Spinner />
-				) : null}
-			</Stack>
+									handleChange={handleJobsChange}
+								/>
+							</>
+						</Box>
+					) : jobsLoading ? (
+						<Spinner />
+					) : null}
 
-			<Flex justifyContent='flex-end' mt={4} mb={0}>
-				<EditCreditButtons />
-			</Flex>
+					{selectedJobIds.length && !relatedSkillsLoading ? (
+						<Box>
+							<Heading as='h4' variant='contentTitle'>
+								Skills
+							</Heading>
+							<>
+								<Text>
+									<Highlight
+										query={
+											selectedSkills && selectedSkills.length > 0
+												? 'skills'
+												: 'Select any skills used on this job.'
+										}
+										styles={{
+											bg:
+												selectedSkills && selectedSkills.length > 0
+													? 'brand.yellow'
+													: 'brand.orange',
+											color:
+												selectedSkills && selectedSkills.length > 0 ? 'text.dark' : 'text.light',
+										}}
+									>
+										Select any skills used on this job.
+									</Highlight>
+								</Text>
+								<ProfileCheckboxGroup
+									name='skills'
+									items={skills}
+									checked={
+										selectedSkills ? selectedSkills.map((item: number) => item.toString()) : []
+									}
+									handleChange={handleSkillsChange}
+								/>
+							</>
+						</Box>
+					) : relatedSkillsLoading ? (
+						<Spinner />
+					) : null}
+				</Stack>
+
+				<Flex justifyContent='flex-end' mt={4} mb={0}>
+					<EditCreditButtons />
+				</Flex>
+			</Box>
 		</Skeleton>
 	);
 }
