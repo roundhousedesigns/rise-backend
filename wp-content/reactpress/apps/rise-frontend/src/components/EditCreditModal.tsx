@@ -1,4 +1,4 @@
-import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
+import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react';
 import EditCreditView from '@views/EditCreditView';
 
 interface Props {

@@ -1,6 +1,6 @@
-import { Text, Progress, Box, ProgressProps } from '@chakra-ui/react';
-import useViewer from '@queries/useViewer';
+import { Box, Progress, ProgressProps, Text } from '@chakra-ui/react';
 import { useProfileCompletion } from '@hooks/hooks';
+import useViewer from '@queries/useViewer';
 
 const ProfilePercentComplete = ({ ...props }: ProgressProps) => {
 	const [{ loggedInId }] = useViewer();
@@ -8,8 +8,15 @@ const ProfilePercentComplete = ({ ...props }: ProgressProps) => {
 
 	return (
 		<Box>
-			<Progress value={percentComplete} position='relative' {...props} />
-			<Text mt={1} mb={0} fontSize='2xs' textAlign='right' fontStyle='italic'>
+			<Progress
+				value={percentComplete}
+				colorScheme='red'
+				hasStripe
+				position='relative'
+				borderRadius='md'
+				{...props}
+			/>
+			<Text mt={1} mb={0} fontSize='2xs' textAlign='right' fontStyle='italic' fontFamily='heading'>
 				{`Profile ${percentComplete}% complete`}
 			</Text>
 		</Box>

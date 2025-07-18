@@ -16,7 +16,9 @@ namespace RHD\Rise\Includes;
 class ProfileNotification {
 
 	const NOTIFICATION_TYPES = [
+		'test_notification',
 		'starred_profile_updated',
+		'job_posted',
 		// Add other notification types here
 	];
 

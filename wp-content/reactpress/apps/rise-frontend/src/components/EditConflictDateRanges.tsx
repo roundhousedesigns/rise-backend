@@ -12,19 +12,19 @@ import {
 } from '@chakra-ui/react';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import EditConflictDateRangeModal from '@components/EditConflictDateRangeModal';
-import { EditProfileContext } from '@context/EditProfileContext';
 import { DateRange } from '@lib/classes';
 import useDeleteOwnConflictRange from '@mutations/useDeleteOwnConflictRange';
 import useViewer from '@queries/useViewer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FiDelete, FiPlus } from 'react-icons/fi';
 
-export default function EditConflictDateRanges() {
+export default function EditConflictDateRanges({
+	conflictRanges,
+}: {
+	conflictRanges: DateRange[];
+}) {
 	const [{ loggedInId }] = useViewer();
-	const {
-		editProfile: { conflictRanges },
-	} = useContext(EditProfileContext);
 
 	const {
 		deleteOwnConflictRangeMutation,

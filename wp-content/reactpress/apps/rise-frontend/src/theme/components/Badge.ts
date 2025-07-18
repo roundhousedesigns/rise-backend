@@ -2,7 +2,7 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const baseStyle = defineStyle({
 	borderRadius: 'md',
-	fontFamily: 'heading',
+	fontFamily: 'body',
 	textTransform: 'none',
 	px: 2,
 	py: 1,

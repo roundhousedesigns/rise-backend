@@ -8,6 +8,7 @@ import {
 	LinkOverlay,
 	Text,
 } from '@chakra-ui/react';
+import ColorCascadeBox from '@common/ColorCascadeBox';
 import StarToggleIcon from '@common/StarToggleIcon';
 import CandidateAvatarBadge from '@components/CandidateAvatarBadge';
 import { SearchContext } from '@context/SearchContext';
@@ -17,7 +18,6 @@ import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import { useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import ColorCascadeBox from './common/ColorCascadeBox';
 
 interface Props {
 	candidate: Candidate;
@@ -90,15 +90,20 @@ const CandidateListItem = ({
 								<Heading
 									as='h3'
 									id={`candidate-${id}`}
+									variant='cardItemTitle'
 									fontSize={mini ? 'md' : 'lg'}
-									variant='contentTitle'
-									fontWeight='normal'
 									textAlign='left'
 									flex={{ base: '0 0 100%', md: '1' }}
 									mt={0}
 									mb={{ base: '4px', md: 0 }}
 								>
-									<LinkOverlay as={RouterLink} to={`/${profileUrl}`} textDecoration='none'>
+									<LinkOverlay
+										as={RouterLink}
+										to={`/${profileUrl}`}
+										textDecoration='none'
+										_light={{ color: 'text.dark' }}
+										_dark={{ color: 'text.light' }}
+									>
 										{candidate.fullName() ? candidate.fullName() : 'No name'}
 									</LinkOverlay>
 								</Heading>

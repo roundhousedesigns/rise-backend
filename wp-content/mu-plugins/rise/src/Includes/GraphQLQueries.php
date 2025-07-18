@@ -754,7 +754,6 @@ class GraphQLQueries {
 					],
 				],
 				'resolve'     => function ( $root, $args ) {
-
 					if ( !$args['authorId'] ) {
 						return [];
 					}

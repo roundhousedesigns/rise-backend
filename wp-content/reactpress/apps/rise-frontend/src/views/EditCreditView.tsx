@@ -15,7 +15,6 @@ import ProfileRadioGroup from '@common/inputs/ProfileRadioGroup';
 import TextInput from '@common/inputs/TextInput';
 import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import RequiredAsterisk from '@common/RequiredAsterisk';
-import { EditProfileContext } from '@context/EditProfileContext';
 import { Credit, WPItem } from '@lib/classes';
 import { CreditParams } from '@lib/types';
 import { sortWPItemsByName } from '@lib/utils';
@@ -24,8 +23,9 @@ import useLazyPositions from '@queries/useLazyPositions';
 import useLazyRelatedSkills from '@queries/useLazyRelatedSkills';
 import usePositions from '@queries/usePositions';
 import useViewer from '@queries/useViewer';
-import { ChangeEvent, memo, useContext, useEffect, useReducer, useState } from 'react';
+import { ChangeEvent, memo, useEffect, useReducer, useState } from 'react';
 import { FiCheck, FiX } from 'react-icons/fi';
+import useUserProfile from '../hooks/queries/useUserProfile';
 
 function editCreditReducer(state: CreditParams, action: { type: string; payload: any }) {
 	switch (action.type) {
@@ -75,9 +75,22 @@ interface Props {
 
 export default function EditCreditView({ creditId, onClose: closeModal }: Props) {
 	const [{ loggedInId }] = useViewer();
-	const { editProfile } = useContext(EditProfileContext);
-	const credit = editProfile.credits?.find((credit) => credit.id === creditId);
-	const [editCredit, editCreditDispatch] = useReducer(editCreditReducer, credit);
+	const [profile] = useUserProfile(loggedInId);
+
+	const credit =
+		profile?.credits?.find((credit) => credit.id === creditId) ||
+		new Credit({
+			id: creditId,
+			index: 0,
+			positions: { departments: [], jobs: [] },
+			isNew: true,
+		});
+
+	const [editCredit, editCreditDispatch] = useReducer(
+		editCreditReducer,
+		credit ||
+			new Credit({ id: creditId, index: 0, positions: { departments: [], jobs: [] }, isNew: true })
+	);
 
 	const toast = useToast();
 

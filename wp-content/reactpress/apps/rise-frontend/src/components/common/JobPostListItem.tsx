@@ -1,6 +1,3 @@
-import useLazyTaxonomyTerms from '@@/src/hooks/queries/useLazyTaxonomyTerms';
-import useTaxonomyTerms from '@@/src/hooks/queries/useTaxonomyTerms';
-import { sortAndCompareArrays } from '@@/src/lib/utils';
 import {
 	Box,
 	Card,
@@ -16,10 +13,13 @@ import {
 	Text,
 	Wrap,
 } from '@chakra-ui/react';
+import PositionsDisplay from '@common/PositionsDisplay';
 import { JobPost, WPItem } from '@lib/classes';
+import { sortAndCompareArrays } from '@lib/utils';
+import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
+import useTaxonomyTerms from '@queries/useTaxonomyTerms';
 import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import PositionsDisplay from './PositionsDisplay';
 
 interface JobPostListItemProps {
 	job: JobPost;

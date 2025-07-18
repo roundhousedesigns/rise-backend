@@ -1,20 +1,16 @@
-import FollowedProfileList from '@@/src/views/FollowedProfileList';
 import { Card, Grid, GridItem, List, ListItem, Skeleton, Stack } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
-import ProfileNotificationItem from '@components/ProfileNotificationItem';
 import ShortPost from '@components/ShortPost';
-import useProfileNotifications from '@queries/useProfileNotifications';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
+import FollowedProfileList from '@views/FollowedProfileList';
 import MiniProfileView from '@views/MiniProfileView';
-import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardView() {
 	const [{ loggedInId, starredProfiles }] = useViewer();
-	const [{ unread, read }] = useProfileNotifications(loggedInId);
 	const [notices] = useUserNotices();
 
 	const [profile, { loading: profileLoading }] = useUserProfile(loggedInId);
@@ -43,40 +39,6 @@ export default function DashboardView() {
 						)}
 					</ColorCascadeBox>
 				</Widget>
-
-				{unread.length > 0 ||
-					(read.length > 0 && (
-						<Widget
-							title='Notifications'
-							titleStyle='contentTitle'
-							id='profile-notifications'
-							pl={2}
-							bg='blue'
-						>
-							<Card gap={2}>
-								<List spacing={1}>
-									<AnimatePresence>
-										{unread.map((notification) => (
-											<ListItem
-												key={notification.id}
-												as={motion.div}
-												initial={{ opacity: 1 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-											>
-												<ProfileNotificationItem notification={notification} />
-											</ListItem>
-										))}
-										{read.map((notification) => (
-											<ListItem key={notification.id}>
-												<ProfileNotificationItem notification={notification} />
-											</ListItem>
-										))}
-									</AnimatePresence>
-								</List>
-							</Card>
-						</Widget>
-					))}
 
 				{starredProfiles?.length && (
 					<Widget title='Following' titleStyle='centerline' mt={1}>

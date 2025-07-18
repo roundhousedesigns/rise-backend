@@ -42,9 +42,10 @@ import DeleteCreditButton from '@components/DeleteCreditButton';
 import DisableProfileToggle from '@components/DisableProfileToggle';
 import EditConflictDateRanges from '@components/EditConflictDateRanges';
 import EditCreditModal from '@components/EditCreditModal';
+import IsOrgToggle from '@components/IsOrgToggle';
 import ResumePreviewModal from '@components/ResumePreviewModal';
-import { EditProfileContext } from '@context/EditProfileContext';
-import { useErrorMessage } from '@hooks/hooks';
+// import { EditProfileContext } from '@context/EditProfileContext';
+import { useErrorMessage, useStringifiedState } from '@hooks/hooks';
 import useClearProfileField from '@hooks/mutations/useClearProfileFileField';
 import useDeleteCredit from '@hooks/mutations/useDeleteCredit';
 import useFileUpload from '@hooks/mutations/useFileUpload';
@@ -54,8 +55,15 @@ import useResumePreview from '@hooks/queries/useResumePreview';
 import useUserTaxonomies from '@hooks/queries/useUserTaxonomies';
 import useViewer from '@hooks/queries/useViewer';
 import { Credit, UserProfile } from '@lib/classes';
-import { hasProfileChanged, sortCreditsByIndex } from '@lib/utils';
-import { ChangeEvent, FormEvent, MouseEvent, useContext, useEffect, useRef, useState } from 'react';
+import {
+	cloneInstance,
+	generateRandomString,
+	hasProfileChanged,
+	sanitizeBoolean,
+	sortCreditsByIndex,
+} from '@lib/utils';
+import useUserProfile from '@queries/useUserProfile';
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import {
 	FiArrowDownCircle,
@@ -79,14 +87,9 @@ import {
 } from 'react-icons/fi';
 import ReactPlayer from 'react-player/lazy';
 import { useNavigate } from 'react-router-dom';
-import IsOrgToggle from '../components/IsOrgToggle';
 
 // TODO Refactor into smaller components.
 // TODO Add cancel/navigation-away confirmation when exiting with edits
-
-interface Props {
-	profile: UserProfile | null;
-}
 
 interface FileDropzoneProps {
 	fieldName: string;
@@ -97,14 +100,18 @@ interface FileDropzoneProps {
 }
 
 /**
- * @param {UserProfile} profile The user profile data.
  * @returns {JSX.Element} The profile view.
  */
-export default function EditProfileView({ profile }: Props): JSX.Element | null {
-	const { editProfile, editProfileDispatch } = useContext(EditProfileContext);
+export default function EditProfileView(): JSX.Element | null {
 	const [{ loggedInId, loggedInSlug }] = useViewer();
+	const [profile] = useUserProfile(loggedInId);
+	// const { editProfile, editProfileDispatch } = useContext(EditProfileContext);
 	const { colorMode } = useColorMode();
 
+	// Initialize editProfile as null instead of empty UserProfile
+	const [editProfile, setEditProfile] = useState<UserProfile | null>(null);
+
+	// Only destructure if editProfile exists
 	const {
 		firstName,
 		lastName,
@@ -127,6 +134,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		willTour,
 		phone,
 		unions,
+		conflictRanges,
 		partnerDirectories,
 		experienceLevels,
 		genderIdentities,
@@ -140,18 +148,20 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		mediaImage4,
 		mediaImage5,
 		mediaImage6,
-		credits,
+		// credits,
 	} = editProfile || {};
 
-	// TODO implement edited alert dialog on exit and on save button enable/disable
-	const originalProfile = useRef<UserProfile | null>(null);
+	// We don't need to use the credits from the editProfile state, because it's not updated when the credits are updated.
+	const credits = profile?.credits;
+
+	const stringifiedProfile = useStringifiedState(profile);
+	const stringifiedEditProfile = useStringifiedState(editProfile);
+	const stringifiedCredits = useStringifiedState(credits);
 
 	const [hasEditedProfile, setHasEditedProfile] = useState<boolean>(false);
 
 	const [fieldCurrentlyUploading, setFieldCurrentlyUploading] = useState<string>('');
 	const [fieldCurrentlyClearing, setFieldCurrentlyClearing] = useState<string>('');
-
-	const [resumePreview, setResumePreview] = useState('');
 
 	const [editCredit, setEditCredit] = useState<string>('');
 	const editCreditId = useRef<string>('');
@@ -161,13 +171,8 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 	const [isLargerThanMd] = useMediaQuery('(min-width: 48rem)');
 
-	const {
-		uploadFileMutation,
-		results: {
-			data: { uploadFile: { fileUrl: uploadedResumePreview = '' as string } = {} } = {},
-			loading: uploadFileMutationLoading,
-		} = {},
-	} = useFileUpload();
+	const { uploadFileMutation, results: { loading: uploadFileMutationLoading } = {} } =
+		useFileUpload();
 
 	const {
 		clearProfileFieldMutation,
@@ -184,6 +189,8 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 	const [errorCode, setErrorCode] = useState<string>('');
 	const errorMessage = useErrorMessage(errorCode);
 
+	const { attachment } = useResumePreview(resume);
+
 	const [isAnyInputDebouncing, setIsAnyInputDebouncing] = useState(false);
 	const debouncingInputs = useRef(new Set<string>());
 
@@ -199,58 +206,95 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		}
 	};
 
+	/**
+	 * Set the editProfile state to the profile.
+	 */
 	useEffect(() => {
-		// Update the hasEditedProfile state when the editProfile changes.
-		if (!originalProfile.current) return;
+		console.log('effect 0');
+		// Check if profile exists and editProfile is null or has different id, to determine if this is the first render.
+		if (profile && (!editProfile || profile.id !== editProfile.id)) {
+			setEditProfile(profile);
+			console.log('editProfile is now', profile);
+		} else {
+			console.log('editProfile is not changing', profile, editProfile);
+		}
+	}, [profile?.id, editProfile?.id]);
 
-		setHasEditedProfile(hasProfileChanged(editProfile, originalProfile.current));
+	/**
+	 * Sync editProfile.credits to profile.credits, if they are different.
+	 */
+	// useEffect(() => {
+	// 	console.log('message 0');
+	// 	if (!editProfile || !profile) return;
+
+	// 	console.log('message 1');
+
+	// 	if (editProfile.credits.length !== profile.credits.length) {
+	// 		console.log('message 2: credits are different');
+	// 		setEditProfile((prev) => {
+	// 			if (!prev) return prev;
+	// 			const updated: UserProfile = cloneInstance(prev);
+	// 			updated.credits = profile.credits;
+	// 			return updated;
+	// 		});
+	// 	}
+	// }, [stringifiedEditProfile, stringifiedProfile]);
+
+	// DEBUG
+	// useEffect(() => {
+	// 	console.log('MESSAGE 0');
+
+	// 	// detect changes in the profile.credits array
+	// 	const profileCredits = profile?.credits;
+	// 	const editProfileCredits = editProfile?.credits;
+
+	// 	if (editProfileCredits && profileCredits && !isEqual(editProfileCredits, profileCredits)) {
+	// 		console.log('message 1: credits are different', editProfileCredits, profileCredits);
+	// 		setEditProfile((prev) => {
+	// 			if (!prev) return prev;
+	// 			const updated: UserProfile = cloneInstance(prev);
+	// 			updated.credits = profileCredits;
+	// 			return updated;
+	// 		});
+	// 	}
+	// }, [stringifiedEditProfile, stringifiedProfile]);
+
+	// DEBUG
+	useEffect(() => {
+		console.log('message 0');
+		if (stringifiedProfile !== stringifiedEditProfile) {
+			console.log('message 1: profile and editProfile are different');
+		}
+	}, [stringifiedProfile, stringifiedEditProfile]);
+
+	/**
+	 * Update the hasEditedProfile state when the editProfile changes.
+	 */
+	useEffect(() => {
+		console.log('effect 1');
+		if (!editProfile || !profile) return;
+
+		// Update the hasEditedProfile state when the editProfile changes.
+		setHasEditedProfile(hasProfileChanged(editProfile, profile));
 
 		return () => setHasEditedProfile(false);
-	}, [editProfile, originalProfile.current]);
+	}, [stringifiedEditProfile, stringifiedProfile]);
 
+	/**
+	 * If the multilingual checkbox is checked and the languages array is empty, set the error code to multilingual_no_languages.
+	 */
 	useEffect(() => {
+		console.log('effect 2');
 		if (multilingual && !languages) {
 			setErrorCode('multilingual_no_languages');
 		}
 
 		return () => setErrorCode('');
-	});
-
-	/**
-	 * EditCredit Modal
-	 */
-	const {
-		isOpen: creditModalIsOpen,
-		onOpen: creditModalOnOpen,
-		onClose: creditModalOnClose,
-	} = useDisclosure();
-
-	const { attachment } = useResumePreview(resume);
-
-	useEffect(() => {
-		// Remove resumePreview from state when the resume is removed.
-		if (!resume) {
-			setResumePreview('');
-			return;
-		}
-
-		// Save the retrieved resumePreview to state when it is retrieved.
-		if (attachment?.sourceUrl) {
-			setResumePreview(attachment.sourceUrl);
-		} else if (uploadedResumePreview) {
-			setResumePreview(uploadedResumePreview);
-		}
-	}, [resume, attachment]);
-
-	// Set the original profile to the current profile when it is loaded.
-	useEffect(() => {
-		if (!editProfile || !!originalProfile.current) return;
-
-		originalProfile.current = editProfile;
-	}, [editProfile]);
+	}, [multilingual, languages]);
 
 	// If the credits order has changed, fire the mutation to save it after a delay.
 	useEffect(() => {
+		console.log('effect 4');
 		if (!hasEditedCreditOrder) return;
 
 		const timeout = setTimeout(() => {
@@ -273,23 +317,24 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 	}, [hasEditedCreditOrder]);
 
 	// If we've got a new credit to edit, open the modal.
+	// useEffect(() => {
+	// 	if (!credits || !credits.length) return;
+
+	// 	// look for a credit in credits that has the isNew property set to true
+	// 	const newCredit = credits.find((credit) => credit.isNew);
+	// 	if (newCredit && newCredit.id !== editCreditId.current) {
+	// 		setEditCredit(newCredit.id);
+	// 		creditModalOnOpen();
+	// 	}
+
+	// 	return () => {
+	// 		setEditCredit('');
+	// 	};
+	// }, [JSON.stringify(credits.map((credit) => ({ id: credit.id, index: credit.index })))]);
+
+	// // Resort the credits on rerender.
 	useEffect(() => {
-		if (!credits || !credits.length) return;
-
-		// look for a credit in credits that has the isNew property set to true
-		const newCredit = credits.find((credit) => credit.isNew);
-		if (newCredit && newCredit.id !== editCreditId.current) {
-			setEditCredit(newCredit.id);
-			creditModalOnOpen();
-		}
-
-		return () => {
-			setEditCredit('');
-		};
-	}, [credits]);
-
-	// Resort the credits on rerender.
-	useEffect(() => {
+		console.log('effect 5: credits rerender');
 		if (!credits) return;
 
 		if (credits.length > 0) {
@@ -304,7 +349,46 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		return () => {
 			setCreditsSorted([]);
 		};
-	}, [credits]);
+	}, [stringifiedCredits]);
+
+	// DEBUG
+	useEffect(() => {
+		console.log('effect 6');
+		console.log('profile', profile);
+		console.log('editProfile', editProfile);
+	}, [stringifiedEditProfile, stringifiedProfile]);
+
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+
+	/**
+	 * Set the original profile to the current profile when it is loaded.
+	 */
+	// useEffect(() => {
+	// 	// if (!editProfile || !!originalProfile.current) return;
+	// 	if (!editProfile || !!profile) return;
+
+	// 	// originalProfile.current = editProfile;
+	// 	originalProfile.current = profile;
+	// }, [editProfile]);
+
+	/**
+	 * If credits are changed, update the creditsSorted state.
+	 */
+	useEffect(() => {
+		if (credits) {
+			setCreditsSorted(sortCreditsByIndex(credits));
+		}
+	}, [JSON.stringify(credits?.map((credit) => ({ id: credit.id, index: credit.index })))]);
+
+	/**
+	 * EditCredit Modal
+	 */
+	const {
+		isOpen: creditModalIsOpen,
+		onOpen: creditModalOnOpen,
+		onClose: creditModalOnClose,
+	} = useDisclosure();
 
 	// Moves a credit index up by one
 	const handleCreditMoveUp = (index: number) => {
@@ -351,20 +435,12 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 	const toast = useToast();
 	const navigate = useNavigate();
 
-	// Set context on load, and update it when the profile changes.
-	useEffect(() => {
-		if (profile) {
-			editProfileDispatch({ type: 'INIT', payload: { profile } });
-		}
-	}, [profile]);
-
 	const handleCheckboxGroupChange = (name: string) => (newValue: any) => {
-		editProfileDispatch({
-			type: 'UPDATE_INPUT',
-			payload: {
-				name,
-				value: newValue,
-			},
+		setEditProfile((prev) => {
+			if (!prev) return prev;
+			const updated: UserProfile = cloneInstance(prev);
+			updated.set(name, newValue);
+			return updated;
 		});
 	};
 
@@ -385,12 +461,11 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 		const { name, value } = event.target as { name: string; value: string };
 
-		editProfileDispatch({
-			type: 'UPDATE_INPUT',
-			payload: {
-				name,
-				value,
-			},
+		setEditProfile((prev) => {
+			if (!prev) return prev;
+			const updated: UserProfile = cloneInstance(prev);
+			updated.set(name, value);
+			return updated;
 		});
 	};
 
@@ -398,34 +473,31 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		const { name, value } = event.target;
 		const field = name.split('.')[1];
 
-		editProfileDispatch({
-			type: 'UPDATE_PERSONAL_LINKS_INPUT',
-			payload: {
-				name: field,
-				value,
-			},
+		setEditProfile((prev) => {
+			if (!prev) return prev;
+			const updated: UserProfile = cloneInstance(prev);
+			updated.set('socials', { ...prev.socials, [field]: value });
+			return updated;
 		});
 	};
 
 	const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, checked } = event.target;
 
-		editProfileDispatch({
-			type: 'UPDATE_BOOLEAN_INPUT',
-			payload: {
-				name,
-				value: checked,
-			},
+		setEditProfile((prev) => {
+			if (!prev) return prev;
+			const updated: UserProfile = cloneInstance(prev);
+			updated.set(name, sanitizeBoolean(checked));
+			return updated;
 		});
 	};
 
 	const handleRadioGroupInputChange = (name: string) => (newValue: string) => {
-		editProfileDispatch({
-			type: 'UPDATE_BOOLEAN_INPUT',
-			payload: {
-				name,
-				value: newValue,
-			},
+		setEditProfile((prev) => {
+			if (!prev) return prev;
+			const updated: UserProfile = cloneInstance(prev);
+			updated.set(name, sanitizeBoolean(newValue));
+			return updated;
 		});
 	};
 
@@ -475,12 +547,11 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 		uploadFileMutation(file, name, loggedInId)
 			.then((result) => {
-				editProfileDispatch({
-					type: 'UPDATE_INPUT',
-					payload: {
-						name,
-						value: result.data.uploadFile.fileUrl,
-					},
+				setEditProfile((prev) => {
+					if (!prev) return prev;
+					const updated: UserProfile = cloneInstance(prev);
+					updated.set(name, result.data.uploadFile.fileUrl);
+					return updated;
 				});
 
 				setFieldCurrentlyUploading('');
@@ -523,12 +594,11 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 		uploadFileMutation(file, name, loggedInId)
 			.then((result) => {
-				editProfileDispatch({
-					type: 'UPDATE_INPUT',
-					payload: {
-						name,
-						value: result.data.uploadFile.fileUrl,
-					},
+				setEditProfile((prev) => {
+					if (!prev) return prev;
+					const updated: UserProfile = cloneInstance(prev);
+					updated.set(name, result.data.uploadFile.fileUrl);
+					return updated;
 				});
 
 				setFieldCurrentlyUploading('');
@@ -572,6 +642,13 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 				? 'The image has been removed.'
 				: 'The file has been removed.';
 
+			setEditProfile((prev) => {
+				if (!prev) return prev;
+				const updated: UserProfile = cloneInstance(prev);
+				updated.set(fieldName, '');
+				return updated;
+			});
+
 			// success toast
 			toast({
 				title: 'Success!',
@@ -582,23 +659,28 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 				isClosable: true,
 			});
 
-			editProfileDispatch({
-				type: 'UPDATE_INPUT',
-				payload: {
-					name: fieldName,
-					value: '',
-				},
-			});
+			// editProfileDispatch({
+			// 	type: 'UPDATE_INPUT',
+			// 	payload: {
+			// 		name: fieldName,
+			// 		value: '',
+			// 	},
+			// });
 
 			setFieldCurrentlyClearing('');
 		});
 	};
 
 	const handleNewCredit = () => {
-		editProfileDispatch({
-			type: 'ADD_NEW_CREDIT',
-			payload: {},
-		});
+		// editProfileDispatch({
+		// 	type: 'ADD_NEW_CREDIT',
+		// 	payload: {},
+		// });
+
+		console.log('handleNewCredit');
+
+		setEditCredit(generateRandomString(8));
+		creditModalOnOpen();
 	};
 
 	const handleDeleteCredit = (creditId: string) => {
@@ -607,12 +689,15 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 				.then(() => {
 					toast({
 						title: 'Credit deleted.',
-						// description: 'Your credit has been deleted.',
 						status: 'success',
 						duration: 3000,
 						isClosable: true,
 						position: 'bottom',
 					});
+
+					// Manually remove the credit from the creditsSorted array
+					// console.log('new credits fetched?', credits);
+					// setCreditsSorted(creditsSorted.filter((credit) => credit.id !== creditId));
 				})
 				.catch((err) => {
 					console.error(err);
@@ -623,6 +708,8 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		if (!editProfile) return;
+
 		const submitForm = () => {
 			if (isAnyInputDebouncing) {
 				// If still debouncing, poll again
@@ -631,7 +718,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 			}
 
 			// Manual required field validation
-			if (!Boolean(locations.length)) {
+			if (!Boolean(locations?.length)) {
 				toast({
 					title: 'Missing required field.',
 					description: 'Please select at least one work location.',
@@ -685,11 +772,21 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 		if (editCredit && credits) {
 			const credit = credits.find((credit) => credit.id === editCredit);
 			if (credit && credit.isNew) {
-				editProfileDispatch({
-					type: 'DELETE_CREDIT',
-					payload: {
-						creditId: editCredit,
-					},
+				// editProfileDispatch({
+				// 	type: 'DELETE_CREDIT',
+				// 	payload: {
+				// 		creditId: editCredit,
+				// 	},
+				// });
+
+				setEditProfile((prev) => {
+					if (!prev) return prev;
+					const updated: UserProfile = cloneInstance(prev);
+					updated.set(
+						'credits',
+						credits.filter((credit) => credit.id !== editCredit)
+					);
+					return updated;
 				});
 			}
 		}
@@ -775,7 +872,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 			{!isOrg && (
 				<Card>
 					<Box>
-						<EditConflictDateRanges />
+						<EditConflictDateRanges conflictRanges={conflictRanges || []} />
 					</Box>
 				</Card>
 			)}
@@ -908,7 +1005,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 
 	const NewCreditButton = (): JSX.Element | null => {
 		// Check if there's a new credit, and don't count it toward the limit.
-		const newCredit = credits.find((credit) => credit.isNew);
+		const newCredit = credits?.find((credit) => credit.isNew);
 		const max = 5;
 		const limit = newCredit ? max + 1 : max;
 
@@ -917,7 +1014,7 @@ export default function EditProfileView({ profile }: Props): JSX.Element | null 
 				aria-label='Add a new credit'
 				leftIcon={<FiPlus />}
 				onClick={handleNewCredit}
-				isDisabled={editProfile.credits?.length === limit}
+				// isDisabled={editProfile?.credits?.length === limit}
 			>
 				New Credit
 			</Button>

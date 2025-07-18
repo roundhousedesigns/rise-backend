@@ -36,17 +36,7 @@ import { getWPItemsFromIds } from '@lib/utils';
 import useResumePreview from '@queries/useResumePreview';
 import useUserTaxonomies from '@queries/useUserTaxonomies';
 import { Key } from 'react';
-import {
-	FiExternalLink,
-	FiGlobe,
-	FiLink,
-	FiMail,
-	FiMap,
-	FiMapPin,
-	FiPhone,
-	FiStar,
-	FiUser,
-} from 'react-icons/fi';
+import { FiExternalLink, FiGlobe, FiMail, FiMap, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
 import ReactPlayer from 'react-player/lazy';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 
@@ -57,7 +47,7 @@ interface Props {
 
 const ProfileHeading = ({ title, ...props }: { title: string } & HeadingProps) => {
 	return (
-		<Heading as='h1' lineHeight='none' variant='pageSubtitle' {...props}>
+		<Heading as='h1' lineHeight='none' variant='profileName' {...props}>
 			{title}
 		</Heading>
 	);
@@ -165,18 +155,19 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 		return getWPItemsFromIds(ids, terms).map((term: WPItem) => {
 			if (term.externalUrl) {
 				return (
-					<Button
-						as={Link}
-						key={term.id}
-						href={term.externalUrl}
-						isExternal
-						size='sm'
-						m={0}
-						colorScheme='orange'
-						leftIcon={<FiLink />}
-					>
-						{term.name}
-					</Button>
+					<ListItem key={term.id}>
+						<Button
+							as={Link}
+							href={term.externalUrl}
+							isExternal
+							name={`Link to ${term.name}`}
+							size='sm'
+							m={0}
+							colorScheme='orange'
+						>
+							{term.name}
+						</Button>
+					</ListItem>
 				);
 			}
 
@@ -203,7 +194,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 		};
 
 		return (
-			<Heading as='h2' size='sm' fontWeight='medium' {...props}>
+			<Heading as='h2' size='sm' fontWeight='medium' variant='contentSubtitle' {...props}>
 				{selfTitle && homebase && !isOrg ? (
 					<>
 						<SelfTitle /> based in <HomeBase />
@@ -230,11 +221,9 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						w={isLargerThanMd ? '40%' : 'full'}
 						maxW='400px'
 						textAlign='center'
-						gap={4}
-						mt={isLargerThanMd ? 0 : 10}
+						gap={2}
+						mt={isLargerThanMd ? 0 : 0}
 					>
-						{!isLargerThanMd && <ProfileHeading title={profileName || ''} pt={4} mr={2} my={0} />}
-
 						<ColorCascadeBox mb={3}>
 							{image ? (
 								<Image
@@ -261,6 +250,23 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 							)}
 						</ColorCascadeBox>
 
+						{!isLargerThanMd && (
+							<>
+								<ProfileHeading title={profileName || ''} pt={0} mr={2} my={0} />
+								{!isOrg && pronouns && (
+									<Tag
+										colorScheme='blue'
+										size='md'
+										mt={{ base: 2, sm: 'initial' }}
+										position='relative'
+										bottom={{ base: 0, sm: 1 }}
+									>
+										{pronouns}
+									</Tag>
+								)}
+							</>
+						)}
+
 						{!socials.isEmpty() ? (
 							<PersonalIconLinks
 								socials={socials}
@@ -271,12 +277,19 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						) : null}
 
 						{email || phone || website ? (
-							<ProfileStackItem title='Contact'>
-								<List mt={0} spacing={1}>
+							<ProfileStackItem>
+								<List
+									mt={3}
+									spacing={1}
+									borderRadius='md'
+									p={3}
+									_dark={{ bg: 'blackAlpha.400' }}
+									_light={{ bg: 'blackAlpha.300' }}
+								>
 									{email ? (
 										<ListItem>
 											<LinkWithIcon href={`mailto:${email}`} icon={FiMail}>
-												{email}
+												{`Email ${isOrg ? orgName : profile.firstName}`}
 											</LinkWithIcon>
 										</ListItem>
 									) : null}
@@ -388,13 +401,13 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						{partnerDirectories && partnerDirectories.length > 0 && partnerDirectoryTerms ? (
 							<ProfileStackItem title='RISE Partner Directories'>
 								<Flex alignItems='center' flexWrap='nowrap' justifyContent='space-between'>
-									<Icon as={FiStar} boxSize={4} flex='0 0 auto' />
-									<Wrap flex='1' pl={2} spacing={2}>
+									<Icon as={FiExternalLink} boxSize={4} flex='0 0 auto' />
+									<List flex='1' pl={2} spacing={2}>
 										{selectedLinkableTerms({
 											ids: partnerDirectories,
 											terms: partnerDirectoryTerms,
 										})}
-									</Wrap>
+									</List>
 								</Flex>
 							</ProfileStackItem>
 						) : null}

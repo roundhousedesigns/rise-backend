@@ -4,18 +4,19 @@ import {
 	BoxProps,
 	Card,
 	Flex,
+	FlexProps,
 	Heading,
 	Skeleton,
 	Stack,
 	Text,
 	Wrap,
 } from '@chakra-ui/react';
+import RiseStar from '@common/icons/RiseStar';
 import PositionsDisplay from '@common/PositionsDisplay';
 import WrapWithIcon from '@common/WrapWithIcon';
-import { Credit, WPItem } from '@lib/classes';
+import { Credit } from '@lib/classes';
 import { decodeString, sortAndCompareArrays } from '@lib/utils';
 import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
-import useTaxonomyTerms from '@queries/useTaxonomyTerms';
 import { KeyboardEvent, useEffect, useMemo, useState } from 'react';
 import { FiBriefcase, FiMapPin, FiStar } from 'react-icons/fi';
 
@@ -49,14 +50,7 @@ export default function CreditItem({
 	const [termList, setTermList] = useState<number[]>([]);
 	const memoizedTermList = useMemo(() => termList, [termList]);
 
-	// Get departments from their IDs
-	const [departments] = useTaxonomyTerms(departmentIds ? departmentIds : []);
-
-	// The term items for each set.
-	const [jobs, setJobs] = useState<WPItem[]>([]);
-	const [skills, setSkills] = useState<WPItem[]>([]);
-
-	const [getTerms, { data: termData, loading: termsLoading }] = useLazyTaxonomyTerms();
+	const [getTerms, { loading: termsLoading }] = useLazyTaxonomyTerms();
 
 	// Set the term ID list state
 	useEffect(() => {
@@ -77,21 +71,6 @@ export default function CreditItem({
 			},
 		});
 	}, [termList, memoizedTermList]);
-
-	// Set jobs and skills state
-	useEffect(() => {
-		if (!termData) return;
-
-		const {
-			terms: { nodes },
-		} = termData;
-
-		const jobTerms = jobIds ? nodes.filter((node: WPItem) => jobIds.includes(node.id)) : [];
-		const skillTerms = skillIds ? nodes.filter((node: WPItem) => skillIds.includes(node.id)) : [];
-
-		setJobs(jobTerms);
-		setSkills(skillTerms);
-	}, [termData, jobIds, skillIds]);
 
 	const handleCreditKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
 		if (onClick === undefined) return;
@@ -115,13 +94,27 @@ export default function CreditItem({
 		}
 	};
 
+	const InternFellowBadges = ({ ...props }: FlexProps): JSX.Element | null =>
+		intern || fellow ? (
+			<Flex color='brand.yellow' fontFamily='heading' gap={1} fontSize='sm' {...props}>
+				<RiseStar px={0} mx={0} fontSize='sm' />
+				<Text textTransform='none' my={0}>
+					{intern ? 'Internship' : ''}
+
+					{intern && fellow ? <Text as='span'> + </Text> : ''}
+
+					{fellow ? 'Fellowship' : ''}
+				</Text>
+			</Flex>
+		) : null;
+
 	return (
 		<Box onClick={onClick} {...props}>
 			<Card
 				cursor={isEditable ? 'pointer' : 'default'}
 				tabIndex={0}
 				onKeyDown={handleCreditKeyDown}
-				borderWidth={isEditable ? '3px' : '0'}
+				borderWidth={isEditable ? '2px' : '0'}
 				borderStyle='dashed'
 				borderColor='gray.300'
 				_hover={isEditable ? { borderColor: 'gray.500' } : {}}
@@ -134,16 +127,21 @@ export default function CreditItem({
 					>
 						<Box flex='1'>
 							<Flex alignItems='center' gap={2} flexWrap='wrap' mb={2}>
-								<Heading as='h3' fontWeight='bold' fontSize='xl' my={0}>
+								<Heading as='h3' variant='cardItemTitle' fontSize='xl' my={0}>
 									{title}
 								</Heading>
 								<Badge
 									flex='0 0 auto'
-									fontSize='md'
+									fontSize='sm'
 									textTransform='none'
 								>{` ${yearString()}`}</Badge>
 							</Flex>
-							<Flex my={0} alignItems='center' flexWrap='wrap' gap={2}>
+							<Box my={0} fontFamily='heading'>
+								{jobTitle && (
+									<WrapWithIcon icon={FiBriefcase} my={0}>
+										{jobTitle}
+									</WrapWithIcon>
+								)}
 								{venue ? (
 									<WrapWithIcon icon={FiStar} mr={1} my={0}>
 										{decodeString(venue)}
@@ -158,56 +156,8 @@ export default function CreditItem({
 								) : (
 									false
 								)}
-								<Flex my={0} alignItems='center' flexWrap='wrap' gap={2}>
-									{jobTitle && (
-										<WrapWithIcon icon={FiBriefcase} my={0}>
-											{jobTitle}
-										</WrapWithIcon>
-									)}
-									{intern || fellow ? (
-										<Flex color='brand.yellow' gap={1} ml={2}>
-											{intern ? (
-												<Text
-													flex='0 0 auto'
-													fontSize='sm'
-													fontWeight='bold'
-													textTransform='none'
-													py={1}
-												>
-													Internship
-												</Text>
-											) : (
-												''
-											)}
-
-											{intern && fellow ? (
-												<Text fontSize='2xl' mx={0} my={1}>
-													&middot;
-												</Text>
-											) : (
-												''
-											)}
-
-											{fellow ? (
-												<Text
-													flex='0 0 auto'
-													fontSize='sm'
-													fontWeight='bold'
-													textTransform='none'
-													py={1}
-													colorScheme='yellow'
-												>
-													Fellowship
-												</Text>
-											) : (
-												''
-											)}
-										</Flex>
-									) : (
-										false
-									)}
-								</Flex>
-							</Flex>
+							</Box>
+							<InternFellowBadges justifyContent='flex-start' alignItems='center' mt={4} mb={0} />
 						</Box>
 
 						<Box flex={{ base: '0 0 100%', md: '0 50%' }}>

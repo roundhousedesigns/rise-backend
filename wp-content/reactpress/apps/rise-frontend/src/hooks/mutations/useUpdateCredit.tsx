@@ -43,6 +43,7 @@ const useUpdateCredit = () => {
 				{
 					query: QUERY_PROFILE,
 					variables: { id: userId, author: userId, lastCredits: 5 },
+					fetchPolicy: 'network-only',
 				},
 			],
 		});

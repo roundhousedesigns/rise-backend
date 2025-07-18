@@ -41,7 +41,7 @@ export default function EditProfile() {
 		<Shell title='Update Profile' actions={<PageActions />}>
 			<EditProfileContextProvider initialState={profile}>
 				{profile && !loading && !error ? (
-					<EditProfileView profile={profile} />
+					<EditProfileView />
 				) : loading ? (
 					<Spinner alignSelf='center' />
 				) : error ? (

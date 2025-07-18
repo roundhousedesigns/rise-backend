@@ -19,8 +19,8 @@ export default defineConfig({
 				interop: 'compat',
 				systemNullSetters: false,
 				manualChunks: {
-					'react-player': ['react-player']
-				}
+					'react-player': ['react-player'],
+				},
 			},
 		},
 		chunkSizeWarningLimit: 1400,
@@ -80,6 +80,10 @@ export default defineConfig({
 			{
 				find: '@views',
 				replacement: fileURLToPath(new URL('./src/views', import.meta.url)),
+			},
+			{
+				find: '@deprecated',
+				replacement: fileURLToPath(new URL('./src/components/deprecated', import.meta.url)),
 			},
 		],
 	},

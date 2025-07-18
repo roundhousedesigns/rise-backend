@@ -304,3 +304,12 @@ export const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): RSSFeed
 
 	return state;
 };
+
+/**
+ * Stringify a state object. Useful for comparing state objects in useEffect dependencies.
+ *
+ * @param state The state object to stringify.
+ */
+export const useStringifiedState = (state: any): string => {
+	return JSON.stringify(state);
+};

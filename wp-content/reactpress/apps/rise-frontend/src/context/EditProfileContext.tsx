@@ -1,7 +1,7 @@
-import { ReactNode, createContext, useReducer, useCallback } from 'react';
 import { Credit, PersonalLinks, UserProfile } from '@lib/classes';
 import { cloneInstance, generateRandomString, sanitizeBoolean } from '@lib/utils';
 import { debounce } from 'lodash';
+import { ReactNode, createContext, useCallback, useReducer } from 'react';
 
 interface EditProfileAction {
 	type: string;
@@ -10,6 +10,7 @@ interface EditProfileAction {
 		value?: any;
 		creditId?: string;
 		credit?: Credit;
+		credits?: Credit[];
 		profile?: UserProfile;
 		newCreditTempId?: string;
 	};
@@ -55,17 +56,25 @@ function editProfileContextReducer(state: UserProfile, action: EditProfileAction
 		}
 
 		case 'ADD_NEW_CREDIT': {
+			const current: UserProfile = cloneInstance(state);
+
+			current.set('credits', [
+				...current.credits,
+				new Credit({
+					id: generateRandomString(8),
+					isNew: true,
+					index: current.credits.length,
+					positions: { departments: [], jobs: [] },
+				}),
+			]);
+
+			return current;
+		}
+
+		case 'DELETE_CREDIT': {
 			return {
 				...state,
-				credits: [
-					...state.credits,
-					new Credit({
-						id: generateRandomString(8),
-						isNew: true,
-						index: state.credits.length,
-						positions: { departments: [], jobs: [] },
-					}),
-				],
+				credits: state.credits.filter((credit) => credit.id !== action.payload.creditId),
 			};
 		}
 

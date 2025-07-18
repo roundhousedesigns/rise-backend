@@ -1,12 +1,34 @@
-import { Box, BoxProps, Flex, Icon, IconButton, List, Text } from '@chakra-ui/react';
+import {
+	Box,
+	BoxProps,
+	Button,
+	Circle,
+	Flex,
+	Icon,
+	IconButton,
+	List,
+	ListItem,
+	Popover,
+	PopoverArrow,
+	PopoverBody,
+	PopoverCloseButton,
+	PopoverContent,
+	PopoverHeader,
+	PopoverTrigger,
+	Text,
+} from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
+import ProfileNotificationItem from '@components/ProfileNotificationItem';
 import { SearchContext } from '@context/SearchContext';
 import useLogout from '@mutations/useLogout';
+import useProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import {
+	FiBell,
 	FiBriefcase,
 	FiChevronsLeft,
 	FiFolder,
@@ -43,6 +65,9 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 	} = useContext(SearchContext);
 
 	const location = useLocation();
+
+	const [{ unread, read }] = useProfileNotifications(loggedInId);
+
 	const { logoutMutation } = useLogout();
 
 	// Calculate sidebar height by subtracting masthead height from 100vh
@@ -168,26 +193,58 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 				_light={{ borderColor: 'text.dark' }}
 				_dark={{ borderColor: 'gray.800' }}
 			>
-				<Flex
-					justifyContent='space-between'
-					flexWrap='nowrap'
-					w='full'
-					minW='170px'
-					left={sidebarExpanded ? 0 : 14}
-					pos='relative'
-				>
-					<IconButton
-						aria-label='Toggle wide sidebar'
-						aria-expanded={sidebarExpanded}
-						ml={sidebarExpanded ? '13px' : '10.5px'}
-						icon={<FiChevronsLeft />}
-						size='xs'
-						onClick={() => setSidebarExpanded(!sidebarExpanded)}
-						transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
-						transition='all 0.3s ease'
-					/>
-					<DarkModeToggle showLabel={false} showHelperText={false} mr={1} w='90px' />
-				</Flex>
+				<Popover isLazy>
+					<PopoverTrigger>
+						<Button position='relative' colorScheme='yellow' variant='ghost' tabIndex={0}>
+							<Icon as={FiBell} boxSize={5} />
+							{unread.length > 0 && (
+								<Circle
+									size={3}
+									bg='brand.orange'
+									color='white'
+									position='absolute'
+									bottom={1.5}
+									right={2.5}
+									fontSize='3xs'
+								>
+									{unread.length}
+								</Circle>
+							)}
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent>
+						<PopoverArrow />
+						<PopoverCloseButton />
+						<PopoverHeader fontFamily='heading'>Notifications</PopoverHeader>
+						<PopoverBody>
+							{unread.length === 0 && read.length === 0 && <Text>No notifications</Text>}
+							<AnimatePresence>
+								<List>
+									{unread.map((notification) => (
+										<ListItem
+											key={notification.id}
+											as={motion.li}
+											initial={{ opacity: 1 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+										>
+											<ProfileNotificationItem notification={notification} />
+										</ListItem>
+									))}
+								</List>
+							</AnimatePresence>
+							<AnimatePresence>
+								<List>
+									{read.map((notification) => (
+										<ListItem as={motion.li} key={notification.id}>
+											<ProfileNotificationItem notification={notification} />
+										</ListItem>
+									))}
+								</List>
+							</AnimatePresence>
+						</PopoverBody>
+					</PopoverContent>
+				</Popover>
 
 				<List
 					spacing={0}
@@ -214,7 +271,30 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 						);
 					})}
 				</List>
+
+				<Flex
+					justifyContent='space-between'
+					flexWrap='nowrap'
+					w='full'
+					minW='170px'
+					left={sidebarExpanded ? 0 : 14}
+					pos='relative'
+				>
+					<IconButton
+						aria-label='Toggle wide sidebar'
+						aria-expanded={sidebarExpanded}
+						ml={sidebarExpanded ? '13px' : '10.5px'}
+						icon={<FiChevronsLeft />}
+						size='xs'
+						onClick={() => setSidebarExpanded(!sidebarExpanded)}
+						transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
+						transition='all 0.3s ease'
+					/>
+					<DarkModeToggle showLabel={false} showHelperText={false} mr={1} w='90px' />
+				</Flex>
 			</Flex>
 		</Box>
-	) : null;
+	) : (
+		<Box></Box>
+	);
 }

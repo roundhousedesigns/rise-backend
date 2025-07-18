@@ -30,6 +30,9 @@
       "@dev/*": [
         "./src/dev/*"
       ],
+      "@deprecated/*": [
+        "./src/components/deprecated/*"
+      ],
       "@theme/*": [
         "./src/theme/*"
       ],

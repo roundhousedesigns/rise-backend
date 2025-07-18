@@ -17,7 +17,7 @@ const Widget = ({
 }: Props & BoxProps) => {
 	const { colorMode } = useColorMode();
 
-	centerLineColor = centerLineColor || (colorMode === 'dark' ? 'text.light' : 'text.dark');
+	centerLineColor = centerLineColor || (colorMode === 'dark' ? 'whiteAlpha.600' : 'blackAlpha.600');
 
 	return (
 		<Box {...props}>
@@ -26,7 +26,7 @@ const Widget = ({
 					{titleStyle === 'centerline' && (
 						<HeadingCenterline
 							lineColor={centerLineColor}
-							headingProps={{ fontSize: '2xl' }}
+							headingProps={{ fontSize: '3xl' }}
 							mb={2}
 						>
 							{title}

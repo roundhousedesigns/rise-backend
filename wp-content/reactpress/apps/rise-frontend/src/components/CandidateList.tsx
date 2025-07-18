@@ -1,6 +1,6 @@
-import CandidateListItem from '@@/src/components/CandidateListItem';
 import { List, ListProps, Spinner } from '@chakra-ui/react';
 import ErrorAlert from '@common/ErrorAlert';
+import CandidateListItem from '@components/CandidateListItem';
 import useCandidates from '@queries/useCandidates';
 
 interface Props {

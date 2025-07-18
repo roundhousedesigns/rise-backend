@@ -67,16 +67,21 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 	const handleLoginSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		loginMutation({ ...credentials }).catch((errors: { message: string }) => {
-			setErrorCode(errors.message);
-		});
+		loginMutation({ ...credentials })
+			.then((res) => {
+				console.info(res);
+				// TODO setup admin redirect logic
+			})
+			.catch((errors: { message: string }) => {
+				setErrorCode(errors.message);
+			});
 	};
 
 	const sanitizedAlertStatus = alertStatus === 'error' ? 'error' : 'success';
 
 	return (
 		<>
-			<Flex alignItems='center' gap={8} flexWrap='wrap' maxW='4xl' mx='auto'>
+			<Flex alignItems='center' gap={8} flexWrap='wrap' maxW='4xl' mx='auto' my={12}>
 				<Box flex='1'>
 					<Box maxWidth='md'>
 						{signInTitle ? (

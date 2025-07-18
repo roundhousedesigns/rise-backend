@@ -1,4 +1,4 @@
-import { defineStyleConfig, defineStyle } from '@chakra-ui/react';
+import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const baseStyle = defineStyle({
 	my: 2,

@@ -355,7 +355,7 @@ export interface JobPostOutput {
 /**
  * Supported notification types for profile notifications.
  */
-export type NotificationType = 'starred_profile_updated' | 'job_posted';
+export type NotificationType = 'starred_profile_updated' | 'job_posted' | 'test_notification';
 
 /**
  * The data shape for a Profile Notification.

@@ -1,10 +1,10 @@
 import {
-    FormControl,
-    FormControlProps,
-    FormHelperText,
-    FormLabel,
-    Textarea,
-    TextareaProps,
+	FormControl,
+	FormControlProps,
+	FormHelperText,
+	FormLabel,
+	Textarea,
+	TextareaProps,
 } from '@chakra-ui/react';
 import { debounce } from 'lodash';
 import { ChangeEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
@@ -93,7 +93,6 @@ export default function TextareaInput({
 	return (
 		<FormControl {...props}>
 			<Textarea
-				variant='filled'
 				placeholder={placeholder}
 				focusBorderColor='blue.200'
 				value={localValue ? localValue : ''}
@@ -101,6 +100,11 @@ export default function TextareaInput({
 				resize='vertical'
 				onChange={handleChange}
 				isDisabled={props.isDisabled}
+				bg='text.light'
+				_light={{
+					border: '1px solid',
+					borderColor: 'blackAlpha.300',
+				}}
 				{...inputProps}
 			/>
 			{label ? (

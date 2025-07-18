@@ -244,8 +244,8 @@ class Types {
 	/**
 	 * Disable the Block Editor for the `saved_search` post type.
 	 *
-	 * @param  string $current_status
-	 * @param  string $post_type
+	 * @param  string    $current_status
+	 * @param  string    $post_type
 	 * @return boolean
 	 */
 	public function saved_search_disable_block_editor( $current_status, $post_type ) {
@@ -319,8 +319,8 @@ class Types {
 	/**
 	 * Disable the Block Editor for the `conflict_range` post type.
 	 *
-	 * @param  string $current_status
-	 * @param  string $post_type
+	 * @param  string    $current_status
+	 * @param  string    $post_type
 	 * @return boolean
 	 */
 	public function conflict_range_disable_block_editor( $current_status, $post_type ) {
@@ -522,11 +522,11 @@ class Types {
 			'Profile Notifications',
 			'dashicons-bell',
 			[
-				'supports'            => ['author'],
+				'supports'            => ['author', 'title'],
 				'public'              => false,
 				'exclude_from_search' => true,
 				'publicly_queryable'  => false,
-				'show_ui'             => true, // TODO: turn UI off
+				'show_ui'             => true, // TODO: turn UI off after development
 				'capability_type'     => 'post',
 				'show_in_rest'        => true,
 			]
@@ -667,4 +667,3 @@ class Types {
 		}
 	}
 }
-

@@ -1,5 +1,4 @@
-import { ButtonGroup } from '@chakra-ui/react';
-import TooltipIconButton from '@common/inputs/TooltipIconButton';
+import { Button, ButtonGroup } from '@chakra-ui/react';
 import Shell from '@layout/Shell';
 import useUserIdBySlug from '@queries/useUserIdBySlug';
 import useUserProfile from '@queries/useUserProfile';
@@ -21,13 +20,15 @@ export default function Profile(): JSX.Element {
 	const PageActions = () => (
 		<ButtonGroup size='md' alignItems='center'>
 			{profileIsLoggedInUser && (
-				<TooltipIconButton
-					label='Edit profile'
-					icon={<FiEdit3 />}
+				<Button
+					aria-label='Edit profile'
+					leftIcon={<FiEdit3 />}
 					as={RouterLink}
 					to='/profile/edit'
 					colorScheme='green'
-				/>
+				>
+					Edit profile
+				</Button>
 			)}
 		</ButtonGroup>
 	);

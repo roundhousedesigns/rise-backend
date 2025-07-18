@@ -124,7 +124,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 					alignItems='center'
 				>
 					<Flex justifyContent='center' flexWrap='wrap' gap={2}>
-						<Heading size='md' m={0} fontWeight='bold' lineHeight='none'>
+						<Heading m={0} fontWeight='bold' lineHeight='none' fontFamily='body' fontSize='4xl'>
 							{profile.fullName()}
 						</Heading>
 					</Flex>

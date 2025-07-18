@@ -2,7 +2,7 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const baseStyle = defineStyle({
 	fontWeight: 'medium',
-	fontFamily: 'heading',
+	fontFamily: 'special',
 	borderRadius: 'md',
 	textDecoration: 'none',
 	_hover: {

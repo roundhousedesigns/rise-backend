@@ -1,10 +1,10 @@
 import { Stack } from '@chakra-ui/react';
+import WPItemBadgeList from '@common/WPItemBadgeList';
 import { Credit, JobPost, WPItem } from '@lib/classes';
 import { sortAndCompareArrays } from '@lib/utils';
 import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
 import useTaxonomyTerms from '@queries/useTaxonomyTerms';
 import { useEffect, useMemo, useState } from 'react';
-import WPItemBadgeList from './WPItemBadgeList';
 
 interface PositionsDisplayProps {
 	item: JobPost | Credit;

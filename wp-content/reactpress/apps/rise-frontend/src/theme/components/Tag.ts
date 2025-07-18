@@ -15,7 +15,7 @@ const sizes = {
 
 const baseStyle = {
 	label: {
-		fontFamily: 'heading',
+		fontFamily: 'body',
 	},
 };
 

@@ -16,11 +16,9 @@ export default function ProfileStackItem({
 }: Props & BoxProps): JSX.Element {
 	const SectionTitle = () => {
 		return centerlineColor ? (
-			<HeadingCenterline lineColor={centerlineColor} mb={1}>
-				{title}
-			</HeadingCenterline>
+			<HeadingCenterline lineColor={centerlineColor}>{title}</HeadingCenterline>
 		) : (
-			<Heading as='h3' variant='contentTitle'>
+			<Heading as='h3' variant='fieldSectionTitle'>
 				{title}
 			</Heading>
 		);

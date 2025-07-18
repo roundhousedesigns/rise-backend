@@ -105,14 +105,15 @@ export const QUERY_PROFILE = gql`
  * @param {count} Number of credits to retrieve
  * @returns A tuple of a prepared data object and a query result object.
  */
-const useUserProfile = (id: number | null, count?: number): [UserProfile | null, any] => {
+const useUserProfile = (id: number | null, count: number = 5): [UserProfile | null, any] => {
 	const result = useQuery(QUERY_PROFILE, {
 		variables: {
 			id,
 			author: id,
 			lastCredits: count,
 		},
-		skip: id === null,
+		skip: !id,
+		fetchPolicy: 'network-only',
 	});
 
 	// Prepare the credits
