@@ -2,10 +2,13 @@ import {
 	Badge,
 	Box,
 	BoxProps,
+	Button,
 	Card,
 	Flex,
 	FlexProps,
 	Heading,
+	LinkBox,
+	LinkOverlay,
 	Skeleton,
 	Stack,
 	Text,
@@ -17,7 +20,7 @@ import WrapWithIcon from '@common/WrapWithIcon';
 import { Credit } from '@lib/classes';
 import { decodeString, sortAndCompareArrays } from '@lib/utils';
 import useLazyTaxonomyTerms from '@queries/useLazyTaxonomyTerms';
-import { KeyboardEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FiBriefcase, FiMapPin, FiStar } from 'react-icons/fi';
 
 interface Props {
@@ -72,13 +75,13 @@ export default function CreditItem({
 		});
 	}, [termList, memoizedTermList]);
 
-	const handleCreditKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-		if (onClick === undefined) return;
+	// const handleCreditKeyDown = (e: KeyboardEvent<HTMLAnchorElement>) => {
+	// 	if (onClick === undefined) return;
 
-		if (e.key === 'Enter' || e.key === ' ') {
-			onClick();
-		}
-	};
+	// 	if (e.key === 'Enter' || e.key === ' ') {
+	// 		onClick();
+	// 	}
+	// };
 
 	const yearString = () => {
 		if (workStart && workEnd && workStart === workEnd) {
@@ -110,80 +113,101 @@ export default function CreditItem({
 
 	return (
 		<Box onClick={onClick} {...props}>
-			<Card
-				cursor={isEditable ? 'pointer' : 'default'}
-				tabIndex={0}
-				onKeyDown={handleCreditKeyDown}
-				borderWidth={isEditable ? '2px' : '0'}
-				borderStyle='dashed'
-				borderColor='gray.300'
-				_hover={isEditable ? { borderColor: 'gray.500' } : {}}
-			>
-				<Skeleton isLoaded={!termsLoading}>
-					<Flex
-						alignItems='flex-start'
-						justifyContent='space-between'
-						flexWrap={{ base: 'wrap', md: 'nowrap' }}
-					>
-						<Box flex='1'>
-							<Flex alignItems='center' gap={2} flexWrap='wrap' mb={2}>
-								<Heading as='h3' variant='cardItemTitle' fontSize='xl' my={0}>
-									{title}
-								</Heading>
-								<Badge
-									flex='0 0 auto'
-									fontSize='sm'
-									textTransform='none'
-								>{` ${yearString()}`}</Badge>
-							</Flex>
-							<Box my={0} fontFamily='special'>
-								{jobTitle && (
-									<WrapWithIcon icon={FiBriefcase} my={0}>
-										{jobTitle}
-									</WrapWithIcon>
-								)}
-								{venue ? (
-									<WrapWithIcon icon={FiStar} mr={1} my={0}>
-										{decodeString(venue)}
-									</WrapWithIcon>
-								) : (
-									false
-								)}
-								{jobLocation ? (
-									<WrapWithIcon icon={FiMapPin} mr={1} my={0}>
-										{decodeString(`${jobLocation}`)}
-									</WrapWithIcon>
-								) : (
-									false
-								)}
-							</Box>
-							<InternFellowBadges justifyContent='flex-start' alignItems='center' mt={4} mb={0} />
-						</Box>
-
-						<Box flex={{ base: '0 0 100%', md: '0 50%' }}>
-							<Stack direction='column' mt={{ base: 4, md: 0 }}>
-								{departmentIds?.length || jobIds?.length || skillIds?.length ? (
-									<PositionsDisplay item={credit} />
-								) : isEditable ? (
-									<Wrap justify='right'>
-										<Text
-											textAlign={{ base: 'left', md: 'right' }}
-											maxWidth='250px'
-											fontSize='sm'
-											lineHeight='short'
+			<LinkBox aria-labelledby={`credit-${credit.id}`}>
+				<Card
+					cursor={isEditable ? 'pointer' : 'default'}
+					tabIndex={0}
+					// onKeyDown={handleCreditKeyDown}
+					borderWidth={isEditable ? '2px' : '0'}
+					borderStyle='dashed'
+					borderColor='gray.500'
+					transition='border-color .1s ease-out'
+					_hover={isEditable ? { borderColor: 'gray.400' } : {}}
+				>
+					<Skeleton isLoaded={!termsLoading}>
+						<Flex
+							alignItems='flex-start'
+							justifyContent='space-between'
+							flexWrap={{ base: 'wrap', md: 'nowrap' }}
+						>
+							<Box flex='1'>
+								<Flex alignItems='center' gap={2} flexWrap='wrap' mb={2}>
+									<Heading
+										id={`credit-${credit.id}`}
+										as='h3'
+										variant='cardItemTitle'
+										fontSize='2xl'
+										my={0}
+									>
+										<LinkOverlay
+											as={Button}
+											onClick={onClick}
+											aria-label={`Edit credit ${title}`}
+											color='inherit'
+											variant='link'
+											textDecoration='none'
+											fontFamily='inherit'
+											fontSize='inherit'
+											_hover={{ textDecoration: 'none' }}
 										>
-											This credit won't be active and searchable until you add at least one
-											department and a job.
-										</Text>
-									</Wrap>
-								) : (
-									false
-								)}
-							</Stack>
-						</Box>
-					</Flex>
-				</Skeleton>
-			</Card>
+											{title}
+										</LinkOverlay>
+									</Heading>
+									<Badge
+										flex='0 0 auto'
+										fontSize='sm'
+										textTransform='none'
+									>{` ${yearString()}`}</Badge>
+								</Flex>
+								<Box my={0} fontFamily='special'>
+									{jobTitle && (
+										<WrapWithIcon icon={FiBriefcase} my={0}>
+											{jobTitle}
+										</WrapWithIcon>
+									)}
+									{venue ? (
+										<WrapWithIcon icon={FiStar} mr={1} my={0}>
+											{decodeString(venue)}
+										</WrapWithIcon>
+									) : (
+										false
+									)}
+									{jobLocation ? (
+										<WrapWithIcon icon={FiMapPin} mr={1} my={0}>
+											{decodeString(`${jobLocation}`)}
+										</WrapWithIcon>
+									) : (
+										false
+									)}
+								</Box>
+								<InternFellowBadges justifyContent='flex-start' alignItems='center' mt={4} mb={0} />
+							</Box>
+
+							<Box flex={{ base: '0 0 100%', md: '0 50%' }}>
+								<Stack direction='column' mt={{ base: 4, md: 0 }}>
+									{departmentIds?.length || jobIds?.length || skillIds?.length ? (
+										<PositionsDisplay item={credit} />
+									) : isEditable ? (
+										<Wrap justify='right'>
+											<Text
+												textAlign={{ base: 'left', md: 'right' }}
+												maxWidth='250px'
+												fontSize='sm'
+												lineHeight='short'
+											>
+												This credit won&apos;t be searchable until you add at least one department
+												and a job.
+											</Text>
+										</Wrap>
+									) : (
+										false
+									)}
+								</Stack>
+							</Box>
+						</Flex>
+					</Skeleton>
+				</Card>
+			</LinkBox>
 		</Box>
 	);
 }

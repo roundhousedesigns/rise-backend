@@ -160,7 +160,7 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 				<Flex direction='row' pt={1} my={0} alignItems='top' justifyContent='space-between'>
 					{label ? (
 						<FormLabel
-							ml={2}
+							ml={1}
 							w='full'
 							mr={0}
 							my={0}

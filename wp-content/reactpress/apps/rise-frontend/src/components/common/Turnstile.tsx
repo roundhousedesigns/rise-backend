@@ -1,5 +1,4 @@
-import { Text } from '@chakra-ui/react';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile as TurnstileComponent } from '@marsidev/react-turnstile';
 
 interface Props {
 	onSuccess: () => void;
@@ -7,17 +6,17 @@ interface Props {
 	onExpire: () => void;
 }
 
-export default function TurnstileComponent({ onSuccess, onError, onExpire }: Props) {
+export default function Turnstile({ onSuccess, onError, onExpire }: Props): JSX.Element | null {
 	const { VITE_TURNSTILE_SITE_KEY, VITE_DEV_MODE } = import.meta.env;
 
 	const devMode = VITE_DEV_MODE === 'true' || import.meta.env.MODE === '1';
 
 	if (devMode) {
-		return <Text color='brand.orange'>&mdash; Turnstile disabled in dev mode &mdash;</Text>;
+		return null;
 	}
 
 	return (
-		<Turnstile
+		<TurnstileComponent
 			siteKey={VITE_TURNSTILE_SITE_KEY}
 			onSuccess={onSuccess}
 			onError={onError}

@@ -310,6 +310,6 @@ export const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): RSSFeed
  *
  * @param state The state object to stringify.
  */
-export const useStringifiedState = (state: any): string => {
+export const useStringified = (state: any): string => {
 	return JSON.stringify(state);
 };

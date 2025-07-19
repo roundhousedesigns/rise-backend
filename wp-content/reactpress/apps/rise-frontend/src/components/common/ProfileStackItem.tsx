@@ -25,9 +25,7 @@ export default function ProfileStackItem({
 	};
 
 	return (
-		<Box
-			/*_notLast={{ borderBottom: '1px solid', borderColor: 'gray.200', pb: 4, mb: 2 }}*/ {...props}
-		>
+		<Box {...props}>
 			{title ? <SectionTitle /> : false}
 			{children}
 		</Box>

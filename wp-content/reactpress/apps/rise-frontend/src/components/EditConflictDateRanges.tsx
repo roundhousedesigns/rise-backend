@@ -1,6 +1,5 @@
 import {
 	Button,
-	Divider,
 	Flex,
 	Heading,
 	Link,
@@ -14,18 +13,21 @@ import TooltipIconButton from '@common/inputs/TooltipIconButton';
 import EditConflictDateRangeModal from '@components/EditConflictDateRangeModal';
 import { DateRange } from '@lib/classes';
 import useDeleteOwnConflictRange from '@mutations/useDeleteOwnConflictRange';
+import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { FiDelete, FiPlus } from 'react-icons/fi';
 
 interface Props {
-	conflictRanges: DateRange[];
 	showTitle?: boolean;
 }
 
-export default function EditConflictDateRanges({ conflictRanges, showTitle = true }: Props) {
+export default function EditConflictDateRanges({ showTitle = true }: Props) {
 	const [{ loggedInId }] = useViewer();
+	const [profile] = useUserProfile(loggedInId);
+
+	const { conflictRanges = [] } = profile || {};
 
 	const {
 		deleteOwnConflictRangeMutation,
@@ -44,6 +46,8 @@ export default function EditConflictDateRanges({ conflictRanges, showTitle = tru
 	const [conflictRange, setDateRange] = useState<DateRange>(new DateRange());
 
 	const toast = useToast();
+
+	// TODO Fix add/remove animations
 
 	// Show a toast if the conflict range was successfully deleted.
 	useEffect(() => {
@@ -80,8 +84,6 @@ export default function EditConflictDateRanges({ conflictRanges, showTitle = tru
 				Add your conflict dates here. These will appear on your profile, but will not affect your
 				appearance in search results.
 			</Text>
-			<Divider />
-			<Spacer />
 			<List flexDirection='column' spacing={0}>
 				{sortedDateRanges && sortedDateRanges.length ? (
 					<AnimatePresence>

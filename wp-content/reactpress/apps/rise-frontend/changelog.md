@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file, starting
 with 1.0.0beta.
 
+
+
+## \[1.2-dev] - Unreleased
+
+- Merge: 1.1.13-dashWidgetView
+- Change: Oh dear lord so many undocumented things, I'm so so sorry.
+- Change: More things. Fuck. Oh no.
+- Improve: Everything?
+- Add: Jesus wait check the `rise-frontend/changelog.md`, there's a ton of stuff in there. At least up until I merged the old frontend repo into the new monorepo which is still called `backend` which is not handy, *I know this* thanks, I'll fix it one day.
+- Change. FUck.
+
 ## [1.2-notifications] Unmerged (branched from `1.2-dev`)
 
 - Add: Notifications with count badge for displaying if a a starred profile has been updated.
@@ -22,10 +33,6 @@ with 1.0.0beta.
 - Improve: Make WP Post retrieval more robust. `ContentView` --> is now `PageContent` and `usePostContent` is now `usePage`, which returns a `WPPost` item. This pattern can be reused for other post types!
 - Improve: Use the Rise 'star' glyph more liberally.
 - Improve: Global style fixes (ahhh branch drift......)
-
-## \[1.2-dev] - Unreleased
-
-- Merge: 1.1.13-dashWidgetView
 
 ## \[1.1.13-dashWidgetView] - (Up to) 2024-10-14
 

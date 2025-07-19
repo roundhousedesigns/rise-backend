@@ -41,7 +41,7 @@ import EditConflictDateRanges from '@components/EditConflictDateRanges';
 import EditCreditModal from '@components/EditCreditModal';
 import IsOrgToggle from '@components/IsOrgToggle';
 import ResumePreviewModal from '@components/ResumePreviewModal';
-import { useErrorMessage, useStringifiedState } from '@hooks/hooks';
+import { useErrorMessage, useStringified } from '@hooks/hooks';
 import useClearProfileField from '@hooks/mutations/useClearProfileFileField';
 import useDeleteCredit from '@hooks/mutations/useDeleteCredit';
 import useFileUpload from '@hooks/mutations/useFileUpload';
@@ -129,7 +129,6 @@ export default function EditProfileView(): JSX.Element | null {
 		willTour,
 		phone,
 		unions,
-		conflictRanges,
 		partnerDirectories,
 		experienceLevels,
 		genderIdentities,
@@ -148,9 +147,9 @@ export default function EditProfileView(): JSX.Element | null {
 	// We don't need to use the credits from the editProfile state, because it's not updated when the credits are updated.
 	const { credits, isOrg } = profile ?? {};
 
-	const stringifiedProfile = useStringifiedState(profile);
-	const stringifiedEditProfile = useStringifiedState(editProfile);
-	const stringifiedCredits = useStringifiedState(credits);
+	const stringifiedProfile = useStringified(profile);
+	const stringifiedEditProfile = useStringified(editProfile);
+	const stringifiedCredits = useStringified(credits);
 
 	const [hasEditedProfile, setHasEditedProfile] = useState<boolean>(false);
 
@@ -741,7 +740,7 @@ export default function EditProfileView(): JSX.Element | null {
 			<Divider mb={0} />
 
 			<ProfileStackItem title='Options'>
-				<Card my={0}>
+				<Card>
 					{!isOrg && <DisableProfileToggle showHelperText showLabel />}
 					<IsOrgToggle showHelperText showLabel />
 				</Card>
@@ -749,8 +748,8 @@ export default function EditProfileView(): JSX.Element | null {
 
 			{!isOrg && (
 				<ProfileStackItem title='Scheduling Conflicts'>
-					<Card my={0}>
-						<EditConflictDateRanges conflictRanges={conflictRanges || []} showTitle={false} />
+					<Card>
+						<EditConflictDateRanges showTitle={false} />
 					</Card>
 				</ProfileStackItem>
 			)}
@@ -979,7 +978,7 @@ export default function EditProfileView(): JSX.Element | null {
 							</ProfileStackItem>
 
 							<ProfileStackItem title='Profession'>
-								<Flex alignItems='flex-start' gap={2} flexWrap='wrap' w='full' mt={4}>
+								<Flex alignItems='flex-start' gap={2} flexWrap='wrap' w='full'>
 									<TextInput
 										value={selfTitle}
 										name='selfTitle'

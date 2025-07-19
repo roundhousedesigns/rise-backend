@@ -36,7 +36,6 @@ const variants = {
 	}),
 	fieldSectionTitle: defineStyle({
 		fontSize: '3xl',
-		mt: 0,
 		pb: 0,
 	}),
 	centerline: defineStyle({
