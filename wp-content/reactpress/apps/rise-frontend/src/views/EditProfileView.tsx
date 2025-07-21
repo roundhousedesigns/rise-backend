@@ -52,9 +52,9 @@ import useUserTaxonomies from '@hooks/queries/useUserTaxonomies';
 import useViewer from '@hooks/queries/useViewer';
 import { Credit, UserProfile } from '@lib/classes';
 import {
+	areProfilesDifferent,
 	cloneInstance,
 	generateRandomString,
-	hasProfileChanged,
 	sanitizeBoolean,
 	sortCreditsByIndex,
 } from '@lib/utils';
@@ -210,7 +210,7 @@ export default function EditProfileView(): JSX.Element | null {
 		if (!editProfile || !profile) return;
 
 		// Update the hasEditedProfile state when the editProfile changes.
-		setHasEditedProfile(hasProfileChanged(editProfile, profile));
+		setHasEditedProfile(areProfilesDifferent(editProfile, profile));
 
 		return () => setHasEditedProfile(false);
 	}, [stringifiedEditProfile, stringifiedProfile]);

@@ -16,6 +16,7 @@ import {
 	PopoverContent,
 	PopoverHeader,
 	PopoverTrigger,
+	Portal,
 	Text,
 } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
@@ -194,93 +195,104 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			minH='100%'
 			pt={0}
 			pb={0}
-			_light={{ bg: 'blackAlpha.800', color: 'text.light' }}
+			_light={{ bg: 'gray.600', color: 'text.dark' }}
 			_dark={{ bg: 'gray.800', color: 'text.light' }}
 			overflow='hidden'
 			transition='all 0.3s ease'
-			minW='48px'
+			w={sidebarExpanded ? '170px' : '48px'}
+			pos='relative'
 			aria-expanded={sidebarExpanded}
 			{...props}
 		>
-			<Popover isLazy placement='right-end'>
+			<Popover isLazy placement='bottom-end'>
 				<PopoverTrigger>
-					<Button
+					<IconButton
 						position='relative'
-						colorScheme={(unread && unread.length > 0) || (read && read.length > 0) ? 'yellow' : ''}
+						aria-label='Notifications'
+						icon={
+							<Box m={0}>
+								<FiBell />
+								{unread.length > 0 && (
+									<Circle
+										pos='absolute'
+										bottom={-1}
+										right={-1}
+										size={4}
+										textAlign='center'
+										bg='orange.300'
+										color='white'
+										fontSize='2xs'
+									>
+										{unread.length}
+									</Circle>
+								)}
+							</Box>
+						}
+						colorScheme={
+							(unread && unread.length > 0) || (read && read.length > 0) ? 'yellow' : 'gray'
+						}
 						tabIndex={0}
 						px={0}
 						size='sm'
-						m={2}
-					>
-						<Icon as={FiBell} boxSize={5} />
-						{unread.length > 0 && (
-							<Circle
-								size={3}
-								bg='brand.orange'
-								color='white'
-								position='absolute'
-								bottom={1.5}
-								right={2.5}
-								fontSize='3xs'
-							>
-								{unread.length}
-							</Circle>
-						)}
-					</Button>
+						mx={2}
+						my={4}
+					/>
 				</PopoverTrigger>
-				<PopoverContent>
-					<PopoverArrow />
-					<PopoverCloseButton />
-					<PopoverHeader fontFamily='special'>
-						<Flex justifyContent='space-between' alignItems='center' w='full'>
-							<Heading variant='contentSubtitle' my={0}>
-								Notifications
-							</Heading>
-							{unread.length > 0 && (
-								<Button onClick={markAllNotificationsAsRead} size='xs' colorScheme='yellow'>
-									Mark all as read
-								</Button>
+				<Portal>
+					<PopoverContent>
+						<PopoverArrow />
+						<PopoverCloseButton />
+						<PopoverHeader fontFamily='special'>
+							<Flex justifyContent='space-between' alignItems='center' w='full'>
+								<Heading variant='contentSubtitle' my={0}>
+									Alerts
+								</Heading>
+								{unread.length > 0 && (
+									<Button onClick={markAllNotificationsAsRead} size='xs' colorScheme='yellow'>
+										Mark all as read
+									</Button>
+								)}
+								{read.length > 0 && (
+									<Button onClick={deleteAllNotifications} size='xs' colorScheme='yellow'>
+										Delete all
+									</Button>
+								)}
+							</Flex>
+						</PopoverHeader>
+						<PopoverBody>
+							{unread.length === 0 && read.length === 0 && (
+								<Text fontSize='xs' my={0} fontStyle='italic'>
+									You're all caught up!
+								</Text>
 							)}
-							{read.length > 0 && (
-								<Button onClick={deleteAllNotifications} size='xs' colorScheme='yellow'>
-									Delete all
-								</Button>
-							)}
-						</Flex>
-					</PopoverHeader>
-					<PopoverBody>
-						{unread.length === 0 && read.length === 0 && (
-							<Text fontSize='xs' my={0}>
-								You're all caught up!
-							</Text>
-						)}
 
-						<AnimatePresence>
-							<List>
-								{unread.map((notification) => (
-									<ListItem
-										key={notification.id}
-										as={motion.li}
-										initial={{ opacity: 1 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-									>
-										<ProfileNotificationItem notification={notification} />
-									</ListItem>
-								))}
-							</List>
-						</AnimatePresence>
-						<AnimatePresence>
-							<List>
-								{read.map((notification) => (
-									<ListItem as={motion.li} key={notification.id}>
-										<ProfileNotificationItem notification={notification} />
-									</ListItem>
-								))}
-							</List>
-						</AnimatePresence>
-					</PopoverBody>
-				</PopoverContent>
+							<AnimatePresence>
+								<List>
+									{unread.map((notification) => (
+										<ListItem
+											key={notification.id}
+											as={motion.li}
+											initial={{ opacity: 1 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+										>
+											<ProfileNotificationItem notification={notification} />
+										</ListItem>
+									))}
+								</List>
+							</AnimatePresence>
+							<AnimatePresence>
+								<List>
+									{read.map((notification) => (
+										<ListItem as={motion.li} key={notification.id}>
+											<ProfileNotificationItem notification={notification} />
+										</ListItem>
+									))}
+								</List>
+							</AnimatePresence>
+						</PopoverBody>
+					</PopoverContent>
+				</Portal>
 			</Popover>
 			<Flex
 				h={sidebarHeight}
@@ -289,7 +301,7 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 				mx={0}
 				flexDirection='column'
 				flexWrap='nowrap'
-				alignItems='center'
+				alignItems='flex-start'
 				justifyContent='flex-start'
 				borderRight='1px solid'
 				transition='all 0.3s ease'
@@ -298,10 +310,10 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			>
 				<List
 					spacing={0}
-					w='full'
 					px={0}
 					mt={0}
 					mb={3}
+					w='full'
 					fontSize={{ base: 'sm', lg: 'md' }}
 					transition='all 0.3s ease'
 				>
@@ -323,14 +335,7 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 					})}
 				</List>
 
-				<Flex
-					justifyContent='space-between'
-					flexWrap='nowrap'
-					w='full'
-					minW='170px'
-					left={sidebarExpanded ? 0 : 14}
-					pos='relative'
-				>
+				<Flex justifyContent='space-between' flexWrap='nowrap' w='full' pos='relative'>
 					<IconButton
 						aria-label='Toggle wide sidebar'
 						aria-expanded={sidebarExpanded}
@@ -341,7 +346,15 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 						transform={sidebarExpanded ? 'rotate(0deg)' : 'rotate(180deg)'}
 						transition='all 0.3s ease'
 					/>
-					<DarkModeToggle showLabel={false} showHelperText={false} mr={1} w='90px' />
+					<DarkModeToggle
+						showLabel={false}
+						showHelperText={false}
+						mr={1}
+						ml={sidebarExpanded ? 0 : 2}
+						w='90px'
+						transition='all 0.3s ease'
+						color='text.light'
+					/>
 				</Flex>
 			</Flex>
 		</Box>

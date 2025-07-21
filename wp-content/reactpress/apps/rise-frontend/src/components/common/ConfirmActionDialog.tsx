@@ -1,13 +1,13 @@
-import { ReactNode, useRef } from 'react';
 import {
 	AlertDialog,
-	AlertDialogOverlay,
-	AlertDialogContent,
-	AlertDialogHeader,
 	AlertDialogBody,
+	AlertDialogContent,
 	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogOverlay,
 	Button,
 } from '@chakra-ui/react';
+import { ReactNode, useRef } from 'react';
 
 interface Props {
 	isOpen: boolean;
@@ -36,7 +36,7 @@ export default function ConfirmActionDialog({
 	return (
 		<AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
 			<AlertDialogOverlay>
-				<AlertDialogContent>
+				<AlertDialogContent _dark={{ color: 'text.light' }} _light={{ color: 'text.dark' }}>
 					<AlertDialogHeader fontSize='lg' fontWeight='bold'>
 						{headerText}
 					</AlertDialogHeader>

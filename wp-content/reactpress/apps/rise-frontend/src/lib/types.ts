@@ -398,3 +398,18 @@ export interface RSSFeedState {
 	loading: boolean;
 	error: string | null;
 }
+
+/**
+ * The data shape for possible file upload fields.
+ */
+export interface UploadFileFields {
+	image: string;
+	resume: string;
+	mediaImage1: string;
+	mediaImage2: string;
+	mediaImage3: string;
+	mediaImage4: string;
+	mediaImage5: string;
+	mediaImage6: string;
+	[key: string]: string;
+}

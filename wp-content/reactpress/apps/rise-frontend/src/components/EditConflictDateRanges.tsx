@@ -47,8 +47,6 @@ export default function EditConflictDateRanges({ showTitle = true }: Props) {
 
 	const toast = useToast();
 
-	// TODO Fix add/remove animations
-
 	// Show a toast if the conflict range was successfully deleted.
 	useEffect(() => {
 		if (deleteData?.deleeOwnConflictRange?.result === true && !deleteLoading) {

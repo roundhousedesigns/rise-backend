@@ -2,7 +2,7 @@
  * Copyright (c) 2024 Maestra Music and Roundhouse Designs. All rights reserved.
  */
 
-import { Box, Grid, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
 import { SearchContextProvider } from '@context/SearchContext';
 import Main from '@layout/Main';
 import Sidebar from '@layout/Sidebar';
@@ -11,6 +11,9 @@ import { useEffect, useState } from 'react';
 export default function App() {
 	const [isLargerThanMd] = useMediaQuery('(min-width: 36rem)');
 	const [sidebarExpanded, setSidebarExpanded] = useState(false);
+
+	const sidebarMaxWidth = '170px';
+	const sidebarMinWidth = '45px';
 
 	// Initialize sidebar expansion based on screen size
 	useEffect(() => {
@@ -34,22 +37,20 @@ export default function App() {
 			}}
 			w='100vw'
 			h='full'
+			pt='78px'
 			overflow='auto'
 		>
 			<SearchContextProvider>
-				<Box h='100%' w='full'>
-					<Grid
-						w='full'
-						h='100%'
-						position='relative'
-						templateAreas='sidebar main'
-						templateColumns={`${sidebarExpanded ? '170px' : '45px'} 1fr`}
-						transition='all 0.3s ease'
-					>
-						<Sidebar sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
-						<Main />
-					</Grid>
-				</Box>
+				<Flex h='100%' minH='500px' w='full' flexWrap='nowrap'>
+					<Sidebar
+						sidebarExpanded={sidebarExpanded}
+						setSidebarExpanded={setSidebarExpanded}
+						maxW={sidebarMaxWidth}
+						minW={sidebarMinWidth}
+						position='fixed'
+					/>
+					<Main ml={sidebarExpanded ? sidebarMaxWidth : sidebarMinWidth} />
+				</Flex>
 			</SearchContextProvider>
 		</Box>
 	);

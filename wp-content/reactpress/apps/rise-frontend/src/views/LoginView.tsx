@@ -70,7 +70,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 		loginMutation({ ...credentials })
 			.then((res) => {
 				// TODO setup admin redirect logic
-				console.info(res);
 			})
 			.catch((errors: { message: string }) => {
 				setErrorCode(errors.message);

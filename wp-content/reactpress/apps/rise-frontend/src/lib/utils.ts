@@ -98,16 +98,21 @@ export function sanitizeBoolean(value: string | boolean): boolean | null {
 export function getWPItemsFromIds(ids: number[], items: WPItem[]): WPItem[] {
 	return items.filter((item) => ids.includes(item.id));
 }
+
 /**
  * Determine if a user profile has been edited.
  *
- * @param {editProfile}
- * @param {origProfile}
+ * @since 1.2.0
+ *
+ * @param {editProfile} The first profile to compare.
+ * @param {origProfile} The second profile to compare.
+ * @param {ignoreFields} A set of fields to ignore when comparing the profiles. If not provided, the default ignore fields will be used.
+ * @returns {boolean} Whether the profiles are different.
  */
-export const hasProfileChanged = (editProfile: UserProfile, origProfile: UserProfile) => {
-	if (origProfile === null) return false;
-
-	const ignoreFields = [
+export const areProfilesDifferent = (
+	editProfile: UserProfile,
+	origProfile: UserProfile,
+	ignoreFields: string[] = [
 		'isOrg',
 		'credits',
 		'conflictRanges',
@@ -120,20 +125,21 @@ export const hasProfileChanged = (editProfile: UserProfile, origProfile: UserPro
 		'mediaImage4',
 		'mediaImage5',
 		'mediaImage6',
-	];
+	]
+) => {
+	if (origProfile === null) return false;
 
-	const profile1 = new UserProfile({
-		...omit(editProfile, ignoreFields),
-		id: 0,
-		slug: '',
-	});
+	// Omit the ignore fields.
+	const [profile1, profile2] = [editProfile, origProfile].map(
+		(profile) =>
+			new UserProfile({
+				...omit(profile, ignoreFields),
+				id: 0,
+				slug: '',
+			})
+	);
 
-	const profile2 = new UserProfile({
-		...omit(origProfile, ignoreFields),
-		id: 0,
-		slug: '',
-	});
-
+	// Return true if the profiles are different.
 	return !isEqual(profile1, profile2);
 };
 

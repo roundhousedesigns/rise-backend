@@ -21,8 +21,7 @@ export default function SidebarMenuItem({
 	return (
 		<ListItem
 			w='full'
-			borderBottomWidth='1.5px'
-			borderBottomStyle='dotted'
+			borderBottomWidth='1px'
 			_dark={{ borderBottomColor: 'gray.700' }}
 			_light={{ borderBottomColor: 'whiteAlpha.300' }}
 			{...props}
@@ -41,20 +40,8 @@ export default function SidebarMenuItem({
 				textDecoration='none'
 				transition='all 0.15s ease-in-out'
 				color='text.light'
-				_light={{
-					bg: isActive ? 'whiteAlpha.400' : 'transparent',
-				}}
-				_dark={{
-					bg: isActive ? 'blackAlpha.600' : 'transparent',
-				}}
-				_hover={{
-					_light: {
-						bg: 'whiteAlpha.200',
-					},
-					_dark: {
-						bg: 'blackAlpha.400',
-					},
-				}}
+				bg={isActive ? 'brand.blue' : 'transparent'}
+				_hover={{ bg: 'blue.300' }}
 			>
 				{icon}
 				<Text

@@ -156,7 +156,15 @@ export default function Main({ ...props }: BoxProps) {
 	]);
 
 	return (
-		<Box w='full' h='auto' minH='100%' background='none' flex='1 1 auto' {...props}>
+		<Box
+			w='full'
+			h='auto'
+			minH='100%'
+			background='none'
+			transition='all 0.3s ease'
+			flex='1 1 auto'
+			{...props}
+		>
 			<ProfileNotices />
 
 			<Box px={2}>{routes}</Box>

@@ -29,7 +29,22 @@
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
 	background-color: var(--wp--preset--color--black);
-	border-bottom: 4px solid var(--wp--preset--color--white);
+	border-bottom-width: 4px;
+	border-bottom-style: solid;
+	height: 78px;
+	width: 100vw;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+
+	.chakra-ui-light & {
+		border-bottom-color: var(--wp--preset--color--black);
+	}
+
+	.chakra-ui-dark & {
+		border-bottom-color: var(--wp--preset--color--white);
+	}
 
 	.site-branding {
 		.custom-logo {
@@ -64,6 +79,7 @@
 	width: 100%;
 	margin-right: 0;
 	margin-left: 0;
+	padding-top: 78px;
 	flex: 1;
 
 	&>.entry-content {
@@ -454,7 +470,7 @@
 /* React page template */
 
 .page-template-template-rise-react,
-.page-template-templxate-react-php {
+.page-template-template-react-php {
 	.site-main {
 		padding: 0;
 		margin: 0;

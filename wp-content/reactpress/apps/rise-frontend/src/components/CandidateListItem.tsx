@@ -51,15 +51,6 @@ const CandidateListItem = ({
 
 	return id ? (
 		<Flex alignItems='center'>
-			{showToggle && (
-				<StarToggleIcon
-					id={id}
-					isDisabled={loggedInId === id}
-					size={mini ? 'sm' : 'md'}
-					ml={mini ? 0 : 2}
-				/>
-			)}
-
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
 				<ColorCascadeBox spread={0.5}>
 					<Card
@@ -67,6 +58,8 @@ const CandidateListItem = ({
 						w='full'
 						py={2}
 						transition='all 100ms ease'
+						_light={{ bg: 'gray.100' }}
+						_dark={{ bg: 'gray.700' }}
 					>
 						<Flex
 							direction='row'
@@ -127,6 +120,14 @@ const CandidateListItem = ({
 					</Card>
 				</ColorCascadeBox>
 			</LinkBox>
+			{showToggle && (
+				<StarToggleIcon
+					id={id}
+					isDisabled={loggedInId === id}
+					size={mini ? 'sm' : 'md'}
+					mr={mini ? 0 : 2}
+				/>
+			)}
 		</Flex>
 	) : (
 		<></>
