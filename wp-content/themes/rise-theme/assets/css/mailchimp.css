@@ -1,0 +1,15 @@
+/**
+ * Mailchimp
+ */
+
+#mc_embed_shell {
+}
+
+#mc_embed_signup {
+	background-color: var(--wp--preset--color--bg-dark);
+
+	form {
+		margin-right: 0;
+		margin-left: 0;
+	}
+}
