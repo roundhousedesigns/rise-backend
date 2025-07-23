@@ -61,9 +61,6 @@
 		margin: 0;
 
 		.wp-block-button__link {
-			font-size: var(--wp--preset--font-size--small);
-			font-family: var(--wp--preset--font-family--stabil-grotesk);
-
 			&[name="directory"] {
 				background-color: var(--wp--preset--color--blue);
 			}

@@ -158,6 +158,12 @@
 					"slug": "small"
 				},
 				{
+					"size": "18px",
+					"name": "Medium (Static)",
+					"slug": "medium-static",
+					"fluid": false
+				},
+				{
 					"size": "20px",
 					"name": "Medium",
 					"slug": "medium",

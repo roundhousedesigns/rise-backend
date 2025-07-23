@@ -127,3 +127,12 @@ input[type="submit"] {
 select {
 	border-radius: var(--wp--custom--border-radius--radius);
 }
+
+/**
+ * Blocks
+ */
+
+.wp-block-button__link {
+	font-size: var(--wp--preset--font-size--small);
+	font-family: var(--wp--preset--font-family--stabil-grotesk);
+}

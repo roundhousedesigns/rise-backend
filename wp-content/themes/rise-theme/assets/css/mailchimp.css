@@ -3,13 +3,21 @@
  */
 
 #mc_embed_shell {
-}
+	#mc_embed_signup {
+		background-color: var(--wp--preset--color--bg-dark);
+		font-family: var(--wp--preset--font-family--stabil-grotesk);
 
-#mc_embed_signup {
-	background-color: var(--wp--preset--color--bg-dark);
+		form {
+			margin-right: 0;
+			margin-left: 0;
 
-	form {
-		margin-right: 0;
-		margin-left: 0;
+			.button {
+				padding: 0.334em 1em;
+				margin: 0;
+				height: auto;
+				font-size: var(--wp--preset--font-size--medium-static);
+				background-color: var(--wp--preset--color--blue);
+			}
+		}
 	}
 }
