@@ -243,6 +243,32 @@ class Admin {
 	}
 
 	/**
+	 * Block non-network partners from accessing the TEC endpoints.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return void
+	 */
+	public function block_non_network_partners_from_events_endpoints() {
+		// Get current URL path
+		$request_uri = $_SERVER['REQUEST_URI'];
+
+		// Check if we're on a calendar/community endpoint
+		if ( preg_match( '#^/calendar/community/#', $request_uri ) ) {
+
+			// Check if user is logged in and has network-partner role
+			$user               = wp_get_current_user();
+			$is_network_partner = in_array( 'network-partner', (array) $user->roles );
+
+			if ( !is_user_logged_in() || !$is_network_partner ) {
+				// Do safe redirect to the Directory
+				wp_safe_redirect( home_url( '/directory' ) );
+				exit;
+			}
+		}
+	}
+
+	/**
 	 * Generate basic stats for the user base.
 	 *
 	 * @return string HTML output.

@@ -792,5 +792,33 @@ class GraphQLQueries {
 				},
 			]
 		);
+
+		/**
+		 * Get community events endpoints for the The Events Calendar plugin. Used to provide network partner management links.
+		 */
+		\register_graphql_field(
+			'RootQuery',
+			'networkPartnerManagementLinks',
+			[
+				'type'        => 'NetworkPartnerManagementLinksOutput',
+				'description' => \__( 'The network partner Events Calendar management links.', 'rise' ),
+				'resolve'     => function ( $root, $args ) {
+					$user = \wp_get_current_user();
+
+					// Check if the user is a network partner.
+					if ( !is_user_logged_in() || !\in_array( 'network-partner', $user->roles, true ) ) {
+						\error_log( 'User is not a network partner.' );
+						return null;
+					}
+
+					return [
+						'addEvent'    => \esc_url( \tribe_community_events_add_event_link() ),
+						'deleteEvent' => \esc_url( \tribe_community_events_delete_event_link() ),
+						'listEvents'  => \esc_url( \tribe_community_events_list_events_link() ),
+						'editEvent'   => \esc_url( \tribe_community_events_edit_event_link() ),
+					];
+				},
+			]
+		);
 	}
 }

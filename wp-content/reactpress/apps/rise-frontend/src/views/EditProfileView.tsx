@@ -1,3 +1,4 @@
+import NetworkPartnerManagementLinks from '@@/src/components/NetworkPartnerManagementLinks';
 import {
 	Box,
 	BoxProps,
@@ -100,7 +101,7 @@ interface FileDropzoneProps {
  * @returns {JSX.Element} The profile view.
  */
 export default function EditProfileView(): JSX.Element | null {
-	const [{ loggedInId, loggedInSlug }] = useViewer();
+	const [{ loggedInId, loggedInSlug, isOrg, isNetworkPartner }] = useViewer();
 	const [profile] = useUserProfile(loggedInId);
 	const { colorMode } = useColorMode();
 
@@ -144,8 +145,8 @@ export default function EditProfileView(): JSX.Element | null {
 		mediaImage6,
 	} = editProfile || {};
 
-	// We don't need to use the credits from the editProfile state, because it's not updated when the credits are updated.
-	const { credits, isOrg } = profile ?? {};
+	// We don't need to use the credits from the editProfile state.
+	const { credits } = profile ?? {};
 
 	const stringifiedProfile = useStringified(profile);
 	const stringifiedEditProfile = useStringified(editProfile);
@@ -739,12 +740,18 @@ export default function EditProfileView(): JSX.Element | null {
 
 			<Divider mb={0} />
 
-			<ProfileStackItem title='Options'>
-				<Card>
-					{!isOrg && <DisableProfileToggle showHelperText showLabel />}
-					<IsOrgToggle showHelperText showLabel />
-				</Card>
-			</ProfileStackItem>
+			{isNetworkPartner ? (
+				<ProfileStackItem title='Network Partner'>
+					<NetworkPartnerManagementLinks />
+				</ProfileStackItem>
+			) : (
+				<ProfileStackItem title='Options'>
+					<Card>
+						{!isOrg && <DisableProfileToggle showHelperText showLabel />}
+						<IsOrgToggle showHelperText showLabel />
+					</Card>
+				</ProfileStackItem>
+			)}
 
 			{!isOrg && (
 				<ProfileStackItem title='Scheduling Conflicts'>

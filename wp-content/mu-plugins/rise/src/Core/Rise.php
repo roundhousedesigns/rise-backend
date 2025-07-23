@@ -417,6 +417,11 @@ class Rise {
 		$this->loader->add_filter( 'login_redirect', $plugin_data, 'redirect_crew_members_after_login', 10, 3 );
 
 		/**
+		 * TEC endpoints
+		 */
+		$this->loader->add_action( 'template_redirect', $plugin_data, 'block_non_network_partners_from_events_endpoints' );
+
+		/**
 		 * Menus
 		 */
 		$this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );

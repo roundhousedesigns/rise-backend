@@ -37,7 +37,6 @@ export default function App() {
 			}}
 			w='100vw'
 			h='full'
-			pt='78px'
 			overflow='auto'
 		>
 			<SearchContextProvider>

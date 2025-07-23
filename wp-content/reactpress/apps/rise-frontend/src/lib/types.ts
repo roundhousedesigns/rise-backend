@@ -279,7 +279,19 @@ export interface ViewerData {
 	lastName?: string;
 	disableProfile?: boolean;
 	isOrg?: boolean;
+	isNetworkPartner?: boolean;
+	networkPartnerManagementLinks?: NetworkPartnerManagementLinksData;
 	starredProfiles?: number[];
+}
+
+/**
+ * The data shape for Network Partner Management Links.
+ */
+export interface NetworkPartnerManagementLinksData {
+	addEvent: string;
+	deleteEvent: string;
+	listEvents: string;
+	editEvent: string;
 }
 
 /**

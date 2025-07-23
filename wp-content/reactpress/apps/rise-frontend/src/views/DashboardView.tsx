@@ -10,7 +10,7 @@ import FollowedProfileList from '@views/FollowedProfileList';
 import MiniProfileView from '@views/MiniProfileView';
 
 export default function DashboardView() {
-	const [{ loggedInId, starredProfiles }] = useViewer();
+	const [{ loggedInId, starredProfiles, isOrg, isNetworkPartner }] = useViewer();
 	const [notices] = useUserNotices();
 
 	const [profile, { loading: profileLoading }] = useUserProfile(loggedInId);
@@ -46,7 +46,11 @@ export default function DashboardView() {
 					</Widget>
 				)}
 			</GridItem>
+
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
+				<Widget title='Partner Events' titleStyle='centerline'>
+					<p>-- EVENTS --</p>
+				</Widget>
 				{notices.length > 0 ? (
 					<Widget title='RISE News' titleStyle='centerline'>
 						<List>

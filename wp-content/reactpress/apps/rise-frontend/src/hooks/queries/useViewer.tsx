@@ -17,11 +17,22 @@ export const QUERY_VIEWER = gql`
 			username
 			isOrg
 			disableProfile
+			roles {
+				nodes {
+					name
+				}
+			}
 			starredProfiles(first: 100) {
 				nodes {
 					databaseId
 				}
 			}
+		}
+		networkPartnerManagementLinks {
+			addEvent
+			deleteEvent
+			listEvents
+			editEvent
 		}
 	}
 `;
@@ -38,8 +49,15 @@ const useViewer = (): [ViewerData, any] => {
 		username,
 		disableProfile,
 		isOrg,
+		roles: userRolesRaw,
 		starredProfiles: starredProfilesRaw,
 	} = result?.data?.viewer || {};
+
+	const isNetworkPartner = userRolesRaw?.nodes.some(
+		(node: { name: string }) => node.name === 'network-partner'
+	);
+
+	const networkPartnerManagementLinks = result?.data?.networkPartnerManagementLinks || {};
 
 	const starredProfiles =
 		starredProfilesRaw?.nodes.map((node: { databaseId: number }) => node.databaseId) || [];
@@ -54,6 +72,8 @@ const useViewer = (): [ViewerData, any] => {
 			username,
 			disableProfile,
 			isOrg,
+			isNetworkPartner,
+			networkPartnerManagementLinks,
 			starredProfiles,
 		},
 		omit(result, ['data']),

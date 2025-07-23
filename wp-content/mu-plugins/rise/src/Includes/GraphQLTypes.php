@@ -465,6 +465,33 @@ class GraphQLTypes {
 				],
 			]
 		);
+
+		/**
+		 * NetworkPartnerManagementLinks output type.
+		 */
+		\register_graphql_object_type(
+			'NetworkPartnerManagementLinksOutput',
+			[
+				'description' => \__( 'A list of network partner management links.', 'rise' ),
+				'fields'      => [
+					'addEvent'    => [
+						'type'        => 'String',
+						'description' => \__( 'The URL to add an event.', 'rise' ),
+					],
+					'deleteEvent' => [
+						'type'        => 'String',
+						'description' => \__( 'The URL to delete an event.', 'rise' ),
+					],
+					'listEvents'  => [
+						'type'        => 'String',
+						'description' => \__( 'The URL to list events.', 'rise' ),
+					],
+					'editEvent'   => [
+						'type'        => 'String',
+						'description' => \__( 'The URL to edit an event.', 'rise' ),
+					],
+				],
+			]
+		);
 	}
 }
-
