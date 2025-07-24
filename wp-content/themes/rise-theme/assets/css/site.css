@@ -48,9 +48,13 @@
 	}
 
 	.site-branding {
+		width: 25vw;
+		max-width: 200px;
+
 		.custom-logo {
-			width: 200px;
+			width: 100%;
 			height: auto;
+			display: block;
 		}
 	}
 
@@ -79,30 +83,30 @@
 	margin-left: 0;
 	flex: 1;
 
-	&>.entry-content {
+	& > .entry-content {
 		margin-right: auto;
 		margin-left: auto;
 
-		&>* {
+		& > * {
 			margin-left: auto !important;
 			margin-right: auto !important;
 		}
 
-		&>*:not(.alignwide),
-		&>*:not(.alignfull) {
+		& > *:not(.alignwide),
+		& > *:not(.alignfull) {
 			padding-right: 2rem;
 			padding-left: 2rem;
 		}
 
-		&>*:not(.alignwide) {
+		& > *:not(.alignwide) {
 			max-width: 1000px;
 		}
 
-		&>*:not(.alignfull) {
+		& > *:not(.alignfull) {
 			max-width: 1400px;
 		}
 
-		&>.alignfull {
+		& > .alignfull {
 			max-width: none;
 		}
 	}
@@ -210,7 +214,7 @@
 		@media screen and (max-width: 40rem) {
 			flex-wrap: wrap;
 
-			&>* {
+			& > * {
 				flex: 0 0 100%;
 			}
 
@@ -322,7 +326,6 @@
 	/* Show overlay on hover/focus for larger screens */
 	@media screen and (min-width: 768px) {
 		.network-partner {
-
 			&:hover,
 			&:focus-within {
 				.entry-content-overlay {
@@ -563,9 +566,8 @@
 
 	&.bg-color-yellow,
 	&.bg-color-red {
-
-		&+.chevron-divider::before,
-		&+.chevron-divider::after {
+		& + .chevron-divider::before,
+		& + .chevron-divider::after {
 			border-top: 6px solid var(--wp--preset--color--bg-light);
 		}
 	}

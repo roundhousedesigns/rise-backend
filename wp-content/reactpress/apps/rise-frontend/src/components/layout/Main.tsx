@@ -2,14 +2,10 @@ import { Box, BoxProps } from '@chakra-ui/react';
 import ProfileNotices from '@common/ProfileNotices';
 import LoggedIn from '@components/LoggedIn';
 import Dashboard from '@routes/Dashboard';
-import EditJobPost from '@routes/EditJobPost';
 import EditProfile from '@routes/EditProfile';
 import FollowedProfiles from '@routes/FollowedProfiles';
-import JobPost from '@routes/JobPost';
-import JobPosts from '@routes/JobPosts';
 import Login from '@routes/Login';
 import LostPassword from '@routes/LostPassword';
-import ManageJobPosts from '@routes/ManageJobPosts';
 import NotFound from '@routes/NotFound';
 import Profile from '@routes/Profile';
 import Register from '@routes/Register';
@@ -19,6 +15,12 @@ import SavedSearches from '@routes/SavedSearches';
 import Search from '@routes/Search';
 import Settings from '@routes/Settings';
 import { Navigate, useRoutes } from 'react-router-dom';
+
+// TODO: Add job routes back in
+// import EditJobPost from '@routes/EditJobPost';
+// import JobPost from '@routes/JobPost';
+// import JobPosts from '@routes/JobPosts';
+// import ManageJobPosts from '@routes/ManageJobPosts';
 
 export default function Main({ ...props }: BoxProps) {
 	/**
@@ -113,42 +115,42 @@ export default function Main({ ...props }: BoxProps) {
 			path: '/register',
 			element: <Register />,
 		},
-		{
-			path: '/jobs',
-			element: (
-				<LoggedIn>
-					<JobPosts />
-				</LoggedIn>
-			),
-		},
-		{
-			path: '/job/:id',
-			element: (
-				<LoggedIn>
-					<JobPost />
-				</LoggedIn>
-			),
-		},
-		{
-			path: '/jobs/manage',
-			element: (
-				<LoggedIn>
-					<ManageJobPosts />
-				</LoggedIn>
-			),
-		},
-		{
-			path: '/job/new',
-			element: <EditJobPost />,
-		},
-		{
-			path: '/job/edit/:id',
-			element: (
-				<LoggedIn>
-					<EditJobPost />
-				</LoggedIn>
-			),
-		},
+		// {
+		// 	path: '/jobs',
+		// 	element: (
+		// 		<LoggedIn>
+		// 			<JobPosts />
+		// 		</LoggedIn>
+		// 	),
+		// },
+		// {
+		// 	path: '/job/:id',
+		// 	element: (
+		// 		<LoggedIn>
+		// 			<JobPost />
+		// 		</LoggedIn>
+		// 	),
+		// },
+		// {
+		// 	path: '/jobs/manage',
+		// 	element: (
+		// 		<LoggedIn>
+		// 			<ManageJobPosts />
+		// 		</LoggedIn>
+		// 	),
+		// },
+		// {
+		// 	path: '/job/new',
+		// 	element: <EditJobPost />,
+		// },
+		// {
+		// 	path: '/job/edit/:id',
+		// 	element: (
+		// 		<LoggedIn>
+		// 			<EditJobPost />
+		// 		</LoggedIn>
+		// 	),
+		// },
 		{
 			path: '*',
 			element: <NotFound />,

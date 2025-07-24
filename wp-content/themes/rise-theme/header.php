@@ -36,7 +36,7 @@
 				<?php get_template_part( 'template-parts/snippet', 'social-links' ); ?>
 			</div>
 
-			<div class="directory-link wp-block-buttons desktop-only">
+			<div class="header-buttons wp-block-buttons desktop-only">
 				<div class="wp-block-button">
 					<a name="directory" href="<?php echo esc_url( home_url( '/directory' ) ); ?>" class="wp-block-button__link">Directory</a>
 				</div>

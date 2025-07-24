@@ -1,18 +1,20 @@
-# Get To Work
+# RISE Theatre
 
-## Backend
+## Current tooling:
 
-This is the first stage of development for the Get To Work backend.
+### Backend
 
-Current tooling:
+- PHP 8.2
+- WordPress 6.8+
+- [WP GraphQL](https://wpgraphql.com/)
+- [Pods.io](https://pods.io/)
 
-- WordPress 6.1+
-- PHP 8.0
-- GraphQL
-- Pods.io
+## Frontend
 
-## Theme files
+- React 18
+- Chakra UI v2
 
-- theme.json
-  - Set up font size defaults to match frontend's size chart.
-  - TODO: clean up theme.json, removing all unnecessary properties and attributes.
+## TODOs
+
+- [ ] Extend Dark/Light mode to all pages, not just React interface.
+- [ ] Finish implementing Jobs Board functionality (awaiting approval)

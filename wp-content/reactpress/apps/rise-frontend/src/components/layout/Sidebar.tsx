@@ -33,7 +33,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, useContext } from 'react';
 import {
 	FiBell,
-	FiBriefcase,
 	FiChevronsLeft,
 	FiFolder,
 	FiHome,
@@ -41,7 +40,7 @@ import {
 	FiSearch,
 	FiSettings,
 	FiStar,
-	FiUser,
+	FiUser
 } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
 
@@ -136,7 +135,7 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			target: '/searches',
 			label: 'Searches',
 		},
-		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' } /* TODO Hide Jobs!! */,
+		// { icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' }
 		{
 			icon: <Icon as={FiSettings} />,
 			target: '/settings',
