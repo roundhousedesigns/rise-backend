@@ -75,8 +75,6 @@ export default function PositionsDisplay({
 		return null;
 	}
 
-	// TODO add loading state spinner
-
 	return (
 		<Stack direction='column'>
 			{showDepartmentBadges && <WPItemBadgeList items={departments} colorScheme='orange' />}

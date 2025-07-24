@@ -1,5 +1,5 @@
 import { Box, Divider, Spinner, Text } from '@chakra-ui/react';
-import EditJobForm from '@components/EditJobForm';
+import EditJobPostForm from '@components/EditJobPostForm';
 import Shell from '@layout/Shell';
 import { JobPostOutput } from '@lib/types';
 import useJobPosts from '@queries/useJobPosts';
@@ -66,7 +66,7 @@ export default function EditJobPost() {
 			<Divider />
 
 			<Box maxW='3xl' textAlign='left'>
-				<EditJobForm initialData={initialData} />
+				<EditJobPostForm initialData={initialData} />
 			</Box>
 		</Shell>
 	);
