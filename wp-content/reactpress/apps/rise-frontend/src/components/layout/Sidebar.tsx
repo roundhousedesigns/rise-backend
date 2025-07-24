@@ -34,7 +34,6 @@ import { ReactNode, useContext, useEffect, useState } from 'react';
 import {
 	FiBell,
 	FiBriefcase,
-	FiCalendar,
 	FiChevronsLeft,
 	FiFolder,
 	FiHome,
@@ -42,7 +41,7 @@ import {
 	FiSearch,
 	FiSettings,
 	FiStar,
-	FiUser,
+	FiUser
 } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
 
@@ -61,21 +60,11 @@ interface SidebarProps extends BoxProps {
 }
 
 export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props }: SidebarProps) {
-	const [
-		{
-			loggedInId,
-			loggedInSlug,
-			starredProfiles,
-			isNetworkPartner,
-			networkPartnerManagementLinks: { listEvents } = {},
-		},
-	] = useViewer();
+	const [{ loggedInId, loggedInSlug, starredProfiles, isNetworkPartner }] = useViewer();
 	const [savedSearches] = useSavedSearches();
 	const [sidebarHeight, setSidebarHeight] = useState('100vh');
 	const { markProfileNotificationsAsReadMutation } = useMarkProfileNotificationsAsRead();
 	const { dismissProfileNotificationsMutation } = useDismissProfileNotifications();
-
-	console.log(listEvents);
 
 	const {
 		search: { results },
@@ -170,12 +159,6 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			label: 'Searches',
 		},
 		{ icon: <Icon as={FiBriefcase} />, target: '/jobs', label: 'Jobs' } /* TODO Hide Jobs!! */,
-		{
-			icon: <Icon as={FiCalendar} />,
-			target: listEvents || '',
-			label: 'Events',
-			isDisabled: !isNetworkPartner,
-		},
 		{
 			icon: <Icon as={FiSettings} />,
 			target: '/settings',
