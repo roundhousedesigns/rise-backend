@@ -289,9 +289,7 @@ export interface ViewerData {
  */
 export interface NetworkPartnerManagementLinksData {
 	addEvent: string;
-	deleteEvent: string;
 	listEvents: string;
-	editEvent: string;
 }
 
 /**
@@ -424,4 +422,17 @@ export interface UploadFileFields {
 	mediaImage5: string;
 	mediaImage6: string;
 	[key: string]: string;
+}
+
+/**
+ * The data shape for an Upcoming Event.
+ */
+export interface UpcomingEventParams {
+	id: number;
+	title: string;
+	partnerName: string;
+	startDate: string;
+	endDate: string;
+	link: string;
+	location?: string;
 }

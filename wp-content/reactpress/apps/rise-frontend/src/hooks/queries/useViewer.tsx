@@ -30,9 +30,7 @@ export const QUERY_VIEWER = gql`
 		}
 		networkPartnerManagementLinks {
 			addEvent
-			deleteEvent
 			listEvents
-			editEvent
 		}
 	}
 `;

@@ -493,5 +493,45 @@ class GraphQLTypes {
 				],
 			]
 		);
+
+		/**
+		 * UpcomingEventOutput output type.
+		 */
+		\register_graphql_object_type(
+			'UpcomingEventOutput',
+			[
+				'description' => \__( 'A list of upcoming events.', 'rise' ),
+				'fields'      => [
+					'id'          => [
+						'type'        => 'ID',
+						'description' => \__( 'The event ID.', 'rise' ),
+					],
+					'title'       => [
+						'type'        => 'String',
+						'description' => \__( 'The event title.', 'rise' ),
+					],
+					'partnerName' => [
+						'type'        => 'String',
+						'description' => \__( 'The name of the event\'s hosting Network Partner.', 'rise' ),
+					],
+					'startDate'   => [
+						'type'        => 'String',
+						'description' => \__( 'The event start date.', 'rise' ),
+					],
+					'endDate'     => [
+						'type'        => 'String',
+						'description' => \__( 'The event end date.', 'rise' ),
+					],
+					'link'        => [
+						'type'        => 'String',
+						'description' => \__( 'The event link.', 'rise' ),
+					],
+					'location'    => [
+						'type'        => 'String',
+						'description' => \__( 'The event location.', 'rise' ),
+					],
+				],
+			]
+		);
 	}
 }

@@ -20,7 +20,7 @@ const Widget = ({
 	centerLineColor = centerLineColor || (colorMode === 'dark' ? 'whiteAlpha.600' : 'blackAlpha.600');
 
 	return (
-		<Box {...props}>
+		<Box w='full' {...props}>
 			{title && (
 				<>
 					{titleStyle === 'centerline' && (

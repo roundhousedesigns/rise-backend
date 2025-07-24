@@ -2,13 +2,14 @@ import { Card, Grid, GridItem, List, ListItem, Skeleton, Stack } from '@chakra-u
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
-import ShortPost from '@components/ShortPost';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
 import FollowedProfileList from '@views/FollowedProfileList';
 import MiniProfileView from '@views/MiniProfileView';
+import EventsList from '../components/EventsList';
 import NetworkPartnerManagementLinks from '../components/NetworkPartnerManagementLinks';
+import ShortPost from '../components/ShortPost';
 
 export default function DashboardView() {
 	const [{ loggedInId, starredProfiles, isOrg, isNetworkPartner }] = useViewer();
@@ -41,29 +42,26 @@ export default function DashboardView() {
 					</ColorCascadeBox>
 				</Widget>
 
-				{isNetworkPartner && (
-					<Widget title='Partner Events' titleStyle='centerline'>
-						<NetworkPartnerManagementLinks />
-					</Widget>
-				)}
+				<Widget title='Upcoming Events' titleStyle='centerline'>
+					<>
+						<EventsList />
+						{isNetworkPartner && <NetworkPartnerManagementLinks title='Manage Your Events' />}
+					</>
+				</Widget>
+			</GridItem>
 
-				{notices.length > 0 ? (
+			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
+				{notices.length > 0 && (
 					<Widget title='RISE News' titleStyle='centerline'>
 						<List>
 							{notices.map((notice: any) => (
-								<ListItem key={notice.id} my={0}>
+								<ListItem key={notice.id}>
 									<ShortPost post={notice} mb={4} as={Card} />
 								</ListItem>
 							))}
 						</List>
 					</Widget>
-				) : null}
-			</GridItem>
-
-			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
-				<Widget title='Partner Events' titleStyle='centerline'>
-					<p>-- EVENTS --</p>
-				</Widget>
+				)}
 
 				<Widget title='Industry News' titleStyle='centerline'>
 					<DashboardRSSFeeds />

@@ -136,7 +136,6 @@ export default function CreditItem({
 										id={`credit-${credit.id}`}
 										as='h3'
 										variant='cardItemTitle'
-										fontSize='2xl'
 										my={0}
 									>
 										<LinkOverlay

@@ -546,3 +546,41 @@ export function parseRSSItems(xmlDoc: Document, fieldMap?: RSSPostFieldMap): RSS
 		});
 	});
 }
+
+/**
+ * Format a date range for an upcoming event.
+ *
+ * @param {string} startDate - The start date of the event.
+ * @param {string} endDate - The end date of the event.
+ * @returns {string} The formatted date range.
+ */
+export function formatUpcomingEventDate(startDate: string, endDate: string): string {
+	const start = new Date(startDate);
+	const end = new Date(endDate);
+
+	// Check if dates are the same day
+	const sameDay = start.toDateString() === end.toDateString();
+
+	if (sameDay) {
+		// Format for same day events
+		const date = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+		const startTime = start
+			.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+			.toLowerCase();
+		const endTime = end
+			.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+			.toLowerCase();
+		return `${date} from ${startTime} to ${endTime}`;
+	} else {
+		// Format for multi-day events
+		const startDate = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+		const endDate = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+		const startTime = start
+			.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+			.toLowerCase();
+		const endTime = end
+			.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+			.toLowerCase();
+		return `${startDate} @ ${startTime} to ${endDate} @ ${endTime}`;
+	}
+}

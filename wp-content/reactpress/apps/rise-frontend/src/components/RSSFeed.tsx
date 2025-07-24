@@ -5,6 +5,7 @@ import {
 	ListItem,
 	ListProps,
 	SimpleGrid,
+	Skeleton,
 	Spinner,
 	Text,
 } from '@chakra-ui/react';
@@ -75,40 +76,41 @@ export default function RSSFeed({
 	const visiblePosts = allPosts.slice(0, visibleCount);
 	const hasMorePosts = visiblePosts.length < allPosts.length;
 
-	if (loading) return <LoadingState />;
 	if (error) return <ErrorState message={error} />;
 
 	return (
-		<>
-			<List as={SimpleGrid} columns={{ base: 1, md: columns }} gap={6} {...props}>
-				{visiblePosts.length > 0 && (
-					<AnimatePresence>
-						{visiblePosts.map(({ post, fieldMap, feedTitle }) => (
-							<ListItem
-								key={post.id}
-								as={motion.div}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-							>
-								<RSSPostItem post={post} fieldMap={fieldMap} feedTitle={feedTitle} />
-							</ListItem>
-						))}
-					</AnimatePresence>
+		<Box w='full'>
+			<Skeleton isLoaded={!loading}>
+				<List as={SimpleGrid} columns={{ base: 1, md: columns }} gap={6} {...props}>
+					{visiblePosts.length > 0 && (
+						<AnimatePresence>
+							{visiblePosts.map(({ post, fieldMap, feedTitle }) => (
+								<ListItem
+									key={post.id}
+									as={motion.div}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+								>
+									<RSSPostItem post={post} fieldMap={fieldMap} feedTitle={feedTitle} />
+								</ListItem>
+							))}
+						</AnimatePresence>
+					)}
+				</List>
+				{hasMorePosts && (
+					<Box textAlign='center' py={2} mt={4}>
+						<Button
+							onClick={handleLoadMore}
+							colorScheme='blue'
+							variant='outline'
+							aria-label='Load more news headlines'
+						>
+							Load More
+						</Button>
+					</Box>
 				)}
-			</List>
-			{hasMorePosts && (
-				<Box textAlign='center' py={2} mt={4}>
-					<Button
-						onClick={handleLoadMore}
-						colorScheme='blue'
-						variant='outline'
-						aria-label='Load more news headlines'
-					>
-						Load More
-					</Button>
-				</Box>
-			)}
-		</>
+			</Skeleton>
+		</Box>
 	);
 }

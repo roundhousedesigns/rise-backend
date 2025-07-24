@@ -33,6 +33,7 @@ const variants = {
 	cardItemTitle: defineStyle({
 		fontWeight: 'normal',
 		fontFamily: 'body',
+		fontSize: '2xl',
 	}),
 	fieldSectionTitle: defineStyle({
 		fontSize: '3xl',

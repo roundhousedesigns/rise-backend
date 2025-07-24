@@ -1,23 +1,31 @@
-import { Box, Link, List, ListItem, Text } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Heading, Text } from '@chakra-ui/react';
 import useViewer from '@hooks/queries/useViewer';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function NetworkPartnerManagementLinks(): JSX.Element | null {
+interface Props {
+	title?: string;
+}
+
+export default function NetworkPartnerManagementLinks({
+	title = 'Manage Events',
+}: Props): JSX.Element | null {
 	const [{ networkPartnerManagementLinks }] = useViewer();
 
 	return !!networkPartnerManagementLinks ? (
 		<Box>
+			<Heading variant='contentSubtitle'>{title}</Heading>
 			<Text variant='helperText'>
-				Add and manage your organization's events to include them on the RISE public calendar of
-				events.
+				As one of our Network Partners, you can publicize your organization's upcoming events on the
+				RISE public calendar.
 			</Text>
-			<List display='flex'>
-				<ListItem>
-					<Link as={RouterLink} to={networkPartnerManagementLinks.addEvent}>
-						Add Event
-					</Link>
-				</ListItem>
-			</List>
+			<ButtonGroup>
+				<Button as={Link} to={networkPartnerManagementLinks.addEvent} target='_blank'>
+					Add Event
+				</Button>
+				<Button as={Link} to={networkPartnerManagementLinks.listEvents} target='_blank'>
+					Manage Events
+				</Button>
+			</ButtonGroup>
 		</Box>
 	) : null;
 }

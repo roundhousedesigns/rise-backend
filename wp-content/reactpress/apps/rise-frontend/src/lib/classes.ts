@@ -9,6 +9,7 @@ import {
 	ProfileNotificationParams,
 	RSSPostParams,
 	SearchFilterSetParams,
+	UpcomingEventParams,
 	UserParams,
 	UserProfileParams,
 	WPAttachmentParams,
@@ -725,5 +726,28 @@ export class RSSPost implements RSSPostParams {
 		this.content = params.content;
 		this.uri = params.uri;
 		this.date = params.date;
+	}
+}
+
+/**
+ * An Upcoming Event.
+ */
+export class UpcomingEvent implements UpcomingEventParams {
+	id: number;
+	title: string;
+	partnerName: string;
+	startDate: string;
+	endDate: string;
+	link: string;
+	location?: string;
+
+	constructor(params: UpcomingEventParams) {
+		this.id = params.id;
+		this.title = params.title;
+		this.partnerName = params.partnerName;
+		this.startDate = params.startDate;
+		this.endDate = params.endDate;
+		this.link = params.link;
+		this.location = params.location ? params.location : undefined;
 	}
 }

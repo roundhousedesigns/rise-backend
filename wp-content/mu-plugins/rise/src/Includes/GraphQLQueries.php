@@ -820,5 +820,41 @@ class GraphQLQueries {
 				},
 			]
 		);
+
+		/**
+		 * Get the upcoming events.
+		 */
+		\register_graphql_field(
+			'RootQuery',
+			'upcomingEvents',
+			[
+				'type'        => ['list_of' => 'UpcomingEventOutput'],
+				'description' => \__( 'Get the upcoming events.', 'rise' ),
+				'resolve'     => function ( $root, $args ) {
+					$events = \tribe_get_events( [
+						'posts_per_page' => 5,
+						'start_date'     => 'now',
+					] );
+
+					$events_data = [];
+
+					foreach ( $events as $event ) {
+						$pod = \pods( 'user', $event->post_author );
+
+						$events_data[] = [
+							'id'          => $event->ID,
+							'title'       => \get_the_title( $event->ID ),
+							'partnerName' => $pod->field( 'org_name' ),
+							'startDate'   => \tribe_get_start_date( $event->ID, true, 'Y-m-d H:i' ),
+							'endDate'     => \tribe_get_end_date( $event->ID, true, 'Y-m-d H:i' ),
+							'link'        => \get_the_permalink( $event->ID ),
+							'location'    => \tribe_get_venue( $event->ID ),
+						];
+					}
+
+					return $events_data;
+				},
+			]
+		);
 	}
 }
