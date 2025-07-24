@@ -9,10 +9,12 @@ with 1.1.1.
 - Add: Profile Notifications!
   - Badge count for displaying if any starred profiles have been updated.
   - On update, if an identical notification is found, only the newest is kept.
+- Add: Network Partner Events!
 - Add: Jobs Board!
   - Post management
   - Payment via WooCommerce
   - Auto expiration 30 days after `pending` -> `publish`
+  - ***NOT YET LIVE***
 - Add: RSS Feed component!
 - Add: Organization profile toggle
 - Change: Move Search Drawer to a dedicated route `/search`
