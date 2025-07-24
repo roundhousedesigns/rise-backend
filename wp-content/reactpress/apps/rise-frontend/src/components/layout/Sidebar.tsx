@@ -30,7 +30,7 @@ import useProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { ReactNode, useContext } from 'react';
 import {
 	FiBell,
 	FiBriefcase,
@@ -41,7 +41,7 @@ import {
 	FiSearch,
 	FiSettings,
 	FiStar,
-	FiUser
+	FiUser,
 } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
 
@@ -60,9 +60,8 @@ interface SidebarProps extends BoxProps {
 }
 
 export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props }: SidebarProps) {
-	const [{ loggedInId, loggedInSlug, starredProfiles, isNetworkPartner }] = useViewer();
+	const [{ loggedInId, loggedInSlug, starredProfiles }] = useViewer();
 	const [savedSearches] = useSavedSearches();
-	const [sidebarHeight, setSidebarHeight] = useState('100vh');
 	const { markProfileNotificationsAsReadMutation } = useMarkProfileNotificationsAsRead();
 	const { dismissProfileNotificationsMutation } = useDismissProfileNotifications();
 
@@ -75,27 +74,6 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 	const [{ unread, read }] = useProfileNotifications(loggedInId);
 
 	const { logoutMutation } = useLogout();
-
-	// Calculate sidebar height by subtracting masthead height from 100vh
-	useEffect(() => {
-		const calculateHeight = () => {
-			const masthead = document.getElementById('masthead');
-			if (masthead) {
-				const mastheadHeight = masthead.offsetHeight;
-				setSidebarHeight(`calc(100vh - ${mastheadHeight}px)`);
-			}
-		};
-
-		// Calculate on mount
-		calculateHeight();
-
-		// Recalculate on window resize
-		window.addEventListener('resize', calculateHeight);
-
-		return () => {
-			window.removeEventListener('resize', calculateHeight);
-		};
-	}, []);
 
 	const handleLogout = () => {
 		logoutMutation().then(() => {
@@ -197,9 +175,7 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			pb={0}
 			_light={{ bg: 'gray.600', color: 'text.dark' }}
 			_dark={{ bg: 'gray.800', color: 'text.light' }}
-			overflow='hidden'
 			transition='all 0.3s ease'
-			w={sidebarExpanded ? '170px' : '48px'}
 			pos='relative'
 			aria-expanded={sidebarExpanded}
 			{...props}
@@ -239,7 +215,11 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 					/>
 				</PopoverTrigger>
 				<Portal>
-					<PopoverContent>
+					<PopoverContent
+						_dark={{ color: 'text.light' }}
+						_light={{ color: 'text.dark' }}
+						boxShadow='1px 1px 1px 1px rgba(0, 0, 0, 0.4)'
+					>
 						<PopoverArrow />
 						<PopoverCloseButton />
 						<PopoverHeader fontFamily='special'>
@@ -295,15 +275,15 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 				</Portal>
 			</Popover>
 			<Flex
-				h={sidebarHeight}
 				w='full'
 				mt={0}
-				mx={0}
+				ml={0}
 				flexDirection='column'
 				flexWrap='nowrap'
 				alignItems='flex-start'
 				justifyContent='flex-start'
 				borderRight='1px solid'
+				mr={sidebarExpanded ? 14 : 0}
 				transition='all 0.3s ease'
 				_light={{ borderColor: 'text.dark' }}
 				_dark={{ borderColor: 'gray.800' }}
