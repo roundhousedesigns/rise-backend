@@ -159,6 +159,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 						<Button
 							as={Link}
 							href={term.externalUrl}
+							color='text.dark !important'
 							isExternal
 							name={`Link to ${term.name}`}
 							size='sm'
@@ -267,14 +268,12 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 							</>
 						)}
 
-						{!socials.isEmpty() ? (
-							<PersonalIconLinks
-								socials={socials}
-								profileSlug={slug}
-								boxSize={10}
-								justifyContent='center'
-							/>
-						) : null}
+						<PersonalIconLinks
+							socials={socials}
+							profileSlug={slug}
+							boxSize={10}
+							justifyContent='center'
+						/>
 
 						{email || phone || website ? (
 							<ProfileStackItem>
@@ -368,7 +367,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 							<ProfileStackItem title={isOrg ? 'Based in' : 'Works in'}>
 								<>
 									<WrapWithIcon icon={FiMapPin} mr={2}>
-										{locationTerms ? SelectedTerms({ ids: locations, terms: locationTerms }) : null}
+										{locationTerms ? <SelectedTerms ids={locations} terms={locationTerms} /> : null}
 									</WrapWithIcon>
 									{!isOrg && (
 										<WrapWithIcon icon={FiMap} mr={2}>

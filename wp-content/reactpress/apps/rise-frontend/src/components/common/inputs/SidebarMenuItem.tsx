@@ -34,7 +34,7 @@ export default function SidebarMenuItem({
 				justifyContent='flex-start'
 				flexWrap='nowrap'
 				pr={isExpanded ? 4 : 0}
-				pl={isExpanded ? 4 : 3.5}
+				pl='16px'
 				gap={2}
 				w='100%'
 				textDecoration='none'

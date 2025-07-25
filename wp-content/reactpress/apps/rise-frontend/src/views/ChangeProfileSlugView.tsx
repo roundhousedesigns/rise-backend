@@ -1,12 +1,12 @@
 import {
-    Box,
-    Button,
-    Flex,
-    Heading,
-    Text,
-    chakra,
-    useClipboard,
-    useToast,
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Text,
+	chakra,
+	useClipboard,
+	useToast,
 } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
 import { useErrorMessage, useProfileUrl, useValidateProfileSlug } from '@hooks/hooks';
@@ -112,7 +112,6 @@ export default function ChangeProfileUrlView() {
 								maxW='300px'
 								mt={0}
 								label='New profile tag'
-								labelHidden
 								helperText='Letters, numbers, dashes, and underscores.'
 								error={errorMessage}
 								isRequired

@@ -1,4 +1,4 @@
-import { Box, Heading, RadioGroup, Spinner, Wrap } from '@chakra-ui/react';
+import { Box, Flex, Heading, RadioGroup, Spinner } from '@chakra-ui/react';
 import RadioButton from '@common/inputs/RadioButton';
 import { SearchContext } from '@context/SearchContext';
 import { WPItem } from '@lib/classes';
@@ -44,19 +44,15 @@ export default function SearchFilterDepartment() {
 				{savedSearchId ? 'Browse' : 'Or, browse manually'} by department:
 			</Heading>
 			<RadioGroup onChange={handleToggleTerm} value={departmentId} size='sm'>
-				<Wrap>
+				<Flex flexWrap='wrap' gap={2}>
 					{data.map((term: WPItem) => {
 						return (
-							<RadioButton
-								key={term.id}
-								name='search-departments'
-								value={term.id.toString()}
-							>
+							<RadioButton key={term.id} name='search-departments' value={term.id.toString()}>
 								{term.name}
 							</RadioButton>
 						);
 					})}
-				</Wrap>
+				</Flex>
 			</RadioGroup>
 		</Box>
 	) : loading ? (

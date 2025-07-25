@@ -12,7 +12,8 @@ export default function App() {
 	const [isLargerThanMd] = useMediaQuery('(min-width: 36rem)');
 	const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
-	const sidebarMinWidth = '48px';
+	const sidebarMinWidth = '52px';
+	const sidebarMaxWidth = '200px';
 
 	// Initialize sidebar expansion based on screen size
 	useEffect(() => {
@@ -43,7 +44,7 @@ export default function App() {
 					<Sidebar
 						sidebarExpanded={sidebarExpanded}
 						setSidebarExpanded={setSidebarExpanded}
-						w={sidebarExpanded ? 'auto' : sidebarMinWidth}
+						w={sidebarExpanded ? sidebarMaxWidth : sidebarMinWidth}
 					/>
 					<Main />
 				</Flex>

@@ -6,6 +6,7 @@ import {
 	LinkBox,
 	LinkBoxProps,
 	LinkOverlay,
+	ListItem,
 	Text,
 } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
@@ -50,7 +51,7 @@ const CandidateListItem = ({
 		conflictRanges && jobDates && jobDates.startDate ? jobDates.hasConflict(conflictRanges) : false;
 
 	return id ? (
-		<Flex alignItems='center'>
+		<ListItem display='flex' alignItems='center'>
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
 				<ColorCascadeBox spread={0.5}>
 					<Card
@@ -128,7 +129,7 @@ const CandidateListItem = ({
 					mr={mini ? 0 : 2}
 				/>
 			)}
-		</Flex>
+		</ListItem>
 	) : (
 		<></>
 	);

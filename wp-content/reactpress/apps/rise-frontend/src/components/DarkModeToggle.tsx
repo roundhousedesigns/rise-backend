@@ -30,16 +30,22 @@ export default function DarkModeToggle({
 			showLabel={showLabel}
 			{...props}
 		>
-			{showHelperText ? <Subtext colorMode={colorMode} /> : ''}
+			{showHelperText ? <Description colorMode={colorMode} /> : ''}
 		</ToggleOptionSwitch>
 	);
 }
 
-const Subtext = ({ colorMode }: { colorMode: string }) => {
+const Description = ({ colorMode }: { colorMode: string }) => {
 	const text = colorMode === 'dark' ? 'Dark mode' : 'Light mode';
 
 	return (
-		<Text as='span' fontSize='xs'>
+		<Text
+			as='span'
+			fontSize='xs'
+			_dark={{ color: 'text.light' }}
+			_light={{ color: 'text.dark' }}
+			opacity={0.8}
+		>
 			<Highlight query={[colorMode]} styles={{ bg: 'brand.yellow', px: 1 }}>
 				{text}
 			</Highlight>

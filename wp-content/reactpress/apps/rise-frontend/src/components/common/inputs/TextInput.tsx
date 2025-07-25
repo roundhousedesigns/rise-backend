@@ -1,4 +1,5 @@
 import {
+	Box,
 	Flex,
 	FormControl,
 	FormControlProps,
@@ -10,7 +11,6 @@ import {
 	InputLeftElement,
 	InputProps,
 	Text,
-	Wrap,
 } from '@chakra-ui/react';
 import { debounce } from 'lodash';
 import {
@@ -166,7 +166,7 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 							my={0}
 							pt={0}
 							lineHeight='normal'
-							fontSize='sm'
+							fontSize='xs'
 							fontFamily='special'
 							flexGrow='1'
 							sx={{
@@ -178,8 +178,8 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 						</FormLabel>
 					) : null}
 				</Flex>
-				<Wrap w='full' alignItems='flex-start' opacity={0.9} fontStyle='italic'>
-					<FormHelperText my={0} ml={2} flex='1' w='full'>
+				<Box w='full' opacity={0.9} fontStyle='italic'>
+					<FormHelperText my={0} ml={1} flex='1' w='full'>
 						{/* TODO: Validate on the fly */}
 						<Flex w='full' justifyContent='space-between' alignItems='center' lineHeight='normal'>
 							{error ? (
@@ -193,7 +193,7 @@ const TextInput = forwardRef<HTMLInputElement, Props & FormControlProps>(
 							) : null}
 						</Flex>
 					</FormHelperText>
-				</Wrap>
+				</Box>
 			</FormControl>
 		);
 	}

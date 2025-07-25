@@ -763,7 +763,6 @@ export default function EditProfileView(): JSX.Element | null {
 		</Stack>
 	);
 
-	// TODO Move to component
 	const FileDropzone = ({
 		fieldName,
 		text,

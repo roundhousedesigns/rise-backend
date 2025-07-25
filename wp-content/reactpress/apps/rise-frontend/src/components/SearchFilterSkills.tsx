@@ -1,7 +1,7 @@
-import { useContext } from 'react';
-import { Box, CheckboxGroup, Wrap, Skeleton } from '@chakra-ui/react';
+import { Box, CheckboxGroup, Flex, Skeleton } from '@chakra-ui/react';
 import { WPItem } from '@lib/classes';
 import useRelatedSkills from '@queries/useRelatedSkills';
+import { useContext } from 'react';
 
 import ErrorAlert from '@common/ErrorAlert';
 import CheckboxButton from '@common/inputs/CheckboxButton';
@@ -35,13 +35,13 @@ export default function SearchFilterSkills(): JSX.Element {
 			<Skeleton isLoaded={data?.length > 0 && !loading && !error}>
 				<Box>
 					<CheckboxGroup defaultValue={skills} onChange={handleToggleTerm} size='sm'>
-						<Wrap>
+						<Flex flexWrap='wrap' gap={2}>
 							{data?.map((term: WPItem) => (
 								<CheckboxButton key={term.id} value={term.id.toString()}>
 									{term.name}
 								</CheckboxButton>
 							))}
-						</Wrap>
+						</Flex>
 					</CheckboxGroup>
 				</Box>
 			</Skeleton>

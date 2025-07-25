@@ -18,6 +18,8 @@ import {
 	PopoverTrigger,
 	Portal,
 	Text,
+	useColorMode,
+	useToken,
 } from '@chakra-ui/react';
 import SidebarMenuItem from '@common/inputs/SidebarMenuItem';
 import DarkModeToggle from '@components/DarkModeToggle';
@@ -30,7 +32,7 @@ import useProfileNotifications from '@queries/useProfileNotifications';
 import useSavedSearches from '@queries/useSavedSearches';
 import useViewer from '@queries/useViewer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode, useContext } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import {
 	FiBell,
 	FiChevronsLeft,
@@ -40,7 +42,7 @@ import {
 	FiSearch,
 	FiSettings,
 	FiStar,
-	FiUser
+	FiUser,
 } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
 
@@ -63,6 +65,10 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 	const [savedSearches] = useSavedSearches();
 	const { markProfileNotificationsAsReadMutation } = useMarkProfileNotificationsAsRead();
 	const { dismissProfileNotificationsMutation } = useDismissProfileNotifications();
+	const { colorMode } = useColorMode();
+
+	const [popoverArrowBgColor, setPopoverArrowBgColor] = useState<string>('');
+	const [popoverLightGray, popoverDarkGray] = useToken('colors', ['gray.100', 'gray.600']);
 
 	const {
 		search: { results },
@@ -74,6 +80,11 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 
 	const { logoutMutation } = useLogout();
 
+	// HACK Set the popover arrow background color based on the color mode
+	useEffect(() => {
+		setPopoverArrowBgColor(colorMode === 'dark' ? popoverDarkGray : popoverLightGray);
+	}, [colorMode]);
+
 	const handleLogout = () => {
 		logoutMutation().then(() => {
 			localStorage.clear();
@@ -81,6 +92,7 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 		});
 	};
 
+	// The sidebar menu items are defined here.
 	const menuItems: SidebarMenuItemProps[] = [
 		{ icon: <Icon as={FiHome} />, target: `/`, label: 'Dashboard' },
 		{ icon: <Icon as={FiUser} />, target: `/profile/${loggedInSlug}`, label: 'Profile' },
@@ -166,6 +178,7 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 		);
 	};
 
+	// The sidebar is only shown if the user is logged in.
 	return loggedInId ? (
 		<Box
 			id='sidebar'
@@ -176,103 +189,9 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 			_dark={{ bg: 'gray.800', color: 'text.light' }}
 			transition='all 0.3s ease'
 			pos='relative'
-			aria-expanded={sidebarExpanded}
+			overflow={sidebarExpanded ? 'unset' : 'hidden'}
 			{...props}
 		>
-			<Popover isLazy placement='bottom-end'>
-				<PopoverTrigger>
-					<IconButton
-						position='relative'
-						aria-label='Notifications'
-						icon={
-							<Box m={0}>
-								<FiBell />
-								{unread.length > 0 && (
-									<Circle
-										pos='absolute'
-										bottom={-1}
-										right={-1}
-										size={4}
-										textAlign='center'
-										bg='orange.300'
-										color='white'
-										fontSize='2xs'
-									>
-										{unread.length}
-									</Circle>
-								)}
-							</Box>
-						}
-						colorScheme={
-							(unread && unread.length > 0) || (read && read.length > 0) ? 'yellow' : 'gray'
-						}
-						tabIndex={0}
-						px={0}
-						size='sm'
-						mx={2}
-						my={4}
-					/>
-				</PopoverTrigger>
-				<Portal>
-					<PopoverContent
-						_dark={{ color: 'text.light' }}
-						_light={{ color: 'text.dark' }}
-						boxShadow='1px 1px 1px 1px rgba(0, 0, 0, 0.4)'
-					>
-						<PopoverArrow />
-						<PopoverCloseButton />
-						<PopoverHeader fontFamily='special'>
-							<Flex justifyContent='space-between' alignItems='center' w='full'>
-								<Heading variant='contentSubtitle' my={0}>
-									Alerts
-								</Heading>
-								{unread.length > 0 && (
-									<Button onClick={markAllNotificationsAsRead} size='xs' colorScheme='yellow'>
-										Mark all as read
-									</Button>
-								)}
-								{read.length > 0 && (
-									<Button onClick={deleteAllNotifications} size='xs' colorScheme='yellow'>
-										Delete all
-									</Button>
-								)}
-							</Flex>
-						</PopoverHeader>
-						<PopoverBody>
-							{unread.length === 0 && read.length === 0 && (
-								<Text fontSize='xs' my={0} fontStyle='italic'>
-									You're all caught up!
-								</Text>
-							)}
-
-							<AnimatePresence>
-								<List>
-									{unread.map((notification) => (
-										<ListItem
-											key={notification.id}
-											as={motion.li}
-											initial={{ opacity: 1 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-										>
-											<ProfileNotificationItem notification={notification} />
-										</ListItem>
-									))}
-								</List>
-							</AnimatePresence>
-							<AnimatePresence>
-								<List>
-									{read.map((notification) => (
-										<ListItem as={motion.li} key={notification.id}>
-											<ProfileNotificationItem notification={notification} />
-										</ListItem>
-									))}
-								</List>
-							</AnimatePresence>
-						</PopoverBody>
-					</PopoverContent>
-				</Portal>
-			</Popover>
 			<Flex
 				w='full'
 				mt={0}
@@ -287,6 +206,106 @@ export default function Sidebar({ sidebarExpanded, setSidebarExpanded, ...props 
 				_light={{ borderColor: 'text.dark' }}
 				_dark={{ borderColor: 'gray.800' }}
 			>
+				<Popover isLazy placement='bottom-end'>
+					<PopoverTrigger>
+						<IconButton
+							position='relative'
+							left='0.4rem'
+							aria-label='Notifications'
+							mx={0}
+							my={4}
+							p={0}
+							variant={unread.length + read.length > 0 ? 'solid' : 'ghost'}
+							icon={
+								<>
+									<Icon as={FiBell} boxSize={4} p={0} m={0} />
+									{unread.length > 0 && (
+										<Circle
+											pos='absolute'
+											bottom={-1}
+											right={-1}
+											size={4}
+											textAlign='center'
+											bg='orange.300'
+											color='white'
+											fontSize='2xs'
+										>
+											{unread.length}
+										</Circle>
+									)}
+								</>
+							}
+							colorScheme={
+								(unread && unread.length > 0) || (read && read.length > 0) ? 'yellow' : 'gray'
+							}
+							tabIndex={0}
+							size='sm'
+							transition='all 0.3s ease'
+						/>
+					</PopoverTrigger>
+					<Portal>
+						<PopoverContent
+							_dark={{ bg: popoverDarkGray, color: 'text.light' }}
+							_light={{ bg: popoverLightGray, color: 'text.dark' }}
+							boxShadow='1px 1px 1px 1px rgba(0, 0, 0, 0.4)'
+						>
+							<PopoverArrow
+								bg={popoverArrowBgColor}
+								boxShadow={`-1px -1px 0px 0 ${popoverArrowBgColor}`}
+							/>
+							<PopoverCloseButton />
+							<PopoverHeader fontFamily='special'>
+								<Flex justifyContent='space-between' alignItems='center' w='full'>
+									<Heading variant='contentSubtitle' my={0}>
+										Alerts
+									</Heading>
+									{unread.length > 0 && (
+										<Button onClick={markAllNotificationsAsRead} size='xs' colorScheme='yellow'>
+											Mark all as read
+										</Button>
+									)}
+									{read.length > 0 && (
+										<Button onClick={deleteAllNotifications} size='xs' colorScheme='yellow'>
+											Delete all
+										</Button>
+									)}
+								</Flex>
+							</PopoverHeader>
+							<PopoverBody>
+								{unread.length === 0 && read.length === 0 && (
+									<Text fontSize='xs' my={0} fontStyle='italic'>
+										You're all caught up!
+									</Text>
+								)}
+
+								<AnimatePresence>
+									<List>
+										{unread.map((notification) => (
+											<ListItem
+												key={notification.id}
+												as={motion.li}
+												initial={{ opacity: 1 }}
+												animate={{ opacity: 1 }}
+												exit={{ opacity: 0 }}
+											>
+												<ProfileNotificationItem notification={notification} />
+											</ListItem>
+										))}
+									</List>
+								</AnimatePresence>
+								<AnimatePresence>
+									<List>
+										{read.map((notification) => (
+											<ListItem as={motion.li} key={notification.id}>
+												<ProfileNotificationItem notification={notification} />
+											</ListItem>
+										))}
+									</List>
+								</AnimatePresence>
+							</PopoverBody>
+						</PopoverContent>
+					</Portal>
+				</Popover>
 				<List
 					spacing={0}
 					px={0}

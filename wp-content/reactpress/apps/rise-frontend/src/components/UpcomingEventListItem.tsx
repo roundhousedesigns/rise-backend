@@ -30,9 +30,11 @@ export default function UpcomingEventListItem({
 					{parse(title)}
 				</LinkWithIcon>
 			</Heading>
-			<Heading as='h5' fontSize='sm' lineHeight='shorter' variant='contentSubtitle'>
-				Hosted by {partnerName}
-			</Heading>
+			{partnerName && (
+				<Heading as='h5' fontSize='sm' lineHeight='shorter' variant='contentSubtitle'>
+					Hosted by {partnerName}
+				</Heading>
+			)}
 			<Stack fontSize='sm' lineHeight='shorter'>
 				<WrapWithIcon icon={FiClock} m={0}>
 					{formatUpcomingEventDate(startDate, endDate)}

@@ -55,22 +55,31 @@ export default function ProfileNotificationItem({ notification }: Props) {
 
 	return (
 		<Box onMouseEnter={handleMarkAsRead} onFocus={handleMarkAsRead}>
-			<Flex fontSize='sm' w='full' m={0} alignItems='center' justifyContent='space-between' gap={2}>
-				<Flex alignItems='center' gap={1}>
-					{!isRead && (
-						<Icon as={FiCircle} fill='brand.orange' color='brand.orange' my={0} boxSize={2} />
-					)}
-					<Box>
-						{link ? (
-							<Link as={RouterLink} to={link} m={0} fontWeight={isRead ? 'normal' : 'bold'}>
-								{title}
-							</Link>
-						) : (
-							<Text m={0} as='span' fontWeight={isRead ? 'normal' : 'bold'}>
-								{title}
-							</Text>
-						)}
-						<Text as='span' fontSize='xs' color='gray.500' my={0} ml={1}>
+			<Flex alignItems='flex-start' gap={1} fontSize='sm'>
+				{!isRead && (
+					<Icon as={FiCircle} fill='brand.orange' color='brand.orange' my={0} boxSize={2} />
+				)}
+				<Box _dark={{ color: 'text.light' }} _light={{ color: 'text.dark' }}>
+					<Flex
+						justifyContent='space-between'
+						alignItems='flex-end'
+						w='full'
+						m={0}
+						borderBottom='1px solid'
+						borderColor='gray.400'
+					>
+						<Box fontSize='sm'>
+							{link ? (
+								<Link as={RouterLink} to={link} m={0} fontWeight={isRead ? 'normal' : 'bold'}>
+									{title}
+								</Link>
+							) : (
+								<Text m={0} fontWeight={isRead ? 'normal' : 'bold'}>
+									{title}
+								</Text>
+							)}
+						</Box>
+						<Text as='span' mt={0} mb={0.5} ml={1} fontSize='2xs' fontStyle='italic'>
 							{dateTime.toLocaleString(undefined, {
 								year: 'numeric',
 								month: 'numeric',
@@ -79,13 +88,29 @@ export default function ProfileNotificationItem({ notification }: Props) {
 								minute: 'numeric',
 							})}
 						</Text>
-					</Box>
-				</Flex>
+					</Flex>
+					{notificationType === 'test_notification' && (
+						<Text
+							flex='0 0 100%'
+							fontSize='2xs'
+							fontFamily='special'
+							lineHeight='short'
+							my={1}
+							mb={0}
+						>
+							{value}
+						</Text>
+					)}
+				</Box>
 				<IconButton
 					icon={<FiX />}
 					aria-label='Dismiss'
-					size='2xs'
+					size='sm'
+					transform='scale(0.6)'
+					borderRadius='full'
 					colorScheme='red'
+					pos='relative'
+					bottom={1}
 					onClick={handleDismiss}
 				/>
 			</Flex>

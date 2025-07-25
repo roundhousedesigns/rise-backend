@@ -2,10 +2,13 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const baseStyle = defineStyle({
 	my: 2,
-	color: 'brand.blue',
+	color: 'blue.500',
 	textDecoration: 'underline',
 	transition: 'all 100ms ease-out',
 	textDecorationColor: 'transparent',
+	_dark: {
+		color: 'blue.400',
+	},
 	_focus: {
 		outline: 'none',
 	},

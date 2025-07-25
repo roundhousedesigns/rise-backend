@@ -14,9 +14,10 @@ const ProfilePercentComplete = ({ ...props }: ProgressProps) => {
 				hasStripe
 				position='relative'
 				borderRadius='md'
+				aria-labelledby='profile-percent-complete'
 				{...props}
 			/>
-			<Text mt={1} mb={0} fontSize='2xs' textAlign='right' fontStyle='italic' fontFamily='special'>
+			<Text mt={1} mb={0} fontSize='2xs' textAlign='right' fontStyle='italic' fontFamily='special' id='profile-percent-complete'>
 				{`Profile ${percentComplete}% complete`}
 			</Text>
 		</Box>

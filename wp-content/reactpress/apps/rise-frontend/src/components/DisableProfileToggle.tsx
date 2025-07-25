@@ -70,7 +70,14 @@ export default function DisableProfileToggle({
 
 const Description = ({ disableProfile }: { disableProfile: boolean }) => {
 	return (
-		<Text as='span' lineHeight='shorter' fontSize='xs'>
+		<Text
+			as='span'
+			lineHeight='shorter'
+			fontSize='xs'
+			_dark={{ color: 'text.light' }}
+			_light={{ color: 'text.dark' }}
+			opacity={0.8}
+		>
 			{disableProfile ? (
 				<Highlight query={['private', 'hidden']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
 					Your profile is private and you won't appear in searches.

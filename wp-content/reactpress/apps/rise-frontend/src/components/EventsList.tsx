@@ -1,20 +1,27 @@
-import { Card, List } from '@chakra-ui/react';
+import { List, ListProps, Spinner } from '@chakra-ui/react';
 import UpcomingEventListItem from '@components/UpcomingEventListItem';
 import useUpcomingEvents from '@queries/useUpcomingEvents';
 
-export default function EventsList() {
+interface EventsListProps {
+	showTitle?: boolean;
+	showManagement?: boolean;
+}
+
+export default function EventsList({
+	showTitle = true,
+	showManagement = false,
+	...props
+}: EventsListProps & ListProps) {
 	const [events, { loading, error }] = useUpcomingEvents();
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <Spinner />;
 	if (error) return <div>Error: {error.message}</div>;
 
 	return events.length ? (
-		<Card py={1}>
-			<List my={2}>
-				{events.map((event) => (
-					<UpcomingEventListItem key={event.id} event={event} />
-				))}
-			</List>
-		</Card>
+		<List my={2} {...props}>
+			{events.map((event) => (
+				<UpcomingEventListItem key={event.id} event={event} />
+			))}
+		</List>
 	) : null;
 }

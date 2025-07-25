@@ -67,13 +67,9 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 	const handleLoginSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		loginMutation({ ...credentials })
-			.then((res) => {
-				// TODO setup admin redirect logic
-			})
-			.catch((errors: { message: string }) => {
-				setErrorCode(errors.message);
-			});
+		loginMutation({ ...credentials }).catch((errors: { message: string }) => {
+			setErrorCode(errors.message);
+		});
 	};
 
 	const sanitizedAlertStatus = alertStatus === 'error' ? 'error' : 'success';

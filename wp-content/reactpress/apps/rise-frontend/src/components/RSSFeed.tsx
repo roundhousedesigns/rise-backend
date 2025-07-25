@@ -1,13 +1,12 @@
 import {
 	Box,
 	Button,
-	List,
-	ListItem,
-	ListProps,
+	GridItem,
+	GridProps,
 	SimpleGrid,
 	Skeleton,
 	Spinner,
-	Text,
+	Text
 } from '@chakra-ui/react';
 import RSSPostItem from '@components/RSSPostItem';
 import { useRSSFeed } from '@hooks/hooks';
@@ -42,7 +41,7 @@ export default function RSSFeed({
 	limit = 3,
 	columns = 2,
 	...props
-}: Props & ListProps): JSX.Element {
+}: Props & GridProps): JSX.Element {
 	const [visibleCount, setVisibleCount] = useState(limit);
 
 	// Fetch posts from all feeds
@@ -81,11 +80,11 @@ export default function RSSFeed({
 	return (
 		<Box w='full'>
 			<Skeleton isLoaded={!loading}>
-				<List as={SimpleGrid} columns={{ base: 1, md: columns }} gap={6} {...props}>
+				<SimpleGrid columns={{ base: 1, md: columns }} gap={6} {...props}>
 					{visiblePosts.length > 0 && (
 						<AnimatePresence>
 							{visiblePosts.map(({ post, fieldMap, feedTitle }) => (
-								<ListItem
+								<GridItem
 									key={post.id}
 									as={motion.div}
 									initial={{ opacity: 0 }}
@@ -93,11 +92,11 @@ export default function RSSFeed({
 									exit={{ opacity: 0 }}
 								>
 									<RSSPostItem post={post} fieldMap={fieldMap} feedTitle={feedTitle} />
-								</ListItem>
+								</GridItem>
 							))}
 						</AnimatePresence>
 					)}
-				</List>
+				</SimpleGrid>
 				{hasMorePosts && (
 					<Box textAlign='center' py={2} mt={4}>
 						<Button

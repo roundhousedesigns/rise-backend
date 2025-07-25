@@ -146,11 +146,11 @@
 
 		&.feature-button-style {
 			background-color: var(--wp--preset--color--blue);
-			color: var(--wp--preset--color--white);
+			color: var(--wp--preset--color--bg-dark);
 			/* border-radius: var(--wp--custom--border-radius--radius); */
 
 			a {
-				color: var(--wp--preset--color--white);
+				color: currentColor;
 			}
 		}
 

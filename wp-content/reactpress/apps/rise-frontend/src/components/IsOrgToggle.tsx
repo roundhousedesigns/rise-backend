@@ -68,7 +68,14 @@ export default function IsOrgToggle({
 
 const Description = ({ isOrg }: { isOrg: boolean }) => {
 	return (
-		<Text as='span' lineHeight='shorter' fontSize='xs'>
+		<Text
+			as='span'
+			lineHeight='shorter'
+			fontSize='xs'
+			_dark={{ color: 'text.light' }}
+			_light={{ color: 'text.dark' }}
+			opacity={0.8}
+		>
 			{isOrg ? (
 				<Highlight query={['company']} styles={{ bg: 'brand.yellow', px: 1, mx: 0 }}>
 					This is a company profile.

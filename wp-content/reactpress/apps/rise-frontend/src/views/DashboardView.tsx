@@ -2,17 +2,16 @@ import { Card, Grid, GridItem, List, ListItem, Skeleton, Stack } from '@chakra-u
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
+import EventsList from '@components/EventsList';
+import NetworkPartnerManagementLinks from '@components/NetworkPartnerManagementLinks';
+import ShortPost from '@components/ShortPost';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
-import FollowedProfileList from '@views/FollowedProfileList';
 import MiniProfileView from '@views/MiniProfileView';
-import EventsList from '../components/EventsList';
-import NetworkPartnerManagementLinks from '../components/NetworkPartnerManagementLinks';
-import ShortPost from '../components/ShortPost';
 
 export default function DashboardView() {
-	const [{ loggedInId, starredProfiles, isOrg, isNetworkPartner }] = useViewer();
+	const [{ loggedInId, isNetworkPartner }] = useViewer();
 	const [notices] = useUserNotices();
 
 	const [profile, { loading: profileLoading }] = useUserProfile(loggedInId);
@@ -42,12 +41,15 @@ export default function DashboardView() {
 					</ColorCascadeBox>
 				</Widget>
 
-				<Widget title='Upcoming Events' titleStyle='centerline'>
-					<>
-						<EventsList />
-						{isNetworkPartner && <NetworkPartnerManagementLinks title='Manage Your Events' />}
-					</>
+				<Widget title='Partner Events' titleStyle='centerline'>
+					<EventsList />
 				</Widget>
+
+				{isNetworkPartner && (
+					<Widget title='Network Partner' titleStyle='centerline'>
+						<NetworkPartnerManagementLinks />
+					</Widget>
+				)}
 			</GridItem>
 
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>
@@ -64,14 +66,16 @@ export default function DashboardView() {
 				)}
 
 				<Widget title='Industry News' titleStyle='centerline'>
-					<DashboardRSSFeeds />
+					<Card
+						my={0}
+						gap={2}
+						opacity={0.9}
+						transition='opacity 200ms ease'
+						_hover={{ opacity: 1 }}
+					>
+						<DashboardRSSFeeds />
+					</Card>
 				</Widget>
-
-				{starredProfiles?.length && (
-					<Widget title='Following' titleStyle='centerline' mt={1}>
-						<FollowedProfileList mini showToggle={false} mt={1} />
-					</Widget>
-				)}
 			</GridItem>
 		</Grid>
 	);
