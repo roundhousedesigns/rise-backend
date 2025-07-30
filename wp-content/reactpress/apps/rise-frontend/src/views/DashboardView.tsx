@@ -9,6 +9,7 @@ import useUpcomingEvents from '@queries/useUpcomingEvents';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
+import FollowedProfileList from '@views/FollowedProfileList';
 import MiniProfileView from '@views/MiniProfileView';
 
 export default function DashboardView() {
@@ -48,6 +49,10 @@ export default function DashboardView() {
 						<EventsList />
 					</Widget>
 				)}
+
+				<Widget title='Following' titleStyle='centerline'>
+					<FollowedProfileList mini showToggle={false} />
+				</Widget>
 
 				{isNetworkPartner && (
 					<Widget title='Network Partner' titleStyle='centerline'>

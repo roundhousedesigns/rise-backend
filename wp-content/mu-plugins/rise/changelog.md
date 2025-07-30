@@ -3,8 +3,9 @@
 All notable changes to this project will be documented in this file, starting
 with 1.1.1.
 
-## \[1.2-dev] - Unreleased
+## \[1.2] - 2025-07-30
 
+- v1.2 Launch! Unified website and directory, with the new evolution of our Directory interface.
 - "Starred" is now "Followed"! Because apparently we embrace change, Nicholas.
 - Add: Profile Notifications!
   - Badge count for displaying if any starred profiles have been updated.
@@ -14,7 +15,7 @@ with 1.1.1.
   - Post management
   - Payment via WooCommerce
   - Auto expiration 30 days after `pending` -> `publish`
-  - ***NOT YET LIVE***
+  - **_NOT YET LIVE_**
 - Add: RSS Feed component!
 - Add: Organization profile toggle
 - Change: Move Search Drawer to a dedicated route `/search`
