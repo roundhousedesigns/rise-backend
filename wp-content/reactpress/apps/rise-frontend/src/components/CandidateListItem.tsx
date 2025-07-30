@@ -52,6 +52,9 @@ const CandidateListItem = ({
 
 	return id ? (
 		<ListItem display='flex' alignItems='center'>
+			{showToggle && (
+				<StarToggleIcon id={id} isDisabled={loggedInId === id} size={mini ? 'sm' : 'md'} />
+			)}
 			<LinkBox aria-labelledby={`candidate-${id}`} flex={1} textDecoration='none' {...props}>
 				<ColorCascadeBox spread={0.5}>
 					<Card
@@ -121,14 +124,6 @@ const CandidateListItem = ({
 					</Card>
 				</ColorCascadeBox>
 			</LinkBox>
-			{showToggle && (
-				<StarToggleIcon
-					id={id}
-					isDisabled={loggedInId === id}
-					size={mini ? 'sm' : 'md'}
-					mr={mini ? 0 : 2}
-				/>
-			)}
 		</ListItem>
 	) : (
 		<></>

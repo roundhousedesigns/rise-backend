@@ -3,19 +3,16 @@ import {
 	Button,
 	GridItem,
 	GridProps,
-	HStack,
-	Icon,
 	SimpleGrid,
 	Skeleton,
 	Spinner,
 	Text
 } from '@chakra-ui/react';
 import RSSPostItem from '@components/RSSPostItem';
-import { clearRSSCache, useRSSFeed } from '@hooks/hooks';
+import { useRSSFeed } from '@hooks/hooks';
 import { RSSPostFieldMap } from '@lib/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
-import { HiRefresh } from 'react-icons/hi';
 
 interface Props {
 	feeds: {
@@ -46,7 +43,6 @@ export default function RSSFeed({
 	...props
 }: Props & GridProps): JSX.Element {
 	const [visibleCount, setVisibleCount] = useState(limit);
-	const [isRefreshing, setIsRefreshing] = useState(false);
 
 	// Fetch posts from all feeds
 	const feedResults = feeds.map((feed) => useRSSFeed(feed.feedUrl, feed.fieldMap));
@@ -111,18 +107,6 @@ export default function RSSFeed({
 		setVisibleCount((prev) => prev + limit);
 	};
 
-	const handleRefresh = () => {
-		setIsRefreshing(true);
-		
-		// Clear cache for all feeds
-		feeds.forEach(feed => clearRSSCache(feed.feedUrl));
-		
-		// Refresh the page to reload feeds without cache
-		setTimeout(() => {
-			window.location.reload();
-		}, 500);
-	};
-
 	const visiblePosts = allPosts.slice(0, visibleCount);
 	const hasMorePosts = visiblePosts.length < allPosts.length;
 
@@ -136,25 +120,7 @@ export default function RSSFeed({
 
 	return (
 		<Box w='full'>
-			{/* Header with refresh button */}
-			<HStack justify='space-between' mb={4}>
-				<Text fontSize='lg' fontWeight='semibold' color='gray.700'>
-					Theater News
-				</Text>
-				<Button
-					onClick={handleRefresh}
-					isLoading={isRefreshing}
-					loadingText='Refreshing'
-					size='sm'
-					variant='ghost'
-					leftIcon={<Icon as={HiRefresh} />}
-					aria-label='Refresh RSS feeds'
-				>
-					Refresh
-				</Button>
-			</HStack>
-
-			<Skeleton isLoaded={!loading && !isRefreshing}>
+			<Skeleton isLoaded={!loading}>
 				<SimpleGrid columns={{ base: 1, md: columns }} gap={6} {...props}>
 					{visiblePosts.length > 0 && (
 						<AnimatePresence>
