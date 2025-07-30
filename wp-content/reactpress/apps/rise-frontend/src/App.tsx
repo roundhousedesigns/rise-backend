@@ -2,7 +2,7 @@
  * Copyright (c) 2024 Maestra Music and Roundhouse Designs. All rights reserved.
  */
 
-import { Box, Container, Heading, Stack, Text, useMediaQuery } from '@chakra-ui/react';
+import { Box, Container, Heading, Image, Stack, Text, useMediaQuery } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 export default function App() {
@@ -47,7 +47,14 @@ export default function App() {
 				</Flex>
 			</SearchContextProvider> */}
 			<Container h='100%' minH='500px' maxW='4xl' textAlign='center'>
-				<Stack alignItems='center' justifyContent='center' h='100%' w='full'>
+				<Stack alignItems='center' justifyContent='center' w='full' py={10}>
+					<Image
+						src='https://images.squarespace-cdn.com/content/v1/6465b16bb5778d6753b1c77e/7eeb8b35-5e67-4903-a6ac-0891ad2dbd29/RISE-white.png?format=1500w'
+						alt='RISE Theatre Directory'
+						w='100%'
+						maxW='600px'
+						mb={10}
+					/>
 					<Heading as='h2' variant='pageTitle' fontSize='6xl'>
 						We'll Be Right Back!
 					</Heading>
