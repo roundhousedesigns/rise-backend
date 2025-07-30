@@ -356,6 +356,7 @@ class Rise {
 
 		$this->loader->add_action( 'rise_delete_expired_conflict_ranges_cron', $cron_data, 'delete_expired_conflict_ranges' );
 		$this->loader->add_action( 'rise_check_expired_job_posts_cron', $cron_data, 'check_expired_job_posts' );
+		$this->loader->add_action( 'rise_notify_users_no_credits_cron', $cron_data, 'notify_users_no_credits' );
 	}
 
 	/**

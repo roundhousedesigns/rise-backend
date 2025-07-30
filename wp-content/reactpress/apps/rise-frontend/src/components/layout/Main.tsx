@@ -1,5 +1,4 @@
 import { Box, BoxProps } from '@chakra-ui/react';
-import ProfileNotices from '@common/ProfileNotices';
 import LoggedIn from '@components/LoggedIn';
 import Dashboard from '@routes/Dashboard';
 import EditProfile from '@routes/EditProfile';
@@ -115,6 +114,7 @@ export default function Main({ ...props }: BoxProps) {
 			path: '/register',
 			element: <Register />,
 		},
+		// JOBS BOARD INACTIVE FOR NOW
 		// {
 		// 	path: '/jobs',
 		// 	element: (
@@ -167,8 +167,6 @@ export default function Main({ ...props }: BoxProps) {
 			flex='1 1 auto'
 			{...props}
 		>
-			<ProfileNotices />
-
 			<Box px={2}>{routes}</Box>
 		</Box>
 	);

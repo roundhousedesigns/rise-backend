@@ -253,21 +253,6 @@ export interface SearchResultCandidate {
 }
 
 /**
- * The data shape for a Profile Notice Alert.
- */
-export interface ProfileNoticeAlert {
-	title: string;
-	description?: string | JSX.Element;
-	cta?: {
-		button?: {
-			to: string;
-			text: string;
-		};
-		element?: JSX.Element;
-	};
-}
-
-/**
  * The data shape for the Viewer.
  */
 export interface ViewerData {
@@ -365,7 +350,11 @@ export interface JobPostOutput {
 /**
  * Supported notification types for profile notifications.
  */
-export type NotificationType = 'starred_profile_updated' | 'job_posted' | 'test_notification';
+export type NotificationType =
+	| 'starred_profile_updated'
+	| 'job_posted'
+	| 'no_profile_credits'
+	| 'test_notification';
 
 /**
  * The data shape for a Profile Notification.
@@ -435,4 +424,21 @@ export interface UpcomingEventParams {
 	endDate: string;
 	link: string;
 	location?: string;
+}
+
+/**
+ * The data shape for a Profile Notice Alert.
+ *
+ * @deprecated v1.2.0
+ */
+export interface ProfileNoticeAlert {
+	title: string;
+	description?: string | JSX.Element;
+	cta?: {
+		button?: {
+			to: string;
+			text: string;
+		};
+		element?: JSX.Element;
+	};
 }

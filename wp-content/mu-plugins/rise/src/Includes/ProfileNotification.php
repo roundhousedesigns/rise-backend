@@ -19,6 +19,7 @@ class ProfileNotification {
 		'test_notification',
 		'starred_profile_updated',
 		'job_posted',
+		'no_profile_credits',
 		// Add other notification types here
 	];
 

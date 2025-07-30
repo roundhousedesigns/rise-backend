@@ -24,6 +24,9 @@ interface Props {
 	dismissExpire?: number;
 }
 
+/**
+ * @deprecated v1.2.0
+ */
 export default function ProfileNotice({
 	code,
 	status = 'info',

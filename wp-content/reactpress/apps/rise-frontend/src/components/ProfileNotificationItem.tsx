@@ -49,6 +49,8 @@ export default function ProfileNotificationItem({ notification }: Props) {
 			? userProfile
 				? profileUrl
 				: ''
+			: notificationType === 'no_profile_credits'
+			? '/settings'
 			: notificationType === 'job_posted'
 			? `/jobs/${value}`
 			: '';
@@ -89,7 +91,7 @@ export default function ProfileNotificationItem({ notification }: Props) {
 							})}
 						</Text>
 					</Flex>
-					{notificationType === 'test_notification' && (
+					{notificationType === 'test_notification' || notificationType === 'no_profile_credits' ? (
 						<Text
 							flex='0 0 100%'
 							fontSize='2xs'
@@ -98,9 +100,11 @@ export default function ProfileNotificationItem({ notification }: Props) {
 							my={1}
 							mb={0}
 						>
-							{value}
+							{notificationType === 'no_profile_credits'
+								? "Add some credits to your profile to make sure you're listed in our Directory!"
+								: value}
 						</Text>
-					)}
+					) : null}
 				</Box>
 				<IconButton
 					icon={<FiX />}
