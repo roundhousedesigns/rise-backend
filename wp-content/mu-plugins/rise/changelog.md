@@ -5,7 +5,7 @@ with 1.1.1.
 
 ## \[1.2-dev] - Unreleased
 
-- "Starred" is now "Followed"! Because we embrace change, Nicholas.
+- "Starred" is now "Followed"! Because apparently we embrace change, Nicholas.
 - Add: Profile Notifications!
   - Badge count for displaying if any starred profiles have been updated.
   - On update, if an identical notification is found, only the newest is kept.

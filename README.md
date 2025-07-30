@@ -14,7 +14,7 @@
 - React 18
 - Chakra UI v2
 
-## TODOs
+## TODO
 
 - [ ] Extend Dark/Light mode to all pages, not just React interface.
 - [ ] Finish implementing Jobs Board functionality (awaiting approval)

@@ -30,7 +30,6 @@ interface EditJobPostFormProps {
 	initialData?: JobPostOutput;
 }
 
-// TODO Change name to EditJobPostForm
 export default function EditJobPostForm({ initialData }: EditJobPostFormProps) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const toast = useToast();
