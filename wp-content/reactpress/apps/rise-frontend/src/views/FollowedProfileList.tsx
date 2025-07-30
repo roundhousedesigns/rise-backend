@@ -14,7 +14,7 @@ export default function FollowedProfileList({
 }: Props & ListProps): JSX.Element {
 	const [{ starredProfiles }] = useViewer();
 
-	return starredProfiles ? (
+	return starredProfiles && starredProfiles.length > 0 ? (
 		<CandidateList
 			userIds={starredProfiles}
 			spacing={mini ? 1 : 3}
