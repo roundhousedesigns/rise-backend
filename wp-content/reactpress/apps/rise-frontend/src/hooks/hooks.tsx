@@ -258,51 +258,222 @@ export const useProfileCompletion = (profileId: number | null): number => {
 };
 
 /**
- * Use RSS Feed Hook.
+ * Use RSS Feed Hook with improved reliability and caching.
  *
  * @param {string} feedUrl - The URL of the RSS feed.
  * @param {RSSPostFieldMap} fieldMap - The field map to use for parsing.
  */
 export const useRSSFeed = (feedUrl: string, fieldMap?: RSSPostFieldMap): RSSFeedState => {
-	const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+	// Cache configuration
+	const CACHE_DURATION = 20 * 60 * 1000; // 20 minutes in milliseconds
+	const cacheKey = `rss_feed_${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '')}`; // Safe cache key
+	
+	// Multiple CORS proxy services for fallback
+	const CORS_PROXIES = [
+		'https://api.allorigins.win/raw?url=',
+		'https://api.codetabs.com/v1/proxy?quest=',
+		'https://corsproxy.io/?',
+		'https://api.allorigins.win/get?url=', // Alternative allorigins endpoint
+	];
 
-	const [state, setState] = useState<RSSFeedState>({
-		posts: [],
-		loading: true,
-		error: null,
+	const [state, setState] = useState<RSSFeedState>(() => {
+		// Check for cached data on initialization
+		try {
+			const cached = localStorage.getItem(cacheKey);
+			if (cached) {
+				const { data, timestamp } = JSON.parse(cached);
+				const isExpired = Date.now() - timestamp > CACHE_DURATION;
+				
+				if (!isExpired && data.posts && data.posts.length > 0) {
+					console.log(`📦 Using cached RSS data: ${feedUrl} (${data.posts.length} posts)`);
+					return {
+						posts: data.posts,
+						loading: false,
+						error: null,
+					};
+				} else if (isExpired) {
+					// Remove expired cache
+					localStorage.removeItem(cacheKey);
+				}
+			}
+		} catch (e) {
+			// If cache is corrupted, remove it
+			localStorage.removeItem(cacheKey);
+		}
+		
+		// No valid cache found, start with loading state
+		return {
+			posts: [],
+			loading: true,
+			error: null,
+		};
 	});
 
 	useEffect(() => {
-		const fetchFeed = async () => {
+		let isCancelled = false;
+
+		const fetchFeedWithRetry = async (retryCount = 0, proxyIndex = 0): Promise<void> => {
+			if (isCancelled) return;
+
 			try {
 				setState((prev) => ({ ...prev, loading: true, error: null }));
 
-				const response = await fetch(CORS_PROXY + encodeURIComponent(feedUrl));
-				const xmlText = await response.text();
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+				const proxy = CORS_PROXIES[proxyIndex];
+				const response = await fetch(proxy + encodeURIComponent(feedUrl), {
+					method: 'GET',
+					headers: {
+						Accept: 'application/rss+xml, application/xml, text/xml',
+						'User-Agent': 'Mozilla/5.0 (compatible; RSS Reader)',
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+				}
+
+						let xmlText = await response.text();
+
+		// Handle JSON responses from some proxies (like api.allorigins.win/get)
+		if (proxy.includes('api.allorigins.win/get')) {
+			try {
+				const jsonData = JSON.parse(xmlText);
+				xmlText = jsonData.contents || jsonData.data || xmlText;
+			} catch (e) {
+				// If it's not JSON, use the text as-is
+			}
+		}
+
+		// Optional debugging (uncomment for troubleshooting)
+		// console.log('RSS Feed Debug Info:', {
+		// 	url: feedUrl,
+		// 	proxy: proxy,
+		// 	contentLength: xmlText.length,
+		// 	contentPreview: xmlText.substring(0, 200),
+		// });
+
+		// More flexible validation - check if XML content exists anywhere in the response
+		const trimmedContent = xmlText.trim();
+		const xmlStartIndex = Math.max(
+			trimmedContent.indexOf('<?xml'),
+			trimmedContent.indexOf('<rss'),
+			trimmedContent.indexOf('<feed')
+		);
+
+		let actualXmlContent = xmlText;
+		
+		// If XML doesn't start at the beginning, try to extract it
+		if (xmlStartIndex > 0) {
+			actualXmlContent = trimmedContent.substring(xmlStartIndex);
+		} else if (xmlStartIndex === -1) {
+			// No XML found at all
+			throw new Error(`No valid RSS/XML content found. Content preview: ${trimmedContent.substring(0, 200)}`);
+		}
+
+						const parser = new DOMParser();
+		const xmlDoc = parser.parseFromString(actualXmlContent, 'text/xml');
+
+				// Check for XML parsing errors
+				const parseError = xmlDoc.getElementsByTagName('parsererror');
+				if (parseError.length > 0) {
+					throw new Error('XML parsing failed: ' + parseError[0].textContent);
+				}
+
 				const parsedPosts = parseRSSItems(xmlDoc, fieldMap);
 
-				setState({
-					posts: parsedPosts,
-					loading: false,
-					error: null,
-				});
+				if (!isCancelled) {
+					console.log(`✅ RSS Feed loaded: ${feedUrl} (${parsedPosts.length} posts)`);
+					
+					// Cache the successful result
+					try {
+						const cacheData = {
+							data: { posts: parsedPosts },
+							timestamp: Date.now(),
+						};
+						localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+						console.log(`💾 Cached RSS data: ${feedUrl}`);
+					} catch (e) {
+						console.warn('Failed to cache RSS data:', e);
+					}
+					
+					setState({
+						posts: parsedPosts,
+						loading: false,
+						error: null,
+					});
+				}
 			} catch (err) {
-				console.error('Error fetching RSS feed:', err);
+				// Log errors only in development
+				if (process.env.NODE_ENV === 'development') {
+					console.error(`RSS feed error (attempt ${retryCount + 1}, proxy ${proxyIndex + 1}):`, err);
+				}
 
+				if (isCancelled) return;
+
+				// Try next proxy if available
+				if (proxyIndex < CORS_PROXIES.length - 1) {
+					return fetchFeedWithRetry(retryCount, proxyIndex + 1);
+				}
+
+				// Retry with first proxy if we haven't exceeded retry limit
+				if (retryCount < 2) {
+					setTimeout(() => {
+						if (!isCancelled) {
+							fetchFeedWithRetry(retryCount + 1, 0);
+						}
+					}, Math.min(Math.pow(2, retryCount) * 500, 2000)); // Faster backoff: 0.5s, 1s, 2s max
+					return;
+				}
+
+				// All retries and proxies failed
+				const errorMessage = `Failed to load RSS feed: ${err instanceof Error ? err.message : 'Unknown error'}`;
+				console.error(`❌ RSS Feed failed after all retries: ${feedUrl}`);
+				console.error(`   Error: ${errorMessage}`);
+				
 				setState({
 					posts: [],
 					loading: false,
-					error: 'Failed to load RSS feed',
+					error: errorMessage,
 				});
 			}
 		};
 
-		fetchFeed();
-	}, [feedUrl, fieldMap]);
+		// Only fetch if we don't already have cached data
+		if (state.posts.length === 0 && !state.error) {
+			fetchFeedWithRetry();
+		}
+
+		// Cleanup function to cancel ongoing requests
+		return () => {
+			isCancelled = true;
+		};
+	}, [feedUrl, fieldMap, cacheKey]); // Added cacheKey to dependencies
 
 	return state;
+};
+
+/**
+ * Clear RSS feed cache for a specific URL or all RSS caches.
+ * 
+ * @param feedUrl Optional specific feed URL to clear. If not provided, clears all RSS caches.
+ */
+export const clearRSSCache = (feedUrl?: string): void => {
+	if (feedUrl) {
+		// Clear specific feed cache
+		const cacheKey = `rss_feed_${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '')}`;
+		localStorage.removeItem(cacheKey);
+		console.log(`🗑️ Cleared RSS cache for: ${feedUrl}`);
+	} else {
+		// Clear all RSS caches
+		const keysToRemove: string[] = [];
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key && key.startsWith('rss_feed_')) {
+				keysToRemove.push(key);
+			}
+		}
+		keysToRemove.forEach(key => localStorage.removeItem(key));
+		console.log(`🗑️ Cleared ${keysToRemove.length} RSS cache entries`);
+	}
 };
 
 /**

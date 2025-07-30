@@ -15,7 +15,7 @@ export default function DashboardRSSFeeds() {
 				},
 				{
 					title: 'Broadway World',
-					feedUrl: 'https://www.broadwayworld.com/rss/news.xml',
+					feedUrl: 'https://www.broadwayworld.com/feed_all_bway.cfm',
 				},
 				{
 					title: 'Variety: Theater',
