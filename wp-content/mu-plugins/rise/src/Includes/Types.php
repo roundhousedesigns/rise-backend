@@ -666,4 +666,35 @@ class Types {
 			\wp_delete_post( $duplicate_id, true );
 		}
 	}
+
+	/**
+	 * Fires when a `credit` post is saved.
+	 *
+	 * @param  int    $post_id The ID of the post being saved.
+	 * @param  object $post    The post object.
+	 * @param  bool   $update  Whether this is an existing post being updated.
+	 * @return void
+	 */
+	public function handle_credit_post_save( $post_id, $post, $update ) {
+		if ( 'credit' !== $post->post_type ) {
+			return;
+		}
+
+		// Double-check the post author has authored at least one credit post
+		// MAYBE: This is not needed, but just in case.
+		$credit_count = get_posts( [
+			'post_type'      => 'credit',
+			'author'         => $post->post_author,
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		] );
+
+		if ( empty( $credit_count ) ) {
+			return;
+		}
+
+		// Clear the last notified date for our notifications area.
+		$user_pod = \pods( 'user', $post->post_author );
+		$user_pod->save( 'no_credits_last_notified_on', '' );
+	}
 }

@@ -267,6 +267,7 @@ class Rise {
 		$this->loader->add_filter( 'manage_users_columns', $plugin_data, 'add_credit_posts_column' );
 		$this->loader->add_filter( 'manage_users_custom_column', $plugin_data, 'display_credit_posts_column', 10, 3 );
 		$this->loader->add_filter( 'manage_users_sortable_columns', $plugin_data, 'make_credit_posts_column_sortable' );
+		$this->loader->add_action( 'save_post_credit', $plugin_data, 'handle_credit_post_save', 10, 3 );
 
 		/**
 		 * Taxonomy: position (`credit`)

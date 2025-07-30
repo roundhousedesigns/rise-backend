@@ -807,7 +807,6 @@ class GraphQLQueries {
 
 					// Check if the user is a network partner.
 					if ( !is_user_logged_in() || !\in_array( 'network-partner', $user->roles, true ) ) {
-						\error_log( 'User is not a network partner.' );
 						return null;
 					}
 

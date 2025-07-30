@@ -36,7 +36,7 @@ export default function ConfirmActionDialog({
 	return (
 		<AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
 			<AlertDialogOverlay>
-				<AlertDialogContent _dark={{ color: 'text.light' }} _light={{ color: 'text.dark' }}>
+				<AlertDialogContent>
 					<AlertDialogHeader fontSize='lg' fontWeight='bold'>
 						{headerText}
 					</AlertDialogHeader>

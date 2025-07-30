@@ -34,9 +34,9 @@ export default function IsOrgToggle({
 
 			toast({
 				title: 'Updated!',
-				description: `Your profile is now set up for ${
-					updatedIsOrg ? 'an organization' : 'a person'
-				}.`,
+				description: `You are now using ${
+					updatedIsOrg ? 'an organization' : 'a personal'
+				} profile.`,
 				status: 'success',
 				duration: 3000,
 				isClosable: true,

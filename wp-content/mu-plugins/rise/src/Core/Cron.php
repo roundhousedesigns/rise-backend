@@ -20,23 +20,24 @@ class Cron {
 	 * @since 0.1.0
 	 */
 	public function __construct() {
-		add_filter( 'cron_schedules', [ $this, 'add_custom_cron_intervals' ] );
+		add_filter( 'cron_schedules', [$this, 'add_custom_cron_intervals'] );
 		$this->schedule_cron_jobs();
 	}
 
 	/**
 	 * Add custom cron intervals.
 	 *
-	 * @param array $schedules Existing cron schedules.
-	 * @return array Modified cron schedules.
 	 * @since 1.2
+	 *
+	 * @param  array $schedules Existing cron schedules.
+	 * @return array Modified cron schedules.
 	 */
 	public function add_custom_cron_intervals( $schedules ) {
 		$schedules['four_times_daily'] = [
 			'interval' => 6 * HOUR_IN_SECONDS, // Every 6 hours
-			'display'  => __( 'Four Times Daily', 'rise' )
+			'display'  => __( 'Four Times Daily', 'rise' ),
 		];
-		
+
 		return $schedules;
 	}
 
@@ -74,7 +75,8 @@ class Cron {
 		}
 
 		if ( !wp_next_scheduled( 'rise_notify_users_no_credits_cron' ) ) {
-			wp_schedule_event( time(), 'four_times_daily', 'rise_notify_users_no_credits_cron' );
+			// wp_schedule_event( time(), 'four_times_daily', 'rise_notify_users_no_credits_cron' ); // TODO re-enable this timing
+			wp_schedule_event( time(), 'every_minute', 'rise_notify_users_no_credits_cron' );
 		}
 	}
 
@@ -156,40 +158,43 @@ class Cron {
 	 * Checks for crew-member users with no Credit posts who should be notified.
 	 *
 	 * @since 1.2
+	 *
+	 * @return void
 	 */
 	public function notify_users_no_credits() {
-		// Get all users with the 'crew-member' role
-		$users = get_users( [
-			'role'       => 'crew-member',
-			'meta_query' => [
-				'relation' => 'AND',
-				[
-					'key'     => 'disable_profile',
-					'value'   => true,
-					'compare' => '!=',
-				],
-				[
-					'relation' => 'OR',
-					[
-						'key'     => 'disable_profile',
-						'compare' => 'NOT EXISTS',
-					],
-					[
-						'key'     => 'disable_profile',
-						'value'   => false,
-						'compare' => '=',
-					],
-				],
-			],
+		// First get all crew-member users using WordPress function
+		$crew_member_users = get_users( ['role' => 'crew-member'] );
+		$crew_member_ids   = wp_list_pluck( $crew_member_users, 'ID' );
+
+		if ( empty( $crew_member_ids ) ) {
+			return;
+		}
+
+		// Then filter using Pods for the custom fields
+		$users = pods( 'user' )->find( [
+			'where'   => '
+				t.ID IN (' . implode( ',', array_map( 'intval', $crew_member_ids ) ) . ')
+				AND (d.disable_profile != 1 OR d.disable_profile IS NULL)
+				AND (d.is_org != 1 OR d.is_org IS NULL)
+			',
+			'orderby' => ' `t`.`display_name`, `t`.`ID` ',
+			'limit'   => -1, // Show all results
 		] );
 
 		$today = current_time( 'Y-m-d' );
 
-		foreach ( $users as $user ) {
+		while ( $users->fetch() ) {
+			$user = $users->row();
+
+			// DEBUG: ONLY NOTIFY USER 2334
+			if ( 2334 !== absint( $user['ID'] ) ) {
+				continue;
+			}
+
 			// Check if user has any Credit posts
 			$credit_count = get_posts( [
 				'post_type'      => 'credit',
-				'author'         => $user->ID,
+				'author'         => $user['ID'],
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 			] );
@@ -200,31 +205,33 @@ class Cron {
 			}
 
 			// Get user pod to check the notification date
-			$user_pod = \pods( 'user', $user->ID );
+			$user_pod = \pods( 'user', $user['ID'] );
 			if ( !$user_pod ) {
+				( 'User ' . $user['ID'] . ' has no pod' );
 				continue;
 			}
 
 			$last_notified = $user_pod->field( 'no_credits_last_notified_on' );
+			$timeout       = \get_option( 'rise_settings_no_credits_reminder_timeout' ) /*|| 30*/;
 
-			// Skip if last notified date is after today
-			if ( !empty( $last_notified ) && $last_notified > $today ) {
-				continue;
+			// Skip if user was notified less than 30 days ago
+			if ( !empty( $last_notified ) ) {
+				$last_notified_date = \DateTime::createFromFormat( 'Y-m-d', $last_notified );
+				$today_date         = \DateTime::createFromFormat( 'Y-m-d', $today );
+
+				if ( $last_notified_date && $today_date ) {
+					$days_diff = $today_date->diff( $last_notified_date )->days;
+					if ( $days_diff < $timeout ) {
+						continue;
+					}
+				}
 			}
 
 			// Check if user already has a 'no_profile_credits' notification
-			$existing_notification = get_posts( [
-				'post_type'      => 'profile_notification',
-				'author'         => $user->ID,
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'meta_query'     => [
-					[
-						'key'   => 'notification_type',
-						'value' => 'no_profile_credits',
-					],
-				],
-			] );
+			$existing_notification = pods( 'profile_notification' )->find( [
+				'where' => 'd.notification_type = "no_profile_credits" AND t.post_author = ' . (int) $user['ID'],
+				'limit' => 1,
+			] )->field( 'ID' );
 
 			// Skip if notification already exists
 			if ( !empty( $existing_notification ) ) {
@@ -237,21 +244,19 @@ class Cron {
 				continue;
 			}
 
+			$notification_message = get_option( 'rise_settings_no_credits_reminder_message' );
+
+			// Create the Profile Notification with pod data
 			$notification_id = $notification_pod->add( [
+				'post_title'        => \__( 'Add credits to your profile', 'rise' ),
+				'post_status'       => 'publish',
 				'notification_type' => 'no_profile_credits',
-				'value'             => 'Add some credits to your profile to make sure you\'re listed in our Directory!',
+				'value'             => $notification_message,
 				'is_read'           => false,
-				'author'            => $user->ID,
+				'author'            => $user['ID'],
 			] );
 
 			if ( $notification_id ) {
-				// Update the post title and status
-				\wp_update_post( [
-					'ID'          => $notification_id,
-					'post_status' => 'publish',
-					'post_title'  => \__( 'Add credits to your profile', 'rise' ),
-				] );
-
 				// Update the user's last notified date
 				$user_pod->save( 'no_credits_last_notified_on', $today );
 			}
