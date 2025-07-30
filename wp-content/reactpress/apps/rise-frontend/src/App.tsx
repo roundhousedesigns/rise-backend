@@ -2,10 +2,7 @@
  * Copyright (c) 2024 Maestra Music and Roundhouse Designs. All rights reserved.
  */
 
-import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
-import { SearchContextProvider } from '@context/SearchContext';
-import Main from '@layout/Main';
-import Sidebar from '@layout/Sidebar';
+import { Box, Container, Heading, Stack, Text, useMediaQuery } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 export default function App() {
@@ -39,7 +36,7 @@ export default function App() {
 			h='full'
 			overflow='auto'
 		>
-			<SearchContextProvider>
+			{/* <SearchContextProvider>
 				<Flex h='100%' minH='500px' w='full' flexWrap='nowrap'>
 					<Sidebar
 						sidebarExpanded={sidebarExpanded}
@@ -48,7 +45,18 @@ export default function App() {
 					/>
 					<Main />
 				</Flex>
-			</SearchContextProvider>
+			</SearchContextProvider> */}
+			<Container h='100%' minH='500px' maxW='4xl' textAlign='center'>
+				<Stack alignItems='center' justifyContent='center' h='100%' w='full'>
+					<Heading as='h2' variant='pageTitle' fontSize='6xl'>
+						We'll Be Right Back!
+					</Heading>
+					<Text fontSize='2xl'>
+						We're hard at work upgrading the RISE Theatre Directory.
+						<br /> Thanks for your patience...we won't be long!
+					</Text>
+				</Stack>
+			</Container>
 		</Box>
 	);
 }
