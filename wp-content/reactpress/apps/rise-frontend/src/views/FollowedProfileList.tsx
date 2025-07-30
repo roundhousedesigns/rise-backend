@@ -1,4 +1,4 @@
-import { ListProps } from '@chakra-ui/react';
+import { ListProps, Text } from '@chakra-ui/react';
 import CandidateList from '@components/CandidateList';
 import useViewer from '@queries/useViewer';
 
@@ -23,6 +23,6 @@ export default function FollowedProfileList({
 			{...props}
 		/>
 	) : (
-		<></>
+		<Text variant='helperText'>Start following profiles to see them here!</Text>
 	);
 }
