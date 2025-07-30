@@ -5,6 +5,7 @@ import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
 import EventsList from '@components/EventsList';
 import NetworkPartnerManagementLinks from '@components/NetworkPartnerManagementLinks';
 import ShortPost from '@components/ShortPost';
+import useUpcomingEvents from '@queries/useUpcomingEvents';
 import useUserNotices from '@queries/useUserNotices';
 import useUserProfile from '@queries/useUserProfile';
 import useViewer from '@queries/useViewer';
@@ -12,6 +13,7 @@ import MiniProfileView from '@views/MiniProfileView';
 
 export default function DashboardView() {
 	const [{ loggedInId, isNetworkPartner }] = useViewer();
+	const [events] = useUpcomingEvents();
 	const [notices] = useUserNotices();
 
 	const [profile, { loading: profileLoading }] = useUserProfile(loggedInId);
@@ -41,9 +43,11 @@ export default function DashboardView() {
 					</ColorCascadeBox>
 				</Widget>
 
-				<Widget title='Partner Events' titleStyle='centerline'>
-					<EventsList />
-				</Widget>
+				{events.length > 0 && (
+					<Widget title='Partner Events' titleStyle='centerline'>
+						<EventsList />
+					</Widget>
+				)}
 
 				{isNetworkPartner && (
 					<Widget title='Network Partner' titleStyle='centerline'>
