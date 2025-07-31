@@ -1,5 +1,7 @@
 # RISE Theatre
 
+v1.2
+
 ## Current tooling:
 
 ### Backend
