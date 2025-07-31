@@ -84,7 +84,11 @@ export default function Main({ ...props }: BoxProps) {
 		},
 		{
 			path: '/search',
-			element: <Search />,
+			element: (
+				<LoggedIn>
+					<Search />
+				</LoggedIn>
+			),
 		},
 		{
 			path: '/searches',
