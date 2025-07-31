@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function ShortPost({ post, ...props }: Props & CardProps): JSX.Element {
-	const { id, title, content, uri, featuredImage } = post;
+	const { title, content, uri, featuredImage } = post;
 
 	const { colorMode } = useColorMode();
 
@@ -34,9 +34,15 @@ export default function ShortPost({ post, ...props }: Props & CardProps): JSX.El
 		>
 			<CardHeader px={3} py={2} bg={colorMode === 'dark' ? 'blackAlpha.300' : 'blackAlpha.100'}>
 				<Heading variant='contentSubtitle' my={0}>
-					<Link href={uri} isExternal>
-						{title ? title : ' '}
-					</Link>
+					{uri ? (
+						<Link href={uri} isExternal>
+							{title ? title : ' '}
+						</Link>
+					) : title ? (
+						title
+					) : (
+						' '
+					)}
 				</Heading>
 			</CardHeader>
 			{content && (
