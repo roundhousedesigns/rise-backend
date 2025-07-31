@@ -44,7 +44,7 @@ export default function ShortPost({ post, ...props }: Props & CardProps): JSX.El
 					{featuredImage?.sourceUrl && (
 						<Avatar src={featuredImage.sourceUrl} name={title || 'Post thumbnail'} size='lg' />
 					)}
-					<Box>{parse(content)}</Box>
+					<Box fontSize='sm'>{parse(content)}</Box>
 				</Flex>
 			)}
 		</Card>
