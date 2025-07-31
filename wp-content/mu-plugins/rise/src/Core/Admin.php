@@ -56,6 +56,18 @@ class Admin {
 	 */
 	public function enqueue_styles() {
 		\wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-admin.css', [], $this->version, 'all' );
+		
+		// Load CSV upload styles on CSV import page
+		$current_screen = \get_current_screen();
+		if ( $current_screen && $current_screen->id === 'tools_page_rise-csv-import' ) {
+			\wp_enqueue_style( 
+				$this->plugin_name . '-csv-upload', 
+				plugin_dir_url( __FILE__ ) . 'css/rise-csv-upload.css', 
+				[], 
+				$this->version, 
+				'all' 
+			);
+		}
 	}
 
 	/**
@@ -67,6 +79,29 @@ class Admin {
 		$current_screen = \get_current_screen();
 		if ( $current_screen && 'toplevel_page_rise-admin' === $current_screen->id ) {
 			\wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-table-sort.js', [], $this->version, false );
+		}
+		
+		// Load CSV upload script on CSV import page
+		if ( $current_screen && $current_screen->id === 'tools_page_rise-csv-import' ) {
+			\wp_enqueue_script( 
+				$this->plugin_name . '-csv-upload', 
+				plugin_dir_url( __FILE__ ) . 'js/rise-csv-upload.js', 
+				['jquery'], 
+				$this->version, 
+				true 
+			);
+			
+			// Localize script with AJAX URL and nonce
+			\wp_localize_script( $this->plugin_name . '-csv-upload', 'rise_csv_upload', [
+				'ajax_url' => \admin_url( 'admin-ajax.php' ),
+				'nonce' => \wp_create_nonce( 'rise_csv_upload_nonce' ),
+				'strings' => [
+					'uploading' => __( 'Uploading and processing...', 'rise' ),
+					'success' => __( 'Import completed successfully!', 'rise' ),
+					'error' => __( 'An error occurred during import.', 'rise' ),
+					'confirm' => __( 'Are you sure you want to import this CSV file? This will create new positions and skills.', 'rise' )
+				]
+			] );
 		}
 	}
 
@@ -84,6 +119,21 @@ class Admin {
 			[$this, 'plugin_options_page_callback'], // Callback function to render the page content
 			'dashicons-chart-area', // Menu icon
 			'2.2' // Menu position
+		);
+	}
+
+	/**
+	 * Register the CSV Import page under the Tools menu.
+	 *
+	 * @since 1.2
+	 */
+	public function add_csv_import_tools_page() {
+		\add_management_page(
+			'RISE CSV Import', // Page title
+			'RISE CSV Import', // Menu title
+			'manage_options', // Capability required
+			'rise-csv-import', // Menu slug
+			[$this, 'csv_import_page_callback'] // Callback function
 		);
 	}
 
@@ -233,7 +283,7 @@ class Admin {
 				$is_admin_redirect = strpos( $redirect_to, $admin_url ) === 0;
 
 				if ( $is_admin_redirect ) {
-					$frontend_url = defined( 'RISE_FRONTEND_URL' ) ? \RISE_FRONTEND_URL : 'https://risetheatre.org/directory';
+					$frontend_url = defined( 'RISE_FRONTEND_URL' ) ? \RISE_FRONTEND_URL  : 'https://risetheatre.org/directory';
 					return $frontend_url;
 				}
 			}
@@ -603,5 +653,83 @@ class Admin {
 		}
 
 		return $views;
+	}
+
+	/**
+	 * Disable built-in registration if a user/bot hits the WP login page.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return void
+	 */
+	public function disable_built_in_wp_registration_form() {
+		\add_filter( 'pre_option_users_can_register', '__return_null' );
+	}
+
+	/**
+	 * Callback function to render the CSV import page.
+	 *
+	 * @since 1.2
+	 * @return void
+	 */
+	public function csv_import_page_callback() {
+		// Check user permissions
+		if ( !current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'rise' ) );
+		}
+
+		echo '<div class="wrap">';
+		echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
+		echo '<p>' . esc_html__( 'Import positions and skills data from a CSV file into the RISE Directory.', 'rise' ) . '</p>';
+		echo $this->render_csv_upload_section();
+		echo '</div>';
+	}
+
+	/**
+	 * Render the CSV upload section HTML.
+	 *
+	 * @since 1.2
+	 * @return string HTML for the CSV upload section
+	 */
+	private function render_csv_upload_section() {
+		ob_start();
+		?>
+		<div class="rise-csv-upload-section">
+			<h3><?php esc_html_e( 'CSV File Format', 'rise' ); ?></h3>
+			<p><?php esc_html_e( 'Upload a CSV file to import positions and skills data. The CSV should follow this format:', 'rise' ); ?></p>
+			<ul>
+				<li><?php esc_html_e( 'Departments should be marked as "DEPT: Department Name" in the first column', 'rise' ); ?></li>
+				<li><?php esc_html_e( 'Position names should appear in the first column (without "DEPT:" prefix)', 'rise' ); ?></li>
+				<li><?php esc_html_e( 'Skills should be listed in subsequent columns for each position', 'rise' ); ?></li>
+			</ul>
+			
+			<form id="rise-csv-upload-form" enctype="multipart/form-data">
+				<table class="form-table">
+					<tr>
+						<th scope="row">
+							<label for="csv_file"><?php esc_html_e( 'CSV File', 'rise' ); ?></label>
+						</th>
+						<td>
+							<input type="file" id="csv_file" name="csv_file" accept=".csv" required />
+							<p class="description">
+								<?php esc_html_e( 'Select a CSV file to upload. Maximum file size: ', 'rise' ); ?>
+								<?php echo esc_html( size_format( wp_max_upload_size() ) ); ?>
+							</p>
+						</td>
+					</tr>
+				</table>
+				
+				<p class="submit">
+					<button type="submit" class="button button-primary" id="rise-csv-upload-btn">
+						<?php esc_html_e( 'Upload and Import CSV', 'rise' ); ?>
+					</button>
+					<span class="spinner" id="rise-csv-upload-spinner" style="display: none;"></span>
+				</p>
+			</form>
+			
+			<div id="rise-csv-upload-result" style="margin-top: 15px;"></div>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 }

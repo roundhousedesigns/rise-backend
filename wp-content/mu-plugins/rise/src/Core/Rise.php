@@ -414,9 +414,10 @@ class Rise {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_data, 'enqueue_scripts' );
 
 		/**
-		 * Login redirect
+		 * Login and Registration
 		 */
 		$this->loader->add_filter( 'login_redirect', $plugin_data, 'redirect_crew_members_after_login', 10, 3 );
+		$this->loader->add_action( 'login_init', $plugin_data, 'disable_built_in_wp_registration_form' );
 
 		/**
 		 * TEC endpoints
@@ -428,6 +429,7 @@ class Rise {
 		 */
 		$this->loader->add_action( 'admin_init', $plugin_data, 'plugin_settings_init' );
 		$this->loader->add_action( 'admin_menu', $plugin_data, 'plugin_options_page' );
+		$this->loader->add_action( 'admin_menu', $plugin_data, 'add_csv_import_tools_page' );
 		$this->loader->add_action( 'admin_menu', $plugin_data, 'remove_menu_pages' );
 
 		/**
@@ -435,6 +437,11 @@ class Rise {
 		 */
 		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'register_rise_basic_stats_widget' );
 		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'remove_dashboard_widgets' );
+
+		/**
+		 * CSV Upload functionality
+		 */
+		$this->loader->add_action( 'wp_ajax_rise_csv_upload', 'RHD\Rise\Core\DataImport', 'handle_csv_upload_ajax' );
 	}
 
 	/**

@@ -1,0 +1,123 @@
+/**
+ * RISE CSV Upload Styles
+ * 
+ * @since 1.2
+ */
+
+.rise-csv-upload-section {
+	margin: 20px 0;
+}
+
+.rise-csv-upload-section h3 {
+	margin-top: 0;
+	color: #23282d;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.rise-csv-upload-section p {
+	color: #555;
+	line-height: 1.5;
+}
+
+.rise-csv-upload-section ul {
+	margin: 10px 0 20px 20px;
+	color: #555;
+}
+
+.rise-csv-upload-section li {
+	margin: 5px 0;
+	line-height: 1.4;
+}
+
+#rise-csv-upload-form .form-table th {
+	width: 150px;
+	padding: 15px 10px 15px 0;
+	vertical-align: top;
+}
+
+#rise-csv-upload-form .form-table td {
+	padding: 15px 10px;
+}
+
+#csv_file {
+	width: 300px;
+	max-width: 100%;
+}
+
+#rise-csv-upload-btn {
+	margin-right: 10px;
+}
+
+#rise-csv-upload-spinner {
+	float: none;
+	margin: 0 5px;
+	vertical-align: middle;
+}
+
+#rise-csv-upload-result .notice {
+	border-left: 4px solid;
+	margin: 5px 0 15px;
+	padding: 1px 12px;
+}
+
+#rise-csv-upload-result .notice-success {
+	border-left-color: #46b450;
+	background-color: #ecf7ed;
+}
+
+#rise-csv-upload-result .notice-error {
+	border-left-color: #dc3232;
+	background-color: #fbeaea;
+}
+
+#rise-csv-upload-result .notice p {
+	margin: 0.5em 0;
+	padding: 2px;
+}
+
+#rise-csv-upload-result .notice-dismiss {
+	background: none;
+	border: none;
+	color: #72777c;
+	cursor: pointer;
+	display: block;
+	float: right;
+	font-size: 13px;
+	height: 20px;
+	outline: none;
+	padding: 0;
+	position: absolute;
+	right: 6px;
+	text-align: center;
+	text-decoration: none;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 20px;
+}
+
+#rise-csv-upload-result .notice-dismiss:before {
+	content: '\f153';
+	font-family: 'dashicons';
+	font-size: 16px;
+	line-height: 20px;
+}
+
+#rise-csv-upload-result .notice-dismiss:hover,
+#rise-csv-upload-result .notice-dismiss:focus {
+	color: #c00;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+	#rise-csv-upload-form .form-table th,
+	#rise-csv-upload-form .form-table td {
+		display: block;
+		width: auto;
+		padding: 10px 0;
+	}
+	
+	#csv_file {
+		width: 100%;
+	}
+}
