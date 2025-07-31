@@ -9,11 +9,6 @@ html {
 	box-sizing: border-box;
 }
 
-ul {
-	list-style-position: outside;
-	margin-left: 1em;
-}
-
 *,
 *::before,
 *::after {
