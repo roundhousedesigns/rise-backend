@@ -25,6 +25,7 @@ with 1.1.1.
 - Change: Change <BrowserRouter> to <HashRouter> for better compatibility in WP app container.
 - Change: Replace Google reCAPTCHA with CloudFlare Turnstile.
 - Fix: "$lastCredits" as count var in `useUserProfile`.
+- Fix: Profiles with no credits were appearing in Search by Name - no more!
 - Improve: Refactor classes to PSR-4.
 - Remove: <Page> component and slug route. Static pages handled by WP theme.
 

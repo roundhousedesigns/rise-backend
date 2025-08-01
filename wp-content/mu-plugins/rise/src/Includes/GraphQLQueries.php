@@ -211,6 +211,18 @@ class GraphQLQueries {
 			return \boolval( $pod->field( 'disable_profile' ) ) === false;
 		} );
 
+		// Remove users who have NOT authored a 'credit' post
+		$user_ids = \array_filter( $user_ids, function ( $id ) {
+			$credit_posts = \get_posts( [
+				'post_type'   => 'credit',
+				'author'      => $id,
+				'numberposts' => 1,
+				'post_status' => 'publish',
+			] );
+
+			return !empty( $credit_posts );
+		} );
+
 		return $user_ids;
 	}
 
