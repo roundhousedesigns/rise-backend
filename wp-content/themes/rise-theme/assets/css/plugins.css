@@ -2,6 +2,7 @@
  * RHDWP Expandable Text plugin styles.
  */
 
+
 body {
 	&:not(.bg-color-yellow) {
 		.wp-block-rhdwp-expandable-text {
@@ -16,4 +17,12 @@ body {
 			}
 		}
 	}
+}
+
+/**
+	* The Events Calendar plugin styles.
+	*/
+
+.tribe-events-schedule {
+	color: var(--wp--preset--color--bg-dark);
 }
