@@ -7,6 +7,21 @@
 	'use strict';
 
 	$(document).ready(function() {
+		// Handle department dropdown change
+		$('#parent_department').on('change', function() {
+			const selectedValue = $(this).val();
+			const newDeptRow = $('#new_department_row');
+			const newDeptInput = $('#new_department_name');
+			
+			if (selectedValue === '0') {
+				newDeptRow.show();
+				newDeptInput.prop('required', true);
+			} else {
+				newDeptRow.hide();
+				newDeptInput.prop('required', false).val('');
+			}
+		});
+		
 		$('#rise-csv-upload-form').on('submit', function(e) {
 			e.preventDefault();
 			
@@ -14,9 +29,23 @@
 			const submitBtn = $('#rise-csv-upload-btn');
 			const spinner = $('#rise-csv-upload-spinner');
 			const resultDiv = $('#rise-csv-upload-result');
+			const parentDept = $('#parent_department').val();
+			const newDeptName = $('#new_department_name').val().trim();
 			
 			// Clear previous results
 			resultDiv.html('');
+			
+			// Validate parent department selection
+			if (!parentDept) {
+				showMessage('error', 'Please select a first-level department.');
+				return;
+			}
+			
+			// Validate new department name if creating new
+			if (parentDept === '0' && !newDeptName) {
+				showMessage('error', 'Please enter a name for the new department.');
+				return;
+			}
 			
 			// Check if file is selected
 			if (!fileInput.files || fileInput.files.length === 0) {
@@ -48,6 +77,8 @@
 			const formData = new FormData();
 			formData.append('action', 'rise_csv_upload');
 			formData.append('csv_file', file);
+			formData.append('parent_department', parentDept);
+			formData.append('new_department_name', newDeptName);
 			formData.append('nonce', rise_csv_upload.nonce);
 			
 			// Update UI - show loading state

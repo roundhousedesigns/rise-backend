@@ -4,6 +4,7 @@ namespace RHD\Rise\Core;
 
 use RHD\Rise\Core\Admin;
 use RHD\Rise\Core\Cron;
+use RHD\Rise\Core\DataImport;
 use RHD\Rise\Core\Frontend;
 use RHD\Rise\Core\I18n;
 use RHD\Rise\Core\Init;
@@ -90,6 +91,7 @@ class Rise {
 		$this->define_graphql_queries();
 		$this->define_graphql_mutations();
 		$this->define_admin_hooks();
+		$this->define_data_import_hooks();
 		$this->define_public_hooks();
 		$this->define_search_hooks();
 		$this->define_woocommerce_hooks();
@@ -437,11 +439,19 @@ class Rise {
 		 */
 		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'register_rise_basic_stats_widget' );
 		$this->loader->add_action( 'wp_dashboard_setup', $plugin_data, 'remove_dashboard_widgets' );
+	}
 
-		/**
-		 * CSV Upload functionality
-		 */
-		$this->loader->add_action( 'wp_ajax_rise_csv_upload', 'RHD\Rise\Core\DataImport', 'handle_csv_upload_ajax' );
+	/**
+	 * Register all of the hooks related to the data import functionality
+	 * of the plugin.
+	 *
+	 * @access   private
+	 * @since    1.2
+	 */
+	private function define_data_import_hooks() {
+		$plugin_data = new DataImport();
+
+		$this->loader->add_action( 'wp_ajax_rise_csv_upload', $plugin_data, 'handle_csv_upload_ajax' );
 	}
 
 	/**

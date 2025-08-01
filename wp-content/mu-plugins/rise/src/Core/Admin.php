@@ -55,14 +55,14 @@ class Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_styles() {
-		\wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/rise-admin.css', [], $this->version, 'all' );
+		\wp_enqueue_style( $this->plugin_name, RISE_PLUGIN_URL . 'admin/css/rise-admin.css', [], $this->version, 'all' );
 		
 		// Load CSV upload styles on CSV import page
 		$current_screen = \get_current_screen();
 		if ( $current_screen && $current_screen->id === 'tools_page_rise-csv-import' ) {
 			\wp_enqueue_style( 
 				$this->plugin_name . '-csv-upload', 
-				plugin_dir_url( __FILE__ ) . 'css/rise-csv-upload.css', 
+				RISE_PLUGIN_URL . 'admin/css/rise-csv-upload.css', 
 				[], 
 				$this->version, 
 				'all' 
@@ -78,14 +78,14 @@ class Admin {
 	public function enqueue_scripts() {
 		$current_screen = \get_current_screen();
 		if ( $current_screen && 'toplevel_page_rise-admin' === $current_screen->id ) {
-			\wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/rise-table-sort.js', [], $this->version, false );
+			\wp_enqueue_script( $this->plugin_name, RISE_PLUGIN_URL . 'admin/js/rise-table-sort.js', [], $this->version, false );
 		}
 		
 		// Load CSV upload script on CSV import page
 		if ( $current_screen && $current_screen->id === 'tools_page_rise-csv-import' ) {
 			\wp_enqueue_script( 
 				$this->plugin_name . '-csv-upload', 
-				plugin_dir_url( __FILE__ ) . 'js/rise-csv-upload.js', 
+				RISE_PLUGIN_URL . 'admin/js/rise-csv-upload.js', 
 				['jquery'], 
 				$this->version, 
 				true 
@@ -686,25 +686,74 @@ class Admin {
 	}
 
 	/**
+	 * Get existing departments (top-level position terms).
+	 *
+	 * @since 1.3
+	 * @return array Array of department terms
+	 */
+	private function get_existing_departments() {
+		return get_terms( [
+			'taxonomy'   => 'position',
+			'hide_empty' => false,
+			'parent'     => 0,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		] );
+	}
+
+	/**
 	 * Render the CSV upload section HTML.
 	 *
 	 * @since 1.2
 	 * @return string HTML for the CSV upload section
 	 */
 	private function render_csv_upload_section() {
+		$existing_departments = $this->get_existing_departments();
 		ob_start();
 		?>
 		<div class="rise-csv-upload-section">
 			<h3><?php esc_html_e( 'CSV File Format', 'rise' ); ?></h3>
-			<p><?php esc_html_e( 'Upload a CSV file to import positions and skills data. The CSV should follow this format:', 'rise' ); ?></p>
+			<p><?php esc_html_e( 'Upload a CSV file to import second-level positions and skills data. The CSV should follow this format:', 'rise' ); ?></p>
 			<ul>
-				<li><?php esc_html_e( 'Departments should be marked as "DEPT: Department Name" in the first column', 'rise' ); ?></li>
-				<li><?php esc_html_e( 'Position names should appear in the first column (without "DEPT:" prefix)', 'rise' ); ?></li>
-				<li><?php esc_html_e( 'Skills should be listed in subsequent columns for each position', 'rise' ); ?></li>
+				<li><?php esc_html_e( 'First column: Position names (e.g., "Director of Education", "Finance Manager")', 'rise' ); ?></li>
+				<li><?php esc_html_e( 'Subsequent columns: Skills associated with each position', 'rise' ); ?></li>
+				<li><?php esc_html_e( 'All positions will be created under the selected first-level department', 'rise' ); ?></li>
 			</ul>
 			
 			<form id="rise-csv-upload-form" enctype="multipart/form-data">
 				<table class="form-table">
+					<tr>
+						<th scope="row">
+							<label for="parent_department"><?php esc_html_e( 'First-Level Department', 'rise' ); ?></label>
+						</th>
+						<td>
+							<select id="parent_department" name="parent_department" required>
+								<option value=""><?php esc_html_e( 'Select a department...', 'rise' ); ?></option>
+								<?php if ( !empty( $existing_departments ) && !is_wp_error( $existing_departments ) ) : ?>
+									<?php foreach ( $existing_departments as $department ) : ?>
+										<option value="<?php echo esc_attr( $department->term_id ); ?>">
+											<?php echo esc_html( $department->name ); ?>
+										</option>
+									<?php endforeach; ?>
+								<?php endif; ?>
+								<option value="0"><?php esc_html_e( 'Create new department...', 'rise' ); ?></option>
+							</select>
+							<p class="description">
+								<?php esc_html_e( 'Select an existing first-level department or create a new one.', 'rise' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr id="new_department_row" style="display: none;">
+						<th scope="row">
+							<label for="new_department_name"><?php esc_html_e( 'New Department Name', 'rise' ); ?></label>
+						</th>
+						<td>
+							<input type="text" id="new_department_name" name="new_department_name" class="regular-text" />
+							<p class="description">
+								<?php esc_html_e( 'Enter the name for the new first-level department.', 'rise' ); ?>
+							</p>
+						</td>
+					</tr>
 					<tr>
 						<th scope="row">
 							<label for="csv_file"><?php esc_html_e( 'CSV File', 'rise' ); ?></label>
