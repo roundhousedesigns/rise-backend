@@ -577,17 +577,14 @@ class Types {
 		$field_id = $field->get_id();
 
 		// Query the podsrel table for all users who have $user_id in their starred_profiles
-		$rel_table = $wpdb->prefix . 'podsrel';
-		$sql       = $wpdb->prepare(
+		$user_ids = $wpdb->get_col( $wpdb->prepare(
 			"SELECT DISTINCT t.item_id
-			 FROM $rel_table t
+			 FROM `{$wpdb->prefix}podsrel` t
 			 WHERE t.field_id = %d
 			   AND t.related_item_id = %d",
 			$field_id,
 			$user_id
-		);
-
-		$user_ids = $wpdb->get_col( $sql );
+		) );
 
 		if ( empty( $user_ids ) ) {
 			return;
