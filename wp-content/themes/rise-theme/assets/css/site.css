@@ -60,6 +60,15 @@
 
 	.header-buttons {
 		margin: 0;
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 0.5rem;
+
+		.menu-container & {
+			margin-top: 0.6rem;
+			margin-bottom: 0.2rem;
+			margin-left: 1rem;
+		}
 
 		.wp-block-button__link {
 			&[name="directory"] {

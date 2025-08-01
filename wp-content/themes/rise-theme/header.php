@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html           <?php language_attributes(); ?>>
+<html                <?php language_attributes(); ?>>
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +14,7 @@
 	$page_color = 'bg-color-' . ( $pod->field( 'background_color' ) ? $pod->field( 'background_color' ) : 'bg-color-dark' );
 ?>
 
-<body                     <?php body_class( $page_color ); ?>>
+<body                          <?php body_class( $page_color ); ?>>
 	<?php wp_body_open(); ?>
 	<div id="page" class="site">
 		<header id="masthead" class="site-header">
@@ -36,12 +36,15 @@
 				<?php get_template_part( 'template-parts/snippet', 'social-links' ); ?>
 			</div>
 
-			<div class="header-buttons wp-block-buttons desktop-only">
-				<div class="wp-block-button">
-					<a name="directory" href="<?php echo esc_url( home_url( '/directory' ) ); ?>" class="wp-block-button__link">Directory</a>
+			<div class="header-buttons-container">
+				<div class="desktop-only">
+					<?php get_template_part( 'template-parts/snippet', 'header-buttons' ); ?>
 				</div>
-				<div class="wp-block-button">
-					<a name="donate" href="<?php echo esc_url( home_url( '/donate' ) ); ?>" class="wp-block-button__link">Donate</a>
+
+				<div class="header-buttons mobile-only wp-block-buttons">
+					<div class="wp-block-button">
+						<a name="directory" name="directory" href="<?php echo esc_url( home_url( '/directory' ) ); ?>" class="wp-block-button__link">Directory</a>
+					</div>
 				</div>
 			</div>
 
@@ -60,6 +63,10 @@
 					endif; ?>
 
 					<?php get_template_part( 'template-parts/snippet', 'social-links' ); ?>
+				</div>
+
+				<div class="mobile-only header-buttons-container">
+					<?php get_template_part( 'template-parts/snippet', 'header-buttons' ); ?>
 				</div>
 
 				 <?php wp_nav_menu( [
