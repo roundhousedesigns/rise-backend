@@ -418,7 +418,7 @@ class Rise {
 		/**
 		 * Login and Registration
 		 */
-		$this->loader->add_filter( 'login_redirect', $plugin_data, 'redirect_crew_members_after_login', 10, 3 );
+		$this->loader->add_filter( 'login_redirect', $plugin_data, 'handle_login_redirects', 10, 3 );
 		$this->loader->add_action( 'login_init', $plugin_data, 'disable_built_in_wp_registration_form' );
 
 		/**

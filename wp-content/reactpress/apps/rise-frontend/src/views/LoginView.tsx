@@ -3,21 +3,13 @@ import {
 	Box,
 	Button,
 	Divider,
-	Drawer,
-	DrawerBody,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
 	Flex,
 	Heading,
 	Highlight,
-	Icon,
-	IconButton,
 	Link,
 	Stack,
 	Text,
 	chakra,
-	useDisclosure,
 	useMediaQuery,
 } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
@@ -26,9 +18,7 @@ import { useErrorMessage } from '@hooks/hooks';
 import { LoginInput } from '@lib/types';
 import { decodeString } from '@lib/utils';
 import useLogin from '@mutations/useLogin';
-import PageContent from '@views/PageContent';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { FiExternalLink, FiX } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 
 interface Props {
@@ -38,7 +28,7 @@ interface Props {
 }
 
 export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
-	const { VITE_DEV_MODE } = import.meta.env;
+	const { VITE_DEV_MODE, VITE_WP_URL } = import.meta.env;
 
 	const [credentials, setCredentials] = useState<LoginInput>({
 		login: '',
@@ -48,7 +38,6 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 	const [turnstileStatus, setTurnstileStatus] = useState<'error' | 'expired' | 'solved' | ''>('');
 
 	const [isLargerThanMd] = useMediaQuery('(min-width: 48rem)');
-	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const {
 		loginMutation,
@@ -190,51 +179,19 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 							</Highlight>
 						</Heading>
 						<Box>
-							<Button onClick={onOpen} size='2xl' colorScheme='yellow'>
+							<Button
+								as={RouterLink}
+								to={`${VITE_WP_URL}/about`}
+								target='_blank'
+								size='2xl'
+								colorScheme='yellow'
+							>
 								{`What is RISE? ${decodeString('&raquo;')}`}
 							</Button>
 						</Box>
 					</Stack>
 				</Box>
 			</Flex>
-			<Drawer
-				placement='right'
-				size={{ base: 'full', md: 'md' }}
-				onClose={onClose}
-				closeOnEsc={true}
-				isOpen={isOpen}
-				isFullHeight={false}
-			>
-				<DrawerOverlay />
-				<DrawerContent display='flex' flexDirection='column' height='100%'>
-					<DrawerHeader pt={2} pb={1} px={2} textAlign='right'>
-						<IconButton
-							onClick={onClose}
-							borderRadius='full'
-							fontSize='xl'
-							icon={<FiX />}
-							aria-label='Close'
-						/>
-					</DrawerHeader>
-					<DrawerBody py={0} pb={2}>
-						<Box textAlign='center'>
-							<PageContent postId='12238' mt={0} pt={0} />
-							<Button
-								as={Link}
-								href='https://risetheatre.org'
-								isExternal
-								colorScheme='yellow'
-								size='lg'
-								mt={6}
-								mb={24}
-							>
-								Learn about RISE Theatre{' '}
-								<Icon as={FiExternalLink} aria-label='external link' pl={1} />
-							</Button>
-						</Box>
-					</DrawerBody>
-				</DrawerContent>
-			</Drawer>
 		</>
 	);
 }

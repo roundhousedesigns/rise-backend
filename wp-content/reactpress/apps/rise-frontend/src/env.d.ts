@@ -1,8 +1,11 @@
 /// <reference types="vite/client" />
 
+// TODO Clean these up
+
 interface ImportMetaEnv {
 	readonly VITE_APP_TITLE: string;
 	readonly VITE_BACKEND_URL: string;
+	readonly VITE_WP_URL: string;
 	readonly VITE_GA4_ID: string;
 	readonly VITE_RECAPTCHA_SITE_KEY: string;
 	readonly VITE_TURNSTILE_SITE_KEY: string;

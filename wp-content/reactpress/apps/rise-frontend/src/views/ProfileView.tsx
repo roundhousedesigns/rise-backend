@@ -245,7 +245,18 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 										bg={colorMode === 'dark' ? 'gray.700' : 'text.light'}
 										hasArrow
 									>
-										<Avatar size='superLg' src={''} name={''} mt={7} mb={5} mx={4} />
+										<Box
+											w='100%'
+											h='100%'
+											_dark={{ bg: 'gray.600' }}
+											_light={{ bg: 'gray.200' }}
+											borderRadius='md'
+											position='relative'
+											left={0.5}
+											top={0.5}
+										>
+											<Avatar size='superLg' src={''} name={''} mt={7} mb={5} mx={4} />
+										</Box>
 									</Tooltip>
 								</Link>
 							)}

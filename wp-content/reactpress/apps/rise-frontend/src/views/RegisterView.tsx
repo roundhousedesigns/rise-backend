@@ -29,7 +29,7 @@ import { FiBriefcase, FiUser } from 'react-icons/fi';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 export default function RegisterView() {
-	const { VITE_DEV_MODE } = import.meta.env;
+	const { VITE_DEV_MODE, VITE_WP_URL } = import.meta.env;
 
 	const [userFields, setUserFields] = useState<RegisterUserInput>({
 		email: '',
@@ -296,11 +296,11 @@ export default function RegisterView() {
 								tabIndex={7}
 							>
 								I have read and accept the RISE Theatre Directory{' '}
-								<Link as={RouterLink} to='http://risetheatre.org/terms-conditions' isExternal>
+								<Link as={RouterLink} to={`${VITE_WP_URL}/terms-conditions`} isExternal>
 									Terms and Conditions
 								</Link>{' '}
 								and{' '}
-								<Link as={RouterLink} to='http://risetheatre.org/privacy-policy' isExternal>
+								<Link as={RouterLink} to={`${VITE_WP_URL}/privacy-policy`} isExternal>
 									Privacy Policy
 								</Link>
 								.
