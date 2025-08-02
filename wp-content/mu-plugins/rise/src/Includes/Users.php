@@ -672,5 +672,4 @@ class Users {
 
 		return false;
 	}
-
 }

@@ -697,6 +697,27 @@ class Admin {
 	}
 
 	/**
+	 * Handle new crew member registration.
+	 *
+	 * Creates a "no credits" notification for newly registered crew members.
+	 *
+	 * @since 1.3
+	 *
+	 * @param  int    $user_id The ID of the newly registered user.
+	 * @return void
+	 */
+	public function handle_new_crew_member_registration( $user_id ) {
+		// Get the user object
+		$user = get_user_by( 'ID', $user_id );
+
+		// Check if the user exists and has the 'crew-member' role
+		if ( $user && in_array( 'crew-member', $user->roles ) ) {
+			// Import the ProfileNotification class
+			\RHD\Rise\Includes\ProfileNotification::create_no_credits_notification( $user_id );
+		}
+	}
+
+	/**
 	 * Callback function to render the CSV import page.
 	 *
 	 * @since 1.2
@@ -745,6 +766,7 @@ class Admin {
 
 		ob_start();
 
+		// TODO Check unused var
 		$template_args = [
 			'existing_departments' => $existing_departments,
 		];
@@ -753,4 +775,5 @@ class Admin {
 
 		return ob_get_clean();
 	}
+
 }

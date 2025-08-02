@@ -13,6 +13,8 @@ namespace RHD\Rise\Includes;
  * @since      0.1.0
  */
 
+// TODO: Extend WP_Post to get the ID, title, and date_time.
+
 class ProfileNotification {
 
 	const NOTIFICATION_TYPES = [
@@ -157,5 +159,45 @@ class ProfileNotification {
 		}
 
 		return $notifications;
+	}
+
+	/**
+	 * Create a no credits notification for a user.
+	 *
+	 * @param  int  $user_id The user ID to create the notification for.
+	 * @return bool Whether the notification was created.
+	 */
+	public static function create_no_credits_notification( $user_id ) {
+		$user_pod = \pods( 'user', $user_id );
+
+		if ( !$user_pod ) {
+			return false;
+		}
+
+		$today = current_time( 'Y-m-d' );
+
+		// Create the notification
+		$notification_pod = \pods( 'profile_notification' );
+
+		$notification_message = get_option( 'rise_settings_no_credits_reminder_message' );
+
+		// Create the Profile Notification with pod data
+		$notification_id = $notification_pod->add( [
+			'post_title'        => \__( 'Add credits to your profile', 'rise' ),
+			'post_status'       => 'publish',
+			'notification_type' => 'no_profile_credits',
+			'value'             => $notification_message,
+			'is_read'           => false,
+			'author'            => $user_id,
+		] );
+
+		if ( $notification_id ) {
+			// Update the user's last notified date
+			$user_pod->save( 'no_credits_last_notified_on', $today );
+
+			return true;
+		}
+
+		return false;
 	}
 }

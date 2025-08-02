@@ -421,6 +421,7 @@ class Rise {
 		$this->loader->add_filter( 'login_redirect', $plugin_data, 'handle_admin_login_redirects', 10, 3 );
 		$this->loader->add_filter( 'login_redirect', $plugin_data, 'handle_crew_member_login_redirects', 10, 3 );
 		$this->loader->add_action( 'login_init', $plugin_data, 'disable_built_in_wp_registration_form' );
+		$this->loader->add_action( 'user_register', $plugin_data, 'handle_new_crew_member_registration' );
 
 		/**
 		 * TEC endpoints
