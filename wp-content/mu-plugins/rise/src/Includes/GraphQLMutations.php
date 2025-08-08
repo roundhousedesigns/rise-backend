@@ -1095,7 +1095,7 @@ class GraphQLMutations {
 	}
 
 	/**
-	 * Add the isOrg field to the RegisterUserInput type.
+	 * Add the isOrg and orgName fields to the RegisterUserInput type.
 	 *
 	 * @return void
 	 */

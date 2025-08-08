@@ -19,7 +19,7 @@ const useRegisterUser = () => {
 	const [mutation, results] = useMutation(MUTATE_REGISTER_USER);
 
 	const registerUserMutation = (user: RegisterUserInput) => {
-		const { email, firstName, lastName, password, confirmPassword, isOrg } = user;
+		const { email, firstName, lastName, password, confirmPassword, isOrg, orgName } = user;
 
 		if (password !== confirmPassword) {
 			throw new Error('Passwords do not match');
@@ -34,6 +34,7 @@ const useRegisterUser = () => {
 					firstName,
 					password,
 					isOrg,
+					orgName,
 				},
 			},
 		});

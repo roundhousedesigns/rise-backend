@@ -28,7 +28,7 @@ interface Props {
  * @returns {JSX.Element} The Props component.
  */
 export default function MiniProfileView({ profile, ...props }: Props & CardProps): JSX.Element {
-	const [{ loggedInSlug, loggedInId, disableProfile }] = useViewer();
+	const [{ loggedInSlug, loggedInId, disableProfile, isOrg }] = useViewer();
 	const [isHovered, setIsHovered] = useState(false);
 
 	const handleMouseEnter = () => {
@@ -116,7 +116,11 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 			</Flex>
 			<Stack direction='column' lineHeight={1} w='full'>
 				<Box textAlign='center'>
-					<Avatar size='superLg' src={image || ''} name={image ? profile.fullName() : ''} />
+					<Avatar
+						size='superLg'
+						src={image || ''}
+						name={image ? (isOrg ? profile.orgName : profile.fullName()) : ''}
+					/>
 				</Box>
 				<Box
 					flexWrap='wrap'
@@ -125,7 +129,7 @@ export default function MiniProfileView({ profile, ...props }: Props & CardProps
 				>
 					<Flex justifyContent='center' flexWrap='wrap' gap={2}>
 						<Heading m={0} lineHeight='none' fontFamily='body' fontSize='4xl'>
-							{profile.fullName()}
+							{isOrg ? profile.orgName : profile.fullName()}
 						</Heading>
 					</Flex>
 				</Box>

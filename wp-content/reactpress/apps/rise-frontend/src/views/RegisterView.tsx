@@ -86,6 +86,8 @@ export default function RegisterView() {
 		passwordsMatch,
 		ofAge,
 		termsAccepted,
+		isOrg,
+		orgName,
 	]);
 
 	// useEffect to check if passwords match, debounce to prevent spamming
@@ -112,6 +114,8 @@ export default function RegisterView() {
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
+
+		console.info('userFields', userFields);
 
 		registerUserMutation({ ...userFields })
 			.then(() => {
