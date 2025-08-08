@@ -33,11 +33,11 @@ class Users {
 	 */
 	private function get_role_definitions() {
 		$base_caps = [
-			'read'                            => true,
-			'list_users'                      => true,
-			'unfiltered_upload'               => true,
-			'upload_files'                    => true,
-			'edit_files'                      => true,
+			'read'              => true,
+			'list_users'        => true,
+			'unfiltered_upload' => true,
+			'upload_files'      => true,
+			'edit_files'        => true,
 		];
 
 		$crew_capabilities = array_merge( $base_caps, [
@@ -70,8 +70,8 @@ class Users {
 	/**
 	 * Create or update a user role with the specified capabilities.
 	 *
-	 * @param string $role_slug   The role slug.
-	 * @param array  $role_config The role configuration array.
+	 * @param  string $role_slug   The role slug.
+	 * @param  array  $role_config The role configuration array.
 	 * @return void
 	 */
 	private function create_or_update_role( $role_slug, $role_config ) {
@@ -92,7 +92,7 @@ class Users {
 	}
 
 	/**
-	 * Blocks access to the Dashboard for users with the 'crew-member' role.
+	 * Blocks access to the Dashboard for users with the 'crew-member' or 'network-partner' role.
 	 *
 	 * @return void
 	 */
@@ -106,7 +106,7 @@ class Users {
 		// Check if the user is logged in and has the 'crew-member' role
 		$current_user = \wp_get_current_user();
 
-		if ( in_array( 'crew-member', $current_user->roles, true ) ) {
+		if ( in_array( 'crew-member', $current_user->roles, true ) || in_array( 'network-partner', $current_user->roles, true ) ) {
 			// Get the current screen object
 			$current_screen = \get_current_screen();
 
