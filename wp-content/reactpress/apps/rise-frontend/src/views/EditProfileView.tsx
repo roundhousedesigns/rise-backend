@@ -1,4 +1,3 @@
-import NetworkPartnerManagementLinks from '@@/src/components/NetworkPartnerManagementLinks';
 import {
 	Box,
 	BoxProps,
@@ -740,18 +739,12 @@ export default function EditProfileView(): JSX.Element | null {
 
 			<Divider mb={0} />
 
-			{isNetworkPartner ? (
-				<ProfileStackItem title='Network Partner'>
-					<NetworkPartnerManagementLinks />
-				</ProfileStackItem>
-			) : (
-				<ProfileStackItem title='Options'>
-					<Card>
-						{!isOrg && <DisableProfileToggle showHelperText showLabel />}
-						<IsOrgToggle showHelperText showLabel />
-					</Card>
-				</ProfileStackItem>
-			)}
+			<ProfileStackItem title='Options'>
+				<Card>
+					{!isOrg && <DisableProfileToggle showHelperText showLabel />}
+					<IsOrgToggle showHelperText showLabel />
+				</Card>
+			</ProfileStackItem>
 
 			{!isOrg && (
 				<ProfileStackItem title='Scheduling Conflicts'>
