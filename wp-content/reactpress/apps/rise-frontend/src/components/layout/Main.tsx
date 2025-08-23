@@ -3,7 +3,6 @@ import LoggedIn from '@components/LoggedIn';
 import Dashboard from '@routes/Dashboard';
 import EditProfile from '@routes/EditProfile';
 import FollowedProfiles from '@routes/FollowedProfiles';
-import Login from '@routes/Login';
 import NotFound from '@routes/NotFound';
 import Profile from '@routes/Profile';
 import Register from '@routes/Register';
@@ -105,10 +104,10 @@ export default function Main({ ...props }: BoxProps) {
 				</LoggedIn>
 			),
 		},
-		{
-			path: '/login',
-			element: <Login />,
-		},
+		// {
+		// 	path: '/login',
+		// 	element: <Login />,
+		// },
 		{
 			path: '/register',
 			element: <Register />,

@@ -36,7 +36,9 @@ export const QUERY_VIEWER = gql`
 `;
 
 const useViewer = (): [ViewerData, any] => {
-	const result = useQuery(QUERY_VIEWER);
+	const result = useQuery(QUERY_VIEWER, {
+		fetchPolicy: 'network-only',
+	});
 
 	const {
 		id: loggedInId,
@@ -51,9 +53,9 @@ const useViewer = (): [ViewerData, any] => {
 		starredProfiles: starredProfilesRaw,
 	} = result?.data?.viewer || {};
 
-	const isNetworkPartner = userRolesRaw?.nodes.some(
-		(node: { name: string }) => node.name === 'network-partner'
-	);
+	const roles = userRolesRaw?.nodes.map((node: { name: string }) => node.name) || [];
+
+	const isNetworkPartner = roles.includes('network-partner');
 
 	const networkPartnerManagementLinks = result?.data?.networkPartnerManagementLinks || {};
 
@@ -72,6 +74,7 @@ const useViewer = (): [ViewerData, any] => {
 			isOrg,
 			isNetworkPartner,
 			networkPartnerManagementLinks,
+			roles,
 			starredProfiles,
 		},
 		omit(result, ['data']),

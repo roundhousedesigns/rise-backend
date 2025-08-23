@@ -267,6 +267,7 @@ export interface ViewerData {
 	isNetworkPartner?: boolean;
 	networkPartnerManagementLinks?: NetworkPartnerManagementLinksData;
 	starredProfiles?: number[];
+	roles?: string[];
 }
 
 /**

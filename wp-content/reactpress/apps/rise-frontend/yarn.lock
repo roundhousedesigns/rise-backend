@@ -315,6 +315,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chakra-ui/anatomy@npm:2.3.4":
+  version: 2.3.4
+  resolution: "@chakra-ui/anatomy@npm:2.3.4"
+  checksum: 10c0/1cfa7521c10cdace81c098b77ef31a5598ea3e5a47f14d117b63af51ddb2b74c9e83adea1c5e6d59154ba64f776dcad4568eb0cb698a26283bb489c2889d771c
+  languageName: node
+  linkType: hard
+
 "@chakra-ui/anatomy@npm:2.3.6":
   version: 2.3.6
   resolution: "@chakra-ui/anatomy@npm:2.3.6"
@@ -1534,6 +1541,13 @@ __metadata:
   version: 4.17.14
   resolution: "@types/lodash@npm:4.17.14"
   checksum: 10c0/343c6f722e0b39969036a885ad5aad6578479ead83987128c9b994e6b7f2fb9808244d802d4d332396bb09096f720a6c7060de16a492f5460e06a44560360322
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.17.20":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: 10c0/98cdd0faae22cbb8079a01a3bb65aa8f8c41143367486c1cbf5adc83f16c9272a2a5d2c1f541f61d0d73da543c16ee1d21cf2ef86cb93cd0cc0ac3bced6dd88f
   languageName: node
   linkType: hard
 
@@ -4320,6 +4334,7 @@ __metadata:
     "@apollo/client": "npm:^3.12.7"
     "@babel/core": "npm:^7.22.5"
     "@babel/eslint-parser": "npm:^7.24.1"
+    "@chakra-ui/anatomy": "npm:2.3.4"
     "@chakra-ui/react": "npm:^2.10.5"
     "@chakra-ui/react-utils": "npm:^2.0.5"
     "@chakra-ui/system": "npm:^2.6.2"
@@ -4332,6 +4347,7 @@ __metadata:
     "@types/autosize": "npm:^4.0.1"
     "@types/chance": "npm:^1.1.3"
     "@types/js-cookie": "npm:^3.0.6"
+    "@types/lodash": "npm:^4.17.20"
     "@types/node": "npm:^20.12.12"
     "@types/react": "npm:^18.2.46"
     "@types/react-date-range": "npm:^1.4.9"

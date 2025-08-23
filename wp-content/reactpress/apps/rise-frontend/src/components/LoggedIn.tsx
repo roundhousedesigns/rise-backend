@@ -1,8 +1,8 @@
 import { Container, Spinner } from '@chakra-ui/react';
 import useViewer from '@queries/useViewer';
 import LoginView from '@views/LoginView';
-import { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { ReactNode, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface Props {
 	hideOnly?: boolean;
@@ -17,13 +17,26 @@ interface Props {
  * @param {ReactNode} props.children - The component to render if the user is logged in.
  */
 export default function LoggedIn({ hideOnly, children }: Props): JSX.Element {
-	const [{ loggedInId }, { loading }] = useViewer();
+	const { VITE_WP_URL } = import.meta.env;
+	const [{ loggedInId, roles }, { loading }] = useViewer();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (loggedInId) {
+			if (roles?.includes('administrator')) {
+				// TODO Clarify/fix admin redirect experience
+				window.location.href = `${VITE_WP_URL}/wp-admin`;
+			} else {
+				navigate('/');
+			}
+		}
+	}, [loggedInId, JSON.stringify(roles)]);
 
 	// get the current route
 	const { pathname } = useLocation();
 
 	// Allowed URL endpoints when logged out
-	const publicEndpoints = ['/register', '/login', '/lost-password', '/reset-password'];
+	const publicEndpoints = ['/register', '/lost-password', '/reset-password'];
 
 	const showContent =
 		(!hideOnly && !loggedInId && publicEndpoints.includes(pathname)) || loggedInId;
