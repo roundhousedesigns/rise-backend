@@ -142,9 +142,18 @@
 	margin-right: auto;
 	margin-left: auto;
 	padding: 2rem;
-	display: flex;
-	gap: 4rem;
-	flex-wrap: nowrap;
+
+	&:not(.template-simple) {
+		display: flex;
+		gap: 4rem;
+		flex-wrap: nowrap;
+	}
+
+	&.template-simple {
+		max-width: 800px;
+		margin-right: auto;
+		margin-left: auto;
+	}
 
 	&.archive-network_partner_tag {
 		flex-wrap: wrap;
@@ -596,4 +605,9 @@
 	margin-top: -50px;
 	/* Pull up the content */
 	z-index: 0;
+}
+
+.password-lost-form {
+	max-width: 800px;
+	margin: 0 auto;
 }

@@ -4,7 +4,6 @@ import Dashboard from '@routes/Dashboard';
 import EditProfile from '@routes/EditProfile';
 import FollowedProfiles from '@routes/FollowedProfiles';
 import Login from '@routes/Login';
-import LostPassword from '@routes/LostPassword';
 import NotFound from '@routes/NotFound';
 import Profile from '@routes/Profile';
 import Register from '@routes/Register';
@@ -109,10 +108,6 @@ export default function Main({ ...props }: BoxProps) {
 		{
 			path: '/login',
 			element: <Login />,
-		},
-		{
-			path: '/lost-password',
-			element: <LostPassword />,
 		},
 		{
 			path: '/register',

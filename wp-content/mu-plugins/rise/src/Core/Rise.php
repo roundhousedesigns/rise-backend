@@ -418,9 +418,10 @@ class Rise {
 		/**
 		 * Login and Registration
 		 */
-		$this->loader->add_filter( 'login_redirect', $plugin_data, 'handle_admin_login_redirects', 10, 3 );
-		$this->loader->add_filter( 'login_redirect', $plugin_data, 'handle_crew_member_login_redirects', 10, 3 );
+		$this->loader->add_filter( 'login_redirect', $plugin_data, 'handle_login_redirects', 10, 3 );
 		$this->loader->add_action( 'login_init', $plugin_data, 'disable_built_in_wp_registration_form' );
+		$this->loader->add_action( 'login_form_lostpassword', $plugin_data, 'redirect_to_custom_lostpassword' );
+		$this->loader->add_action( 'init', $plugin_data, 'redirect_wp_login' );
 
 		/**
 		 * TEC endpoints
@@ -467,7 +468,7 @@ class Rise {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		$this->loader->add_filter( 'retrieve_password_message', $plugin_public, 'filter_retrieve_password_message', 20, 3 );
+		// $this->loader->add_filter( 'retrieve_password_message', $plugin_public, 'filter_retrieve_password_message', 20, 3 );
 
 		// Initialize shortcodes
 		new Shortcodes();

@@ -426,6 +426,7 @@ class Users {
 
 		\wp_nonce_field( 'save_' . $taxonomy, $taxonomy . '_nonce' );
 
+		// Used in the template
 		$template_args = [
 			'name'           => $name,
 			'taxonomy'       => $taxonomy,
