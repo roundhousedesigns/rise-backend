@@ -133,7 +133,7 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 											Sign In
 										</Button>
 									) : null}
-									<Link as={RouterLink} to='/lost-password' fontSize='sm' my={0}>
+									<Link href={`${VITE_WP_URL}/lost-password`} fontSize='sm' my={0}>
 										Lost your password?
 									</Link>
 								</Flex>
