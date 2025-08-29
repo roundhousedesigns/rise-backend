@@ -35,11 +35,13 @@ const useSaveSearch = () => {
 		filterSet: SearchFilterSetParams;
 		userId: number;
 	}) => {
+		const { jobDates, ...filterSetWithoutDates } = filterSet;
+
 		return mutation({
 			variables: {
 				id: id ? id : 0,
 				title,
-				filterSet,
+				filterSet: filterSetWithoutDates,
 				userId,
 			},
 			refetchQueries: [{ query: QUERY_SAVED_SEARCHES, variables: { author: userId } }],
