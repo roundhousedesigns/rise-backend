@@ -82,3 +82,7 @@ Thumbs.db
 !wp-content/plugins/bulk-taxonomy-term-editor
 !wp-content/reactpress/apps/
 wp-content/reactpress/apps/rise-frontend/dist
+
+
+#Ignore cursor AI rules
+.cursor/rules/codacy.mdc
