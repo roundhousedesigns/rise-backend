@@ -19,7 +19,7 @@ import { LoginInput } from '@lib/types';
 import { decodeString } from '@lib/utils';
 import useLogin from '@mutations/useLogin';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 interface Props {
 	alert?: string;
@@ -46,6 +46,8 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 
 	const errorMessage = useErrorMessage(errorCode);
 
+	const navigate = useNavigate();
+
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setCredentials({
 			...credentials,
@@ -56,9 +58,17 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 	const handleLoginSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		loginMutation({ ...credentials }).catch((errors: { message: string }) => {
-			setErrorCode(errors.message);
-		});
+		loginMutation({ ...credentials })
+			.then((res) => {
+				if (res.data?.directoryLogin?.roles?.includes('administrator')) {
+					window.location.href = `${VITE_WP_URL}/wp-admin`;
+				} else {
+					navigate('/');
+				}
+			})
+			.catch((errors: { message: string }) => {
+				setErrorCode(errors.message);
+			});
 	};
 
 	const sanitizedAlertStatus = alertStatus === 'error' ? 'error' : 'success';

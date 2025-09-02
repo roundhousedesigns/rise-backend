@@ -30,6 +30,7 @@ class GraphQLMutations {
 	 * @return void
 	 */
 	public function register_mutations() {
+		$this->register_mutation__directoryLogin();
 		$this->register_mutation__changeEmail();
 		$this->register_mutation__changePassword();
 		$this->register_mutation__changeProfileSlug();
@@ -49,6 +50,83 @@ class GraphQLMutations {
 		$this->register_mutation__toggleUserOption( 'toggleIsOrg', 'is_org', 'updatedIsOrg' );
 		$this->register_mutation__markProfileNotificationsAsRead();
 		$this->register_mutation__dismissProfileNotifications();
+	}
+
+	/**
+	 * Logs in a user with WordPress.
+	 *
+	 * @return void
+	 */
+	protected function register_mutation__directoryLogin() {
+		register_graphql_mutation(
+			'directoryLogin',
+			[
+				'inputFields'         => [
+					'login'    => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'Input your user/e-mail.', 'wp-graphql-cors' ),
+					],
+					'password' => [
+						'type'        => ['non_null' => 'String'],
+						'description' => __( 'Input your password.', 'wp-graphql-cors' ),
+					],
+					// TODO Implement remember me
+					// 'rememberMe' => [
+					// 	'type'        => 'Boolean',
+					// 	'description' => __(
+					// 		'Whether to "remember" the user. Increases the time that the cookie will be kept. Default false.',
+					// 		'wp-graphql-cors'
+					// 	),
+					// ],
+				],
+				'outputFields'        => [
+					'roles' => [
+						'type'        => ['list_of' => 'String'],
+						'description' => 'User role',
+					],
+					'id'    => [
+						'type'        => 'Int',
+						'description' => 'User ID',
+					],
+				],
+				'mutateAndGetPayload' => function ( $input ) {
+					// Prepare credentials.
+					$credential_keys = [
+						'login'    => 'user_login',
+						'password' => 'user_password',
+						// 'rememberMe' => 'remember',
+					];
+
+					$credentials = [];
+					foreach ( $input as $key => $value ) {
+						if ( in_array( $key, array_keys( $credential_keys ), true ) ) {
+							$credentials[$credential_keys[$key]] = $value;
+						}
+					}
+
+					// Verify that the user is retrievable.
+					$user = get_user_by( 'email', $credentials['user_login'] );
+					if ( !$user ) {
+						throw new UserError( esc_attr( 'invalid_email' ) );
+					}
+
+					// Get user role
+					$user_roles = $user->roles;
+
+					// Authenticate User.
+					$user = wpgraphql_cors_signon( $credentials );
+
+					if ( is_wp_error( $user ) ) {
+						throw new UserError( esc_html( !empty( $user->get_error_code() ) ? $user->get_error_code() : 'bad_login' ) );
+					}
+
+					return [
+						'roles' => $user_roles,
+						'id'    => $user->ID,
+					];
+				},
+			]
+		);
 	}
 
 	/**
