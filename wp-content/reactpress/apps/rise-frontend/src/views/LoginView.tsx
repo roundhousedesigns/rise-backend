@@ -61,7 +61,13 @@ export default function LoginView({ alert, alertStatus, signInTitle }: Props) {
 		loginMutation({ ...credentials })
 			.then((res) => {
 				if (res.data?.directoryLogin?.roles?.includes('administrator')) {
-					window.location.href = `${VITE_WP_URL}/wp-admin`;
+					try {
+						// Set a short-lived flag indicating this redirect was triggered by a fresh login
+						sessionStorage.setItem('rise_admin_login_redirect', '1');
+					} catch {}
+					// Use replace to avoid adding to history and immediately stop further actions
+					window.location.replace(`${VITE_WP_URL}/wp-admin`);
+					return;
 				} else {
 					navigate('/');
 				}
