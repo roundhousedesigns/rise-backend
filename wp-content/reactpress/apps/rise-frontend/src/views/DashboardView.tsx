@@ -1,4 +1,14 @@
-import { Card, Grid, GridItem, List, ListItem, Skeleton, Stack } from '@chakra-ui/react';
+import {
+	Box,
+	Card,
+	Grid,
+	GridItem,
+	Heading,
+	List,
+	ListItem,
+	Skeleton,
+	Stack,
+} from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import Widget from '@common/Widget';
 import DashboardRSSFeeds from '@components/DashboardRSSFeeds';
@@ -46,19 +56,25 @@ export default function DashboardView() {
 
 				{events.length > 0 && (
 					<Widget title='Partner Events' titleStyle='centerline'>
-						<EventsList />
+						<Stack>
+							{isNetworkPartner && (
+								<Box>
+									<NetworkPartnerManagementLinks />
+								</Box>
+							)}
+
+							<Box>
+								{/* TODO: i18n */}
+								<Heading variant='contentSubtitle'>Events from Other RISE Partners</Heading>
+								<EventsList />
+							</Box>
+						</Stack>
 					</Widget>
 				)}
 
 				<Widget title='Following' titleStyle='centerline'>
 					<FollowedProfileList mini showToggle={false} />
 				</Widget>
-
-				{isNetworkPartner && (
-					<Widget title='Network Partner' titleStyle='centerline'>
-						<NetworkPartnerManagementLinks />
-					</Widget>
-				)}
 			</GridItem>
 
 			<GridItem as={Stack} spacing={2} id='dashboard-primary' justifyContent='flex-start'>

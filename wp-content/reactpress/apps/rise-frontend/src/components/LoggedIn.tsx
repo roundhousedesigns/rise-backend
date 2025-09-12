@@ -1,7 +1,7 @@
-import { Container, Spinner } from '@chakra-ui/react';
+import { Container, Flex, Spinner, Text } from '@chakra-ui/react';
 import useViewer from '@queries/useViewer';
 import LoginView from '@views/LoginView';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface Props {
@@ -22,14 +22,35 @@ export default function LoggedIn({ hideOnly, children }: Props): JSX.Element {
 	// get the current route
 	const { pathname } = useLocation();
 
+	// Detect if we're in the middle of an admin redirect triggered by a fresh login
+	let adminRedirecting = false;
+	try {
+		adminRedirecting = sessionStorage.getItem('rise_admin_login_redirect') === '1';
+	} catch {}
+
+	// Clear the flag immediately so it only affects the post-login render
+	useEffect(() => {
+		if (adminRedirecting) {
+			try {
+				sessionStorage.removeItem('rise_admin_login_redirect');
+			} catch {}
+		}
+		// We intentionally don't include dependencies to run once per mount
+		// and clear any residual flag set by a fresh login redirect
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	// Allowed URL endpoints when logged out
-	const publicEndpoints = ['/register', '/login', '/lost-password', '/reset-password'];
+	const publicEndpoints = ['/register', '/lost-password', '/reset-password'];
 
 	const showContent =
 		(!hideOnly && !loggedInId && publicEndpoints.includes(pathname)) || loggedInId;
 
-	return loading ? (
-		<Spinner />
+	return loading || adminRedirecting ? (
+		<Flex alignItems='center'>
+			<Spinner />
+			{adminRedirecting && <Text>Redirecting to admin...</Text>}
+		</Flex>
 	) : showContent ? (
 		<>{children}</>
 	) : (

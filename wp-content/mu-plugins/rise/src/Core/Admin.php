@@ -265,55 +265,35 @@ class Admin {
 	}
 
 	/**
-	 * Handle login redirects for administrators.
+	 * Handle login redirects for different user roles.
 	 *
-	 * Ensures administrators go to the admin area unless they have a specific non-admin redirect.
+	 * - Administrators: Redirects to admin area by default unless specific redirect is set
+	 * - Crew Members/Network Partners: Redirects to frontend when they would go to admin area
+	 * - Others: Uses default WordPress redirect behavior
 	 *
 	 * @param  string           $redirect_to The redirect destination URL.
 	 * @param  string           $request     The requested redirect destination URL passed as a parameter.
 	 * @param  WP_User|WP_Error $user        WP_User object if login was successful, WP_Error object otherwise.
 	 * @return string           The redirect URL.
 	 */
-	public function handle_admin_login_redirects( $redirect_to, $request, $user ) {
+	public function handle_login_redirects( $redirect_to, $request, $user ) {
 		// Check if we have a valid user object
 		if ( !is_wp_error( $user ) && is_object( $user ) && isset( $user->ID ) ) {
-			// Only handle administrators
-			if ( in_array( 'administrator', $user->roles ) ) {
-				$admin_url         = admin_url();
-				$is_admin_redirect = strpos( $redirect_to, $admin_url ) === 0;
+			$admin_url         = admin_url();
+			$is_admin_redirect = strpos( $redirect_to, $admin_url ) === 0;
 
+			// Handle administrators
+			if ( in_array( 'administrator', $user->roles ) ) {
 				// Ensure administrators go to the admin area unless they have a specific non-admin redirect
 				if ( !$is_admin_redirect && empty( $request ) ) {
 					return $admin_url;
 				}
 			}
-		}
-
-		return $redirect_to;
-	}
-
-	/**
-	 * Handle login redirects for crew members.
-	 *
-	 * Redirects crew members to the frontend when they would otherwise go to the admin area.
-	 *
-	 * @param  string           $redirect_to The redirect destination URL.
-	 * @param  string           $request     The requested redirect destination URL passed as a parameter.
-	 * @param  WP_User|WP_Error $user        WP_User object if login was successful, WP_Error object otherwise.
-	 * @return string           The redirect URL.
-	 */
-	public function handle_crew_member_login_redirects( $redirect_to, $request, $user ) {
-		// Check if we have a valid user object
-		if ( !is_wp_error( $user ) && is_object( $user ) && isset( $user->ID ) ) {
-			// Only handle crew members
-			if ( in_array( 'crew-member', $user->roles ) ) {
-				$admin_url         = admin_url();
-				$is_admin_redirect = strpos( $redirect_to, $admin_url ) === 0;
-
-				// Check if this appears to be from the main WordPress login
-				// (typically redirects to admin area by default)
+			// Handle crew members and network partners
+			elseif ( in_array( 'crew-member', $user->roles ) || in_array( 'network-partner', $user->roles ) ) {
+				// Redirect to frontend if they would go to admin area
 				if ( $is_admin_redirect ) {
-					$frontend_url = defined( 'RISE_FRONTEND_URL' ) ? \RISE_FRONTEND_URL : 'https://risetheatre.org/directory';
+					$frontend_url = defined( 'RISE_FRONTEND_URL' ) ? \RISE_FRONTEND_URL  : 'https://risetheatre.org/directory';
 					return $frontend_url;
 				}
 			}
@@ -774,6 +754,36 @@ class Admin {
 		include RISE_PLUGIN_DIR . 'templates/csv-upload-form.php';
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Redirects the user to the custom "Forgot your password?" page instead of
+	 * wp-login.php?action=lostpassword.
+	 */
+	public function redirect_to_custom_lostpassword() {
+		if ( 'GET' == $_SERVER['REQUEST_METHOD'] ) {
+			if ( is_user_logged_in() ) {
+				wp_safe_redirect( home_url( '/directory' ) );
+				exit;
+			}
+
+			wp_redirect( home_url( 'womp-womp' ) );
+			exit;
+		}
+	}
+
+	/**
+	 * Redirect wp-login.php to the directory page.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	public function redirect_wp_login() {
+		if ( 'wp-login.php' === $GLOBALS['pagenow'] && !isset( $_GET['action'] ) ) {
+			wp_safe_redirect( home_url( '/directory/' ) );
+			exit;
+		}
 	}
 
 }

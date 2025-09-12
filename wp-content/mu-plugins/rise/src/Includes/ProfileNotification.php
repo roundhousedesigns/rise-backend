@@ -127,7 +127,7 @@ class ProfileNotification {
 	 */
 	public static function get_profile_notices_for_graphql( $user_id, $is_read = false, $limit = -1 ) {
 		$params = [
-			'where'   => ['d.is_read' => $is_read],
+			'where'   => ['d.is_read' => $is_read, 't.post_author' => $user_id],
 			'author'  => $user_id,
 			'limit'   => $is_read ? $limit : -1,
 			'orderby' => 'date',

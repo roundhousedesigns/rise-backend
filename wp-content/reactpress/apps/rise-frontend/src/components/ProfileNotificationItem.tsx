@@ -57,7 +57,7 @@ export default function ProfileNotificationItem({ notification }: Props) {
 
 	return (
 		<Box onMouseEnter={handleMarkAsRead} onFocus={handleMarkAsRead}>
-			<Flex alignItems='flex-start' gap={1} fontSize='sm'>
+			<Flex alignItems='center' gap={1} fontSize='sm'>
 				{!isRead && (
 					<Icon as={FiCircle} fill='brand.orange' color='brand.orange' my={0} boxSize={2} />
 				)}
@@ -67,7 +67,10 @@ export default function ProfileNotificationItem({ notification }: Props) {
 						alignItems='flex-end'
 						w='full'
 						m={0}
-						borderBottom='1px solid'
+						_notLast={{
+							borderBottom: '1px solid',
+							borderColor: 'gray.400',
+						}}
 						borderColor='gray.400'
 					>
 						<Box fontSize='sm'>
@@ -81,7 +84,7 @@ export default function ProfileNotificationItem({ notification }: Props) {
 								</Text>
 							)}
 						</Box>
-						<Text as='span' mt={0} mb={0.5} ml={1} fontSize='2xs' fontStyle='italic'>
+						<Text as='span' mt={0} m={0} ml={1} fontSize='2xs' fontStyle='italic'>
 							{dateTime.toLocaleString(undefined, {
 								year: 'numeric',
 								month: 'numeric',

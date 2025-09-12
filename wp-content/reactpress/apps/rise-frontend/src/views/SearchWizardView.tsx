@@ -4,7 +4,6 @@ import SearchFilterAccordionItem from '@common/SearchFilterAccordionItem';
 import SearchFilterSection from '@common/SearchFilterSection';
 import AdditionalSearchFilters from '@components/AdditionalSearchFilters';
 import DepartmentsAutocomplete from '@components/DepartmentsAutocomplete';
-import SavedSearchItemList from '@components/SavedSearchItemList';
 import SearchFilterDates from '@components/SearchFilterDates';
 import SearchFilterDepartment from '@components/SearchFilterDepartment';
 import SearchFilterJobs from '@components/SearchFilterJobs';
@@ -12,7 +11,7 @@ import SearchFilterName from '@components/SearchFilterName';
 import SearchFilterSkills from '@components/SearchFilterSkills';
 import { SearchContext } from '@context/SearchContext';
 import { FormEvent, useContext } from 'react';
-import { FiFolder, FiUser } from 'react-icons/fi';
+import { FiUser } from 'react-icons/fi';
 
 interface Props {
 	onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -39,7 +38,7 @@ export default function SearchWizardView({ onSubmit }: Props) {
 	return (
 		<>
 			<Flex gap={0} flexWrap='wrap'>
-				{savedSearches && savedSearches.length > 0 && (
+				{/* {savedSearches && savedSearches.length > 0 && (
 					<Accordion flex='1 0 300px' allowToggle defaultIndex={savedSearchId ? 0 : undefined}>
 						<SearchFilterAccordionItem
 							heading={
@@ -61,7 +60,8 @@ export default function SearchWizardView({ onSubmit }: Props) {
 							<SavedSearchItemList />
 						</SearchFilterAccordionItem>
 					</Accordion>
-				)}
+				)} */}
+
 				<Accordion flex='1 0 300px' allowToggle defaultIndex={name ? 0 : undefined}>
 					<SearchFilterAccordionItem
 						heading={

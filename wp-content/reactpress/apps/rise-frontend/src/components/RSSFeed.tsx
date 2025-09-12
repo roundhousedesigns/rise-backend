@@ -6,7 +6,7 @@ import {
 	SimpleGrid,
 	Skeleton,
 	Spinner,
-	Text
+	Text,
 } from '@chakra-ui/react';
 import RSSPostItem from '@components/RSSPostItem';
 import { useRSSFeed } from '@hooks/hooks';
@@ -74,35 +74,6 @@ export default function RSSFeed({
 	const failedFeeds = feedResults.filter((result) => result.error);
 	const allFeedsFailed = successfulFeeds.length === 0 && failedFeeds.length > 0;
 
-	// Log feed status for debugging
-	useMemo(() => {
-		const feedStatus = feedResults.map((result, index) => ({
-			feed: feeds[index]?.title || 'Unknown',
-			url: feeds[index]?.feedUrl || 'Unknown',
-			status: result.loading ? 'loading' : result.error ? 'failed' : `success (${result.posts.length} posts)`,
-			error: result.error || null
-		}));
-
-		// Always log feed status (helpful for debugging)
-		console.groupCollapsed(`📰 RSS Feed Status (${successfulFeeds.length}/${feedResults.length} working)`);
-		feedStatus.forEach(feed => {
-			if (feed.status.startsWith('success')) {
-				console.log(`✅ ${feed.feed}: ${feed.status}`);
-			} else if (feed.status === 'failed') {
-				console.warn(`❌ ${feed.feed}: ${feed.error}`);
-				console.log(`   URL: ${feed.url}`);
-			} else {
-				console.log(`⏳ ${feed.feed}: ${feed.status}`);
-			}
-		});
-		console.groupEnd();
-
-		// Additional warning if any feeds failed
-		if (failedFeeds.length > 0) {
-			console.warn(`⚠️  ${failedFeeds.length} RSS feed(s) failed to load`);
-		}
-	}, [feedResults, feeds, successfulFeeds.length, failedFeeds.length]);
-
 	const handleLoadMore = () => {
 		setVisibleCount((prev) => prev + limit);
 	};
@@ -112,9 +83,10 @@ export default function RSSFeed({
 
 	// Only show error state if all feeds failed
 	if (allFeedsFailed) {
-		const errorMessage = failedFeeds.length === 1 
-			? failedFeeds[0].error || 'Failed to load RSS feed'
-			: `Failed to load ${failedFeeds.length} RSS feeds`;
+		const errorMessage =
+			failedFeeds.length === 1
+				? failedFeeds[0].error || 'Failed to load RSS feed'
+				: `Failed to load ${failedFeeds.length} RSS feeds`;
 		return <ErrorState message={errorMessage} />;
 	}
 

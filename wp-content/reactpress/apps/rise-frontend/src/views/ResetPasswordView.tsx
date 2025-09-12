@@ -1,12 +1,12 @@
 import {
-    Box,
-    Button,
-    chakra,
-    Container,
-    FormErrorMessage,
-    Heading,
-    Stack,
-    useToast,
+	Box,
+	Button,
+	chakra,
+	Container,
+	FormErrorMessage,
+	Heading,
+	Stack,
+	useToast,
 } from '@chakra-ui/react';
 import TextInput from '@common/inputs/TextInput';
 import { useErrorMessage, useValidatePassword } from '@hooks/hooks';
@@ -83,7 +83,7 @@ export default function ResetPasswordView({ token, login }: Props) {
 				});
 			})
 			.then(() => {
-				navigate('/login');
+				navigate('/');
 			})
 			.catch((errors: { message: SetStateAction<string> }) => setErrorCode(errors.message));
 	};

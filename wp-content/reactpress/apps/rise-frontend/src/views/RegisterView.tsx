@@ -14,7 +14,6 @@ import {
 	useMediaQuery,
 	useToast,
 } from '@chakra-ui/react';
-import BackToLoginButton from '@common/BackToLoginButton';
 import TextInput from '@common/inputs/TextInput';
 import RequiredAsterisk from '@common/RequiredAsterisk';
 import ToggleOptionSwitch from '@common/ToggleOptionSwitch';
@@ -86,6 +85,8 @@ export default function RegisterView() {
 		passwordsMatch,
 		ofAge,
 		termsAccepted,
+		isOrg,
+		orgName,
 	]);
 
 	// useEffect to check if passwords match, debounce to prevent spamming
@@ -113,6 +114,8 @@ export default function RegisterView() {
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
+		console.info('userFields', userFields);
+
 		registerUserMutation({ ...userFields })
 			.then(() => {
 				toast({
@@ -125,7 +128,7 @@ export default function RegisterView() {
 				});
 			})
 			.then(() => {
-				navigate('/login');
+				navigate('/');
 			})
 			.catch((errors: { message: SetStateAction<string> }) => setErrorCode(errors.message));
 	};
@@ -327,7 +330,6 @@ export default function RegisterView() {
 							</Button>
 						) : null}
 					</Box>
-					{!isLargerThanMd && <BackToLoginButton width='full' justifyContent='flex-end' />}
 				</Flex>
 			</chakra.form>
 		</>
