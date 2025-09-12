@@ -8,7 +8,7 @@ interface Props {
 	handleDeleteCredit: (id: string) => void;
 }
 
-export default function DeleteCreditButton({ handleDeleteCredit, id }: Props): JSX.Element {
+export default function DeleteCreditButton({ handleDeleteCredit, id }: Props): React.JSX.Element {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const handleDelete = () => {

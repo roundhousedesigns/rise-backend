@@ -6,7 +6,7 @@ interface Props {
 	onExpire: () => void;
 }
 
-export default function Turnstile({ onSuccess, onError, onExpire }: Props): JSX.Element | null {
+export default function Turnstile({ onSuccess, onError, onExpire }: Props): React.JSX.Element | null {
 	const { VITE_TURNSTILE_SITE_KEY, VITE_DEV_MODE } = import.meta.env;
 
 	const devMode = VITE_DEV_MODE === 'true' || import.meta.env.MODE === '1';

@@ -1,14 +1,14 @@
 import {
-	Box,
-	ButtonGroup,
-	Card,
-	CardProps,
-	Flex,
-	Skeleton,
-	Stack,
-	Text,
-	useDisclosure,
-	useToast,
+    Box,
+    ButtonGroup,
+    Card,
+    CardProps,
+    Flex,
+    Skeleton,
+    Stack,
+    Text,
+    useDisclosure,
+    useToast,
 } from '@chakra-ui/react';
 import ConfirmActionDialog from '@common/ConfirmActionDialog';
 import LinkWithIcon from '@common/LinkWithIcon';
@@ -46,7 +46,7 @@ export default function SavedSearchItem({
 	showControls = true,
 	showSaveButton = false,
 	...props
-}: Props & MotionProps & Omit<CardProps, 'id'>): JSX.Element | null {
+}: Props & MotionProps & Omit<CardProps, 'id'>): React.JSX.Element | null {
 	const [{ loggedInId }] = useViewer();
 	const [_ignored, { data: { filteredCandidates } = [] }] = useCandidateSearch();
 	const {

@@ -2,14 +2,14 @@ import { Box, BoxProps, Heading } from '@chakra-ui/react';
 
 interface Props {
 	heading?: string;
-	children: JSX.Element;
+	children: React.JSX.Element;
 }
 
 export default function SearchFilterSection({
 	heading,
 	children,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	return (
 		<Box {...props}>
 			{heading ? (

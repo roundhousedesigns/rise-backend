@@ -1,25 +1,25 @@
 import {
-	Avatar,
-	Box,
-	Button,
-	Card,
-	Flex,
-	Heading,
-	HeadingProps,
-	Icon,
-	Image,
-	Link,
-	List,
-	ListItem,
-	SimpleGrid,
-	Spacer,
-	Stack,
-	Tag,
-	Text,
-	Tooltip,
-	useBreakpointValue,
-	useColorMode,
-	Wrap,
+    Avatar,
+    Box,
+    Button,
+    Card,
+    Flex,
+    Heading,
+    HeadingProps,
+    Icon,
+    Image,
+    Link,
+    List,
+    ListItem,
+    SimpleGrid,
+    Spacer,
+    Stack,
+    Tag,
+    Text,
+    Tooltip,
+    useBreakpointValue,
+    useColorMode,
+    Wrap,
 } from '@chakra-ui/react';
 import ColorCascadeBox from '@common/ColorCascadeBox';
 import LinkWithIcon from '@common/LinkWithIcon';
@@ -55,9 +55,9 @@ const ProfileHeading = ({ title, ...props }: { title: string } & HeadingProps) =
 
 /**
  * @param {UserProfile} profile The user profile data.
- * @returns {JSX.Element} The Props component.
+ * @returns {React.JSX.Element} The Props component.
  */
-export default function ProfileView({ profile, allowStar = true }: Props): JSX.Element | null {
+export default function ProfileView({ profile, allowStar = true }: Props): React.JSX.Element | null {
 	const params = useParams();
 
 	const slug = params.slug ? params.slug : '';
@@ -151,7 +151,7 @@ export default function ProfileView({ profile, allowStar = true }: Props): JSX.E
 	}: {
 		ids: number[];
 		terms: WPItem[];
-	}): (JSX.Element | null)[] {
+	}): (React.JSX.Element | null)[] {
 		return getWPItemsFromIds(ids, terms).map((term: WPItem) => {
 			if (term.externalUrl) {
 				return (

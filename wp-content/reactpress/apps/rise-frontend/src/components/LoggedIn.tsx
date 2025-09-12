@@ -16,7 +16,7 @@ interface Props {
  * @param {boolean} props.hideOnly -  Determines whether to hide the child component or not. Defaults to false.
  * @param {ReactNode} props.children - The component to render if the user is logged in.
  */
-export default function LoggedIn({ hideOnly, children }: Props): JSX.Element {
+export default function LoggedIn({ hideOnly, children }: Props): React.JSX.Element {
 	const [{ loggedInId }, { loading }] = useViewer();
 
 	// get the current route

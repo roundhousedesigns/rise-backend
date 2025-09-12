@@ -1,12 +1,12 @@
 import {
-	Box,
-	Button,
-	GridItem,
-	GridProps,
-	SimpleGrid,
-	Skeleton,
-	Spinner,
-	Text,
+    Box,
+    Button,
+    GridItem,
+    GridProps,
+    SimpleGrid,
+    Skeleton,
+    Spinner,
+    Text,
 } from '@chakra-ui/react';
 import RSSPostItem from '@components/RSSPostItem';
 import { useRSSFeed } from '@hooks/hooks';
@@ -41,7 +41,7 @@ export default function RSSFeed({
 	limit = 3,
 	columns = 2,
 	...props
-}: Props & GridProps): JSX.Element {
+}: Props & GridProps): React.JSX.Element {
 	const [visibleCount, setVisibleCount] = useState(limit);
 
 	// Fetch posts from all feeds

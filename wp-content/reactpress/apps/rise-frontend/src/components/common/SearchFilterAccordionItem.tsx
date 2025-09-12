@@ -1,19 +1,19 @@
 import {
-	AccordionButton,
-	AccordionButtonProps,
-	AccordionIcon,
-	AccordionItem,
-	AccordionItemProps,
-	AccordionPanel,
-	AccordionPanelProps,
-	Box,
-	Heading,
-	Text,
+    AccordionButton,
+    AccordionButtonProps,
+    AccordionIcon,
+    AccordionItem,
+    AccordionItemProps,
+    AccordionPanel,
+    AccordionPanelProps,
+    Box,
+    Heading,
+    Text,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
 interface Props {
-	heading: string | JSX.Element;
+	heading: string | React.JSX.Element;
 	headingProps?: Partial<AccordionButtonProps>;
 	panelProps?: Partial<AccordionPanelProps>;
 	children: ReactNode;
@@ -28,7 +28,7 @@ export default function SearchFilterAccordionItem({
 	isDisabled,
 	...props
 }: Props & AccordionItemProps) {
-	const HeadingContent = (): JSX.Element =>
+	const HeadingContent = (): React.JSX.Element =>
 		typeof heading === 'object' ? (
 			heading
 		) : (

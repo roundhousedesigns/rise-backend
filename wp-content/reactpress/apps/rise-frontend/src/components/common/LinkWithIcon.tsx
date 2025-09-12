@@ -20,7 +20,7 @@ export default function LinkWithIcon({
 	children,
 	iconProps,
 	...props
-}: Props & LinkProps): JSX.Element {
+}: Props & LinkProps): React.JSX.Element {
 	return (
 		<Link
 			href={href ? href : undefined}

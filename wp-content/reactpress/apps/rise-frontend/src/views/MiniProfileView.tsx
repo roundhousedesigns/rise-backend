@@ -25,9 +25,9 @@ interface Props {
 
 /**
  * @param {UserProfile} profile The user profile data.
- * @returns {JSX.Element} The Props component.
+ * @returns {React.JSX.Element} The Props component.
  */
-export default function MiniProfileView({ profile, ...props }: Props & CardProps): JSX.Element {
+export default function MiniProfileView({ profile, ...props }: Props & CardProps): React.JSX.Element {
 	const [{ loggedInSlug, loggedInId, disableProfile, isOrg }] = useViewer();
 	const [isHovered, setIsHovered] = useState(false);
 

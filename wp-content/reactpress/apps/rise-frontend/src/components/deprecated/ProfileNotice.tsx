@@ -32,7 +32,7 @@ export default function ProfileNotice({
 	status = 'info',
 	dismissExpire = 30,
 	...props
-}: Props & AlertProps): JSX.Element {
+}: Props & AlertProps): React.JSX.Element {
 	const notice = profileNoticeAlerts[code];
 	const cookieName = `profile_notice_${code}_dismissed`;
 
@@ -46,7 +46,7 @@ export default function ProfileNotice({
 	const colorScheme = status === 'warning' ? 'orange' : undefined;
 	const color = status === 'warning' ? 'text.dark' : undefined;
 
-	const CTA = (): JSX.Element => (
+	const CTA = (): React.JSX.Element => (
 		<>
 			<Spacer />
 			{cta?.element ? (

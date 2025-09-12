@@ -1,31 +1,31 @@
 import {
-	Box,
-	Flex,
-	FormControl,
-	FormControlProps,
-	FormErrorMessage,
-	FormHelperText,
-	FormLabel,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputProps,
-	Text,
+    Box,
+    Flex,
+    FormControl,
+    FormControlProps,
+    FormErrorMessage,
+    FormHelperText,
+    FormLabel,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    InputProps,
+    Text,
 } from '@chakra-ui/react';
 import { debounce } from 'lodash';
 import {
-	ChangeEvent,
-	forwardRef,
-	ReactNode,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
+    ChangeEvent,
+    forwardRef,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
 } from 'react';
 
 interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
 	name: string;
-	label?: string | JSX.Element;
+	label?: string | React.JSX.Element;
 	labelHidden?: boolean;
 	helperText?: string;
 	placeholder?: string;

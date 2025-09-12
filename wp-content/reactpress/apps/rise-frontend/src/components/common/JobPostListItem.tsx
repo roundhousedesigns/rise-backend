@@ -1,17 +1,17 @@
 import {
-	Box,
-	Card,
-	Flex,
-	Heading,
-	LinkBox,
-	LinkOverlay,
-	ListItem,
-	ListItemProps,
-	Spacer,
-	Stack,
-	Tag,
-	Text,
-	Wrap,
+    Box,
+    Card,
+    Flex,
+    Heading,
+    LinkBox,
+    LinkOverlay,
+    ListItem,
+    ListItemProps,
+    Spacer,
+    Stack,
+    Tag,
+    Text,
+    Wrap,
 } from '@chakra-ui/react';
 import PositionsDisplay from '@common/PositionsDisplay';
 import { JobPost, WPItem } from '@lib/classes';
@@ -28,7 +28,7 @@ interface JobPostListItemProps {
 export default function JobPostListItem({
 	job,
 	...props
-}: JobPostListItemProps & ListItemProps): JSX.Element {
+}: JobPostListItemProps & ListItemProps): React.JSX.Element {
 	const {
 		id,
 		title,

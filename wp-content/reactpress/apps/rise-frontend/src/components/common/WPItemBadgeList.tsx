@@ -1,7 +1,7 @@
 import { Wrap, WrapProps } from '@chakra-ui/react';
+import WPItemBadgeListItem from '@common/WPItemBadgeListItem';
 import { WPItem } from '@lib/classes';
 import { decodeString } from '@lib/utils';
-import WPItemBadgeListItem from '@common/WPItemBadgeListItem';
 
 interface Props {
 	items: WPItem[];
@@ -12,7 +12,7 @@ export default function WPItemBadgeList({
 	items,
 	colorScheme,
 	...props
-}: Props & WrapProps): JSX.Element {
+}: Props & WrapProps): React.JSX.Element {
 	return (
 		<Wrap spacing={2} justify={{ base: 'left', md: 'right' }} {...props}>
 			{items?.map((item: WPItem) => (

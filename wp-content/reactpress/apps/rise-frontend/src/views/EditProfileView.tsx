@@ -1,29 +1,29 @@
 import {
-	Box,
-	BoxProps,
-	Button,
-	ButtonGroup,
-	ButtonProps,
-	Card,
-	chakra,
-	Checkbox,
-	Collapse,
-	Divider,
-	Flex,
-	Heading,
-	Icon,
-	Image,
-	Input,
-	SimpleGrid,
-	Slide,
-	Spinner,
-	Stack,
-	StackProps,
-	Text,
-	useColorMode,
-	useDisclosure,
-	useMediaQuery,
-	useToast,
+    Box,
+    BoxProps,
+    Button,
+    ButtonGroup,
+    ButtonProps,
+    Card,
+    chakra,
+    Checkbox,
+    Collapse,
+    Divider,
+    Flex,
+    Heading,
+    Icon,
+    Image,
+    Input,
+    SimpleGrid,
+    Slide,
+    Spinner,
+    Stack,
+    StackProps,
+    Text,
+    useColorMode,
+    useDisclosure,
+    useMediaQuery,
+    useToast,
 } from '@chakra-ui/react';
 import type { As } from '@chakra-ui/system';
 import ProfileStackItem from '@common/ProfileStackItem';
@@ -52,35 +52,35 @@ import useUserTaxonomies from '@hooks/queries/useUserTaxonomies';
 import useViewer from '@hooks/queries/useViewer';
 import { Credit, UserProfile } from '@lib/classes';
 import {
-	areProfilesDifferent,
-	cloneInstance,
-	generateRandomString,
-	sanitizeBoolean,
-	sortCreditsByIndex,
+    areProfilesDifferent,
+    cloneInstance,
+    generateRandomString,
+    sanitizeBoolean,
+    sortCreditsByIndex,
 } from '@lib/utils';
 import useUserProfile from '@queries/useUserProfile';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import {
-	FiArrowDownCircle,
-	FiArrowUpCircle,
-	FiFacebook,
-	FiGlobe,
-	FiHome,
-	FiImage,
-	FiInstagram,
-	FiLink,
-	FiLinkedin,
-	FiMail,
-	FiPhone,
-	FiPlus,
-	FiSave,
-	FiStar,
-	FiTrash2,
-	FiUpload,
-	FiUser,
-	FiVideo,
+    FiArrowDownCircle,
+    FiArrowUpCircle,
+    FiFacebook,
+    FiGlobe,
+    FiHome,
+    FiImage,
+    FiInstagram,
+    FiLink,
+    FiLinkedin,
+    FiMail,
+    FiPhone,
+    FiPlus,
+    FiSave,
+    FiStar,
+    FiTrash2,
+    FiUpload,
+    FiUser,
+    FiVideo,
 } from 'react-icons/fi';
 import ReactPlayer from 'react-player/lazy';
 import { useNavigate } from 'react-router-dom';
@@ -97,9 +97,9 @@ interface FileDropzoneProps {
 }
 
 /**
- * @returns {JSX.Element} The profile view.
+ * @returns {React.JSX.Element} The profile view.
  */
-export default function EditProfileView(): JSX.Element | null {
+export default function EditProfileView(): React.JSX.Element | null {
 	const [{ loggedInId, loggedInSlug, isOrg, isNetworkPartner }] = useViewer();
 	const [profile] = useUserProfile(loggedInId);
 	const { colorMode } = useColorMode();
@@ -615,9 +615,9 @@ export default function EditProfileView(): JSX.Element | null {
 		...props
 	}: {
 		field: string;
-		icon?: JSX.Element;
+		icon?: React.JSX.Element;
 		label: string;
-		children?: JSX.Element | string;
+		children?: React.JSX.Element | string;
 	} & ButtonProps) => {
 		if (!field) return null;
 
@@ -879,7 +879,7 @@ export default function EditProfileView(): JSX.Element | null {
 		);
 	};
 
-	const NewCreditButton = (): JSX.Element | null => {
+	const NewCreditButton = (): React.JSX.Element | null => {
 		// Check if there's a new credit, and don't count it toward the limit.
 		const limit = 5;
 

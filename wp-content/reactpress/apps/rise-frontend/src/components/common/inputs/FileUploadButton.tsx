@@ -1,13 +1,13 @@
-import { ChangeEvent, useRef } from 'react';
 import { Button, ButtonProps, VisuallyHidden, chakra } from '@chakra-ui/react';
+import { ChangeEvent, useRef } from 'react';
 
 interface Props {
 	fieldName: string;
-	icon?: JSX.Element;
+	icon?: React.JSX.Element;
 	accept?: string;
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	loading?: boolean;
-	children?: JSX.Element;
+	children?: React.JSX.Element;
 }
 
 export default function FileUploadButton({
@@ -18,7 +18,7 @@ export default function FileUploadButton({
 	loading,
 	children,
 	...props
-}: Props & ButtonProps): JSX.Element {
+}: Props & ButtonProps): React.JSX.Element {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleButtonClick = () => {

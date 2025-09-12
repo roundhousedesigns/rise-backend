@@ -11,7 +11,7 @@ export default function FollowedProfileList({
 	showToggle = true,
 	mini = false,
 	...props
-}: Props & ListProps): JSX.Element {
+}: Props & ListProps): React.JSX.Element {
 	const [{ starredProfiles }] = useViewer();
 
 	return starredProfiles && starredProfiles.length > 0 ? (

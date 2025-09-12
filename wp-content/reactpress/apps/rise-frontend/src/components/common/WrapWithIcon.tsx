@@ -12,7 +12,7 @@ export default function WrapWithIcon({
 	iconProps,
 	children,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	return (
 		<Flex my={2} alignItems='center' {...props}>
 			{icon ? <Icon as={icon} mr={2} {...iconProps} /> : null}

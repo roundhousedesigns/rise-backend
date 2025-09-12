@@ -21,7 +21,7 @@ export default function ProfileRadioGroup({
 	defaultValue,
 	handleChange,
 	...props
-}: Props & BoxProps): JSX.Element | null {
+}: Props & BoxProps): React.JSX.Element | null {
 	const handleToggleItem = (value: string) => {
 		handleChange(name)(value);
 	};

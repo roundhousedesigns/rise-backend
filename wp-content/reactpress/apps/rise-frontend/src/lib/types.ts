@@ -435,12 +435,12 @@ export interface UpcomingEventParams {
  */
 export interface ProfileNoticeAlert {
 	title: string;
-	description?: string | JSX.Element;
+	description?: string | React.JSX.Element;
 	cta?: {
 		button?: {
 			to: string;
 			text: string;
 		};
-		element?: JSX.Element;
+		element?: React.JSX.Element;
 	};
 }

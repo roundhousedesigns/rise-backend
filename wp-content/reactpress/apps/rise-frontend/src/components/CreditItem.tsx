@@ -1,18 +1,18 @@
 import {
-	Badge,
-	Box,
-	BoxProps,
-	Button,
-	Card,
-	Flex,
-	FlexProps,
-	Heading,
-	LinkBox,
-	LinkOverlay,
-	Skeleton,
-	Stack,
-	Text,
-	Wrap,
+    Badge,
+    Box,
+    BoxProps,
+    Button,
+    Card,
+    Flex,
+    FlexProps,
+    Heading,
+    LinkBox,
+    LinkOverlay,
+    Skeleton,
+    Stack,
+    Text,
+    Wrap,
 } from '@chakra-ui/react';
 import RiseStar from '@common/icons/RiseStar';
 import PositionsDisplay from '@common/PositionsDisplay';
@@ -34,7 +34,7 @@ export default function CreditItem({
 	isEditable,
 	onClick,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	const {
 		title,
 		jobTitle,
@@ -97,7 +97,7 @@ export default function CreditItem({
 		}
 	};
 
-	const InternFellowBadges = ({ ...props }: FlexProps): JSX.Element | null =>
+	const InternFellowBadges = ({ ...props }: FlexProps): React.JSX.Element | null =>
 		intern || fellow ? (
 			<Flex color='brand.yellow' fontFamily='special' gap={1} fontSize='sm' {...props}>
 				<RiseStar px={0} mx={0} fontSize='sm' />

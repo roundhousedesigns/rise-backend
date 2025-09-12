@@ -1,17 +1,17 @@
 import {
-	Badge,
-	Box,
-	Button,
-	ButtonGroup,
-	Card,
-	Flex,
-	Heading,
-	Link,
-	Spacer,
-	Stack,
-	Tag,
-	Text,
-	Wrap,
+    Badge,
+    Box,
+    Button,
+    ButtonGroup,
+    Card,
+    Flex,
+    Heading,
+    Link,
+    Spacer,
+    Stack,
+    Tag,
+    Text,
+    Wrap,
 } from '@chakra-ui/react';
 import HeadingCenterline from '@common/HeadingCenterline';
 import PositionsDisplay from '@common/PositionsDisplay';
@@ -20,14 +20,14 @@ import { JobPost } from '@lib/classes';
 import useViewer from '@queries/useViewer';
 import parse from 'html-react-parser';
 import {
-	FiCalendar,
-	FiDollarSign,
-	FiEdit2,
-	FiExternalLink,
-	FiMail,
-	FiMap,
-	FiPhone,
-	FiUser,
+    FiCalendar,
+    FiDollarSign,
+    FiEdit2,
+    FiExternalLink,
+    FiMail,
+    FiMap,
+    FiPhone,
+    FiUser,
 } from 'react-icons/fi';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -37,9 +37,9 @@ interface Props {
 
 /**
  * @param {UserProfile} profile The user profile data.
- * @returns {JSX.Element} The Props component.
+ * @returns {React.JSX.Element} The Props component.
  */
-export default function JobPostView({ job }: Props): JSX.Element | null {
+export default function JobPostView({ job }: Props): React.JSX.Element | null {
 	const [{ loggedInId }] = useViewer();
 
 	const {

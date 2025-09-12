@@ -30,7 +30,7 @@ export default function ResumePreviewModal({
 	resumeLink,
 	previewIcon = true,
 	...props
-}: ModalProps & BoxProps): JSX.Element | null {
+}: ModalProps & BoxProps): React.JSX.Element | null {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { colorMode } = useColorMode();
 

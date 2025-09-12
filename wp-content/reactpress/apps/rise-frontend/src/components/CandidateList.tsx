@@ -16,7 +16,7 @@ export default function CandidateList({
 	showToggle = true,
 	mini,
 	...props
-}: Props & ListProps): JSX.Element {
+}: Props & ListProps): React.JSX.Element {
 	const [preparedCandidates, { loading, error }] = useCandidates(userIds);
 
 	return (

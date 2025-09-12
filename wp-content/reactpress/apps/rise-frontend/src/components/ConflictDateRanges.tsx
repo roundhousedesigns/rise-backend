@@ -1,11 +1,11 @@
-import { useContext, useMemo } from 'react';
-import { List, ListItem, Flex, Divider, ListProps, Text } from '@chakra-ui/react';
-import { isEmpty } from 'lodash';
-import { FiAlertCircle, FiCalendar, FiCheckCircle } from 'react-icons/fi';
+import { Divider, Flex, List, ListItem, ListProps, Text } from '@chakra-ui/react';
+import WrapWithIcon from '@common/WrapWithIcon';
+import { SearchContext } from '@context/SearchContext';
 import { DateRange } from '@lib/classes';
 import { dateRangesOverlap } from '@lib/utils';
-import { SearchContext } from '@context/SearchContext';
-import WrapWithIcon from '@common/WrapWithIcon';
+import { isEmpty } from 'lodash';
+import { useContext, useMemo } from 'react';
+import { FiAlertCircle, FiCalendar, FiCheckCircle } from 'react-icons/fi';
 
 interface Props {
 	conflictRanges: DateRange[];
@@ -14,7 +14,7 @@ interface Props {
 export default function ConflictDateRanges({
 	conflictRanges,
 	...props
-}: Props & ListProps): JSX.Element {
+}: Props & ListProps): React.JSX.Element {
 	if (isEmpty(conflictRanges)) {
 		return <></>;
 	}

@@ -15,7 +15,7 @@ export default function HeadingCenterline({
 	headingAs,
 	headingProps,
 	...props
-}: Props & FlexProps): JSX.Element {
+}: Props & FlexProps): React.JSX.Element {
 	return (
 		<Flex alignItems='center' w='full' h='max-content' pos='relative' textAlign='left' {...props}>
 			<Box h='4px' top='50%' bgColor={lineColor} pos='absolute' w='full' zIndex='1'></Box>

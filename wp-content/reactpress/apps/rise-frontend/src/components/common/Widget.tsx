@@ -5,7 +5,7 @@ interface Props {
 	title?: string;
 	titleStyle?: 'centerline' | 'contentTitle';
 	centerLineColor?: string;
-	children: JSX.Element;
+	children: React.JSX.Element;
 }
 
 const Widget = ({

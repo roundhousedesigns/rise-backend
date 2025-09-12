@@ -13,7 +13,7 @@ export default function ProfileStackItem({
 	centerlineColor,
 	children,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	const SectionTitle = () => {
 		return centerlineColor ? (
 			<HeadingCenterline lineColor={centerlineColor}>{title}</HeadingCenterline>

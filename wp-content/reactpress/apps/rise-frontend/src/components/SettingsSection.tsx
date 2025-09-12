@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Box, BoxProps, Card, Heading } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface Props {
 	title?: string;
@@ -10,7 +10,7 @@ export default function SettingsSection({
 	title,
 	children,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	return (
 		<Box mt={4} mb={8} mx={0} flex={{ base: '0 0 100%', md: '0 0 48%' }} {...props}>
 			{title ? (

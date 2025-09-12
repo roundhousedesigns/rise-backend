@@ -1,11 +1,11 @@
 import {
-	Flex,
-	FlexProps,
-	Heading,
-	Tag,
-	TagLabel,
-	TagProps,
-	VisuallyHidden,
+    Flex,
+    FlexProps,
+    Heading,
+    Tag,
+    TagLabel,
+    TagProps,
+    VisuallyHidden,
 } from '@chakra-ui/react';
 import { WPItem } from '@lib/classes';
 import { ReactNode } from 'react';
@@ -21,7 +21,7 @@ export default function SearchParamTags({
 	termItems,
 	tagProps,
 	...props
-}: Props & FlexProps): JSX.Element | null {
+}: Props & FlexProps): React.JSX.Element | null {
 	if (!termIds.length || !termItems.length) return null;
 
 	const terms: WPItem[] = termIds.map(

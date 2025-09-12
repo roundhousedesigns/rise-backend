@@ -1,18 +1,18 @@
 import {
-	Box,
-	BoxProps,
-	Center,
-	Flex,
-	Heading,
-	HeadingProps,
-	Spinner,
-	Text,
+    Box,
+    BoxProps,
+    Center,
+    Flex,
+    Heading,
+    HeadingProps,
+    Spinner,
+    Text,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
 interface Props {
 	title?: string;
-	description?: string | JSX.Element;
+	description?: string | React.JSX.Element;
 	actions?: ReactNode;
 	loading?: boolean;
 	children: ReactNode;
@@ -27,7 +27,7 @@ export default function Shell({
 	children,
 	titleProps,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	return loading ? (
 		<Center>
 			<Spinner position='relative' top={12} />

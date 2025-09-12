@@ -1,13 +1,13 @@
 import {
-	Avatar,
-	Box,
-	Card,
-	CardHeader,
-	CardProps,
-	Flex,
-	Heading,
-	Link,
-	useColorMode,
+    Avatar,
+    Box,
+    Card,
+    CardHeader,
+    CardProps,
+    Flex,
+    Heading,
+    Link,
+    useColorMode,
 } from '@chakra-ui/react';
 import { WPPost } from '@lib/classes';
 import parse from 'html-react-parser';
@@ -16,7 +16,7 @@ interface Props {
 	post: WPPost;
 }
 
-export default function ShortPost({ post, ...props }: Props & CardProps): JSX.Element {
+export default function ShortPost({ post, ...props }: Props & CardProps): React.JSX.Element {
 	const { title, content, uri, featuredImage } = post;
 
 	const { colorMode } = useColorMode();

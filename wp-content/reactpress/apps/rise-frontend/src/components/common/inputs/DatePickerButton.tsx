@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react';
 import { Button } from '@chakra-ui/react';
+import React, { forwardRef } from 'react';
 import { FiCalendar } from 'react-icons/fi';
 
 interface DatePickerButtonProps {
@@ -10,7 +10,7 @@ interface DatePickerButtonProps {
 }
 
 const DatePickerButton = forwardRef<HTMLButtonElement, DatePickerButtonProps>(
-	({ defaultText, ariaLabel, value, onClick, ...props }, ref): JSX.Element => (
+	({ defaultText, ariaLabel, value, onClick, ...props }, ref): React.JSX.Element => (
 		<Button
 			onClick={onClick}
 			leftIcon={<FiCalendar />}

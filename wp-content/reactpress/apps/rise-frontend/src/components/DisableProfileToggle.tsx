@@ -17,7 +17,7 @@ export default function DisableProfileToggle({
 	showLabel,
 	showHelperText,
 	...props
-}: Props & FormControlProps): JSX.Element {
+}: Props & FormControlProps): React.JSX.Element {
 	const [{ loggedInId, disableProfile }] = useViewer();
 	const {
 		toggleDisableProfileMutation,

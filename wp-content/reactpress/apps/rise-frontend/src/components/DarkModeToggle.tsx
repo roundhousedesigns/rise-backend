@@ -13,7 +13,7 @@ export default function DarkModeToggle({
 	showLabel = true,
 	showHelperText = true,
 	...props
-}: Props & FormControlProps): JSX.Element {
+}: Props & FormControlProps): React.JSX.Element {
 	const { colorMode, toggleColorMode } = useColorMode();
 
 	return (

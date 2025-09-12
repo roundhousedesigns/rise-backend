@@ -1,11 +1,11 @@
 import {
-	BoxProps,
-	Editable,
-	EditablePreview,
-	EditableTextarea,
-	FormControl,
-	FormLabel,
-	VisuallyHidden,
+    BoxProps,
+    Editable,
+    EditablePreview,
+    EditableTextarea,
+    FormControl,
+    FormLabel,
+    VisuallyHidden,
 } from '@chakra-ui/react';
 import autosize from 'autosize';
 import { useEffect, useRef } from 'react';
@@ -29,7 +29,7 @@ export default function EditableTextareaInput({
 	styles,
 	outerProps,
 	...inputProps
-}: Props): JSX.Element {
+}: Props): React.JSX.Element {
 	const ref = useRef<HTMLTextAreaElement>(null);
 
 	useEffect(() => {

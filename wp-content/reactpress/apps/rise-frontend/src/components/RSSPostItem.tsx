@@ -13,7 +13,7 @@ export default function RSSPostItem({
 	fieldMap,
 	feedTitle,
 	...props
-}: Props & BoxProps): JSX.Element {
+}: Props & BoxProps): React.JSX.Element {
 	const { title, uri, date } = post;
 
 	const formattedDate = date

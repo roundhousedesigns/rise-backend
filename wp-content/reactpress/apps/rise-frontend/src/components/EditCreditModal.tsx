@@ -10,7 +10,7 @@ interface Props {
 	creditId: string;
 }
 
-export default function EditCreditModal({ isOpen, onClose, creditId }: Props): JSX.Element {
+export default function EditCreditModal({ isOpen, onClose, creditId }: Props): React.JSX.Element {
 	const [{ loggedInId }] = useViewer();
 	const [profile] = useUserProfile(loggedInId);
 	const credit =

@@ -7,7 +7,7 @@ import ErrorAlert from '@common/ErrorAlert';
 import CheckboxButton from '@common/inputs/CheckboxButton';
 import { SearchContext } from '@context/SearchContext';
 
-export default function SearchFilterSkills(): JSX.Element {
+export default function SearchFilterSkills(): React.JSX.Element {
 	const {
 		search: {
 			filters: {

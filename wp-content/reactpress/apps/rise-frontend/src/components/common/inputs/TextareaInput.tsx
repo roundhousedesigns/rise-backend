@@ -1,10 +1,10 @@
 import {
-	FormControl,
-	FormControlProps,
-	FormHelperText,
-	FormLabel,
-	Textarea,
-	TextareaProps,
+    FormControl,
+    FormControlProps,
+    FormHelperText,
+    FormLabel,
+    Textarea,
+    TextareaProps,
 } from '@chakra-ui/react';
 import { debounce } from 'lodash';
 import { ChangeEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
@@ -28,7 +28,7 @@ interface Props {
  * TextareaInput component for rendering a controlled textarea with optional debouncing.
  *
  * @param props - Component props.
- * @returns {JSX.Element} The rendered TextareaInput component.
+ * @returns {React.JSX.Element} The rendered TextareaInput component.
  */
 export default function TextareaInput({
 	label,
@@ -43,7 +43,7 @@ export default function TextareaInput({
 	onDebounceStart,
 	onDebounceEnd,
 	...props
-}: Props & FormControlProps): JSX.Element {
+}: Props & FormControlProps): React.JSX.Element {
 	const [localValue, setLocalValue] = useState(value);
 	const isDebouncing = useRef(false);
 

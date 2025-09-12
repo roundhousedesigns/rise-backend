@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
 import {
-	Modal,
-	ModalOverlay,
-	ModalBody,
-	ModalContent,
-	ModalCloseButton,
-	useToast,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalOverlay,
+    useToast,
 } from '@chakra-ui/react';
-import { DateRange } from '@lib/classes';
-import useViewer from '@queries/useViewer';
-import useUpdateConflictRange from '@mutations/useUpdateConflictRange';
-import { useErrorMessage } from '@hooks/hooks';
 import DateRangePicker from '@common/inputs/DateRangePicker';
+import { useErrorMessage } from '@hooks/hooks';
+import { DateRange } from '@lib/classes';
+import useUpdateConflictRange from '@mutations/useUpdateConflictRange';
+import useViewer from '@queries/useViewer';
+import { useEffect, useState } from 'react';
 
 interface Props {
 	conflictRange?: DateRange;
@@ -25,7 +25,7 @@ export default function EditConflictDateRangeModal({
 	allDateRanges,
 	isOpen,
 	onClose,
-}: Props): JSX.Element {
+}: Props): React.JSX.Element {
 	const [{ loggedInId }] = useViewer();
 
 	const [errorCode, setErrorCode] = useState<string>('');

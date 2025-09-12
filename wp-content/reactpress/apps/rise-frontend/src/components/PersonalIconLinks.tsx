@@ -17,7 +17,7 @@ export default function PersonalIconLinks({
 	profileSlug,
 	boxSize = 12,
 	...props
-}: Props & FlexProps): JSX.Element {
+}: Props & FlexProps): React.JSX.Element {
 	const { facebook, twitter, instagram, linkedin } = socials;
 
 	const profileUrl = useProfileUrl(profileSlug);

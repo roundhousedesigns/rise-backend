@@ -7,7 +7,7 @@ import ProfileView from '@views/ProfileView';
 import { FiEdit3 } from 'react-icons/fi';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 
-export default function Profile(): JSX.Element {
+export default function Profile(): React.JSX.Element {
 	const [{ loggedInId, loggedInSlug }] = useViewer();
 	const params = useParams();
 

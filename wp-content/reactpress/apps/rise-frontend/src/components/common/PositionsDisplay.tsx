@@ -18,7 +18,7 @@ export default function PositionsDisplay({
 	showDepartmentBadges = true,
 	showJobBadges = true,
 	showSkillBadges = true,
-}: PositionsDisplayProps): JSX.Element | null {
+}: PositionsDisplayProps): React.JSX.Element | null {
 	// Extract position IDs from the item
 	const departmentIds = item.positions?.departments || [];
 	const jobIds = item.positions?.jobs || [];

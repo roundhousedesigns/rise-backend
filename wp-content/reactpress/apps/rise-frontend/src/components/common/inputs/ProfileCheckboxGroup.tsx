@@ -21,7 +21,7 @@ export default function ProfileCheckboxGroup({
 	requiredMessage,
 	handleChange,
 	...props
-}: Props): JSX.Element | null {
+}: Props): React.JSX.Element | null {
 	const numberChecked = checked?.length;
 
 	return items ? (

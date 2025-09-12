@@ -16,7 +16,7 @@ export default function IsOrgToggle({
 	showLabel,
 	showHelperText,
 	...props
-}: Props & FormControlProps): JSX.Element {
+}: Props & FormControlProps): React.JSX.Element {
 	const [{ loggedInId, isOrg }] = useViewer();
 
 	const {

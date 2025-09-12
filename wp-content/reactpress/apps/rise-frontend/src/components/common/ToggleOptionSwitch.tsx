@@ -1,11 +1,11 @@
 import {
-	Box,
-	FormControl,
-	FormControlProps,
-	FormHelperText,
-	FormLabel,
-	Icon,
-	Switch,
+    Box,
+    FormControl,
+    FormControlProps,
+    FormHelperText,
+    FormLabel,
+    Icon,
+    Switch,
 } from '@chakra-ui/react';
 import type { As } from '@chakra-ui/system';
 import { useEffect, useState } from 'react';
@@ -21,7 +21,7 @@ interface Props {
 	size?: string;
 	loading?: boolean;
 	callback: () => void;
-	children?: string | JSX.Element;
+	children?: string | React.JSX.Element;
 }
 export default function ToggleOptionSwitch({
 	checked,
@@ -36,7 +36,7 @@ export default function ToggleOptionSwitch({
 	callback,
 	children,
 	...props
-}: Props & FormControlProps): JSX.Element {
+}: Props & FormControlProps): React.JSX.Element {
 	const [toggleState, setToggleState] = useState<boolean>(checked);
 
 	// Sync the toggleState with the checked prop

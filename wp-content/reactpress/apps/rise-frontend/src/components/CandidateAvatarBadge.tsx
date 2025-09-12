@@ -6,7 +6,7 @@ interface Props {
 	reason?: string;
 }
 
-export default function CandidateAvatarBadge({ reason }: Props): JSX.Element | null {
+export default function CandidateAvatarBadge({ reason }: Props): React.JSX.Element | null {
 	if (!reason) return null;
 
 	const badgeProps: {

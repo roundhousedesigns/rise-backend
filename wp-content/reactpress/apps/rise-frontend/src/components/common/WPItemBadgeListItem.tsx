@@ -8,7 +8,7 @@ export default function WPItemBadgeListItem({
 	children,
 	colorScheme,
 	...props
-}: Props & TagProps): JSX.Element {
+}: Props & TagProps): React.JSX.Element {
 	return (
 		<Tag colorScheme={colorScheme} {...props}>
 			<TagLabel>{children}</TagLabel>

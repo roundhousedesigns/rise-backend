@@ -8,7 +8,7 @@ interface Props {
 
 export default function NetworkPartnerManagementLinks({
 	title = 'Manage Events',
-}: Props): JSX.Element | null {
+}: Props): React.JSX.Element | null {
 	const [{ networkPartnerManagementLinks }] = useViewer();
 
 	return !!networkPartnerManagementLinks ? (
