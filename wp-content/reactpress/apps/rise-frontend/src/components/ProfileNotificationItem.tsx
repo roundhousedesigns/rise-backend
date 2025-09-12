@@ -42,18 +42,22 @@ export default function ProfileNotificationItem({ notification }: Props) {
 	}, [profiles, userProfile]);
 
 	// Generate notification link based on type
-	const link =
-		notificationType === 'test_notification'
-			? ''
-			: notificationType === 'starred_profile_updated'
-			? userProfile
-				? profileUrl
-				: ''
-			: notificationType === 'no_profile_credits'
-			? '/settings'
-			: notificationType === 'job_posted'
-			? `/jobs/${value}`
-			: '';
+	const link = (() => {
+		switch (notificationType) {
+			case 'test_notification':
+				return '';
+			case 'starred_profile_updated':
+				return userProfile ? profileUrl : '';
+			case 'no_profile_credits':
+			case 'new_user':
+				return '/profile/edit';
+			// TODO Enable this when jobs are live
+			// case 'job_posted':
+			// 	return `/jobs/${value}`;
+			default:
+				return '';
+		}
+	})();
 
 	return (
 		<Box onMouseEnter={handleMarkAsRead} onFocus={handleMarkAsRead}>

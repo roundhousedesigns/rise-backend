@@ -693,7 +693,7 @@ class Admin {
 		// Check if the user exists and has the 'crew-member' role
 		if ( $user && in_array( 'crew-member', $user->roles ) ) {
 			// Import the ProfileNotification class
-			\RHD\Rise\Includes\ProfileNotification::create_no_credits_notification( $user_id );
+			\RHD\Rise\Includes\ProfileNotification::create_new_user_notification( $user_id );
 		}
 	}
 

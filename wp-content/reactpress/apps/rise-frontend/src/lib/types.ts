@@ -355,6 +355,7 @@ export type NotificationType =
 	| 'starred_profile_updated'
 	| 'job_posted'
 	| 'no_profile_credits'
+	| 'new_user'
 	| 'test_notification';
 
 /**

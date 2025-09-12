@@ -22,6 +22,7 @@ class ProfileNotification {
 		'starred_profile_updated',
 		'job_posted',
 		'no_profile_credits',
+		'new_user',
 		// Add other notification types here
 	];
 
@@ -162,12 +163,15 @@ class ProfileNotification {
 	}
 
 	/**
-	 * Create a no credits notification for a user.
+	 * Create a notification for a user.
 	 *
-	 * @param  int  $user_id The user ID to create the notification for.
-	 * @return bool Whether the notification was created.
+	 * @param  int    $user_id           The user ID to create the notification for.
+	 * @param  string $notification_type The type of notification to create.
+	 * @param  string $title             The notification title.
+	 * @param  string $message_option    The option name containing the notification message.
+	 * @return bool   Whether the notification was created.
 	 */
-	public static function create_no_credits_notification( $user_id ) {
+	private static function create_user_notification( $user_id, $notification_type, $title, $message_option ) {
 		$user_pod = \pods( 'user', $user_id );
 
 		if ( !$user_pod ) {
@@ -179,13 +183,13 @@ class ProfileNotification {
 		// Create the notification
 		$notification_pod = \pods( 'profile_notification' );
 
-		$notification_message = get_option( 'rise_settings_no_credits_reminder_message' );
+		$notification_message = get_option( $message_option );
 
 		// Create the Profile Notification with pod data
 		$notification_id = $notification_pod->add( [
-			'post_title'        => \__( 'Add credits to your profile', 'rise' ),
+			'post_title'        => $title,
 			'post_status'       => 'publish',
-			'notification_type' => 'no_profile_credits',
+			'notification_type' => $notification_type,
 			'value'             => $notification_message,
 			'is_read'           => false,
 			'author'            => $user_id,
@@ -199,5 +203,45 @@ class ProfileNotification {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Create a no credits notification for a user.
+	 *
+	 * @param  int  $user_id The user ID to create the notification for.
+	 * @return bool Whether the notification was created.
+	 */
+	public static function create_no_credits_notification( $user_id ) {
+		$created = self::create_user_notification(
+			$user_id,
+			'no_profile_credits',
+			\__( 'Add credits to your profile', 'rise' ),
+			'rise_settings_no_credits_reminder_message'
+		);
+
+		if ( $created ) {
+			$user_pod = \pods( 'user', $user_id );
+			$today    = current_time( 'Y-m-d' );
+
+			// Update the user's last notified date
+			$user_pod->save( 'no_credits_last_notified_on', $today );
+
+			return true;
+		}
+	}
+
+	/**
+	 * Create a new user notification.
+	 *
+	 * @param  int  $user_id The user ID to create the notification for.
+	 * @return bool Whether the notification was created.
+	 */
+	public static function create_new_user_notification( $user_id ) {
+		return self::create_user_notification(
+			$user_id,
+			'new_user',
+			\__( 'Welcome to the RISE Directory!', 'rise' ),
+			'rise_settings_new_user_message'
+		);
 	}
 }
