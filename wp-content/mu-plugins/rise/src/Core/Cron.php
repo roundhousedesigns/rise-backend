@@ -2,6 +2,8 @@
 
 namespace RHD\Rise\Core;
 
+use RHD\Rise\Includes\ProfileNotification;
+
 /**
  * Registers cron jobs.
  *
@@ -186,11 +188,6 @@ class Cron {
 		while ( $users->fetch() ) {
 			$user = $users->row();
 
-			// DEBUG: ONLY NOTIFY USER 2334
-			if ( 2334 !== absint( $user['ID'] ) ) {
-				continue;
-			}
-
 			// Check if user has any Credit posts
 			$credit_count = get_posts( [
 				'post_type'      => 'credit',
@@ -228,38 +225,17 @@ class Cron {
 			}
 
 			// Check if user already has a 'no_profile_credits' notification
-			$existing_notification = pods( 'profile_notification' )->find( [
+			$existing = pods( 'profile_notification' )->find( [
 				'where' => 'd.notification_type = "no_profile_credits" AND t.post_author = ' . (int) $user['ID'],
 				'limit' => 1,
 			] )->field( 'ID' );
 
 			// Skip if notification already exists
-			if ( !empty( $existing_notification ) ) {
+			if ( !empty( $existing ) ) {
 				continue;
 			}
 
-			// Create the notification
-			$notification_pod = \pods( 'profile_notification' );
-			if ( !$notification_pod ) {
-				continue;
-			}
-
-			$notification_message = get_option( 'rise_settings_no_credits_reminder_message' );
-
-			// Create the Profile Notification with pod data
-			$notification_id = $notification_pod->add( [
-				'post_title'        => \__( 'Add credits to your profile', 'rise' ),
-				'post_status'       => 'publish',
-				'notification_type' => 'no_profile_credits',
-				'value'             => $notification_message,
-				'is_read'           => false,
-				'author'            => $user['ID'],
-			] );
-
-			if ( $notification_id ) {
-				// Update the user's last notified date
-				$user_pod->save( 'no_credits_last_notified_on', $today );
-			}
+			ProfileNotification::create_no_credits_notification( $user['ID'] );
 		}
 	}
 }

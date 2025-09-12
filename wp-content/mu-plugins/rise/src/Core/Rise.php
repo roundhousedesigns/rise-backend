@@ -422,6 +422,7 @@ class Rise {
 		$this->loader->add_action( 'login_init', $plugin_data, 'disable_built_in_wp_registration_form' );
 		$this->loader->add_action( 'login_form_lostpassword', $plugin_data, 'redirect_to_custom_lostpassword' );
 		$this->loader->add_action( 'init', $plugin_data, 'redirect_wp_login' );
+		$this->loader->add_action( 'user_register', $plugin_data, 'handle_new_crew_member_registration' );
 
 		/**
 		 * TEC endpoints

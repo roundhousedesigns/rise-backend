@@ -687,15 +687,14 @@ class Admin {
 	 * @return void
 	 */
 	public function handle_new_crew_member_registration( $user_id ) {
-		// TODO Finish implementing or remove because it's redundant
-
 		// Get the user object
 		$user = get_user_by( 'ID', $user_id );
 
 		// Check if the user exists and has the 'crew-member' role
-		// if ( $user && in_array( 'crew-member', $user->roles ) ) {
-		// 	\RHD\Rise\Includes\ProfileNotification::create_no_credits_notification( $user_id );
-		// }
+		if ( $user && in_array( 'crew-member', $user->roles ) ) {
+			// Import the ProfileNotification class
+			\RHD\Rise\Includes\ProfileNotification::create_no_credits_notification( $user_id );
+		}
 	}
 
 	/**
