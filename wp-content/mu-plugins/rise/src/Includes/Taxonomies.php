@@ -101,9 +101,10 @@ class Taxonomies {
 	 * @param  string       $singular        The singular name of the taxonomy.
 	 * @param  string       $plural          The plural name of the taxonomy.
 	 * @param  bool         $hierarchical    Whether the taxonomy is hierarchical.
+	 * @param  string       $rewrite_slug    The slug to use for the rewrite.
 	 * @return void
 	 */
-	public static function register_taxonomy( $object_type, $taxonomy, $taxonomy_plural, $singular, $plural, $hierarchical = false ) {
+	public static function register_taxonomy( $object_type, $taxonomy, $taxonomy_plural, $singular, $plural, $hierarchical = false, $rewrite_slug = null ) {
 		$args = [
 			'hierarchical'          => $hierarchical,
 			'public'                => true,
@@ -111,7 +112,7 @@ class Taxonomies {
 			'show_ui'               => true,
 			'show_admin_column'     => true,
 			'query_var'             => true,
-			'rewrite'               => true,
+			'rewrite'               => $rewrite_slug ? ['slug' => $rewrite_slug] : true,
 			'labels'                => [
 				'name'                       => __( $plural, 'rise' ),
 				'singular_name'              => _x( $singular, 'taxonomy general name', 'rise' ),

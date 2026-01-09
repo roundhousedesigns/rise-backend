@@ -438,7 +438,7 @@ class Types {
 				'show_in_rest'       => true,
 				'capability_type'    => 'post',
 				'taxonomies'         => ['network_partner_tag'],
-				'rewrite'            => ['slug' => 'partner'],
+				'rewrite'            => ['slug' => 'resource-partners'],
 			]
 		);
 	}
@@ -489,7 +489,8 @@ class Types {
 			'network_partner_tags',
 			'Network Partner Tag',
 			'Network Partner Tags',
-			true
+			true,
+			'partner-tag'
 		);
 	}
 
