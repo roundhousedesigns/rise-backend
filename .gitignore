@@ -85,4 +85,5 @@ wp-content/reactpress/apps/rise-frontend/dist
 
 
 #Ignore cursor AI rules
+!.cursor/
 .cursor/rules/codacy.mdc

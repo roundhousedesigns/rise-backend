@@ -1,0 +1,27 @@
+---
+name: general
+description: This rule provides an overview of the project and its structure.
+alwaysApply: true
+---
+
+# Overview
+
+This project is a WordPress website with an embedded React application at the '/directory' endpoint. The React app is a user directory and jobs board, which allows users to fill out their profiles and relevant work experience so that they might appear in another user's candidate searches.
+
+# Tech Stack
+
+We use Docker Compose to host this site. The stack consists of WordPress (php-fpm), Apache, WP-CLI, MariaDB, and Redis containers.
+
+Core site components:
+  - WordPress
+  - PHP 8.2+
+  - WP GraphQL (https://www.wpgraphql.com/)
+  - React 19
+
+We're using the https://wordpress.org/plugins/reactpress/ plugin to facilitate hosting the React app inside the WordPress frontend structure.
+
+# Project Structure
+
+The WordPress backend is in the `wp-content/` directory. The majority of our site's functionality is in the `rise` mu-plugin.
+
+The React frontend is in the `wp-content/reactpress/apps/rise-frontend` directory.
