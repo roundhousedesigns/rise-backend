@@ -82,3 +82,9 @@ function run_rise() {
 	$plugin->run();
 }
 run_rise();
+
+// FIXME: Update nonce requirement according to new WP GraphQL version.
+// see: https://github.com/wp-graphql/wp-graphql/pull/3448
+add_filter( 'graphql_cookie_auth_require_nonce', function ( $require ) {
+	return false;
+} );
