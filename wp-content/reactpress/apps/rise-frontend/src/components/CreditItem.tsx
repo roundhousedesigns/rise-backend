@@ -130,13 +130,14 @@ export default function CreditItem({
 							justifyContent='space-between'
 							flexWrap={{ base: 'wrap', md: 'nowrap' }}
 						>
-							<Box flex='1'>
+							<Box flex='1' minW={0}>
 								<Flex alignItems='center' gap={2} flexWrap='wrap' mb={2}>
 									<Heading
 										id={`credit-${credit.id}`}
 										as='h3'
 										variant='cardItemTitle'
 										my={0}
+										minW={0}
 									>
 										<LinkOverlay
 											as={Button}
@@ -147,6 +148,11 @@ export default function CreditItem({
 											textDecoration='none'
 											fontFamily='inherit'
 											fontSize='inherit'
+											whiteSpace='normal'
+											overflowWrap='anywhere'
+											wordBreak='break-word'
+											textAlign='left'
+											minW={0}
 											_hover={{ textDecoration: 'none' }}
 										>
 											{title}
