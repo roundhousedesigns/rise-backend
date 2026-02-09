@@ -113,7 +113,6 @@ const useUserProfile = (id: number | null, count: number = 5): [UserProfile | nu
 			lastCredits: count,
 		},
 		skip: !id,
-		fetchPolicy: 'network-only',
 	});
 
 	// Prepare the credits
