@@ -25,3 +25,41 @@ We're using the https://wordpress.org/plugins/reactpress/ plugin to facilitate h
 The WordPress backend is in the `wp-content/` directory. The majority of our site's functionality is in the `rise` mu-plugin.
 
 The React frontend is in the `wp-content/reactpress/apps/rise-frontend` directory.
+
+## Workspace Paths
+
+This repo maintains parallel copies of the same stack. Confirm which path is active before editing:
+
+- `gaswirth@rhdev/wp-content/` — primary dev environment
+- `site_files/wp-content/` — alternate/synced copy used by some deployments
+
+The `rise` mu-plugin and `rise-frontend` React app may exist in both trees. Apply fixes to the active environment first; mirror to the other copy if they have diverged.
+
+Respect stated edit-scope constraints (e.g. frontend-only) until the user explicitly expands permission to backend paths.
+
+# WP GraphQL Conventions
+
+Custom GraphQL fields typed as taxonomy term types (`Union`, `Location`, `Skill`, etc.) must resolve to `WPGraphQL\Model\Term` instances — not plain PHP arrays with `databaseId`/`name`/`slug` keys. WPGraphQL's `TermNode` interface rejects arrays and throws:
+
+`Argument #1 ($term) must be of type WPGraphQL\Model\Term, array given`
+
+When a frontend query errors on `TermNode`, trace custom resolvers in `rise/src/Includes/GraphQLQueries.php` (especially `prepare_taxonomy_terms()` and `get_job_skills()`) before attempting frontend workarounds. Frontend query changes cannot fix a resolver returning the wrong PHP type.
+
+## Workspace Paths
+
+This repo maintains parallel copies of the same stack. Confirm which path is active before editing:
+
+- `gaswirth@rhdev/wp-content/` — primary dev environment
+- `site_files/wp-content/` — alternate/synced copy used by some deployments
+
+The `rise` mu-plugin and `rise-frontend` React app may exist in both trees. Apply fixes to the active environment first; mirror to the other copy if they have diverged.
+
+Respect stated edit-scope constraints (e.g. frontend-only) until the user explicitly expands permission to backend paths.
+
+# WP GraphQL Conventions
+
+Custom GraphQL fields typed as taxonomy term types (`Union`, `Location`, `Skill`, etc.) must resolve to `WPGraphQL\Model\Term` instances — not plain PHP arrays with `databaseId`/`name`/`slug` keys. WPGraphQL's `TermNode` interface rejects arrays and throws:
+
+`Argument #1 ($term) must be of type WPGraphQL\Model\Term, array given`
+
+When a frontend query errors on `TermNode`, trace custom resolvers in `rise/src/Includes/GraphQLQueries.php` (especially `prepare_taxonomy_terms()` and `get_job_skills()`) before attempting frontend workarounds. Frontend query changes cannot fix a resolver returning the wrong PHP type.
