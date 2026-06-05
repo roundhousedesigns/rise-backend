@@ -58,21 +58,16 @@ class GraphQLQueries {
 		// to ensure User object support.
 		$terms = \wp_get_object_terms( $user_id, $taxonomy );
 
-		if ( !$terms ) {
+		if ( \is_wp_error( $terms ) || empty( $terms ) ) {
 			return [];
 		}
 
-		$prepared_terms = [];
-
-		foreach ( $terms as $term ) {
-			$prepared_terms[] = [
-				'databaseId' => $term->term_id,
-				'name'       => $term->name,
-				'slug'       => $term->slug,
-			];
-		}
-
-		return $prepared_terms;
+		return \array_map(
+			static function ( $term ) {
+				return new \WPGraphQL\Model\Term( $term );
+			},
+			$terms
+		);
 	}
 
 	/**
@@ -111,16 +106,16 @@ class GraphQLQueries {
 		];
 		$skill_terms = \get_terms( $term_args );
 
-		$prepared_skills = [];
-		foreach ( $skill_terms as $skill ) {
-			$prepared_skills[] = [
-				'databaseId' => $skill->term_id,
-				'name'       => $skill->name,
-				'slug'       => $skill->slug,
-			];
+		if ( \is_wp_error( $skill_terms ) || empty( $skill_terms ) ) {
+			return [];
 		}
 
-		return $prepared_skills;
+		return \array_map(
+			static function ( $skill ) {
+				return new \WPGraphQL\Model\Term( $skill );
+			},
+			$skill_terms
+		);
 	}
 
 	/**
