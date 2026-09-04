@@ -147,6 +147,11 @@
 		display: flex;
 		gap: 4rem;
 		flex-wrap: nowrap;
+
+		@media screen and (max-width: 40rem) {
+			flex-wrap: wrap;
+			gap: 2rem;
+		}
 	}
 
 	&.template-simple {
